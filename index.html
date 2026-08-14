@@ -1,0 +1,2906 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HiveBoard</title>
+  <link rel="icon" type="image/svg+xml" sizes="any" href="assets/favicon.svg">
+  <link rel="alternate icon" type="image/png" href="assets/favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+
+  <style>
+    .sidebar-nav {
+      position: fixed;
+      left: 20px;
+      top: 40px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      width: 160px;
+    }
+
+    .sidebar-nav .menu-label {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      font-weight: bold;
+      border-bottom: 1px solid #eee;
+      margin-bottom: 10px;
+      color: #363636;
+      letter-spacing: 1px;
+    }
+
+    .sidebar-nav a {
+      color: #b5b5b5;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding-left: 10px;
+      border-left: 2px solid transparent;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar-nav a:hover,
+    .sidebar-nav a.active {
+      color: #363636;
+      border-left: 2px solid #363636;
+      padding-left: 15px;
+    }
+
+    @media screen and (max-width: 1200px) {
+      .sidebar-nav {
+        display: none;
+      }
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    .author-block sup {
+      font-size: 0.65em;
+      margin-left: 2px;
+      margin-right: 3px;
+    }
+
+    .no-bounce:hover {
+      transform: none !important;
+      box-shadow: none !important;
+    }
+  </style>
+  <script type="module" crossorigin src="./assets/index-gC59g4Aq.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-Bh8jYpec.css">
+</head>
+
+<body>
+  <nav class="sidebar-nav is-hidden-touch">
+    <a href="#Home">Home</a>
+    <a href="#Abstract">Abstract</a>
+    <a href="#Interactive-Viewer">3D Viewer</a>
+    <a href="#Modules-Specs">Modules & Specs</a>
+    <a href="#Simulation-Compatibility">Simulators</a>
+    <a href="#Videos">Videos</a>
+    <a href="#Results">Results</a>
+  </nav>
+
+  <div id="presentation-site">
+    <!-- HERO SECTION -->
+    <section class="hero pt-6 pb-2" id="Home">
+      <div class="hero-body pt-2 pb-5">
+        <div class="container is-widescreen has-text-centered">
+          <h1 class="title mt-5 mb-3"
+            style="font-size: 2.25rem; font-weight: 700; color: #1e293b; letter-spacing: -1px; line-height: 1.15;">
+            <span
+              style="display: flex; align-items: center; justify-content: center; margin-bottom: 0.1em; flex-wrap: wrap; gap: 0.35rem 0;">
+              <span style="display: inline-flex; align-items: center; white-space: nowrap;">
+                <img src="./assets/HIVEBOARD_logo.svg" alt="HiveBoard Logo"
+                  style="height: 1.2em; margin-right: 8px; margin-top: -2px;">
+                <span><span style="color: #edaf19ff;">Hive</span>Board:</span>
+              </span>
+              <span style="margin-left: 8px;">An Open, Modular, 3D-Printed Benchmark of</span>
+            </span>
+            <span style="display: block;">Industrial Mechanisms for Robotic and Prosthetic Manipulation</span>
+          </h1>
+
+          <div class="mb-3"
+            style="font-size: 1.15rem; font-weight: 500; color: #475569; max-width: 1100px; margin: 0 auto;">
+            <span class="author-block">Ricardo V. Godoy<sup>1</sup>,</span>
+            <span class="author-block">Enzo F. de Souza<sup>1</sup>,</span>
+            <span class="author-block">Rudy De-Xin de Lange<sup>2</sup>,</span>
+            <span class="author-block">Juliano Negri<sup>1</sup>,</span>
+            <span class="author-block">João A. Marsicano<sup>1</sup>,</span>
+            <span class="author-block">Victor van Halst<sup>1</sup>,</span>
+            <span class="author-block">Aravind Elanjimattathil Vijayan<sup>3</sup>,</span>
+            <span class="author-block">Gianluca Capezzuto<sup>1</sup>,</span>
+            <span class="author-block">Matheus P. Angarola<sup>1</sup>,</span>
+            <span class="author-block">Felipe A. G. Tommaselli<sup>1</sup>,</span>
+            <span class="author-block">Rafael R. Baptista<sup>4</sup>,</span>
+            <span class="author-block">Meiko Adriana van Berge<sup>5</sup>,</span>
+            <span class="author-block">Gustavo J. G. Lahr<sup>4</sup>,</span>
+            <span class="author-block">Lucas Ferrari Gerez<sup>2</sup>,</span>
+            <span class="author-block">Marcelo Becker<sup>1</sup></span>
+          </div>
+
+          <div class="mb-3"
+            style="font-size: 1rem; color: #64748b; line-height: 1.4; max-width: 1200px; margin: 0 auto;">
+            <span class="author-block"><sup>1</sup>Mobile Robotics Group, University of São Paulo, Brazil</span><br>
+            <span class="author-block"><sup>2</sup>ARARA Lab, James Watt School of Engineering, University of Glasgow,
+              Scotland, UK</span><br>
+            <span class="author-block"><sup>3</sup>The Robotics Systems Lab ETH Zurich, Zurich, Switzerland</span><br>
+            <span class="author-block"><sup>4</sup>Instituto Israelita de Ensino e Pesquisa Albert Einstein, Hospital
+              Israelita Albert Einstein, São Paulo, Brazil</span><br>
+            <span class="author-block"><sup>5</sup>Independent researcher</span>
+          </div>
+
+          <div class="mb-4" style="font-size: 0.9rem; color: #94a3b8;">
+            <span class="author-block">Corresponding author: <a href="mailto:ricardo.godoy@alumni.usp.br"
+                class="email-link">ricardo.godoy@alumni.usp.br</a></span>
+          </div>
+
+
+
+          <div style="display: flex; align-items: center; justify-content: center; width: 100%; margin-top: 2rem;">
+            <div class="hero-divider-line"
+              style="flex-grow: 1; max-width: 200px; height: 1px; background: linear-gradient(to left, #cbd5e1, transparent); margin-right: 20px;">
+            </div>
+
+            <div class="buttons is-centered" style="gap: 12px; margin: 0;">
+              <!-- PDF Link -->
+              <a class="button is-rounded is-outlined hero-link-btn no-bounce"
+                style="border-color: #cbd5e1; color: #334155; font-weight: 500; padding: 0 1.2rem; transition: all 0.2s; cursor: not-allowed;"
+                onmouseover="this.querySelector('.btn-text-content').innerText = 'Soon';"
+                onmouseout="this.querySelector('.btn-text-content').innerText = 'PDF';">
+                <span class="icon" style="color: #475569;">
+                  <i class="fas fa-file-pdf"></i>
+                </span>
+                <span class="btn-text-content"
+                  style="min-width: 50px; display: inline-block; text-align: center;">PDF</span>
+              </a>
+              <!-- arXiv Link -->
+              <a class="button is-rounded is-outlined hero-link-btn no-bounce"
+                style="border-color: #cbd5e1; color: #334155; font-weight: 500; padding: 0 1.2rem; transition: all 0.2s; cursor: not-allowed;"
+                onmouseover="this.querySelector('.btn-text-content').innerText = 'Soon';"
+                onmouseout="this.querySelector('.btn-text-content').innerText = 'arXiv';">
+                <span class="icon" style="color: #475569;">
+                  <i class="ai ai-arxiv" style="font-size: 1.1em;"></i>
+                </span>
+                <span class="btn-text-content"
+                  style="min-width: 50px; display: inline-block; text-align: center;">arXiv</span>
+              </a>
+              <!-- Files Link -->
+              <a href="#" class="button is-rounded is-outlined hero-link-btn"
+                style="border-color: #cbd5e1; color: #334155; font-weight: 500; padding: 0 1.2rem; transition: all 0.2s;">
+                <span class="icon" style="color: #475569;">
+                  <i class="fas fa-folder-open"></i>
+                </span>
+                <span>Files</span>
+              </a>
+              <!-- GitHub Link -->
+              <a href="https://github.com/EESC-LabRoM/HiveBoard" class="button is-rounded is-outlined hero-link-btn"
+                style="border-color: #cbd5e1; color: #334155; font-weight: 500; padding: 0 1.2rem; transition: all 0.2s;">
+                <span class="icon" style="color: #475569;">
+                  <i class="fab fa-github"></i>
+                </span>
+                <span>GitHub</span>
+              </a>
+            </div>
+
+            <div class="hero-divider-line"
+              style="flex-grow: 1; max-width: 200px; height: 1px; background: linear-gradient(to right, #cbd5e1, transparent); margin-left: 20px;">
+            </div>
+          </div>
+
+          <!-- YouTube Video Embed -->
+          <div class="mt-6" style="width: 100%; max-width: 960px; margin-left: auto; margin-right: auto;">
+            <figure class="image is-16by9"
+              style="border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid #e2e8f0;">
+              <iframe class="has-ratio" width="640" height="360" src="https://www.youtube.com/embed/kaYB_Oc64nA"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen></iframe>
+            </figure>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABSTRACT SECTION -->
+    <section class="section" id="Abstract">
+      <div class="container is-max-desktop">
+        <h2 class="title is-3 has-text-centered mb-5" style="letter-spacing: -0.5px;">Abstract</h2>
+        <div class="content has-text-justified mb-0" style="line-height: 1.7; font-size: 1rem; color: #4a4a4a;">
+          <p>
+            Manipulation is mostly benchmarked on free objects, through grasping, pick-and-place, and assembly of loose
+            parts. The mechanisms that make manipulation useful in the world are not free objects: a valve resists
+            rotation, a screw advances only along its thread, a lock opens only after a key is inserted and turned.
+            Performance on such constrained, force-dependent, often multi-step devices is poorly predicted by grasping
+            scores, and the physical benchmarks that do cover mechanisms are built from purchased components, which
+            makes them hard to reproduce or modify. We present HiveBoard, an open, modular, and accessible, fully
+            3D-printed benchmark that lets any laboratory evaluate grippers, hands, and manipulation policies on
+            functional mechanisms. A hexagonal honeycomb base accepts 13 interchangeable attachments modeled on
+            industrial fittings and grouped into three skill categories &mdash; torque, precision, and composed assembly
+            &mdash; all fully functional, printable on consumer-grade FDM printers, and released with articulated URDF
+            and USD models for direct import into common simulators. A cross-laboratory validation across four
+            manipulation systems, from quadruped- and fixed-base teleoperated arms and a legged manipulator driven
+            through virtual-reality devices to a wearable anthropomorphic prosthetic hand, all scored on the same
+            thirteen tasks, shows that six of the 13 attachments were completed by every platform and two by none, that
+            the per-platform difficulty orderings correlate pairwise between 0.50 and 0.84, and that different
+            embodiments fail on different attachments for interpretable, hardware-specific reasons.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- INTERACTIVE IMAGE SECTION -->
+    <section class="section" id="Interactive-Image" style="position: relative; z-index: 10;">
+      <div class="container is-max-desktop">
+        <div class="interactive-image-container"
+          style="position: relative; width: 100%; max-width: 250px; margin: 0 auto;">
+          <img src="./assets/Hiveboard4.png" alt="HiveBoard Overview"
+            style="width: 100%; height: auto; display: block;">
+
+          <!-- Validation Hand Overlapping the Board -->
+          <div class="validation-container is-hidden-mobile"
+            style="position: absolute; top: -30%; left: -80%; width: 280px; cursor: pointer; text-align: center; z-index: 15;">
+            <img src="./assets/hand.png" alt="Validation Hand" class="validation-img"
+              style="width: 100%; height: auto; opacity: 0.4; transition: all 0.3s ease; object-fit: contain;">
+
+            <div class="validation-text"
+              style="opacity: 0; transform: translateY(5px); transition: all 0.3s ease; position: absolute; top: 100%; left: 50%; width: 220px; margin-left: -110px; background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); border: 1px solid #e2e8f0; font-size: 0.85rem; color: #475569; pointer-events: none; z-index: 20; text-align: left;">
+              <strong style="color: #0f172a; display: block; margin-bottom: 6px;">Validated with:</strong>
+              Macao wearable anthropomorphic prosthetic hand, worn on the operator's forearm (Platform D)
+            </div>
+          </div>
+
+          <!-- Validation s010 Overlapping the Board on the Right (Above Spot) -->
+          <div class="validation-container is-hidden-mobile"
+            style="position: absolute; top: -30%; right: -80%; width: 230px; cursor: pointer; text-align: center; z-index: 15;">
+            <img src="./assets/s010.png" alt="Validation s010" class="validation-img"
+              style="width: 100%; height: auto; opacity: 0.4; transition: all 0.3s ease; object-fit: contain; transform: scaleX(-1);">
+
+            <div class="validation-text"
+              style="opacity: 0; transform: translateY(5px); transition: all 0.3s ease; position: absolute; top: 100%; left: 50%; width: 220px; margin-left: -110px; background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); border: 1px solid #e2e8f0; font-size: 0.85rem; color: #475569; pointer-events: none; z-index: 20; text-align: left;">
+              <strong style="color: #0f172a; display: block; margin-bottom: 6px;">Validated with:</strong>
+              LeRobot SO-101 fixed-base arm under leader-follower teleoperation (Platform B)
+            </div>
+          </div>
+
+          <!-- Validation Quadruped Overlapping the Board on the Right -->
+          <div class="validation-container is-hidden-mobile"
+            style="position: absolute; top: 35%; right: -95%; width: 300px; cursor: pointer; text-align: center; z-index: 15;">
+            <img src="./assets/spot.png" alt="Validation Quadruped" class="validation-img"
+              style="width: 100%; height: auto; opacity: 0.4; transition: all 0.3s ease; object-fit: contain;">
+
+            <div class="validation-text"
+              style="opacity: 0; transform: translateY(5px); transition: all 0.3s ease; position: absolute; top: 100%; left: 50%; width: 220px; margin-left: -110px; background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); border: 1px solid #e2e8f0; font-size: 0.85rem; color: #475569; pointer-events: none; z-index: 20; text-align: left;">
+              <strong style="color: #0f172a; display: block; margin-bottom: 6px;">Validated with:</strong>
+              Boston Dynamics Spot with the Spot Arm, teleoperated from the native tablet interface (Platform A)
+            </div>
+          </div>
+
+          <!-- Validation ANYmal Overlapping the Board on the Left -->
+          <div class="validation-container is-hidden-mobile"
+            style="position: absolute; top: 20%; left: -98%; width: 300px; cursor: pointer; text-align: center; z-index: 15;">
+            <img src="./assets/anymal.png" alt="Validation ANYmal" class="validation-img"
+              style="width: 100%; height: auto; opacity: 0.4; transition: all 0.3s ease; object-fit: contain;">
+
+            <div class="validation-text"
+              style="opacity: 0; transform: translateY(5px); transition: all 0.3s ease; position: absolute; top: 100%; left: 50%; width: 220px; margin-left: -110px; background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); border: 1px solid #e2e8f0; font-size: 0.85rem; color: #475569; pointer-events: none; z-index: 20; text-align: left;">
+              <strong style="color: #0f172a; display: block; margin-bottom: 6px;">Validated with:</strong>
+              ANYbotics ANYmal with a DynaArm and a Robotiq 2F-140 gripper, commanded through a Meta Quest 3 (Platform
+              C)
+            </div>
+          </div>
+
+          <!-- Hotspot 1: Torque/Valves -->
+          <div class="hotspot" style="top: 17.7%; left: 48.6%;">
+            <div class="hotspot-dot"></div>
+            <div class="hotspot-pulse"></div>
+            <div class="hotspot-tooltip">
+              <h4 class="is-size-6" style="font-weight: 700; color: #0f172a; margin-bottom: 0.5rem;">Torque Tasks</h4>
+              <p style="font-size: 0.85rem; color: #475569; margin: 0; line-height: 1.4;">A ball valve, two gate valves,
+                and a circuit breaker. A four-piece snap-on friction ring set modulates the breakaway torque of the ball
+                valve without printing a second one.</p>
+            </div>
+          </div>
+
+          <!-- Hotspot 2: Assembly/Insertion -->
+          <div class="hotspot" style="top: 68.7%; left: 80.2%;">
+            <div class="hotspot-dot"></div>
+            <div class="hotspot-pulse"></div>
+            <div class="hotspot-tooltip">
+              <h4 class="is-size-6" style="font-weight: 700; color: #0f172a; margin-bottom: 0.5rem;">Precision Tasks
+              </h4>
+              <p style="font-size: 0.85rem; color: #475569; margin: 0; line-height: 1.4;">A light bulb socket, M8 and
+                M30 threaded fasteners, and a peg-insertion plate with 8&nbsp;mm threaded pins that demand
+                tight-clearance
+                alignment followed by sustained axial rotation.</p>
+            </div>
+          </div>
+
+          <!-- Hotspot 3: Linear/Friction -->
+          <div class="hotspot" style="top: 66.3%; left: 19.4%;">
+            <div class="hotspot-dot"></div>
+            <div class="hotspot-pulse"></div>
+            <div class="hotspot-tooltip">
+              <h4 class="is-size-6" style="font-weight: 700; color: #0f172a; margin-bottom: 0.5rem;">Composed Assembly
+              </h4>
+              <p style="font-size: 0.85rem; color: #475569; margin: 0; line-height: 1.4;">A covered push button, a
+                key-and-lock mechanism, a sliding drawer, and a two-cell shock absorber. Each requires several
+                sub-actions and is scored stage by stage, so partial competence is visible in the data.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section has-background-light" id="Interactive-Viewer">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column is-full">
+            <h2 class="title is-3 has-text-centered mb-5" style="letter-spacing: -0.5px;">Interactive 3D Benchmark</h2>
+            <div class="content has-text-justified mb-5" style="line-height: 1.7; font-size: 1rem; color: #4a4a4a;">
+              <p>
+                Explore the HiveBoard interactively in 3D. The base is a seven-cell hexagonal honeycomb in which every
+                cell is an open frame that accepts an attachment through a shared press-fit interface, with no
+                fasteners required. Rotate the perspective, snap attachments into free cells, and compose the evaluation
+                scene you intend to print, in the large, medium, or small board version.
+              </p>
+            </div>
+            <div class="viewer-block" id="open-viewer-btn">
+              <div class="viewer-content">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#1e293b" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round" class="play-icon">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polygon points="10 8 16 12 10 16 10 8"></polygon>
+                </svg>
+                <h3 class="viewer-title">Interactive 3D Benchmark Explorer</h3>
+                <p class="viewer-subtitle">Click to interact with the modular boards and tasks</p>
+              </div>
+              <div class="viewer-overlay"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- NEW SECTION: Modules & Specifications -->
+    <section class="section" id="Modules-Specs">
+      <div class="container is-max-desktop">
+        <h2 class="title is-3 has-text-centered mb-5" style="letter-spacing: -0.5px;">Modules & Specifications</h2>
+        <p class="has-text-justified mb-4" style="color: #94a3b8; line-height: 1.6;">
+          The library contains 13 functional attachments in three skill categories. Select a category below to compare
+          each printed part with its digital twin and review the success criterion, timeout, and stage decomposition
+          used by the evaluation protocol.
+        </p>
+        <!-- 3 Category Dropdowns -->
+        <div class="columns is-centered is-variable is-4 mb-4" id="category-dropdowns">
+          <!-- JS will inject the 3 dropdowns here -->
+        </div>
+
+        <!-- Dynamic Module Content -->
+        <div class="module-content" id="module-dynamic-content">
+          <div class="columns is-vcentered">
+            <!-- Left: Images -->
+            <div class="column is-half">
+              <div class="img-comp-container"
+                style="position: relative; width: 100%; aspect-ratio: 4/3; overflow: hidden; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.05); user-select: none; background: radial-gradient(circle, #ffffff 0%, #f1f5f9 100%);">
+                <!-- Bottom Image (3D Model) -->
+                <div id="dyn-img-3d-wrapper"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; clip-path: inset(0 0 0 50%); pointer-events: none;">
+                  <img id="dyn-img-3d" src="./assets/hiveboard_preview.png"
+                    style="position: absolute; top: -3%; left: 0; width: 100%; height: 100%; object-fit: contain; padding: 1rem; transform: scale(2.2);"
+                    alt="3D Model">
+                </div>
+                <!-- Top Image (Real Object) with a filter -->
+                <img id="dyn-img-real" class="img-comp-overlay" src="./assets/hiveboard_preview.png"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; padding: 1rem; clip-path: inset(0 50% 0 0); filter: grayscale(80%) sepia(20%) hue-rotate(180deg);"
+                  alt="Real Object">
+
+                <!-- Slider Handle -->
+                <div class="img-comp-slider" id="dyn-slider-handle"
+                  style="position: absolute; top: 0; bottom: 0; left: 50%; width: 4px; background: white; transform: translateX(-50%); pointer-events: none; z-index: 5;">
+                  <div
+                    style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 36px; height: 36px; background: white; border-radius: 50%; box-shadow: 0 2px 10px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1e293b" stroke-width="2.5"
+                      stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="10 18 6 12 10 6"></polyline>
+                      <polyline points="14 18 18 12 14 6"></polyline>
+                    </svg>
+                  </div>
+                </div>
+
+                <!-- Range Input -->
+                <input type="range" min="0" max="100" value="50" class="img-comp-input" id="dyn-slider-input"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: ew-resize; margin: 0; z-index: 10;">
+
+                <!-- Labels -->
+                <span
+                  style="position: absolute; bottom: 12px; left: 12px; background: rgba(15, 23, 42, 0.7); color: white; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; z-index: 4; font-weight: 500;">Real
+                  Object</span>
+                <span
+                  style="position: absolute; bottom: 12px; right: 12px; background: #edaf19; color: #0f172a; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; z-index: 4; font-weight: 600;">3D
+                  Model</span>
+              </div>
+            </div>
+            <!-- Right: Text & Table -->
+            <div class="column is-half">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
+                <h3 class="title is-4 mb-0" id="dyn-title">Loading...</h3>
+                <button id="btn-see-3d" class="button is-small"
+                  style="background-color: transparent; border: 1px solid #e2e8f0; color: #475569; font-weight: 600; border-radius: 6px; padding: 0 1rem; height: 32px; transition: all 0.2s; cursor: pointer;"
+                  onmouseover="this.style.borderColor='#edaf19'; this.style.color='#edaf19';"
+                  onmouseout="this.style.borderColor='#e2e8f0'; this.style.color='#475569';">
+                  <i class="fas fa-cube" style="margin-right: 6px;"></i> See 3D Model
+                </button>
+              </div>
+              <p class="mb-4 has-text-justified" id="dyn-desc"></p>
+              <style>
+                .academic-table {
+                  width: 100%;
+                  border-collapse: collapse;
+                  background-color: transparent !important;
+                  margin-top: 1rem;
+                }
+
+                .academic-table th,
+                .academic-table td {
+                  padding: 6px 16px;
+                  text-align: left;
+                  border: none;
+                  border-width: 0;
+                  background-color: transparent;
+                  color: #334155;
+                }
+
+                .academic-table thead tr {
+                  border-top: 1px solid #cbd5e1;
+                  border-bottom: 1px solid #cbd5e1;
+                }
+
+                .academic-table thead th {
+                  background-color: #f1f5f9;
+                  font-weight: 700;
+                  color: #0f172a;
+                }
+
+                .academic-table tbody tr {
+                  border-bottom: 1px solid #f1f5f9;
+                  transition: background-color 0.2s ease;
+                }
+
+                .academic-table tbody tr:hover {
+                  background-color: #f1f5f9;
+                }
+
+                .academic-table tbody tr:last-child {
+                  border-bottom: 1px solid #cbd5e1;
+                }
+
+                .academic-table td:first-child strong {
+                  font-weight: 600;
+                  color: #475569;
+                }
+              </style>
+              <table class="table academic-table">
+                <thead>
+                  <tr>
+                    <th>Parameter</th>
+                    <th>Value</th>
+                  </tr>
+                </thead>
+                <tbody id="dyn-table-body">
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SIMULATION COMPATIBILITY SECTION -->
+    <section class="section has-background-light" id="Simulation-Compatibility"
+      style="border-top: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0;">
+      <div class="container is-max-desktop">
+        <h2 class="title is-3 has-text-centered mb-5" style="letter-spacing: -0.5px;">Simulation Compatibility</h2>
+        <p class="has-text-justified mb-5" style="color: #94a3b8; line-height: 1.6;">
+          Every attachment and the base are released as articulated CAD assets, organized per assembly with URDF
+          descriptions, USD exports, and OBJ visual and collision meshes, so the same task can be run physically or in
+          simulation.
+        </p>
+
+        <div class="columns is-multiline is-centered mt-4">
+          <!-- MuJoCo -->
+          <div class="column is-3-desktop is-6-tablet">
+            <div class="box"
+              style="height: 100%; display: flex; flex-direction: column; text-align: center; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); border: 1px solid #f1f5f9;">
+
+              <div
+                style="width: 48px; height: 48px; margin: 0 auto 1rem auto; border-radius: 12px; background: linear-gradient(135deg, rgba(237, 175, 25, 0.1), rgba(237, 175, 25, 0.25)); display: flex; align-items: center; justify-content: center; color: #edaf19;">
+                <i class="fas fa-cube fa-lg"></i>
+              </div>
+
+              <h4 class="title is-5" style="color: #0f172a; margin-bottom: 0.5rem;">MuJoCo</h4>
+              <p style="font-size: 0.85rem; color: #64748b; flex-grow: 1; margin-bottom: 1.25rem; line-height: 1.5;">
+                Assets verified to load, with every joint articulating through its physical range and no
+                self-intersecting collision geometry at rest.
+              </p>
+
+              <button class="button is-small is-fullwidth"
+                style="background-color: transparent; border: 1px solid #e2e8f0; color: #475569; font-weight: 600; border-radius: 6px; transition: all 0.2s; cursor: not-allowed;"
+                onmouseover="this.style.borderColor='#edaf19'; this.style.color='#edaf19'; this.innerHTML='(Soon)';"
+                onmouseout="this.style.borderColor='#e2e8f0'; this.style.color='#475569'; this.innerHTML='<i class=\'fas fa-play\' style=\'margin-right: 6px; font-size: 0.85em;\'></i> Test';"><i
+                  class="fas fa-play" style="margin-right: 6px; font-size: 0.85em;"></i> Test</button>
+            </div>
+          </div>
+
+          <!-- PyBullet -->
+          <div class="column is-3-desktop is-6-tablet">
+            <div class="box"
+              style="height: 100%; display: flex; flex-direction: column; text-align: center; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); border: 1px solid #f1f5f9;">
+
+              <div
+                style="width: 48px; height: 48px; margin: 0 auto 1rem auto; border-radius: 12px; background: linear-gradient(135deg, rgba(237, 175, 25, 0.1), rgba(237, 175, 25, 0.25)); display: flex; align-items: center; justify-content: center; color: #edaf19;">
+                <i class="fab fa-python fa-lg"></i>
+              </div>
+
+              <h4 class="title is-5" style="color: #0f172a; margin-bottom: 0.5rem;">PyBullet</h4>
+              <p style="font-size: 0.85rem; color: #64748b; flex-grow: 1; margin-bottom: 1.25rem; line-height: 1.5;">
+                URDF assets verified to load and articulate, ready for training and ablation of learning-based
+                manipulation policies.
+              </p>
+
+              <button class="button is-small is-fullwidth"
+                style="background-color: transparent; border: 1px solid #e2e8f0; color: #475569; font-weight: 600; border-radius: 6px; transition: all 0.2s; cursor: not-allowed;"
+                onmouseover="this.style.borderColor='#edaf19'; this.style.color='#edaf19'; this.innerHTML='(Soon)';"
+                onmouseout="this.style.borderColor='#e2e8f0'; this.style.color='#475569'; this.innerHTML='<i class=\'fas fa-play\' style=\'margin-right: 6px; font-size: 0.85em;\'></i> Test';"><i
+                  class="fas fa-play" style="margin-right: 6px; font-size: 0.85em;"></i> Test</button>
+            </div>
+          </div>
+
+          <!-- Isaac Sim -->
+          <div class="column is-3-desktop is-6-tablet">
+            <div class="box"
+              style="height: 100%; display: flex; flex-direction: column; text-align: center; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); border: 1px solid #f1f5f9;">
+
+              <div
+                style="width: 48px; height: 48px; margin: 0 auto 1rem auto; border-radius: 12px; background: linear-gradient(135deg, rgba(237, 175, 25, 0.1), rgba(237, 175, 25, 0.25)); display: flex; align-items: center; justify-content: center; color: #edaf19;">
+                <i class="fas fa-microchip fa-lg"></i>
+              </div>
+
+              <h4 class="title is-5" style="color: #0f172a; margin-bottom: 0.5rem;">Isaac Sim</h4>
+              <p style="font-size: 0.85rem; color: #64748b; flex-grow: 1; margin-bottom: 1.25rem; line-height: 1.5;">
+                USD assets verified to load, including the friction-ring configuration and the honeycomb base as a full
+                board or a single panel for scene composition.
+              </p>
+
+              <button class="button is-small is-fullwidth"
+                style="background-color: transparent; border: 1px solid #e2e8f0; color: #475569; font-weight: 600; border-radius: 6px; transition: all 0.2s; cursor: not-allowed;"
+                onmouseover="this.style.borderColor='#edaf19'; this.style.color='#edaf19'; this.innerHTML='(Soon)';"
+                onmouseout="this.style.borderColor='#e2e8f0'; this.style.color='#475569'; this.innerHTML='<i class=\'fas fa-play\' style=\'margin-right: 6px; font-size: 0.85em;\'></i> Test';"><i
+                  class="fas fa-play" style="margin-right: 6px; font-size: 0.85em;"></i> Test</button>
+            </div>
+          </div>
+
+          <!-- ROS-based simulators -->
+          <div class="column is-3-desktop is-6-tablet">
+            <div class="box"
+              style="height: 100%; display: flex; flex-direction: column; text-align: center; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); border: 1px solid #f1f5f9;">
+
+              <div
+                style="width: 48px; height: 48px; margin: 0 auto 1rem auto; border-radius: 12px; background: linear-gradient(135deg, rgba(237, 175, 25, 0.1), rgba(237, 175, 25, 0.25)); display: flex; align-items: center; justify-content: center; color: #edaf19;">
+                <i class="fas fa-network-wired fa-lg"></i>
+              </div>
+
+              <h4 class="title is-5" style="color: #0f172a; margin-bottom: 0.5rem;">ROS-based</h4>
+              <p style="font-size: 0.85rem; color: #64748b; flex-grow: 1; margin-bottom: 1.25rem; line-height: 1.5;">
+                The same URDF descriptions and OBJ visual and collision meshes import into standard ROS 2 and Gazebo
+                pipelines.
+              </p>
+
+              <button class="button is-small is-fullwidth"
+                style="background-color: transparent; border: 1px solid #e2e8f0; color: #475569; font-weight: 600; border-radius: 6px; transition: all 0.2s; cursor: not-allowed;"
+                onmouseover="this.style.borderColor='#edaf19'; this.style.color='#edaf19'; this.innerHTML='(Soon)';"
+                onmouseout="this.style.borderColor='#e2e8f0'; this.style.color='#475569'; this.innerHTML='<i class=\'fas fa-play\' style=\'margin-right: 6px; font-size: 0.85em;\'></i> Test';"><i
+                  class="fas fa-play" style="margin-right: 6px; font-size: 0.85em;"></i> Test</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <script>
+      const modulesData = [
+        {
+          id: 'high-valve', pieceType: 'high_torque_valve', name: 'Gate Valve (Large)', category: 'Torque-Based', realImg: './assets/modules/big_valve_setup.png',
+          modelImg: './assets/modules/big_valve_3d.png',
+          scale: '2.35',
+          top: '13.5%',
+          desc: 'The larger of the two gate valves. Its handwheel geometry and diameter set a higher required torque than the small valve, so the same motion has to be sustained against greater resistance. In simulation the stem is modeled as a pair of coupled joints, continuous rotation about the thread axis and prismatic translation along it.',
+          params: [['Success criterion', 'Stem rotated one full turn from the closed position'], ['Timeout', '120 s'], ['Trials per platform', '5'], ['Material', 'PLA, printed handle up'], ['Infill', '30% (torque component)']]
+        },
+        {
+          id: 'small-valve', pieceType: 'small_valve', name: 'Gate Valve (Small)', category: 'Torque-Based', realImg: './assets/modules/small_valve_setup.png',
+          modelImg: './assets/modules/small_valve_3d.png',
+          scale: '2.3',
+          top: '4%',
+          desc: 'A gate valve printed as a separate part with a smaller handwheel, which requires several turns of the stem to travel from closed to open. It rewards a grasp that can be maintained across repeated regrasp cycles rather than a single strong pull.',
+          params: [['Success criterion', 'Stem rotated one full turn from the closed position'], ['Timeout', '90 s'], ['Trials per platform', '5'], ['Material', 'PLA, printed handle up'], ['Infill', '30% (torque component)']]
+        },
+        {
+          id: 'thread-m30', pieceType: 'm30', name: 'Thread M30', category: 'Precision-Based', realImg: './assets/modules/m30_setup.png',
+          modelImg: './assets/modules/m30_3d.png',
+          desc: 'Larger threaded fastener. Success requires the bolt to be threaded along its full available length, which demands sustained axial rotation against thread friction.',
+          params: [['Success criterion', 'Bolt fully threaded along the available length'], ['Timeout', '120 s'], ['Trials per platform', '5'], ['Material', 'PLA, printed vertically'], ['Infill', '25% (threads)']]
+        },
+        {
+          id: 'thread-m8', pieceType: 'm8', name: 'Thread M8', category: 'Precision-Based', realImg: './assets/modules/m8_setup.png',
+          modelImg: './assets/modules/m8_3d.png',
+          desc: 'The smallest threaded fastener in the library. Its head has to be held against thread friction while turning, which makes it the hardest attachment for every platform reported so far.',
+          params: [['Success criterion', 'Bolt fully threaded along the available length'], ['Timeout', '120 s'], ['Trials per platform', '5'], ['Material', 'PLA, printed vertically'], ['Infill', '25% (threads)']]
+        },
+        {
+          id: 'peg-insertion', pieceType: 'peg_insertion', name: 'Peg Insertion Plate', category: 'Precision-Based', realImg: './assets/modules/peg_and_hole_setup.png',
+          modelImg: './assets/modules/peg_and_hole_3d.png',
+          scale: 2.15,
+          top: '-5%',
+          desc: 'Plate with four identical threaded sockets, three already seated and one free. The 8 mm threaded pin must be aligned with the empty socket and rotated down until it seats.',
+          params: [['Success criterion', 'Free peg threaded into the empty socket until it seats'], ['Timeout', '120 s'], ['Trials per platform', '5'], ['Material', 'PLA, pegs vertical']]
+        },
+        {
+          id: 'circuit-breaker', pieceType: 'circuit_breaker', name: 'Circuit Breaker', category: 'Torque-Based', realImg: './assets/modules/switch_setup.png',
+          modelImg: './assets/modules/switch_3d.png',
+          top: '-5%',
+          desc: 'A single-pole circuit breaker. The toggle exposes a revolute joint with its physical angular range, and the task can be solved either by grasping the toggle or by driving it with a closed hand structure, which makes it the fastest attachment for several platforms.',
+          params: [['Success criterion', 'Toggle moved from one state to the other and held'], ['Timeout', '60 s'], ['Trials per platform', '5'], ['Material', 'PLA'], ['Infill', '25% (mechanical part)']]
+        },
+        {
+          id: 'button-cover', pieceType: 'button_composed', name: 'Hidden Push Button', category: 'Composed Assembly', realImg: './assets/modules/button_setup.png',
+          modelImg: './assets/modules/button_3d.png',
+          top: '-4%',
+          scale: 2.13,
+          desc: 'A push button hidden by a hinged cover. The cover must be opened before the button can be reached, so the attachment is scored stage by stage and partial completion is visible in the data. The digital twin combines a revolute joint for the cover with a prismatic joint for the press.',
+          params: [['Success criterion', 'All stages completed within the timeout'], ['Stages', '(1) Open the cover, (2) press the button until actuation'], ['Timeout', '60 s'], ['Trials per platform', '5'], ['Material', 'PLA, 15% infill on the cover']]
+        },
+        {
+          id: 'ball-valve', pieceType: 'ball_valve', name: 'Ball Valve', category: 'Torque-Based', realImg: './assets/modules/torque_valve_noFriction_setup.png',
+          modelImg: './assets/modules/torque_valve_noFriction_3d.png',
+          scale: 2.4,
+          top: '-5%',
+          desc: 'A quarter-turn ball valve driven by a lever, run as two separate trial sets, without and with a snap-on friction ring fitted. The four-piece ring set fits over the valve body and each ring sets a different rotational friction level, so the same physical valve can be tested at multiple torque settings without printing a second one.',
+          params: [['Success criterion', 'Handle rotated 90° from closed to open'], ['Timeout', '60 s bare / 90 s with friction ring'], ['Trials per platform', '5 per configuration'], ['Accessory', 'Four-piece friction ring set'], ['Material', 'PLA, printed handle up']]
+        },
+        {
+          id: 'key-lock', pieceType: 'key', name: 'Lock and Key', category: 'Composed Assembly', realImg: './assets/modules/key_setup.png',
+          modelImg: './assets/modules/key_3d.png',
+          scale: 2.15,
+          top: '-5%',
+          desc: 'A key-and-lock mechanism that requires grasp, vertical insertion, and rotation. The grasp has to withstand the torque applied at the end of the sequence, which is exactly the demand that grasping scores on loose objects do not capture. Key insertion and rotation are defined in the released USD assets.',
+          params: [['Success criterion', 'All stages completed within the timeout'], ['Stages', '(1) Grasp the key, (2) insert vertically, (3) rotate to unlock'], ['Timeout', '180 s'], ['Trials per platform', '5'], ['Material', 'PLA, 25% infill']]
+        },
+        {
+          id: 'lamp-bulb', pieceType: 'lamp', name: 'Light Bulb Socket', category: 'Precision-Based', realImg: './assets/modules/lamp_setup.png',
+          modelImg: './assets/modules/lamp_3d.png',
+          scale: 2.4,
+          top: '3%',
+          desc: 'A standard light bulb socket. The bulb has to be threaded until it seats, which means continuous rotation about the thread axis combined with translation along it. Platforms with limited wrist rotation solve it through repeated grasp-rotate-release cycles, so the attempt count is informative here.',
+          params: [['Success criterion', 'Bulb fully threaded until seated'], ['Timeout', '120 s'], ['Trials per platform', '5'], ['Material', 'PLA, printed vertically'], ['Infill', '25% (threads)']]
+        },
+        {
+          id: 'drawer', pieceType: 'drawer', name: 'Sliding Drawer', category: 'Composed Assembly', realImg: './assets/modules/box_setup.png',
+          modelImg: './assets/modules/box_3d.png',
+          scale: 2.36,
+          top: '-4.4%',
+          desc: 'A sliding drawer with a recessed handle. The recess is the discriminating feature: fingers can enter it where parallel jaws cannot, which is why the attachment separates anthropomorphic hands from two-finger grippers in the validation data. The drawer slide is defined in the released USD assets.',
+          params: [['Success criterion', 'All stages completed within the timeout'], ['Stages', '(1) Grasp the handle, (2) pull open, (3) push closed'], ['Timeout', '120 s'], ['Trials per platform', '5'], ['Material', 'PLA, printed flat']]
+        },
+        {
+          id: 'shock-absorber', pieceType: 'shock_absorber', name: 'Shock Absorber', category: 'Composed Assembly', realImg: './assets/modules/spring_setup.png',
+          modelImg: './assets/modules/spring_3d.png',
+          top: '-5%',
+          desc: 'A two-cell shock-absorber model in which two hexagonal end pieces are joined by a coil spring with a bolt running through the spring axis. It is the only attachment that occupies two adjacent cells of the honeycomb, and it combines axial grasping of a slender pin with alignment and insertion under spring load.',
+          params: [['Success criterion', 'All stages completed within the timeout'], ['Stages', '(1) Grasp the pin, (2) align with the hole, (3) insert fully'], ['Timeout', '180 s'], ['Cells occupied', '2 adjacent cells'], ['Material', 'PLA, parts printed sideways']]
+        }
+      ];
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const dropdownsContainer = document.getElementById('category-dropdowns');
+        const titleEl = document.getElementById('dyn-title');
+        const descEl = document.getElementById('dyn-desc');
+        const tableBodyEl = document.getElementById('dyn-table-body');
+        const input = document.getElementById('dyn-slider-input');
+        const overlay = document.getElementById('dyn-img-real');
+        const sliderHandle = document.getElementById('dyn-slider-handle');
+
+        document.getElementById('btn-see-3d').addEventListener('click', (e) => {
+          document.getElementById('open-viewer-btn').click();
+          const type = e.currentTarget.getAttribute('data-type');
+          const addBtn = document.querySelector(`.add-piece[data-type="${type}"]`);
+          if (addBtn) addBtn.click();
+        });
+
+        function renderModule(mod) {
+          titleEl.textContent = mod.name;
+          descEl.innerHTML = mod.desc;
+          tableBodyEl.innerHTML = mod.params.map(p => `<tr><td><strong>${p[0]}</strong></td><td>${p[1]}</td></tr>`).join('');
+
+          const baseImg = document.getElementById('dyn-img-3d');
+          const overlayImg = document.getElementById('dyn-img-real');
+          if (mod.realImg) {
+            baseImg.src = mod.modelImg || mod.realImg || './assets/hiveboard_preview.png';
+            overlayImg.src = mod.realImg || './assets/hiveboard_preview.png';
+
+            // Apply custom adjustments per module, or use defaults
+            baseImg.style.transform = mod.scale ? `scale(${mod.scale})` : 'scale(2.2)';
+            baseImg.style.top = mod.top !== undefined ? mod.top : '-3%';
+            baseImg.style.left = mod.left !== undefined ? mod.left : '0%';
+          }
+
+          document.getElementById('btn-see-3d').setAttribute('data-type', mod.pieceType);
+
+
+          // Reset slider on switch
+          input.value = 50;
+          overlayImg.style.clipPath = 'inset(0 50% 0 0)';
+          document.getElementById('dyn-img-3d-wrapper').style.clipPath = 'inset(0 0 0 50%)';
+          sliderHandle.style.left = '50%';
+        }
+
+        // Group modules by category
+        const groups = {};
+        modulesData.forEach((mod, index) => {
+          if (!groups[mod.category]) groups[mod.category] = [];
+          groups[mod.category].push({ mod, index });
+        });
+
+        // Create 1 select box (Custom Dropdown)
+        const col = document.createElement('div');
+        col.className = 'column is-12-mobile is-10-tablet is-8-desktop has-text-centered';
+
+        // Title on top
+        const label = document.createElement('div');
+        label.className = 'label has-text-centered mb-2 is-size-6';
+        label.style.color = '#94a3b8';
+        label.style.textTransform = 'uppercase';
+        label.style.letterSpacing = '1px';
+        label.textContent = 'Select Benchmark Module';
+
+        // Bulma Dropdown structure
+        const dropdownDiv = document.createElement('div');
+        dropdownDiv.className = 'dropdown custom-bulma-dropdown';
+        dropdownDiv.style.width = '100%';
+        dropdownDiv.style.maxWidth = '650px';
+        dropdownDiv.style.margin = '0 auto';
+
+        const triggerDiv = document.createElement('div');
+        triggerDiv.className = 'dropdown-trigger';
+        triggerDiv.style.width = '100%';
+
+        const triggerBtn = document.createElement('button');
+        triggerBtn.className = 'button is-rounded';
+        triggerBtn.style.width = '100%';
+        triggerBtn.style.justifyContent = 'space-between';
+        triggerBtn.setAttribute('aria-haspopup', 'true');
+        triggerBtn.setAttribute('aria-controls', 'dropdown-menu-modules');
+
+        const btnText = document.createElement('span');
+        btnText.textContent = "Select module...";
+        btnText.style.fontWeight = '500';
+
+        const btnIcon = document.createElement('span');
+        btnIcon.className = 'icon is-small';
+        btnIcon.innerHTML = '<i class="fas fa-angle-down" aria-hidden="true" style="color: #edaf19;"></i>';
+
+        triggerBtn.appendChild(btnText);
+        triggerBtn.appendChild(btnIcon);
+        triggerDiv.appendChild(triggerBtn);
+
+        const menuDiv = document.createElement('div');
+        menuDiv.className = 'dropdown-menu';
+        menuDiv.id = 'dropdown-menu-modules';
+        menuDiv.setAttribute('role', 'menu');
+        menuDiv.style.width = '100%';
+        menuDiv.style.minWidth = '100%';
+
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'dropdown-content';
+        contentDiv.style.borderRadius = '12px';
+        contentDiv.style.boxShadow = '0 10px 30px rgba(0,0,0,0.1)';
+        contentDiv.style.border = '1px solid #e2e8f0';
+        contentDiv.style.maxHeight = '400px';
+        contentDiv.style.overflowY = 'auto';
+
+        menuDiv.appendChild(contentDiv);
+        dropdownDiv.appendChild(triggerDiv);
+        dropdownDiv.appendChild(menuDiv);
+
+        col.appendChild(label);
+        col.appendChild(dropdownDiv);
+        dropdownsContainer.appendChild(col);
+
+        // Toggle dropdown
+        triggerBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          dropdownDiv.classList.toggle('is-active');
+        });
+
+        let firstMod = null;
+        const entries = Object.entries(groups);
+
+        entries.forEach(([category, items], index) => {
+          // Category Header
+          const header = document.createElement('div');
+          header.className = 'dropdown-item';
+          header.style.textAlign = 'left';
+          header.style.fontWeight = 'bold';
+          header.style.color = '#94a3b8';
+          header.style.textTransform = 'uppercase';
+          header.style.fontSize = '0.75rem';
+          header.style.letterSpacing = '1px';
+          header.style.pointerEvents = 'none';
+          header.textContent = category;
+          contentDiv.appendChild(header);
+
+          items.forEach(item => {
+            if (!firstMod) firstMod = item.mod;
+
+            const a = document.createElement('a');
+            a.className = 'dropdown-item';
+            a.style.textAlign = 'left';
+            a.style.paddingLeft = '1.5rem';
+            a.textContent = item.mod.name;
+
+            a.addEventListener('click', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              btnText.textContent = item.mod.name;
+              dropdownDiv.classList.remove('is-active');
+              renderModule(item.mod);
+            });
+
+            contentDiv.appendChild(a);
+          });
+
+          if (index < entries.length - 1) {
+            const divider = document.createElement('hr');
+            divider.className = 'dropdown-divider';
+            contentDiv.appendChild(divider);
+          }
+        });
+
+        // Close dropdowns on outside click
+        document.addEventListener('click', () => {
+          dropdownDiv.classList.remove('is-active');
+        });
+
+        // Init
+        if (firstMod) {
+          btnText.textContent = firstMod.name;
+          renderModule(firstMod);
+        }
+
+        // Slider Interaction & Animation
+        let autoAnim = false;
+        let animTime = 0;
+        let hasAnimated = false; // Only animate once
+
+        function wiggleSlider() {
+          if (!autoAnim) return;
+          animTime += 0.04; // Speed of the wiggle
+
+          // Stop after one full sine wave cycle (approx 2*PI)
+          if (animTime > Math.PI * 2) {
+            autoAnim = false;
+            // Snap back precisely to 50%
+            input.value = 50;
+            overlay.style.clipPath = `inset(0 50% 0 0)`;
+            document.getElementById('dyn-img-3d-wrapper').style.clipPath = `inset(0 0 0 50%)`;
+            sliderHandle.style.left = `50%`;
+            return;
+          }
+
+          // Smooth sine wave oscillation (e.g., ±5%)
+          const val = 50 + Math.sin(animTime) * 5;
+          input.value = val;
+          overlay.style.clipPath = `inset(0 ${100 - val}% 0 0)`;
+          document.getElementById('dyn-img-3d-wrapper').style.clipPath = `inset(0 0 0 ${val}%)`;
+          sliderHandle.style.left = `${val}%`;
+          requestAnimationFrame(wiggleSlider);
+        }
+
+        // Trigger animation when the section comes into view
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              if (!hasAnimated) {
+                hasAnimated = true;
+                autoAnim = true;
+                animTime = 0; // Reset animation time for fresh start
+                requestAnimationFrame(wiggleSlider);
+              }
+            } else {
+              // When it goes out of view, reset so it animates again next time
+              hasAnimated = false;
+              autoAnim = false;
+            }
+          });
+        }, { threshold: 0.5 }); // Trigger when 50% visible
+
+        observer.observe(document.getElementById('module-dynamic-content'));
+
+        // Stop animation early if user interacts
+        ['mousedown', 'touchstart'].forEach(evt =>
+          input.addEventListener(evt, () => autoAnim = false)
+        );
+
+        input.addEventListener('input', (e) => {
+          autoAnim = false;
+          const val = e.target.value;
+          overlay.style.clipPath = `inset(0 ${100 - val}% 0 0)`;
+          document.getElementById('dyn-img-3d-wrapper').style.clipPath = `inset(0 0 0 ${val}%)`;
+          sliderHandle.style.left = `${val}%`;
+        });
+      });
+    </script>
+    <section class="section" id="Videos">
+      <div class="container is-max-desktop">
+        <h2 class="title is-3 has-text-centered mb-5" style="letter-spacing: -0.5px;">Video Demonstrations</h2>
+        <p class="has-text-justified mb-5" style="color: #94a3b8; line-height: 1.6;">
+          Recorded trials from the cross-laboratory validation. Each laboratory printed the board from the released
+          files and ran the same protocol on its own hardware, so a single attachment can be compared across a
+          quadruped-mounted gripper, a legged manipulator commanded through virtual reality, a tabletop arm, and a
+          prosthetic hand worn on an operator&rsquo;s forearm.
+        </p>
+        <div class="carousel-wrapper">
+          <div class="carousel-header">
+            <h3 class="carousel-title">Platform A &middot; Spot with Spot Arm</h3>
+            <div class="carousel-nav">
+              <button class="nav-btn prev-btn"><i class="fas fa-chevron-left"></i></button>
+              <button class="nav-btn next-btn"><i class="fas fa-chevron-right"></i></button>
+            </div>
+          </div>
+          <div class="video-carousel">
+            <div class="video-item">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video src="https://github.com/mpangarola/hivetest/releases/download/v1.0-videos/spot_big_valve.mp4"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
+                  preload="metadata" playsinline muted
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
+                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Gate Valve (Large)</p>
+                </div>
+              </div>
+            </div>
+            <div class="video-item">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video src="https://github.com/mpangarola/hivetest/releases/download/v1.0-videos/spot_button.mp4"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
+                  preload="metadata" playsinline muted
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
+                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Button</p>
+                </div>
+              </div>
+            </div>
+            <div class="video-item">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video
+                  src="https://github.com/mpangarola/hivetest/releases/download/v1.0-videos/spot_circuit_breaker.mp4"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
+                  preload="metadata" playsinline muted
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
+                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Circuit Breaker</p>
+                </div>
+              </div>
+            </div>
+            <div class="video-item">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video src="https://github.com/mpangarola/hivetest/releases/download/v1.0-videos/spot_key.mp4"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
+                  preload="metadata" playsinline muted
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
+                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Lock and Key</p>
+                </div>
+              </div>
+            </div>
+            <div class="video-item">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video src="https://github.com/mpangarola/hivetest/releases/download/v1.0-videos/spot_light_bulb.mp4"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
+                  preload="metadata" playsinline muted
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
+                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Light Bulb</p>
+                </div>
+              </div>
+            </div>
+            <div class="video-item">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video src="https://github.com/mpangarola/hivetest/releases/download/v1.0-videos/spot_small_valve.mp4"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
+                  preload="metadata" playsinline muted
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
+                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Gate Valve (Small)</p>
+                </div>
+              </div>
+            </div>
+            <div class="video-item">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video src="https://github.com/mpangarola/hivetest/releases/download/v1.0-videos/spot_valve.mp4"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
+                  preload="metadata" playsinline muted
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
+                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Ball Valve</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="carousel-wrapper">
+          <div class="carousel-header">
+            <h3 class="carousel-title">Platform B &middot; LeRobot SO-101</h3>
+            <div class="carousel-nav">
+              <button class="nav-btn prev-btn"><i class="fas fa-chevron-left"></i></button>
+              <button class="nav-btn next-btn"><i class="fas fa-chevron-right"></i></button>
+            </div>
+          </div>
+          <div class="video-carousel">
+            <div class="video-item">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video src="https://github.com/mpangarola/hivetest/releases/download/v1.0-videos/s010_button.mp4"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain;"
+                  preload="metadata" playsinline muted
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
+                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Button</p>
+                </div>
+              </div>
+            </div>
+            <div class="video-item">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video
+                  src="https://github.com/mpangarola/hivetest/releases/download/v1.0-videos/s010_circuit_breaker.mp4"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain;"
+                  preload="metadata" playsinline muted
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
+                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Circuit Breaker</p>
+                </div>
+              </div>
+            </div>
+            <div class="video-item">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video src="https://github.com/mpangarola/hivetest/releases/download/v1.0-videos/s010_light_bulb.mp4"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
+                  preload="metadata" playsinline muted
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
+                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Light Bulb</p>
+                </div>
+              </div>
+            </div>
+            <div class="video-item">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video src="https://github.com/mpangarola/hivetest/releases/download/v1.0-videos/s010_lock.mp4"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain;"
+                  preload="metadata" playsinline muted
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
+                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Lock and Key</p>
+                </div>
+              </div>
+            </div>
+            <div class="video-item">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video
+                  src="https://github.com/mpangarola/hivetest/releases/download/v1.0-videos/s010_shock_absorver.mp4"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain;"
+                  preload="metadata" playsinline muted
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
+                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Shock Absorber</p>
+                </div>
+              </div>
+            </div>
+            <div class="video-item">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video src="https://github.com/mpangarola/hivetest/releases/download/v1.0-videos/s010_thread.mp4"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain;"
+                  preload="metadata" playsinline muted
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
+                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Thread</p>
+                </div>
+              </div>
+            </div>
+            <div class="video-item">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video src="https://github.com/mpangarola/hivetest/releases/download/v1.0-videos/s010_valve_ball.mp4"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain;"
+                  preload="metadata" playsinline muted
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
+                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Ball Valve</p>
+                </div>
+              </div>
+            </div>
+            <div class="video-item">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video
+                  src="https://github.com/mpangarola/hivetest/releases/download/v1.0-videos/s010_valve_gate_small.mp4"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain;"
+                  preload="metadata" playsinline muted
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
+                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Gate Valve (Small)</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="carousel-wrapper">
+          <div class="carousel-header">
+            <h3 class="carousel-title">Platform C &middot; ANYmal with DynaArm</h3>
+            <div class="carousel-nav">
+              <div class="video-toggle-buttons">
+                <button class="toggle-btn active" data-filter="all">All</button>
+                <button class="toggle-btn" data-filter="normal">Normal</button>
+                <button class="toggle-btn" data-filter="vr">VR</button>
+              </div>
+              <button class="nav-btn prev-btn"><i class="fas fa-chevron-left"></i></button>
+              <button class="nav-btn next-btn"><i class="fas fa-chevron-right"></i></button>
+            </div>
+          </div>
+          <div class="video-carousel">
+            <div class="video-item" data-type="normal">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video src="https://github.com/mpangarola/hivetest/releases/download/v1.0-videos/anymal_big_gate.mp4"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
+                  preload="metadata" playsinline muted
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
+                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Gate Valve (Large)</p>
+                </div>
+              </div>
+            </div>
+            <div class="video-item" data-type="vr">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video src="https://github.com/mpangarola/hivetest/releases/download/v1.0-videos/anymal_big_gate_vr.mp4"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
+                  preload="metadata" playsinline muted
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
+                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Gate Valve (Large, VR)</p>
+                </div>
+              </div>
+            </div>
+            <div class="video-item" data-type="normal">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video src="https://github.com/mpangarola/hivetest/releases/download/v1.0-videos/anymal_button.mp4"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
+                  preload="metadata" playsinline muted
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
+                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Button</p>
+                </div>
+              </div>
+            </div>
+            <div class="video-item" data-type="normal">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video
+                  src="https://github.com/mpangarola/hivetest/releases/download/v1.0-videos/anymal_circuit_breaker.mp4"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
+                  preload="metadata" playsinline muted
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
+                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Circuit Breaker</p>
+                </div>
+              </div>
+            </div>
+            <div class="video-item" data-type="normal">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video src="https://github.com/mpangarola/hivetest/releases/download/v1.0-videos/anymal_key.mp4"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
+                  preload="metadata" playsinline muted
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
+                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Lock and Key</p>
+                </div>
+              </div>
+            </div>
+            <div class="video-item" data-type="vr">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video src="https://github.com/mpangarola/hivetest/releases/download/v1.0-videos/anymal_key_vr.mp4"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
+                  preload="metadata" playsinline muted
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
+                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Lock and Key (VR)</p>
+                </div>
+              </div>
+            </div>
+            <div class="video-item" data-type="normal">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video src="https://github.com/mpangarola/hivetest/releases/download/v1.0-videos/anymal_light_bulb.mp4"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
+                  preload="metadata" playsinline muted
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
+                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Light Bulb</p>
+                </div>
+              </div>
+            </div>
+            <div class="video-item" data-type="vr">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video
+                  src="https://github.com/mpangarola/hivetest/releases/download/v1.0-videos/anymal_light_bulb_vr.mp4"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
+                  preload="metadata" playsinline muted
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
+                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Light Bulb (VR)</p>
+                </div>
+              </div>
+            </div>
+            <div class="video-item" data-type="normal">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video src="https://github.com/mpangarola/hivetest/releases/download/v1.0-videos/anymal_small_gate.mp4"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
+                  preload="metadata" playsinline muted
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
+                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Gate Valve (Small)</p>
+                </div>
+              </div>
+            </div>
+            <div class="video-item" data-type="normal">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video src="https://github.com/mpangarola/hivetest/releases/download/v1.0-videos/anymal_valve_lever.mp4"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
+                  preload="metadata" playsinline muted
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
+                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Ball Valve</p>
+                </div>
+              </div>
+            </div>
+            <div class="video-item" data-type="vr">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video
+                  src="https://github.com/mpangarola/hivetest/releases/download/v1.0-videos/anymal_valve_lever_hard_vr.mp4"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
+                  preload="metadata" playsinline muted
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
+                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Ball Valve, Hard (VR)</p>
+                </div>
+              </div>
+            </div>
+            <div class="video-item" data-type="vr">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video
+                  src="https://github.com/mpangarola/hivetest/releases/download/v1.0-videos/anymal_valve_lever_vr.mp4"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
+                  preload="metadata" playsinline muted
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
+                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Ball Valve (VR)</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="carousel-wrapper">
+          <div class="carousel-header">
+            <h3 class="carousel-title">Platform D &middot; Macao Prosthetic Hand</h3>
+            <div class="carousel-nav">
+              <button class="nav-btn prev-btn"><i class="fas fa-chevron-left"></i></button>
+              <button class="nav-btn next-btn"><i class="fas fa-chevron-right"></i></button>
+            </div>
+          </div>
+          <div class="video-carousel">
+            <div class="video-item">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video src="https://github.com/mpangarola/hivetest/releases/download/v1.0-videos/macao_big_valve.mp4"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; transform: scale(2.25) translate(0%, -11%);"
+                  preload="metadata" playsinline muted
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
+                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Gate Valve (Large)</p>
+                </div>
+              </div>
+            </div>
+            <div class="video-item">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video src="https://github.com/mpangarola/hivetest/releases/download/v1.0-videos/macao_box.mp4"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; transform: scale(2.25) translate(0%, -11%);"
+                  preload="metadata" playsinline muted
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
+                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Drawer</p>
+                </div>
+              </div>
+            </div>
+            <div class="video-item">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video src="https://github.com/mpangarola/hivetest/releases/download/v1.0-videos/macao_bulb_lamp.mp4"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; transform: scale(2.25) translate(0%, -11%);"
+                  preload="metadata" playsinline muted
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
+                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Light Bulb</p>
+                </div>
+              </div>
+            </div>
+            <div class="video-item">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video src="https://github.com/mpangarola/hivetest/releases/download/v1.0-videos/macao_button.mp4"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; transform: scale(2.25) translate(0%, -11%);"
+                  preload="metadata" playsinline muted
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
+                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Button</p>
+                </div>
+              </div>
+            </div>
+            <div class="video-item">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video
+                  src="https://github.com/mpangarola/hivetest/releases/download/v1.0-videos/macao_circuit_breaker.mp4"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; transform: scale(2.25) translate(0%, -11%);"
+                  preload="metadata" playsinline muted
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
+                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Circuit Breaker</p>
+                </div>
+              </div>
+            </div>
+            <div class="video-item">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video src="https://github.com/mpangarola/hivetest/releases/download/v1.0-videos/macao_key.mp4"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; transform: scale(2.25) translate(0%, -11%);"
+                  preload="metadata" playsinline muted
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
+                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Lock and Key</p>
+                </div>
+              </div>
+            </div>
+            <div class="video-item">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video src="https://github.com/mpangarola/hivetest/releases/download/v1.0-videos/macao_peg_and_hole.mp4"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; transform: scale(2.25) translate(0%, -11%);"
+                  preload="metadata" playsinline muted
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
+                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Peg Insertion</p>
+                </div>
+              </div>
+            </div>
+            <div class="video-item">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video src="https://github.com/mpangarola/hivetest/releases/download/v1.0-videos/macao_small_valve.mp4"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; transform: scale(2.25) translate(0%, -11%);"
+                  preload="metadata" playsinline muted
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
+                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Gate Valve (Small)</p>
+                </div>
+              </div>
+            </div>
+            <div class="video-item">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video src="https://github.com/mpangarola/hivetest/releases/download/v1.0-videos/macao_spring.mp4"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; transform: scale(2.25) translate(0%, -11%);"
+                  preload="metadata" playsinline muted
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
+                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Shock Absorber</p>
+                </div>
+              </div>
+            </div>
+            <div class="video-item">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video src="https://github.com/mpangarola/hivetest/releases/download/v1.0-videos/macao_torque_valve.mp4"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; transform: scale(2.25) translate(0%, -11%);"
+                  preload="metadata" playsinline muted
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
+                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Ball Valve</p>
+                </div>
+              </div>
+            </div>
+            <div class="video-item">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video src="https://github.com/mpangarola/hivetest/releases/download/v1.0-videos/s010_m30_exp5.mp4"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; transform: scale(2.25) translate(0%, -11%);"
+                  preload="metadata" playsinline muted
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
+                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Thread M30</p>
+                </div>
+              </div>
+            </div>
+            <div class="video-item">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video src="https://github.com/mpangarola/hivetest/releases/download/v1.0-videos/s010_m8_exp5.mp4"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; transform: scale(2.25) translate(0%, -11%);"
+                  preload="metadata" playsinline muted
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
+                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Thread M8</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="carousel-wrapper" style="margin-bottom: 2rem;">
+          <div class="carousel-header" style="margin-bottom: 0;">
+            <h3 class="carousel-title">
+              Simulations
+              <span class="tag is-warning is-light ml-2" style="font-size: 0.75rem; vertical-align: middle;">Soon</span>
+            </h3>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const wrappers = document.querySelectorAll('.carousel-wrapper');
+        wrappers.forEach(wrapper => {
+          const carousel = wrapper.querySelector('.video-carousel');
+          const prevBtn = wrapper.querySelector('.prev-btn');
+          const nextBtn = wrapper.querySelector('.next-btn');
+
+          if (prevBtn && nextBtn && carousel) {
+            prevBtn.addEventListener('click', () => {
+              // Scroll left by approx one item width
+              carousel.scrollBy({ left: -320, behavior: 'smooth' });
+            });
+            nextBtn.addEventListener('click', () => {
+              // Scroll right by approx one item width
+              carousel.scrollBy({ left: 320, behavior: 'smooth' });
+            });
+          }
+        });
+
+        // Filter logic for video carousels
+        const toggleButtons = document.querySelectorAll('.video-toggle-buttons .toggle-btn');
+        toggleButtons.forEach(btn => {
+          btn.addEventListener('click', () => {
+            const group = btn.closest('.video-toggle-buttons');
+            group.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const filter = btn.getAttribute('data-filter');
+            const carouselWrapper = btn.closest('.carousel-wrapper');
+            const carousel = carouselWrapper.querySelector('.video-carousel');
+            const items = carousel.querySelectorAll('.video-item');
+
+            items.forEach(item => {
+              const type = item.getAttribute('data-type');
+              if (filter === 'all' || type === filter) {
+                item.style.display = '';
+              } else {
+                item.style.display = 'none';
+              }
+            });
+            // Reset carousel scroll position
+            carousel.scrollLeft = 0;
+          });
+        });
+
+      });
+    </script>
+
+    <section class="section has-background-light" id="Results">
+      <div class="container is-max-desktop">
+        <h2 class="title is-3 has-text-centered mb-5" style="letter-spacing: -0.5px;">Results</h2>
+
+        <p class="has-text-justified mb-5" style="color: #475569; line-height: 1.7;">
+          Each laboratory prints the board from the released files and runs the same protocol on its own hardware: five
+          recorded trials per attachment, a fixed neutral start pose, per-attachment timeouts, no scripted assistance.
+          <strong style="color: #0f172a;">Select any cell, platform, or attachment</strong> to see what happened in
+          those trials.
+        </p>
+
+        <style>
+          @media (min-width: 769px) {
+            .stat-divider {
+              border-right: 1px solid #e2e8f0;
+            }
+          }
+
+          @media (max-width: 768px) {
+            .stat-divider {
+              border-bottom: 1px solid #e2e8f0;
+              padding-bottom: 1.5rem;
+              margin-bottom: 1.5rem;
+            }
+          }
+
+          .results-matrix {
+            display: grid;
+            grid-template-columns: 190px repeat(4, minmax(92px, 1fr));
+            gap: 6px;
+            min-width: 700px;
+          }
+
+          .mx-scroll {
+            overflow-x: auto;
+            padding-top: 8px;
+            padding-bottom: 8px;
+          }
+
+          .mx-corner {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #94a3b8;
+            display: flex;
+            align-items: flex-end;
+            padding-bottom: 0.4rem;
+          }
+
+          .mx-plat {
+            background: transparent !important;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 8px !important;
+            padding: 0.5rem 0.25rem !important;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s ease;
+            font-family: inherit;
+            transform: none !important;
+            box-shadow: none !important;
+          }
+
+          .mx-plat:hover,
+          .mx-plat.is-selected {
+            border-color: #edaf19 !important;
+            background: rgba(237, 175, 25, 0.06) !important;
+            transform: none !important;
+            box-shadow: none !important;
+          }
+
+          .mx-plat .pid {
+            font-weight: 700;
+            color: #0f172a;
+            font-size: 0.9rem;
+            display: block;
+            line-height: 1.1;
+          }
+
+          .mx-plat .pname {
+            font-size: 0.66rem;
+            color: #64748b;
+            display: block;
+            line-height: 1.25;
+            margin-top: 2px;
+          }
+
+          .mx-cat {
+            grid-column: 1 / -1;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #94a3b8;
+            padding: 0.9rem 0.25rem 0.3rem;
+            border-bottom: 1px solid #e2e8f0;
+          }
+
+          .mx-label {
+            display: flex;
+            align-items: center;
+            font-size: 0.85rem;
+            color: #334155;
+            background: transparent !important;
+            border: none !important;
+            border-left: 2px solid transparent !important;
+            border-radius: 6px !important;
+            cursor: pointer;
+            text-align: left;
+            padding: 0.25rem 0.5rem;
+            transition: all 0.2s ease;
+            font-family: inherit;
+            transform: none !important;
+            box-shadow: none !important;
+          }
+
+          .mx-label:hover,
+          .mx-label.is-selected {
+            border-left-color: #edaf19 !important;
+            color: #0f172a !important;
+            background: #f1f5f9 !important;
+            transform: none !important;
+            box-shadow: none !important;
+          }
+
+          .mx-cell {
+            border: 1.5px solid transparent;
+            border-radius: 8px;
+            padding: 0.4rem 0.25rem;
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            min-height: 54px;
+            font-family: inherit;
+          }
+
+          .mx-cell .rate {
+            font-weight: 700;
+            font-size: 0.95rem;
+            line-height: 1;
+          }
+
+          .mx-cell .time {
+            font-size: 0.68rem;
+            opacity: 0.8;
+            line-height: 1;
+          }
+
+          .mx-cell.full {
+            background: #edaf19;
+            color: #0f172a;
+          }
+
+          .mx-cell.partial {
+            background: rgba(237, 175, 25, 0.45);
+            color: #0f172a;
+          }
+
+          .mx-cell.none {
+            background: #f1f5f9;
+            color: #94a3b8;
+          }
+
+          .mx-cell:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(15, 23, 42, 0.12);
+          }
+
+          .mx-cell.is-selected {
+            border-color: #0f172a;
+          }
+
+          .results-matrix.has-highlight .mx-cell:not(.is-highlighted) {
+            opacity: 0.15;
+          }
+
+          .results-matrix.has-highlight .mx-cell.is-highlighted {
+            border-color: #0f172a;
+            box-shadow: 0 6px 16px rgba(15, 23, 42, 0.12);
+          }
+
+          .mx-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.25rem;
+            justify-content: center;
+            margin-top: 1.25rem;
+            font-size: 0.75rem;
+            color: #64748b;
+          }
+
+          .mx-legend span.swatch {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border-radius: 4px;
+            margin-right: 6px;
+            vertical-align: -2px;
+          }
+
+          .rd-metric .k {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #94a3b8;
+            display: block;
+          }
+
+          .rd-metric .v {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #0f172a;
+            letter-spacing: -0.5px;
+            line-height: 1.3;
+          }
+
+          .rd-bar {
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 6px;
+          }
+
+          .rd-bar i {
+            display: block;
+            height: 100%;
+            background: #edaf19;
+            border-radius: 4px;
+          }
+
+          .rd-chip {
+            display: inline-block;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 2px 10px;
+            font-size: 0.75rem;
+            color: #475569;
+            margin: 0 6px 6px 0;
+          }
+
+          .rd-chip.is-cause {
+            background: rgba(237, 175, 25, 0.12);
+            border-color: rgba(237, 175, 25, 0.4);
+            color: #92400e;
+          }
+
+          .rd-stage {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            color: #475569;
+            margin-bottom: 6px;
+          }
+
+          .rd-stage .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            flex: none;
+          }
+
+          .rd-stage .dot.done {
+            background: #edaf19;
+          }
+
+          .xp-switch {
+            display: inline-flex;
+            gap: 2px;
+            background: #f1f5f9;
+            border-radius: 9999px;
+            padding: 3px;
+            border: 1px solid #e2e8f0;
+            flex-wrap: wrap;
+          }
+
+          .xp-switch .toggle-btn {
+            border: none;
+            background: transparent;
+            padding: 6px 16px;
+            border-radius: 9999px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #64748b;
+            transition: all 0.2s ease;
+            outline: none;
+            font-family: inherit;
+          }
+
+          .xp-switch .toggle-btn:hover {
+            color: #1e293b;
+          }
+
+          .xp-switch .toggle-btn.active {
+            background: #ffffff;
+            color: #0f172a;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+          }
+
+          .takeaway {
+            cursor: pointer;
+            border: 1px solid #f1f5f9;
+            transition: all 0.2s ease;
+          }
+
+          .takeaway:hover,
+          .takeaway.is-active {
+            border-color: #edaf19;
+            transform: translateY(-2px);
+          }
+        </style>
+
+        <div class="box"
+          style="border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+          <div class="mx-scroll">
+            <div class="results-matrix" id="results-matrix"></div>
+          </div>
+          <div class="mx-legend">
+            <span><span class="swatch" style="background: #edaf19;"></span>5/5 completed</span>
+            <span><span class="swatch" style="background: rgba(237,175,25,0.45);"></span>partial (4/5)</span>
+            <span><span class="swatch" style="background: #f1f5f9;"></span>0/5 &mdash; no success</span>
+          </div>
+        </div>
+
+        <div class="box" id="result-detail"
+          style="border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.05); min-height: 260px;">
+        </div>
+
+        <p class="has-text-justified mt-4 mb-6" style="color: #94a3b8; line-height: 1.6; font-size: 0.85rem;">
+          Success rates carry 95% Wilson confidence intervals over <em>N</em> = 5 trials per cell. The intervals are
+          wide by design: this is a per-laboratory reproducibility check, not a high-resolution ranking. Each platform
+          was operated by a single operator at a single laboratory, so operator skill and platform capability are not
+          separable in these data.
+        </p>
+
+        <div class="columns is-multiline" id="takeaways">
+          <div class="column is-4">
+            <div class="box takeaway" style="height: 100%; box-shadow: 0 4px 15px rgba(0,0,0,0.02);"
+              data-highlight="6:A,7:A,8:A,11:A,12:A,6:C,7:C,8:C,11:C,12:C">
+              <h4 class="title is-6" style="color: #0f172a; margin-bottom: 0.5rem;">Same eight, same five</h4>
+              <p style="font-size: 0.85rem; color: #64748b; line-height: 1.5;">
+                A tablet-teleoperated quadruped arm and a VR-driven legged manipulator share no arm, gripper, or
+                interface, yet complete an identical set of eight attachments and fail on an identical five &mdash; for
+                entirely different logged reasons.
+              </p>
+            </div>
+          </div>
+          <div class="column is-4">
+            <div class="box takeaway" style="height: 100%; box-shadow: 0 4px 15px rgba(0,0,0,0.02);"
+              data-highlight="11:A,11:B,11:C,11:D,12:A,12:B,12:C,12:D">
+              <h4 class="title is-6" style="color: #0f172a; margin-bottom: 0.5rem;">A recess the wide jaws never
+                reach</h4>
+              <p style="font-size: 0.85rem; color: #64748b; line-height: 1.5;">
+                The drawer handle and the shock-absorber pin defeat both platforms on legged bases in every trial, and
+                are cleared by the two end-effectors slim enough to enter the recess: printed fingertips and a worn
+                hand.
+              </p>
+            </div>
+          </div>
+          <div class="column is-4">
+            <div class="box takeaway" style="height: 100%; box-shadow: 0 4px 15px rgba(0,0,0,0.02);"
+              data-highlight="6:A,6:B,6:C,6:D,8:A,8:B,8:C,8:D">
+              <h4 class="title is-6" style="color: #0f172a; margin-bottom: 0.5rem;">The small threads stop everyone</h4>
+              <p style="font-size: 0.85rem; color: #64748b; line-height: 1.5;">
+                The M8 fastener and the free peg &mdash; the two smallest threaded parts in the library &mdash; are the
+                only attachments no platform solved: 0/5 in all eight cells, for four different recorded causes.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="box mt-5" id="xplatform"
+          style="border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+          <div
+            style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem;">
+            <h3 class="title is-5 mb-0" style="color: #0f172a;">Cross-platform analysis</h3>
+            <div class="xp-switch">
+              <button class="toggle-btn active" data-panel="order">Difficulty ordering</button>
+              <button class="toggle-btn" data-panel="strategy">Strategy</button>
+              <button class="toggle-btn" data-panel="time">Normalized time</button>
+            </div>
+          </div>
+
+          <div class="xp-panel" data-panel="order">
+            <p class="mt-4" style="color: #475569; line-height: 1.7; font-size: 0.9rem;">
+              Each platform ranks the 13 attachments by unsuccessful trials first and normalized median time second, and
+              the four orderings are then compared pairwise with a Spearman correlation. A high correlation means the
+              board is measuring properties of the tasks rather than idiosyncrasies of one system.
+            </p>
+            <div class="columns is-multiline mt-2">
+              <div class="column is-3-tablet is-6-mobile rd-metric">
+                <span class="k">Mean, all six pairs</span>
+                <span class="v">0.66</span>
+                <div class="rd-bar"><i style="width: 66%"></i></div>
+                <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 6px;">range 0.50 to 0.84</p>
+              </div>
+              <div class="column is-3-tablet is-6-mobile rd-metric">
+                <span class="k">Spot Arm &harr; ANYmal</span>
+                <span class="v">0.80</span>
+                <div class="rd-bar"><i style="width: 80%"></i></div>
+                <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 6px;">the two legged bases</p>
+              </div>
+              <div class="column is-3-tablet is-6-mobile rd-metric">
+                <span class="k">Spot Arm &harr; Macao</span>
+                <span class="v">0.84</span>
+                <div class="rd-bar"><i style="width: 84%"></i></div>
+                <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 6px;">highest pair in the study</p>
+              </div>
+              <div class="column is-3-tablet is-6-mobile rd-metric">
+                <span class="k">Excluding the SO-101</span>
+                <span class="v">0.81</span>
+                <div class="rd-bar"><i style="width: 81%"></i></div>
+                <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 6px;">mean over the other three</p>
+              </div>
+            </div>
+            <p style="color: #64748b; line-height: 1.6; font-size: 0.85rem;">
+              Every pair that includes the SO-101 falls between 0.50 and 0.51, and the divergence traces to exactly
+              three attachments: the drawer and the shock absorber, which its narrow printed fingertips reach and the
+              wider parallel jaws do not, and the small gate valve, which it alone failed.
+            </p>
+          </div>
+
+          <div class="xp-panel" data-panel="strategy" style="display: none;">
+            <p class="mt-4" style="color: #475569; line-height: 1.7; font-size: 0.9rem;">
+              An attachment is <strong style="color: #0f172a;">prehensile</strong> when the end-effector closes around
+              the part and holds it, and <strong style="color: #0f172a;">non-prehensile</strong> when the part is driven
+              by pushing or pressing, or by a finger or jaw entering an opening without an enclosing grip. The bars show
+              the non-prehensile share of the attachments each platform completed.
+            </p>
+            <div class="columns is-multiline mt-2">
+              <div class="column is-3-tablet is-6-mobile rd-metric">
+                <span class="k">A &middot; Spot Arm</span>
+                <span class="v">38%</span>
+                <div class="rd-bar"><i style="width: 38%"></i></div>
+                <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 6px;">3 of 8 completed</p>
+              </div>
+              <div class="column is-3-tablet is-6-mobile rd-metric">
+                <span class="k">B &middot; SO-101</span>
+                <span class="v">44%</span>
+                <div class="rd-bar"><i style="width: 44%"></i></div>
+                <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 6px;">4 of 9 completed</p>
+              </div>
+              <div class="column is-3-tablet is-6-mobile rd-metric">
+                <span class="k">C &middot; ANYmal</span>
+                <span class="v">63%</span>
+                <div class="rd-bar"><i style="width: 63%"></i></div>
+                <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 6px;">5 of 8 completed</p>
+              </div>
+              <div class="column is-3-tablet is-6-mobile rd-metric">
+                <span class="k">D &middot; Macao hand</span>
+                <span class="v">73%</span>
+                <div class="rd-bar"><i style="width: 73%"></i></div>
+                <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 6px;">8 of 11 completed</p>
+              </div>
+            </div>
+            <p style="color: #64748b; line-height: 1.6; font-size: 0.85rem;">
+              Four attachments are handled the same way by everyone: the ball valve in both configurations and the
+              button were driven non-prehensilely by all four platforms, since a lever and a momentary switch move under
+              a single push, while the light bulb and the lock were grasped by all four. Every precision attachment for
+              which a strategy was logged is prehensile &mdash; no platform in this study turned a threaded part without
+              first closing around it.
+            </p>
+          </div>
+
+          <div class="xp-panel" data-panel="time" style="display: none;">
+            <p class="mt-4" style="color: #475569; line-height: 1.7; font-size: 0.9rem;">
+              Median completion time divided by the attachment timeout, averaged over the attachments each platform
+              completed in a category. The normalization puts tasks with 60 s and 180 s budgets on one scale, so a lower
+              number means more headroom against the clock.
+            </p>
+            <div style="overflow-x: auto;">
+              <table class="table academic-table">
+                <thead>
+                  <tr>
+                    <th>Category</th>
+                    <th>A &middot; Spot Arm</th>
+                    <th>B &middot; SO-101</th>
+                    <th>C &middot; ANYmal</th>
+                    <th>D &middot; Macao hand</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Torque</strong></td>
+                    <td>0.20</td>
+                    <td>0.12</td>
+                    <td>0.15</td>
+                    <td>0.03</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Precision</strong></td>
+                    <td>0.23</td>
+                    <td>0.69</td>
+                    <td>0.16</td>
+                    <td>0.64</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Composed assembly</strong></td>
+                    <td>0.31</td>
+                    <td>0.13</td>
+                    <td>0.17</td>
+                    <td>0.17</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="mt-4" style="color: #64748b; line-height: 1.6; font-size: 0.85rem;">
+              Precision separates the platforms furthest. The SO-101 and the Macao hand are the two systems that
+              accumulate rotation by releasing and reacquiring the part &mdash; 13.6 grasps per trial on the bulb for
+              the arm, 7.0 regrasps for the hand &mdash; and they are the two whose precision scores approach the
+              timeout. For Platforms A, B, and C the precision figure comes from the light bulb alone, the only
+              precision attachment they completed.
+            </p>
+          </div>
+        </div>
+
+        <!-- Stats Component from Image -->
+        <div
+          style="height: 1px; width: 100%; background: linear-gradient(90deg, transparent, #cbd5e1, transparent); margin: 2.5rem 0;">
+        </div>
+        <div class="columns is-multiline">
+          <!-- Column 1 -->
+          <div class="column is-3-tablet is-12-mobile stat-divider">
+            <h3 class="title is-3 mb-1" style="font-weight: 700; color: #0f172a; letter-spacing: -0.5px;">13</h3>
+            <p style="font-size: 0.85rem; color: #475569; line-height: 1.4;">Functional attachments in three skill
+              categories, on one shared hexagonal interface</p>
+          </div>
+          <!-- Column 2 -->
+          <div class="column is-3-tablet is-12-mobile stat-divider">
+            <h3 class="title is-3 mb-1" style="font-weight: 700; color: #0f172a; letter-spacing: -0.5px;">260</h3>
+            <p style="font-size: 0.85rem; color: #475569; line-height: 1.4;">Recorded trials, 65 on each of the four
+              platforms, under one fixed protocol</p>
+          </div>
+          <!-- Column 3 -->
+          <div class="column is-3-tablet is-12-mobile stat-divider">
+            <h3 class="title is-3 mb-1" style="font-weight: 700; color: #0f172a; letter-spacing: -0.5px;">1.6&ndash;103
+              s
+            </h3>
+            <p style="font-size: 0.85rem; color: #475569; line-height: 1.4;">Span of median completion times, from the
+              circuit breaker to the M30 thread</p>
+          </div>
+          <!-- Column 4 -->
+          <div class="column is-3-tablet is-12-mobile">
+            <h3 class="title is-3 mb-1" style="font-weight: 700; color: #0f172a; letter-spacing: -0.5px;">0</h3>
+            <p style="font-size: 0.85rem; color: #475569; line-height: 1.4;">Purchased parts, metal inserts, or
+              post-machining steps needed to reproduce the board</p>
+          </div>
+        </div>
+
+        <script>
+          (() => {
+            const platforms = [
+              { id: 'A', name: 'Spot Arm', full: 'Boston Dynamics Spot, Spot Arm', ee: 'Parallel-jaw gripper', ctrl: 'Tablet teleoperation (Spot Tablet Joysticks)' },
+              { id: 'B', name: 'SO-101', full: 'LeRobot SO-101 (fixed base)', ee: 'Printed parallel-jaw gripper', ctrl: 'Leader-follower teleoperation' },
+              { id: 'C', name: 'ANYmal', full: 'ANYbotics ANYmal, DynaArm', ee: 'Robotiq 2F-140 parallel-jaw gripper', ctrl: 'Virtual-reality devices (Meta Quest 3)' },
+              { id: 'D', name: 'Macao hand', full: 'Macao anthropomorphic hand', ee: 'Worn five-finger hand, operator&rsquo;s own arm positions it', ctrl: 'Analog button grasp selection, worn on forearm' }
+            ];
+
+            const attachments = [
+              {
+                n: 'Ball valve', cat: 'Torque', timeout: 60, crit: 'Handle rotated 90° from closed to open',
+                A: { s: 5, t: 10.5, a: 1.0, note: 'The lever was pushed with the end-effector as non-prehensile manipulation, converting the task into a planar push the wrist can execute.' },
+                B: { s: 5, t: 9.0, a: 2.2, note: 'Driven by pushing with the closed gripper rather than grasping, the same strategy Platform A adopted.' },
+                C: { s: 5, t: 7.8, a: 1.0, note: 'Completed with a different arm, gripper, and control interface than Platform A, in comparable time.' },
+                D: { s: 5, t: 2.1, a: 1.0, note: 'Driven with the closed hand structure: the lever needs no grasp actuation at all, which makes this the hand&rsquo;s fastest class of task.' }
+              },
+              {
+                n: 'Ball valve + friction ring', cat: 'Torque', timeout: 90, crit: 'Handle rotated 90° from closed to open with the ring fitted',
+                A: { s: 5, t: 16.9, a: 1.0, note: 'The ring adds 6.4 s of median time over the bare valve, confirming that the snap-on accessories modulate difficulty as designed.' },
+                B: { s: 5, t: 9.0, a: 1.6, note: 'Identical median to the bare valve: the friction ring is the one accessory in the study that costs a platform nothing measurable.' },
+                C: { s: 5, t: 9.2, a: 1.0, note: 'The ring adds 1.4 s here, a smaller increment than the 6.4 s the same accessory costs Platform A.' },
+                D: { s: 5, t: 2.2, a: 1.0, note: 'Essentially unaffected by the friction ring: the added breakaway torque is absorbed by the operator&rsquo;s own arm.' }
+              },
+              {
+                n: 'Gate valve (small)', cat: 'Torque', timeout: 90, crit: 'Stem rotated one full turn from the closed position',
+                A: { s: 5, t: 19.9, a: 1.0 },
+                B: { s: 0, causes: { 'Kinematic limit': 5 }, note: 'The only attachment in the study that one platform failed and the other three completed. The operator notes record an initial grasp used to release the stem and a final grasp used to push the valve clear of its seat, so the stem moved without ever completing a full turn inside the 90 s timeout.' },
+                C: { s: 5, t: 23.1, a: 1.4, note: 'The longest completed attachment on this platform: the handwheel needs a full turn of the stem, held steady while the torso frame itself moves under the whole-body policy.' },
+                D: { s: 5, t: 2.7, a: 1.0, note: 'Operated with a tripod grasp on the handwheel &mdash; one of the few torque tasks where the hand actually closes on the part.' }
+              },
+              {
+                n: 'Gate valve (large)', cat: 'Torque', timeout: 120, crit: 'Stem rotated one full turn from the closed position',
+                A: { s: 5, t: 17.4, a: 1.0 },
+                B: { s: 5, t: 10.0, a: 4.4, note: 'The wider rim is exactly what the small valve lacks: completed on all five trials at a mean of 4.4 attempts, where the small gate valve failed on all five.' },
+                C: { s: 5, t: 16.8, a: 1.0, note: 'Completed by driving one jaw between the spokes of the handwheel instead of grasping around its rim as on Platform A.' },
+                D: { s: 5, t: 2.3, a: 1.0, note: 'Again required no grasp actuation: the larger handwheel can be turned by the closed hand structure.' }
+              },
+              {
+                n: 'Circuit breaker', cat: 'Torque', timeout: 60, crit: 'Toggle moved from one state to the other and held',
+                A: { s: 5, t: 15.6, a: 1.0, note: 'The toggle was grasped and thrown rather than pushed.' },
+                B: { s: 4, t: 8.5, a: 2.8, causes: { 'Other': 1 }, note: 'The single failure came when the movable part of the breaker broke at the end of the motion &mdash; the only failure on this platform not attributed to a kinematic limit.' },
+                C: { s: 5, t: 6.7, a: 1.0, note: 'The fastest attachment on this platform.' },
+                D: { s: 5, t: 1.6, a: 1.0, note: 'The fastest cell in the entire study: the toggle is driven by the closed hand.' }
+              },
+              {
+                n: 'Light bulb', cat: 'Precision', timeout: 120, crit: 'Bulb fully threaded until seated',
+                A: { s: 5, t: 27.3, a: 1.0 },
+                B: { s: 5, t: 83.0, a: 13.8, note: '13.8 attempts and 13.6 grasps per trial, the highest counts recorded anywhere in the study: accumulating rotation on this arm means releasing the bulb and reacquiring it, over and over.' },
+                C: { s: 5, t: 19.3, a: 2.2, note: 'The highest attempt count this platform recorded &mdash; regrasping is impractical here, and the logs show a single grasp per trial on ten of the thirteen attachments.' },
+                D: { s: 5, t: 52.1, a: 1.0, note: 'Completed on every trial with a power grasp, at a mean of 7.0 regrasps: limited wrist rotation on a worn device forces repeated grasp&ndash;rotate&ndash;release cycles.' }
+              },
+              {
+                n: 'Thread (M8)', cat: 'Precision', timeout: 120, crit: 'Bolt fully threaded along the available length',
+                A: { s: 0, a: 1.0, causes: { 'Kinematic limit': 5 }, note: 'Turning the bolt requires sustained axial rotation, which this wrist cannot produce; it sweeps along an arc instead of rotating in place.' },
+                B: { s: 0, causes: { 'Kinematic limit': 5 }, note: 'Reached the timeout on all five trials. Attempt counts were not logged for unsuccessful trials on this platform.' },
+                C: { s: 0, a: 1.0, causes: { 'Control precision': 5 }, note: 'The operator notes record that the bolt could not be brought into alignment with its socket before the timeout, so no trial ever reached the sustained rotation that ended the corresponding trials on Platform A.' },
+                D: { s: 0, a: 5.2, causes: { 'Force limit': 4, 'Other': 1 }, note: 'The achievable grip force on the small screw head is insufficient to hold it against thread friction, in the power, tripod, and fine pinch configurations alike (9.2 regrasps per trial). The fifth trial started the screw on the thread but did not seat it before the timeout.' }
+              },
+              {
+                n: 'Thread (M30)', cat: 'Precision', timeout: 120, crit: 'Bolt fully threaded along the available length',
+                A: { s: 0, a: 1.0, causes: { 'Kinematic limit': 5 }, note: 'Same wrist limitation as the M8 fastener: no workaround exists once sustained rotation is required.' },
+                B: { s: 0, causes: { 'Kinematic limit': 5 } },
+                C: { s: 0, a: 1.0, causes: { 'Control precision': 5 } },
+                D: { s: 4, t: 102.6, a: 2.2, causes: { 'Force limit': 1 }, note: 'The only cell in which any platform completed a threaded fastener. The larger head gives the hand something to hold: two successful trials threaded about three quarters of the length one-handed before friction stalled further advance, and the other two used two-handed operation.' }
+              },
+              {
+                n: 'Peg insertion', cat: 'Precision', timeout: 120, crit: 'Free peg threaded into the empty socket until it seats',
+                A: { s: 0, causes: { 'Kinematic limit': 5 }, note: 'Per-trial times and attempt counts were not logged during the session, so only the outcome and the cause are recorded. Seating the pin demands the same sustained axial rotation that ended the two threaded-fastener trials.' },
+                B: { s: 0, causes: { 'Kinematic limit': 5 } },
+                C: { s: 0, a: 1.0, causes: { 'Control precision': 5 } },
+                D: { s: 0, a: 2.8, causes: { 'Control precision': 5 }, note: 'On three trials the hand never acquired the free peg; on the other two the peg started into the socket but could not be rotated further before the timeout. At 8 mm the pin is narrower than the M8 screw head, so it places the same demand on the hand.' }
+              },
+              {
+                n: 'Button', cat: 'Assembly', timeout: 60, crit: 'All stages completed within the timeout',
+                stages: ['Open the cover', 'Press the button until actuation'],
+                A: { s: 5, t: 23.9, a: 1.0, st: [5, 5], note: 'Operated non-prehensilely, like the ball valve.' },
+                B: { s: 5, t: 10.0, a: 3.2, st: [5, 5], note: 'Pushed with the closed gripper rather than grasped.' },
+                C: { s: 5, t: 13.3, a: 1.0, st: [5, 5] },
+                D: { s: 5, t: 3.0, a: 1.0, st: [5, 5], note: 'Completed without grasp actuation.' }
+              },
+              {
+                n: 'Lock and key', cat: 'Assembly', timeout: 180, crit: 'All stages completed within the timeout',
+                stages: ['Grasp the key', 'Insert vertically', 'Rotate to unlock'],
+                A: { s: 5, t: 40.4, a: 1.0, st: [5, 5, 5], note: 'The slowest attachment this platform completed &mdash; completion times grow with task complexity, from ~10 s on the ball valve to 40 s here.' },
+                B: { s: 5, t: 15.0, a: 4.2, st: [5, 5, 5] },
+                C: { s: 5, t: 21.4, a: 1.0, st: [5, 5, 5] },
+                D: { s: 5, t: 15.1, a: 1.0, st: [5, 5, 5] }
+              },
+              {
+                n: 'Drawer', cat: 'Assembly', timeout: 120, crit: 'All stages completed within the timeout',
+                stages: ['Grasp the handle', 'Pull open', 'Push closed'],
+                A: { s: 0, a: 1.0, st: [0, 0, 0], causes: { 'Grasp geometry': 5 }, note: 'The parallel-jaw gripper could not engage the recessed handle in a stable grasp, so no trial reached even the first stage. The wide jaws also occlude the contact point from the operator.' },
+                B: { s: 5, t: 23.0, a: 5.4, st: [5, 5, 5], note: 'The narrow printed fingertips close around the recessed handle that the wider jaws of Platforms A and C cannot enter.' },
+                C: { s: 0, a: 1.0, st: [5, 0, 0], causes: { 'Control precision': 5 }, note: 'Reached stage 1 in all five trials, then failed to draw the drawer open. Jitter in the commanded motion damaged the printed drawer, which was replaced mid-session; these five trials are the only ones in the study logged under <em>other</em> in the outcome field.' },
+                D: { s: 5, t: 39.9, a: 1.6, st: [5, 5, 5], note: 'The fingers enter the recess where a parallel jaw cannot, at a mean of 3.4 regrasps on the handle.' }
+              },
+              {
+                n: 'Shock absorber', cat: 'Assembly', timeout: 180, crit: 'All stages completed within the timeout',
+                stages: ['Grasp the pin', 'Align with the hole', 'Insert fully'],
+                A: { s: 0, a: 1.0, st: [0, 0, 0], causes: { 'Grasp geometry': 5 }, note: 'The gripper could not grasp the pin axially.' },
+                B: { s: 5, t: 16.0, a: 4.8, st: [5, 5, 5], note: 'Acquired the free pin at stage 1 and carried every remaining stage, on the attachment that both legged platforms failed outright.' },
+                C: { s: 0, a: 1.0, st: [5, 0, 0], causes: { 'Control precision': 5 }, note: 'The pin was grasped in all five trials and the run stopped at stage 1; the notes give alignment of the pin with the hole as the reason.' },
+                D: { s: 4, t: 39.4, a: 1.2, st: [5, 5, 4], causes: { 'Force limit': 1 }, note: 'The failed trial reached stage 2, with the pin aligned but not threaded home. On the successful trials the wearer&rsquo;s contralateral hand placed the pin into the grasp, after which alignment and seating were performed with the device alone.' }
+              }
+            ];
+
+            const platSummary = {
+              A: { completed: 8, wins: 40, fastest: 'Ball valve, 10.5 s', slowest: 'Lock and key, 40.4 s', cause: 'All 25 failed trials split between 15 kinematic limits on the two threaded fasteners and the peg, and 10 grasp-geometry failures on the drawer and the shock absorber: a wrist that cannot sustain rotation about a fixed axis, and a jaw too wide for a recessed handle. The printed parts came through all 65 trials with no observable wear and no loss of press-fit tolerance.' },
+              B: { completed: 9, wins: 44, fastest: 'Circuit breaker, 8.5 s', slowest: 'Light bulb, 83.0 s', cause: 'Twenty of the 21 failed trials reached their timeout under a kinematic limit, on the small gate valve, the two threaded fasteners, and the peg: accumulating rotation on this arm requires releasing the part and reacquiring it. The remaining failure is the breaker toggle snapping at the end of one motion. This is the only platform whose difficulty ordering diverges from the rest, and the three attachments responsible are exactly the drawer, the shock absorber, and the small gate valve.' },
+              C: { completed: 8, wins: 40, fastest: 'Circuit breaker, 6.7 s', slowest: 'Gate valve (small), 23.1 s', cause: 'All 25 failed trials are recorded as control precision, attributed to an interface that commands end-effector twist relative to a torso frame the whole-body policy is itself moving. No kinematic limit, force limit, or grasp-geometry failure appears at all. The VR interface moves the end-effector faster than a tablet over gross motion, at the cost of rotation stability.' },
+              D: { completed: 11, wins: 53, fastest: 'Circuit breaker, 1.6 s', slowest: 'Thread (M30), 102.6 s', cause: 'Since the operator&rsquo;s arm supplies positioning, the difficulty lies in grasp acquisition and grip force rather than gross motion. Eleven of the twelve failed trials are force limits or control precision, and every one occurs on a part that must be held while it is turned. Grasp geometry &mdash; the cause behind every Platform A assembly failure &mdash; never appears once.' }
+            };
+
+            const grid = document.getElementById('results-matrix');
+            const detail = document.getElementById('result-detail');
+            if (!grid || !detail) return;
+
+            const cellClass = c => c.s === 5 ? 'full' : (c.s > 0 ? 'partial' : 'none');
+            const fmt = t => t == null ? '&mdash;' : t + ' s';
+
+            // Header row
+            grid.insertAdjacentHTML('beforeend', '<div class="mx-corner">Attachment</div>');
+            platforms.forEach(p => {
+              grid.insertAdjacentHTML('beforeend',
+                `<button class="mx-plat" data-plat="${p.id}">
+                   <span class="pid">${p.id}</span><span class="pname">${p.name}</span>
+                 </button>`);
+            });
+
+            // Body rows, grouped by category
+            let currentCat = null;
+            attachments.forEach((att, i) => {
+              if (att.cat !== currentCat) {
+                currentCat = att.cat;
+                grid.insertAdjacentHTML('beforeend', `<div class="mx-cat">${currentCat}</div>`);
+              }
+              grid.insertAdjacentHTML('beforeend', `<button class="mx-label" data-att="${i}">${att.n}</button>`);
+              platforms.forEach(p => {
+                const c = att[p.id];
+                const body = `<span class="rate">${c.s}/5</span>${c.t != null ? `<span class="time">${fmt(c.t)}</span>` : ''}`;
+                grid.insertAdjacentHTML('beforeend',
+                  `<button class="mx-cell ${cellClass(c)}" data-cell="${i}:${p.id}">${body}</button>`);
+              });
+            });
+
+            const clearSelection = () => {
+              grid.querySelectorAll('.is-selected').forEach(el => el.classList.remove('is-selected'));
+            };
+
+            const metric = (k, v, bar) => `
+              <div class="column is-4 rd-metric">
+                <span class="k">${k}</span>
+                <span class="v">${v}</span>
+                ${bar || ''}
+              </div>`;
+
+            function showIntro() {
+              detail.innerHTML = `
+                <h3 class="title is-5" style="color: #0f172a;">Four platforms, one protocol, 260 trials</h3>
+                <p style="color: #64748b; line-height: 1.6; font-size: 0.9rem;">
+                  A quadruped-mounted arm under tablet teleoperation, a printed tabletop arm under leader&ndash;follower
+                  control, a legged manipulator commanded through virtual reality, and an anthropomorphic hand worn on
+                  an operator&rsquo;s forearm. No platform saturates the library, none fails uniformly, and no two fail
+                  the same way.
+                </p>
+                <div class="columns is-multiline mt-2">
+                  ${platforms.map(p => `
+                    <div class="column is-3-tablet is-6-mobile rd-metric">
+                      <span class="k">${p.id} &middot; ${p.name}</span>
+                      <span class="v">${platSummary[p.id].completed}<span style="font-size: 0.9rem; color: #94a3b8; font-weight: 500;"> / 13</span></span>
+                      <div class="rd-bar"><i style="width: ${platSummary[p.id].completed / 13 * 100}%"></i></div>
+                      <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 6px;">attachments &middot; ${platSummary[p.id].wins}/65 trials</p>
+                    </div>`).join('')}
+                </div>
+                <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 0.5rem;">
+                  <i class="fas fa-hand-pointer" style="color: #edaf19; margin-right: 6px;"></i>
+                  Pick a cell for the five trials behind it, a column header for a platform, or a row label for the
+                  attachment specification.
+                </p>`;
+            }
+
+            function showCell(i, pid) {
+              const att = attachments[i], p = platforms.find(x => x.id === pid), c = att[pid];
+              const causes = c.causes
+                ? Object.entries(c.causes).map(([k, v]) => `<span class="rd-chip is-cause">${k} &middot; ${v} trial${v > 1 ? 's' : ''}</span>`).join('')
+                : '';
+              const stages = att.stages
+                ? `<div style="margin-top: 1rem;">
+                     <span class="rd-metric"><span class="k" style="margin-bottom: 8px;">Stages reached</span></span>
+                     ${att.stages.map((s, k) => `
+                       <div class="rd-stage">
+                         <span class="dot ${c.st && c.st[k] > 0 ? 'done' : ''}"></span>
+                         <span>${k + 1}. ${s}</span>
+                         <strong style="margin-left: auto; color: ${c.st && c.st[k] > 0 ? '#0f172a' : '#94a3b8'};">${c.st ? c.st[k] : 0}/5</strong>
+                       </div>`).join('')}
+                   </div>`
+                : '';
+              detail.innerHTML = `
+                <span class="rd-chip">${att.cat}</span>
+                <span class="rd-chip">Platform ${p.id} &middot; ${p.full}</span>
+                <h3 class="title is-4 mt-3 mb-2" style="color: #0f172a;">${att.n}</h3>
+                <p style="color: #64748b; font-size: 0.85rem;">${att.crit} &middot; ${att.timeout} s timeout &middot; ${p.ee}</p>
+                <div class="columns is-multiline mt-3">
+                  ${metric('Success rate', `${c.s}/5`, `<div class="rd-bar"><i style="width: ${c.s / 5 * 100}%"></i></div>`)}
+                  ${metric('Median time', fmt(c.t), c.t != null
+                ? `<div class="rd-bar"><i style="width: ${Math.min(100, c.t / att.timeout * 100)}%"></i></div>
+                       <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 6px;">${Math.round(c.t / att.timeout * 100)}% of the ${att.timeout} s timeout</p>`
+                : '<p style="font-size: 0.75rem; color: #94a3b8; margin-top: 12px;">not defined without a success</p>')}
+                  ${metric('Attempts / trial', c.a != null ? c.a.toFixed(1) : 'not logged')}
+                </div>
+                ${causes ? `<div style="margin-top: 0.5rem;">${causes}</div>` : ''}
+                ${c.note ? `<p style="color: #475569; line-height: 1.6; font-size: 0.9rem; margin-top: 0.75rem;">${c.note}</p>` : ''}
+                ${stages}`;
+            }
+
+            function showPlatform(pid) {
+              const p = platforms.find(x => x.id === pid);
+              const s = platSummary[pid];
+              detail.innerHTML = `
+                <span class="rd-chip">65 recorded trials</span>
+                <span class="rd-chip">${p.ctrl}</span>
+                <h3 class="title is-4 mt-3 mb-2" style="color: #0f172a;">Platform ${p.id} &middot; ${p.full}</h3>
+                <p style="color: #64748b; font-size: 0.85rem;">${p.ee}</p>
+                <div class="columns is-multiline mt-3">
+                  ${metric('Attachments completed', `${s.completed}<span style="font-size: 0.9rem; color: #94a3b8; font-weight: 500;"> / 13</span>`,
+                `<div class="rd-bar"><i style="width: ${s.completed / 13 * 100}%"></i></div>
+                 <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 6px;">${s.wins} of 65 trials succeeded</p>`)}
+                  ${metric('Fastest', `<span style="font-size: 0.95rem;">${s.fastest}</span>`)}
+                  ${metric('Slowest completed', `<span style="font-size: 0.95rem;">${s.slowest}</span>`)}
+                </div>
+                <p style="color: #475569; line-height: 1.6; font-size: 0.9rem; margin-top: 0.5rem;">${s.cause}</p>`;
+            }
+
+            function showAttachment(i) {
+              const att = attachments[i];
+              const rows = platforms.map(p => {
+                const c = att[p.id];
+                const val = `${c.s}/5${c.t != null ? ` &middot; ${c.t} s` : ''}`;
+                return `<div class="rd-stage">
+                          <span class="dot ${c.s > 0 ? 'done' : ''}"></span>
+                          <span>Platform ${p.id} &middot; ${p.name}</span>
+                          <strong style="margin-left: auto; color: ${c.s > 0 ? '#0f172a' : '#94a3b8'};">${val}</strong>
+                        </div>`;
+              }).join('');
+              detail.innerHTML = `
+                <span class="rd-chip">${att.cat}</span>
+                <span class="rd-chip">${att.timeout} s timeout</span>
+                ${att.stages ? `<span class="rd-chip">${att.stages.length} stages</span>` : ''}
+                <h3 class="title is-4 mt-3 mb-2" style="color: #0f172a;">${att.n}</h3>
+                <p style="color: #475569; line-height: 1.6; font-size: 0.9rem;">
+                  <strong style="color: #0f172a;">Success criterion:</strong> ${att.crit}.
+                  ${att.stages ? ` Scored stage by stage: ${att.stages.map((s, k) => `(${k + 1}) ${s.charAt(0).toLowerCase() + s.slice(1)}`).join(', ')}.` : ''}
+                </p>
+                <div class="mt-4">${rows}</div>`;
+            }
+
+            // Bring the explanation into view when it is off screen
+            function revealDetail() {
+              const r = detail.getBoundingClientRect();
+              const vh = window.innerHeight || document.documentElement.clientHeight;
+              if (r.top < 0 || r.bottom > vh) {
+                detail.scrollIntoView({ behavior: 'smooth', block: r.height > vh ? 'start' : 'center' });
+              }
+            }
+
+            grid.addEventListener('click', e => {
+              const cell = e.target.closest('.mx-cell');
+              const plat = e.target.closest('.mx-plat');
+              const label = e.target.closest('.mx-label');
+              if (cell) {
+                const [i, pid] = cell.dataset.cell.split(':');
+                clearSelection(); cell.classList.add('is-selected'); showCell(+i, pid);
+              } else if (plat) {
+                clearSelection(); plat.classList.add('is-selected'); showPlatform(plat.dataset.plat);
+              } else if (label) {
+                clearSelection(); label.classList.add('is-selected'); showAttachment(+label.dataset.att);
+              } else {
+                return;
+              }
+              revealDetail();
+            });
+
+            // Takeaway cards highlight the cells they describe
+            document.querySelectorAll('#takeaways .takeaway').forEach(card => {
+              card.addEventListener('click', () => {
+                const wasActive = card.classList.contains('is-active');
+                document.querySelectorAll('#takeaways .takeaway').forEach(c => c.classList.remove('is-active'));
+                grid.classList.remove('has-highlight');
+                grid.querySelectorAll('.is-highlighted').forEach(el => el.classList.remove('is-highlighted'));
+                if (wasActive) return;
+                card.classList.add('is-active');
+                grid.classList.add('has-highlight');
+                card.dataset.highlight.split(',').forEach(key => {
+                  const el = grid.querySelector(`.mx-cell[data-cell="${key}"]`);
+                  if (el) el.classList.add('is-highlighted');
+                });
+                grid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              });
+            });
+
+            // Cross-platform analysis: switch between the three aggregate views
+            const xpPanels = document.querySelectorAll('#xplatform .xp-panel');
+            document.querySelectorAll('#xplatform .toggle-btn').forEach(btn => {
+              btn.addEventListener('click', () => {
+                document.querySelectorAll('#xplatform .toggle-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                xpPanels.forEach(pan => {
+                  pan.style.display = pan.dataset.panel === btn.dataset.panel ? '' : 'none';
+                });
+              });
+            });
+
+            showIntro();
+          })();
+        </script>
+      </div>
+
+
+    </section>
+
+
+
+    <section class="section" id="Citation">
+      <div class="container is-max-desktop">
+        <h2 class="title is-3 has-text-centered mb-5" style="letter-spacing: -0.5px;">Citation</h2>
+        <div class="box mb-0"
+          style="position: relative; background-color: #fafafa; border: 1px solid #cbd5e1; box-shadow: none; border-radius: 8px; padding-top: 2.5rem;">
+          <button class="button is-small is-white" id="copy-citation-btn"
+            style="position: absolute; top: 12px; right: 12px; font-weight: 500; font-size: 0.75rem; border: 1px solid #cbd5e1; color: #475569;"
+            onclick="navigator.clipboard.writeText(document.getElementById('citation-text').innerText); this.innerHTML = '<span class=\'icon is-small\'><i class=\'fas fa-check\' style=\'color: #10b981;\'></i></span><span>Copied!</span>'; setTimeout(() => this.innerHTML = '<span class=\'icon is-small\'><i class=\'far fa-copy\'></i></span><span>Copy</span>', 2000);">
+            <span class="icon is-small"><i class="far fa-copy"></i></span>
+            <span>Copy</span>
+          </button>
+          <pre
+            style="background-color: transparent; padding: 0; margin: 0; overflow-x: auto; font-family: 'Courier New', Courier, monospace; color: #334155; font-size: 0.9rem;"><code id="citation-text">@article{hiveboard2026,
+  title   = {HiveBoard: An Open, Modular, 3D-Printed Benchmark of Industrial Mechanisms
+             for Robotic and Prosthetic Manipulation},
+  author  = {Godoy, Ricardo V. and de Souza, Enzo F. and de Lange, Rudy De-Xin and
+             Negri, Juliano and Marsicano, Jo\~{a}o A. and van Halst, Victor and
+             Elanjimattathil Vijayan, Aravind and Capezzuto, Gianluca and
+             Angarola, Matheus P. and Tommaselli, Felipe A. G. and Baptista, Rafael R. and
+             van Berge, Meiko Adriana and Lahr, Gustavo J. G. and Ferrari Gerez, Lucas and
+             Becker, Marcelo},
+  journal = {Under review},
+  year    = {2026},
+  url     = {https://github.com/EESC-LabRoM/HiveBoard}
+}</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="Acknowledgments">
+      <div class="container is-max-desktop">
+        <h2 class="title is-3 has-text-centered mb-5" style="letter-spacing: -0.5px;">Acknowledgments</h2>
+        <div class="content has-text-justified mb-0" style="line-height: 1.7; font-size: 1rem; color: #4a4a4a;">
+          <p>
+            HiveBoard, the CAD library, the evaluation protocol, and the logging templates are released under a
+            permissive license at
+            <a href="https://github.com/EESC-LabRoM/HiveBoard">github.com/EESC-LabRoM/HiveBoard</a>. We thank the
+            collaborating laboratories that printed the board locally and ran the protocol on their own manipulation
+            systems for the cross-laboratory validation reported here, and Luiz Felipe Rodrigues Dantas for assistance
+            in validating the simulated assets.
+          </p>
+          <p>
+            This work was supported by the São Paulo Research Foundation (FAPESP), Grants #2025/08520-0,
+            #2025/22381-3, #2025/20858-7, and #2025/04308-7; by Petróleo Brasileiro S/A &mdash; Petrobras, using
+            resources from the ANP R&amp;D clause, in partnership with the University of São Paulo (USP) and the
+            Fundação de Apoio à Física e à Química (FAFQ), under Cooperation Agreements #2023/00016-6 and
+            #2023/00013-7; by ANYbotics AG; and by the Royal Society Research Grant (grant number 251405).
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer"
+      style="background-color: transparent; padding: 1.5rem; border-top: 1px solid #e2e8f0; margin-top: 2rem;">
+      <div class="content has-text-centered">
+        <p style="color: #94a3b8; font-size: 0.75rem; margin: 0;">
+          This website adapts the <strong>Clarity Template</strong> by Shikun Liu and the <strong>Academic Project Astro
+            Template</strong> by Roman Hauksson.
+        </p>
+      </div>
+    </footer>
+  </div>
+
+  <div id="app" class="hidden-app">
+    <div id="ui-layer">
+      <header>
+        <div class="header-content">
+          <div>
+            <h1>HiveBoard <span>Interactive 3D</span></h1>
+            <p>Add, rotate and interact with the project pieces</p>
+          </div>
+          <button id="back-to-presentation-btn" class="back-btn" title="Back to Presentation">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <div id="piece-info-panel" class="info-panel hidden">
+        <div class="info-header" id="info-header">
+          <h3 id="info-title">Piece Name</h3>
+          <button id="info-toggle" class="icon-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" class="chevron-icon">
+              <polyline points="18 15 12 9 6 15"></polyline>
+            </svg>
+          </button>
+        </div>
+        <div id="info-content" class="info-content">
+          <p id="info-desc">Description goes here.</p>
+          <ul id="info-specs"></ul>
+        </div>
+      </div>
+
+      <button id="mobile-menu-btn"
+        style="pointer-events: auto; position: absolute; bottom: 2rem; left: 2rem; background: var(--panel-bg); backdrop-filter: blur(10px); border: 1px solid var(--border-color); padding: 1rem; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-color); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); z-index: 200; transition: all 0.3s ease;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+
+      <div id="toast-error" class="toast hidden"></div>
+
+      <div id="action-buttons"
+        style="pointer-events: none; position: absolute; bottom: 2rem; right: 2rem; display: flex; flex-direction: column; gap: 1rem; z-index: 200; align-items: flex-end;">
+        <button id="rotate-btn" class="action-btn" title="Rotacionar Peça (90°)"
+          style="pointer-events: auto; background: rgba(59, 130, 246, 0.2); backdrop-filter: blur(10px); border: 1px solid rgba(59, 130, 246, 0.5); cursor: pointer; display: none; color: #93c5fd; box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.92-10.26l5.57 5.57" />
+          </svg>
+          <span class="action-btn-text">Rotate</span>
+        </button>
+
+        <button id="move-pin-btn" class="action-btn" title="Mudar Posição do Pino"
+          style="pointer-events: auto; background: rgba(16, 185, 129, 0.2); backdrop-filter: blur(10px); border: 1px solid rgba(16, 185, 129, 0.5); cursor: pointer; display: none; color: #6ee7b7; box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+          <span class="action-btn-text">Change Hole</span>
+        </button>
+
+        <button id="delete-btn" class="action-btn" title="Remover Peça"
+          style="pointer-events: auto; background: rgba(239, 68, 68, 0.2); backdrop-filter: blur(10px); border: 1px solid rgba(239, 68, 68, 0.5); cursor: pointer; display: none; color: #fca5a5; box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            <line x1="10" y1="11" x2="10" y2="17"></line>
+            <line x1="14" y1="11" x2="14" y2="17"></line>
+          </svg>
+          <span class="action-btn-text">Delete</span>
+        </button>
+      </div>
+
+      <div class="controls">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+          <h3>Board Size</h3>
+          <button id="reset-scene"
+            style="padding: 0.3rem 0.6rem; font-size: 0.8rem; background: rgba(239, 68, 68, 0.2); border-color: rgba(239, 68, 68, 0.5); color: #fca5a5;">Clear
+            All</button>
+        </div>
+        <div class="board-selector" style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+          <button class="change-board" data-type="honeycomb_l"
+            style="flex: 1; padding: 0.5rem; text-align: center;">Large</button>
+          <button class="change-board" data-type="honeycomb_m"
+            style="flex: 1; padding: 0.5rem; text-align: center;">Medium</button>
+          <button class="change-board" data-type="honeycomb_s"
+            style="flex: 1; padding: 0.5rem; text-align: center;">Small</button>
+        </div>
+
+        <p style="font-size: 0.85rem; color: var(--text-color); opacity: 0.7; margin-bottom: 1rem; line-height: 1.7;">
+          Select any task below to automatically add and snap its components into an available slot on the honeycomb
+          board.
+        </p>
+
+        <div class="pieces-list"
+          style="flex: 1; min-height: 0; overflow-y: auto; padding-right: 0.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
+          <h3
+            style="margin-top: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.3rem; margin-bottom: 0.2rem; font-size: 0.9rem; opacity: 0.8;">
+            Torque-Based Tasks</h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+            <button class="add-piece" data-type="high_torque_valve">Valve Gate (Large)</button>
+            <button class="add-piece" data-type="small_valve">Valve Gate (Small)</button>
+            <button class="add-piece" data-type="ball_valve">Ball Valve</button>
+            <button class="add-piece" data-type="circuit_breaker">Circuit Breaker</button>
+          </div>
+
+          <h3
+            style="margin-top: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.3rem; margin-bottom: 0.2rem; font-size: 0.9rem; opacity: 0.8;">
+            Precision-Based Tasks</h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+            <button class="add-piece" data-type="peg_insertion">Peg Insertion Plate</button>
+            <button class="add-piece" data-type="lamp">Light Bulb Socket</button>
+            <button class="add-piece" data-type="m30">Thread M30</button>
+            <button class="add-piece" data-type="m14">Thread M14</button>
+            <button class="add-piece" data-type="m8">Thread M8</button>
+          </div>
+
+          <h3
+            style="margin-top: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.3rem; margin-bottom: 0.2rem; font-size: 0.9rem; opacity: 0.8;">
+            Composed Assembly Tasks</h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+            <button class="add-piece" data-type="button_composed">Hidden Push Button</button>
+            <button class="add-piece" data-type="key">Lock and Key</button>
+            <button class="add-piece" data-type="drawer">Sliding Drawer</button>
+            <button class="add-piece" data-type="shock_absorber">Shock Absorber</button>
+          </div>
+        </div>
+      </div>
+      <div class="bottom-bar collapsed-views" id="bottom-bar">
+        <div id="view-options" class="view-options">
+          <button id="view-top" class="view-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            <span class="btn-text">Top View</span>
+          </button>
+
+          <button id="view-side" class="view-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="2 22 12 2 22 22"></polygon>
+              <line x1="2" y1="22" x2="22" y2="22"></line>
+            </svg>
+            <span class="btn-text">Side View</span>
+          </button>
+
+          <button id="center-view" class="view-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            <span class="btn-text">Centralize</span>
+          </button>
+        </div>
+
+        <button id="view-toggle-btn" class="view-btn mobile-only" title="View Options">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div id="canvas-container"></div>
+  </div>
+</body>
+
+</html>
