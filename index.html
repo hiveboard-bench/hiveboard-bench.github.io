@@ -2228,6 +2228,7 @@
             height: 100%;
             background: #edaf19;
             border-radius: 4px;
+            transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
           }
 
           .rd-chip {
@@ -3173,6 +3174,37 @@
       }, { rootMargin: '400px' });
 
       videos.forEach((video) => observer.observe(video));
+    })();
+
+    // Animate .rd-bar fills only once they scroll into view
+    (function () {
+      if (!('IntersectionObserver' in window)) return;
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          const bar = entry.target;
+          requestAnimationFrame(() => {
+            bar.style.width = bar.dataset.rdTarget;
+          });
+          observer.unobserve(bar);
+        });
+      }, { threshold: 0.3 });
+
+      function primeBars(root) {
+        root.querySelectorAll('.rd-bar i:not([data-rd-init])').forEach((bar) => {
+          bar.dataset.rdInit = '1';
+          bar.dataset.rdTarget = bar.style.width || '0%';
+          bar.style.width = '0%';
+          observer.observe(bar);
+        });
+      }
+
+      primeBars(document);
+
+      // Results bars are re-rendered dynamically on interaction, so watch for new ones
+      const mo = new MutationObserver(() => primeBars(document));
+      mo.observe(document.body, { childList: true, subtree: true });
     })();
   </script>
 
