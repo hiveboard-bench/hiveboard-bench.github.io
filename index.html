@@ -7,11 +7,10 @@
   <title>HiveBoard</title>
   <link rel="icon" type="image/svg+xml" sizes="any" href="assets/favicon.svg">
   <link rel="alternate icon" type="image/png" href="assets/favicon.png">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <!-- Poppins + the 15 icon glyphs this site uses, self-hosted and subset. -->
+  <link rel="preload" href="./fonts/poppins-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="./fonts/poppins-600-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="./fonts/fonts.css">
 
   <style>
     .sidebar-nav {
@@ -74,8 +73,8 @@
       box-shadow: none !important;
     }
   </style>
-  <script type="module" crossorigin src="./assets/index-gC59g4Aq.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-Bh8jYpec.css">
+  <script type="module" crossorigin src="./assets/index-DcV7r-YF.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-CKMAlR2d.css">
 </head>
 
 <body>
@@ -235,14 +234,20 @@
       <div class="container is-max-desktop">
         <div class="interactive-image-container"
           style="position: relative; width: 100%; max-width: 250px; margin: 0 auto;">
-          <img src="./assets/Hiveboard4.png" alt="HiveBoard Overview"
+          <img src="./assets/Hiveboard4.webp" alt="HiveBoard Overview" width="500" height="518"
+            fetchpriority="high" decoding="async"
             style="width: 100%; height: auto; display: block;">
 
           <!-- Validation Hand Overlapping the Board -->
           <div class="validation-container is-hidden-mobile"
             style="position: absolute; top: -30%; left: -80%; width: 280px; cursor: pointer; text-align: center; z-index: 15;">
-            <img src="./assets/hand.png" alt="Validation Hand" class="validation-img"
-              style="width: 100%; height: auto; opacity: 0.4; transition: all 0.3s ease; object-fit: contain;">
+            <picture style="display: block;">
+              <source media="(min-width: 769px)" srcset="./assets/hand.webp" type="image/webp">
+              <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                alt="Validation Hand" class="validation-img" width="560" height="268"
+                loading="lazy" decoding="async"
+                style="width: 100%; height: auto; opacity: 0.4; transition: all 0.3s ease; object-fit: contain;">
+            </picture>
 
             <div class="validation-text"
               style="opacity: 0; transform: translateY(5px); transition: all 0.3s ease; position: absolute; top: 100%; left: 50%; width: 220px; margin-left: -110px; background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); border: 1px solid #e2e8f0; font-size: 0.85rem; color: #475569; pointer-events: none; z-index: 20; text-align: left;">
@@ -254,8 +259,13 @@
           <!-- Validation s010 Overlapping the Board on the Right (Above Spot) -->
           <div class="validation-container is-hidden-mobile"
             style="position: absolute; top: -30%; right: -80%; width: 230px; cursor: pointer; text-align: center; z-index: 15;">
-            <img src="./assets/s010.png" alt="Validation s010" class="validation-img"
-              style="width: 100%; height: auto; opacity: 0.4; transition: all 0.3s ease; object-fit: contain; transform: scaleX(-1);">
+            <picture style="display: block;">
+              <source media="(min-width: 769px)" srcset="./assets/s010.webp" type="image/webp">
+              <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                alt="Validation s010" class="validation-img" width="460" height="437"
+                loading="lazy" decoding="async"
+                style="width: 100%; height: auto; opacity: 0.4; transition: all 0.3s ease; object-fit: contain; transform: scaleX(-1);">
+            </picture>
 
             <div class="validation-text"
               style="opacity: 0; transform: translateY(5px); transition: all 0.3s ease; position: absolute; top: 100%; left: 50%; width: 220px; margin-left: -110px; background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); border: 1px solid #e2e8f0; font-size: 0.85rem; color: #475569; pointer-events: none; z-index: 20; text-align: left;">
@@ -267,8 +277,13 @@
           <!-- Validation Quadruped Overlapping the Board on the Right -->
           <div class="validation-container is-hidden-mobile"
             style="position: absolute; top: 35%; right: -95%; width: 300px; cursor: pointer; text-align: center; z-index: 15;">
-            <img src="./assets/spot.png" alt="Validation Quadruped" class="validation-img"
-              style="width: 100%; height: auto; opacity: 0.4; transition: all 0.3s ease; object-fit: contain;">
+            <picture style="display: block;">
+              <source media="(min-width: 769px)" srcset="./assets/spot.webp" type="image/webp">
+              <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                alt="Validation Quadruped" class="validation-img" width="600" height="386"
+                loading="lazy" decoding="async"
+                style="width: 100%; height: auto; opacity: 0.4; transition: all 0.3s ease; object-fit: contain;">
+            </picture>
 
             <div class="validation-text"
               style="opacity: 0; transform: translateY(5px); transition: all 0.3s ease; position: absolute; top: 100%; left: 50%; width: 220px; margin-left: -110px; background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); border: 1px solid #e2e8f0; font-size: 0.85rem; color: #475569; pointer-events: none; z-index: 20; text-align: left;">
@@ -280,8 +295,13 @@
           <!-- Validation ANYmal Overlapping the Board on the Left -->
           <div class="validation-container is-hidden-mobile"
             style="position: absolute; top: 20%; left: -98%; width: 300px; cursor: pointer; text-align: center; z-index: 15;">
-            <img src="./assets/anymal.png" alt="Validation ANYmal" class="validation-img"
-              style="width: 100%; height: auto; opacity: 0.4; transition: all 0.3s ease; object-fit: contain;">
+            <picture style="display: block;">
+              <source media="(min-width: 769px)" srcset="./assets/anymal.webp" type="image/webp">
+              <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                alt="Validation ANYmal" class="validation-img" width="600" height="451"
+                loading="lazy" decoding="async"
+                style="width: 100%; height: auto; opacity: 0.4; transition: all 0.3s ease; object-fit: contain;">
+            </picture>
 
             <div class="validation-text"
               style="opacity: 0; transform: translateY(5px); transition: all 0.3s ease; position: absolute; top: 100%; left: 50%; width: 220px; margin-left: -110px; background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); border: 1px solid #e2e8f0; font-size: 0.85rem; color: #475569; pointer-events: none; z-index: 20; text-align: left;">
@@ -388,12 +408,12 @@
                 <!-- Bottom Image (3D Model) -->
                 <div id="dyn-img-3d-wrapper"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; clip-path: inset(0 0 0 50%); pointer-events: none;">
-                  <img id="dyn-img-3d" src="./assets/hiveboard_preview.png"
+                  <img id="dyn-img-3d" src="./assets/hiveboard_preview.webp" loading="lazy" decoding="async"
                     style="position: absolute; top: -3%; left: 0; width: 100%; height: 100%; object-fit: contain; padding: 1rem; transform: scale(2.2);"
                     alt="3D Model">
                 </div>
                 <!-- Top Image (Real Object) with a filter -->
-                <img id="dyn-img-real" class="img-comp-overlay" src="./assets/hiveboard_preview.png"
+                <img id="dyn-img-real" class="img-comp-overlay" src="./assets/hiveboard_preview.webp" loading="lazy" decoding="async"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; padding: 1rem; clip-path: inset(0 50% 0 0); filter: grayscale(80%) sepia(20%) hue-rotate(180deg);"
                   alt="Real Object">
 
@@ -613,91 +633,91 @@
     <script>
       const modulesData = [
         {
-          id: 'high-valve', pieceType: 'high_torque_valve', name: 'Gate Valve (Large)', category: 'Torque-Based', realImg: './assets/modules/big_valve_setup.png',
-          modelImg: './assets/modules/big_valve_3d.png',
+          id: 'high-valve', pieceType: 'high_torque_valve', name: 'Gate Valve (Large)', category: 'Torque-Based', realImg: './assets/modules/big_valve_setup.webp',
+          modelImg: './assets/modules/big_valve_3d.webp',
           scale: '2.35',
           top: '13.5%',
           desc: 'The larger of the two gate valves. Its handwheel geometry and diameter set a higher required torque than the small valve, so the same motion has to be sustained against greater resistance. In simulation the stem is modeled as a pair of coupled joints, continuous rotation about the thread axis and prismatic translation along it.',
           params: [['Success criterion', 'Stem rotated one full turn from the closed position'], ['Timeout', '120 s'], ['Trials per platform', '5'], ['Material', 'PLA, printed handle up'], ['Infill', '30% (torque component)']]
         },
         {
-          id: 'small-valve', pieceType: 'small_valve', name: 'Gate Valve (Small)', category: 'Torque-Based', realImg: './assets/modules/small_valve_setup.png',
-          modelImg: './assets/modules/small_valve_3d.png',
+          id: 'small-valve', pieceType: 'small_valve', name: 'Gate Valve (Small)', category: 'Torque-Based', realImg: './assets/modules/small_valve_setup.webp',
+          modelImg: './assets/modules/small_valve_3d.webp',
           scale: '2.3',
           top: '4%',
           desc: 'A gate valve printed as a separate part with a smaller handwheel, which requires several turns of the stem to travel from closed to open. It rewards a grasp that can be maintained across repeated regrasp cycles rather than a single strong pull.',
           params: [['Success criterion', 'Stem rotated one full turn from the closed position'], ['Timeout', '90 s'], ['Trials per platform', '5'], ['Material', 'PLA, printed handle up'], ['Infill', '30% (torque component)']]
         },
         {
-          id: 'thread-m30', pieceType: 'm30', name: 'Thread M30', category: 'Precision-Based', realImg: './assets/modules/m30_setup.png',
-          modelImg: './assets/modules/m30_3d.png',
+          id: 'thread-m30', pieceType: 'm30', name: 'Thread M30', category: 'Precision-Based', realImg: './assets/modules/m30_setup.webp',
+          modelImg: './assets/modules/m30_3d.webp',
           desc: 'Larger threaded fastener. Success requires the bolt to be threaded along its full available length, which demands sustained axial rotation against thread friction.',
           params: [['Success criterion', 'Bolt fully threaded along the available length'], ['Timeout', '120 s'], ['Trials per platform', '5'], ['Material', 'PLA, printed vertically'], ['Infill', '25% (threads)']]
         },
         {
-          id: 'thread-m8', pieceType: 'm8', name: 'Thread M8', category: 'Precision-Based', realImg: './assets/modules/m8_setup.png',
-          modelImg: './assets/modules/m8_3d.png',
+          id: 'thread-m8', pieceType: 'm8', name: 'Thread M8', category: 'Precision-Based', realImg: './assets/modules/m8_setup.webp',
+          modelImg: './assets/modules/m8_3d.webp',
           desc: 'The smallest threaded fastener in the library. Its head has to be held against thread friction while turning, which makes it the hardest attachment for every platform reported so far.',
           params: [['Success criterion', 'Bolt fully threaded along the available length'], ['Timeout', '120 s'], ['Trials per platform', '5'], ['Material', 'PLA, printed vertically'], ['Infill', '25% (threads)']]
         },
         {
-          id: 'peg-insertion', pieceType: 'peg_insertion', name: 'Peg Insertion Plate', category: 'Precision-Based', realImg: './assets/modules/peg_and_hole_setup.png',
-          modelImg: './assets/modules/peg_and_hole_3d.png',
+          id: 'peg-insertion', pieceType: 'peg_insertion', name: 'Peg Insertion Plate', category: 'Precision-Based', realImg: './assets/modules/peg_and_hole_setup.webp',
+          modelImg: './assets/modules/peg_and_hole_3d.webp',
           scale: 2.15,
           top: '-5%',
           desc: 'Plate with four identical threaded sockets, three already seated and one free. The 8 mm threaded pin must be aligned with the empty socket and rotated down until it seats.',
           params: [['Success criterion', 'Free peg threaded into the empty socket until it seats'], ['Timeout', '120 s'], ['Trials per platform', '5'], ['Material', 'PLA, pegs vertical']]
         },
         {
-          id: 'circuit-breaker', pieceType: 'circuit_breaker', name: 'Circuit Breaker', category: 'Torque-Based', realImg: './assets/modules/switch_setup.png',
-          modelImg: './assets/modules/switch_3d.png',
+          id: 'circuit-breaker', pieceType: 'circuit_breaker', name: 'Circuit Breaker', category: 'Torque-Based', realImg: './assets/modules/switch_setup.webp',
+          modelImg: './assets/modules/switch_3d.webp',
           top: '-5%',
           desc: 'A single-pole circuit breaker. The toggle exposes a revolute joint with its physical angular range, and the task can be solved either by grasping the toggle or by driving it with a closed hand structure, which makes it the fastest attachment for several platforms.',
           params: [['Success criterion', 'Toggle moved from one state to the other and held'], ['Timeout', '60 s'], ['Trials per platform', '5'], ['Material', 'PLA'], ['Infill', '25% (mechanical part)']]
         },
         {
-          id: 'button-cover', pieceType: 'button_composed', name: 'Hidden Push Button', category: 'Composed Assembly', realImg: './assets/modules/button_setup.png',
-          modelImg: './assets/modules/button_3d.png',
+          id: 'button-cover', pieceType: 'button_composed', name: 'Hidden Push Button', category: 'Composed Assembly', realImg: './assets/modules/button_setup.webp',
+          modelImg: './assets/modules/button_3d.webp',
           top: '-4%',
           scale: 2.13,
           desc: 'A push button hidden by a hinged cover. The cover must be opened before the button can be reached, so the attachment is scored stage by stage and partial completion is visible in the data. The digital twin combines a revolute joint for the cover with a prismatic joint for the press.',
           params: [['Success criterion', 'All stages completed within the timeout'], ['Stages', '(1) Open the cover, (2) press the button until actuation'], ['Timeout', '60 s'], ['Trials per platform', '5'], ['Material', 'PLA, 15% infill on the cover']]
         },
         {
-          id: 'ball-valve', pieceType: 'ball_valve', name: 'Ball Valve', category: 'Torque-Based', realImg: './assets/modules/torque_valve_noFriction_setup.png',
-          modelImg: './assets/modules/torque_valve_noFriction_3d.png',
+          id: 'ball-valve', pieceType: 'ball_valve', name: 'Ball Valve', category: 'Torque-Based', realImg: './assets/modules/torque_valve_noFriction_setup.webp',
+          modelImg: './assets/modules/torque_valve_noFriction_3d.webp',
           scale: 2.4,
           top: '-5%',
           desc: 'A quarter-turn ball valve driven by a lever, run as two separate trial sets, without and with a snap-on friction ring fitted. The four-piece ring set fits over the valve body and each ring sets a different rotational friction level, so the same physical valve can be tested at multiple torque settings without printing a second one.',
           params: [['Success criterion', 'Handle rotated 90° from closed to open'], ['Timeout', '60 s bare / 90 s with friction ring'], ['Trials per platform', '5 per configuration'], ['Accessory', 'Four-piece friction ring set'], ['Material', 'PLA, printed handle up']]
         },
         {
-          id: 'key-lock', pieceType: 'key', name: 'Lock and Key', category: 'Composed Assembly', realImg: './assets/modules/key_setup.png',
-          modelImg: './assets/modules/key_3d.png',
+          id: 'key-lock', pieceType: 'key', name: 'Lock and Key', category: 'Composed Assembly', realImg: './assets/modules/key_setup.webp',
+          modelImg: './assets/modules/key_3d.webp',
           scale: 2.15,
           top: '-5%',
           desc: 'A key-and-lock mechanism that requires grasp, vertical insertion, and rotation. The grasp has to withstand the torque applied at the end of the sequence, which is exactly the demand that grasping scores on loose objects do not capture. Key insertion and rotation are defined in the released USD assets.',
           params: [['Success criterion', 'All stages completed within the timeout'], ['Stages', '(1) Grasp the key, (2) insert vertically, (3) rotate to unlock'], ['Timeout', '180 s'], ['Trials per platform', '5'], ['Material', 'PLA, 25% infill']]
         },
         {
-          id: 'lamp-bulb', pieceType: 'lamp', name: 'Light Bulb Socket', category: 'Precision-Based', realImg: './assets/modules/lamp_setup.png',
-          modelImg: './assets/modules/lamp_3d.png',
+          id: 'lamp-bulb', pieceType: 'lamp', name: 'Light Bulb Socket', category: 'Precision-Based', realImg: './assets/modules/lamp_setup.webp',
+          modelImg: './assets/modules/lamp_3d.webp',
           scale: 2.4,
           top: '3%',
           desc: 'A standard light bulb socket. The bulb has to be threaded until it seats, which means continuous rotation about the thread axis combined with translation along it. Platforms with limited wrist rotation solve it through repeated grasp-rotate-release cycles, so the attempt count is informative here.',
           params: [['Success criterion', 'Bulb fully threaded until seated'], ['Timeout', '120 s'], ['Trials per platform', '5'], ['Material', 'PLA, printed vertically'], ['Infill', '25% (threads)']]
         },
         {
-          id: 'drawer', pieceType: 'drawer', name: 'Sliding Drawer', category: 'Composed Assembly', realImg: './assets/modules/box_setup.png',
-          modelImg: './assets/modules/box_3d.png',
+          id: 'drawer', pieceType: 'drawer', name: 'Sliding Drawer', category: 'Composed Assembly', realImg: './assets/modules/box_setup.webp',
+          modelImg: './assets/modules/box_3d.webp',
           scale: 2.36,
           top: '-4.4%',
           desc: 'A sliding drawer with a recessed handle. The recess is the discriminating feature: fingers can enter it where parallel jaws cannot, which is why the attachment separates anthropomorphic hands from two-finger grippers in the validation data. The drawer slide is defined in the released USD assets.',
           params: [['Success criterion', 'All stages completed within the timeout'], ['Stages', '(1) Grasp the handle, (2) pull open, (3) push closed'], ['Timeout', '120 s'], ['Trials per platform', '5'], ['Material', 'PLA, printed flat']]
         },
         {
-          id: 'shock-absorber', pieceType: 'shock_absorber', name: 'Shock Absorber', category: 'Composed Assembly', realImg: './assets/modules/spring_setup.png',
-          modelImg: './assets/modules/spring_3d.png',
+          id: 'shock-absorber', pieceType: 'shock_absorber', name: 'Shock Absorber', category: 'Composed Assembly', realImg: './assets/modules/spring_setup.webp',
+          modelImg: './assets/modules/spring_3d.webp',
           top: '-5%',
           desc: 'A two-cell shock-absorber model in which two hexagonal end pieces are joined by a coil spring with a bolt running through the spring axis. It is the only attachment that occupies two adjacent cells of the honeycomb, and it combines axial grasping of a slender pin with alignment and insertion under spring load.',
           params: [['Success criterion', 'All stages completed within the timeout'], ['Stages', '(1) Grasp the pin, (2) align with the hole, (3) insert fully'], ['Timeout', '180 s'], ['Cells occupied', '2 adjacent cells'], ['Material', 'PLA, parts printed sideways']]
@@ -713,9 +733,14 @@
         const overlay = document.getElementById('dyn-img-real');
         const sliderHandle = document.getElementById('dyn-slider-handle');
 
-        document.getElementById('btn-see-3d').addEventListener('click', (e) => {
-          document.getElementById('open-viewer-btn').click();
+        document.getElementById('btn-see-3d').addEventListener('click', async (e) => {
           const type = e.currentTarget.getAttribute('data-type');
+          // The viewer is a lazily-loaded chunk, so wait for it before driving it.
+          if (window.hiveboardOpenViewer) {
+            await window.hiveboardOpenViewer();
+          } else {
+            document.getElementById('open-viewer-btn').click();
+          }
           const addBtn = document.querySelector(`.add-piece[data-type="${type}"]`);
           if (addBtn) addBtn.click();
         });
@@ -728,8 +753,8 @@
           const baseImg = document.getElementById('dyn-img-3d');
           const overlayImg = document.getElementById('dyn-img-real');
           if (mod.realImg) {
-            baseImg.src = mod.modelImg || mod.realImg || './assets/hiveboard_preview.png';
-            overlayImg.src = mod.realImg || './assets/hiveboard_preview.png';
+            baseImg.src = mod.modelImg || mod.realImg || './assets/hiveboard_preview.webp';
+            overlayImg.src = mod.realImg || './assets/hiveboard_preview.webp';
 
             // Apply custom adjustments per module, or use defaults
             baseImg.style.transform = mod.scale ? `scale(${mod.scale})` : 'scale(2.2)';
@@ -967,7 +992,7 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/spot_big_valve.mp4"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="metadata" playsinline muted
+                  preload="none" playsinline muted
                   onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
                   onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
                 <div class="video-overlay"
@@ -986,7 +1011,7 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/spot_button.mp4"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="metadata" playsinline muted
+                  preload="none" playsinline muted
                   onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
                   onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
                 <div class="video-overlay"
@@ -1005,7 +1030,7 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/spot_circuit_breaker.mp4"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="metadata" playsinline muted
+                  preload="none" playsinline muted
                   onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
                   onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
                 <div class="video-overlay"
@@ -1024,7 +1049,7 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/spot_key.mp4"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="metadata" playsinline muted
+                  preload="none" playsinline muted
                   onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
                   onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
                 <div class="video-overlay"
@@ -1043,7 +1068,7 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/spot_light_bulb.mp4"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="metadata" playsinline muted
+                  preload="none" playsinline muted
                   onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
                   onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
                 <div class="video-overlay"
@@ -1062,7 +1087,7 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/spot_small_valve.mp4"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="metadata" playsinline muted
+                  preload="none" playsinline muted
                   onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
                   onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
                 <div class="video-overlay"
@@ -1081,7 +1106,7 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/spot_valve.mp4"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="metadata" playsinline muted
+                  preload="none" playsinline muted
                   onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
                   onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
                 <div class="video-overlay"
@@ -1112,7 +1137,7 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/s010_button.mp4"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain;"
-                  preload="metadata" playsinline muted
+                  preload="none" playsinline muted
                   onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
                   onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
                 <div class="video-overlay"
@@ -1131,7 +1156,7 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/s010_circuit_breaker.mp4"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain;"
-                  preload="metadata" playsinline muted
+                  preload="none" playsinline muted
                   onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
                   onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
                 <div class="video-overlay"
@@ -1150,7 +1175,7 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/s010_light_bulb.mp4"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="metadata" playsinline muted
+                  preload="none" playsinline muted
                   onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
                   onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
                 <div class="video-overlay"
@@ -1169,7 +1194,7 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/s010_lock.mp4"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain;"
-                  preload="metadata" playsinline muted
+                  preload="none" playsinline muted
                   onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
                   onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
                 <div class="video-overlay"
@@ -1188,7 +1213,7 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/s010_shock_absorver.mp4"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain;"
-                  preload="metadata" playsinline muted
+                  preload="none" playsinline muted
                   onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
                   onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
                 <div class="video-overlay"
@@ -1207,7 +1232,7 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/s010_thread.mp4"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain;"
-                  preload="metadata" playsinline muted
+                  preload="none" playsinline muted
                   onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
                   onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
                 <div class="video-overlay"
@@ -1226,7 +1251,7 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/s010_valve_ball.mp4"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain;"
-                  preload="metadata" playsinline muted
+                  preload="none" playsinline muted
                   onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
                   onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
                 <div class="video-overlay"
@@ -1245,7 +1270,7 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/s010_valve_gate_small.mp4"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain;"
-                  preload="metadata" playsinline muted
+                  preload="none" playsinline muted
                   onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
                   onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
                 <div class="video-overlay"
@@ -1281,7 +1306,7 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/anymal_big_gate.mp4"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="metadata" playsinline muted
+                  preload="none" playsinline muted
                   onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
                   onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
                 <div class="video-overlay"
@@ -1300,7 +1325,7 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/anymal_big_gate_vr.mp4"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="metadata" playsinline muted
+                  preload="none" playsinline muted
                   onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
                   onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
                 <div class="video-overlay"
@@ -1319,7 +1344,7 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/anymal_button.mp4"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="metadata" playsinline muted
+                  preload="none" playsinline muted
                   onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
                   onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
                 <div class="video-overlay"
@@ -1338,7 +1363,7 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/anymal_circuit_breaker.mp4"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="metadata" playsinline muted
+                  preload="none" playsinline muted
                   onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
                   onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
                 <div class="video-overlay"
@@ -1357,7 +1382,7 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/anymal_key.mp4"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="metadata" playsinline muted
+                  preload="none" playsinline muted
                   onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
                   onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
                 <div class="video-overlay"
@@ -1376,7 +1401,7 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/anymal_key_vr.mp4"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="metadata" playsinline muted
+                  preload="none" playsinline muted
                   onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
                   onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
                 <div class="video-overlay"
@@ -1395,7 +1420,7 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/anymal_light_bulb.mp4"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="metadata" playsinline muted
+                  preload="none" playsinline muted
                   onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
                   onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
                 <div class="video-overlay"
@@ -1414,7 +1439,7 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/anymal_light_bulb_vr.mp4"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="metadata" playsinline muted
+                  preload="none" playsinline muted
                   onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
                   onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
                 <div class="video-overlay"
@@ -1433,7 +1458,7 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/anymal_small_gate.mp4"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="metadata" playsinline muted
+                  preload="none" playsinline muted
                   onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
                   onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
                 <div class="video-overlay"
@@ -1452,7 +1477,7 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/anymal_valve_lever.mp4"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="metadata" playsinline muted
+                  preload="none" playsinline muted
                   onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
                   onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
                 <div class="video-overlay"
@@ -1471,7 +1496,7 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/anymal_valve_lever_hard_vr.mp4"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="metadata" playsinline muted
+                  preload="none" playsinline muted
                   onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
                   onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
                 <div class="video-overlay"
@@ -1490,7 +1515,7 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/anymal_valve_lever_vr.mp4"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="metadata" playsinline muted
+                  preload="none" playsinline muted
                   onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
                   onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
                 <div class="video-overlay"
@@ -1521,7 +1546,7 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/macao_big_valve.mp4"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; transform: scale(2.25) translate(0%, -11%);"
-                  preload="metadata" playsinline muted
+                  preload="none" playsinline muted
                   onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
                   onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
                 <div class="video-overlay"
@@ -1540,7 +1565,7 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/macao_box.mp4"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; transform: scale(2.25) translate(0%, -11%);"
-                  preload="metadata" playsinline muted
+                  preload="none" playsinline muted
                   onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
                   onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
                 <div class="video-overlay"
@@ -1559,7 +1584,7 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/macao_bulb_lamp.mp4"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; transform: scale(2.25) translate(0%, -11%);"
-                  preload="metadata" playsinline muted
+                  preload="none" playsinline muted
                   onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
                   onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
                 <div class="video-overlay"
@@ -1578,7 +1603,7 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/macao_button.mp4"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; transform: scale(2.25) translate(0%, -11%);"
-                  preload="metadata" playsinline muted
+                  preload="none" playsinline muted
                   onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
                   onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
                 <div class="video-overlay"
@@ -1597,7 +1622,7 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/macao_circuit_breaker.mp4"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; transform: scale(2.25) translate(0%, -11%);"
-                  preload="metadata" playsinline muted
+                  preload="none" playsinline muted
                   onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
                   onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
                 <div class="video-overlay"
@@ -1616,7 +1641,7 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/macao_key.mp4"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; transform: scale(2.25) translate(0%, -11%);"
-                  preload="metadata" playsinline muted
+                  preload="none" playsinline muted
                   onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
                   onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
                 <div class="video-overlay"
@@ -1635,7 +1660,7 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/macao_peg_and_hole.mp4"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; transform: scale(2.25) translate(0%, -11%);"
-                  preload="metadata" playsinline muted
+                  preload="none" playsinline muted
                   onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
                   onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
                 <div class="video-overlay"
@@ -1654,7 +1679,7 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/macao_small_valve.mp4"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; transform: scale(2.25) translate(0%, -11%);"
-                  preload="metadata" playsinline muted
+                  preload="none" playsinline muted
                   onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
                   onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
                 <div class="video-overlay"
@@ -1673,7 +1698,7 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/macao_spring.mp4"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; transform: scale(2.25) translate(0%, -11%);"
-                  preload="metadata" playsinline muted
+                  preload="none" playsinline muted
                   onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
                   onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
                 <div class="video-overlay"
@@ -1692,7 +1717,7 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/macao_torque_valve.mp4"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; transform: scale(2.25) translate(0%, -11%);"
-                  preload="metadata" playsinline muted
+                  preload="none" playsinline muted
                   onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
                   onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
                 <div class="video-overlay"
@@ -1711,7 +1736,7 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/s010_m30_exp5.mp4"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; transform: scale(2.25) translate(0%, -11%);"
-                  preload="metadata" playsinline muted
+                  preload="none" playsinline muted
                   onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
                   onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
                 <div class="video-overlay"
@@ -1730,7 +1755,7 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/s010_m8_exp5.mp4"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; transform: scale(2.25) translate(0%, -11%);"
-                  preload="metadata" playsinline muted
+                  preload="none" playsinline muted
                   onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
                   onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
                 <div class="video-overlay"
@@ -1766,7 +1791,7 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/sim_spot_big_gate.mp4#t=0.5"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="metadata" playsinline muted
+                  preload="none" playsinline muted
                   onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
                   onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
                 <div class="video-overlay"
@@ -1785,7 +1810,7 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/sim_spot_big_gate_orbit.mp4#t=0.5"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="metadata" playsinline muted
+                  preload="none" playsinline muted
                   onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
                   onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
                 <div class="video-overlay"
@@ -1804,7 +1829,7 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/sim_spot_circuit_breaker.mp4#t=0.5"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="metadata" playsinline muted
+                  preload="none" playsinline muted
                   onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
                   onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
                 <div class="video-overlay"
@@ -1823,7 +1848,7 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/sim_spot_circuit_breaker_orbit.mp4#t=0.5"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="metadata" playsinline muted
+                  preload="none" playsinline muted
                   onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
                   onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
                 <div class="video-overlay"
@@ -1842,7 +1867,7 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/sim_spot_lever.mp4#t=0.5"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="metadata" playsinline muted
+                  preload="none" playsinline muted
                   onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
                   onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
                 <div class="video-overlay"
@@ -1861,7 +1886,7 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/sim_spot_small_gate.mp4#t=0.5"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="metadata" playsinline muted
+                  preload="none" playsinline muted
                   onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
                   onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
                 <div class="video-overlay"
@@ -1880,7 +1905,7 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/sim_spot_small_gate_orbit.mp4#t=0.5"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="metadata" playsinline muted
+                  preload="none" playsinline muted
                   onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
                   onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
                 <div class="video-overlay"
