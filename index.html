@@ -73,8 +73,8 @@
       box-shadow: none !important;
     }
   </style>
-  <script type="module" crossorigin src="./assets/index-DcV7r-YF.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-CKMAlR2d.css">
+  <script type="module" crossorigin src="./assets/index-D_CTdP35.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-BlwcvMAb.css">
 </head>
 
 <body>
@@ -119,8 +119,8 @@
             <span class="author-block">Gianluca Capezzuto<sup>1</sup>,</span>
             <span class="author-block">Matheus P. Angarola<sup>1</sup>,</span>
             <span class="author-block">Felipe A. G. Tommaselli<sup>1</sup>,</span>
-            <span class="author-block">Rafael R. Baptista<sup>4</sup>,</span>
-            <span class="author-block">Meiko Adriana van Berge<sup>5</sup>,</span>
+            <span class="author-block">Rafael R. Baptista<sup>5</sup>,</span>
+            <span class="author-block">Meiko Adriana van Berge<sup>6</sup>,</span>
             <span class="author-block">Gustavo J. G. Lahr<sup>4</sup>,</span>
             <span class="author-block">Lucas Ferrari Gerez<sup>2</sup>,</span>
             <span class="author-block">Marcelo Becker<sup>1</sup></span>
@@ -134,7 +134,8 @@
             <span class="author-block"><sup>3</sup>The Robotics Systems Lab ETH Zurich, Zurich, Switzerland</span><br>
             <span class="author-block"><sup>4</sup>Instituto Israelita de Ensino e Pesquisa Albert Einstein, Hospital
               Israelita Albert Einstein, São Paulo, Brazil</span><br>
-            <span class="author-block"><sup>5</sup>Independent researcher</span>
+            <span class="author-block"><sup>5</sup>Biomedical Engineering Laboratory, University of São Paulo, Brazil</span><br>
+            <span class="author-block"><sup>6</sup>Independent researcher</span>
           </div>
 
           <div class="mb-4" style="font-size: 0.9rem; color: #94a3b8;">
@@ -223,8 +224,8 @@
             industrial fittings and grouped into three skill categories &mdash; torque, precision, and composed assembly
             &mdash; all fully functional, printable on consumer-grade FDM printers, and released with articulated URDF
             and USD models for direct import into common simulators. A cross-laboratory validation across four
-            manipulation systems, from quadruped- and fixed-base teleoperated arms and a legged manipulator driven
-            through virtual-reality devices to a wearable anthropomorphic prosthetic hand, all scored on the same
+            manipulation systems, from quadruped &mdash; and fixed-base teleoperated arms and a legged manipulator driven
+            through virtual-reality devices to a wearable anthropomorphic prosthetic hand, all scored on the
             thirteen tasks, shows that six of the 13 attachments were completed by every platform and two by none, that
             the per-platform difficulty orderings correlate pairwise between 0.50 and 0.84, and that different
             embodiments fail on different attachments for interpretable, hardware-specific reasons.
@@ -642,6 +643,40 @@
             </div>
           </div>
         </div>
+
+        <!-- LIVE MUJOCO WIDGET -->
+        <div class="mt-6">
+          <div class="is-flex is-align-items-center is-justify-content-space-between mb-3"
+            style="flex-wrap: wrap; gap: 0.5rem;">
+            <div style="display: inline-flex; align-items: center; gap: 8px;">
+              <h3 class="title is-6" style="color: #0f172a; margin-bottom: 0;">Try it in the browser</h3>
+              <span class="dev-tooltip-wrap" tabindex="0" aria-label="Still under development">
+                <svg class="dev-tooltip-icon" width="22" height="22" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
+                <span class="dev-tooltip-box">Still under development</span>
+              </span>
+            </div>
+            <p style="font-size: 0.78rem; color: #94a3b8; margin: 0;">
+              MuJoCo compiled to WebAssembly — real physics, no install
+            </p>
+          </div>
+          <div id="sim-frame-wrap"
+            style="position: relative; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; background: #f8fafc; box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
+            <iframe id="sim-frame" src="./sim/hiveboard-sim.html" title="Live HiveBoard simulation"
+              loading="lazy" style="display: block; width: 100%; height: 100%; border: 0;"></iframe>
+          </div>
+          <p class="mt-2" style="font-size: 0.75rem; color: #94a3b8;">
+            Pick a platform and a task, and the arm runs a fixed trajectory for it against a seven-cell board
+            carrying the ball valve, lamp and circuit breaker modules. Each trajectory is solved offline and then
+            replayed through this same physics before it ships, so a platform only offers the tasks it was actually
+            able to complete &mdash; which is why the lists differ. Robot models from
+            <a href="https://github.com/google-deepmind/mujoco_menagerie" target="_blank" rel="noopener"
+              style="color: #94a3b8; text-decoration: underline;">mujoco_menagerie</a> (Apache-2.0); interactive simulator interface based on <a href="https://younghyopark.me/tune-to-learn/" target="_blank" rel="noopener noreferrer"
+              style="color: #94a3b8; text-decoration: underline;">Tune to Learn</a>; board and
+            modules built from the URDF release above.
+          </p>
+        </div>
       </div>
     </section>
 
@@ -993,7 +1028,7 @@
         </div>
         <p class="has-text-justified mb-5" style="color: #94a3b8; line-height: 1.6;">
           Recorded trials from the cross-laboratory validation. Each laboratory printed the board from the released
-          files and ran the same protocol on its own hardware, so a single attachment can be compared across a
+          files and ran the same <a class="protocol-link" href="https://github.com/EESC-LabRoM/HiveBoard/blob/main/Documentation/PROTOCOL.md" target="_blank" rel="noopener noreferrer">protocol</a> on its own hardware, so a single attachment can be compared across a
           quadruped-mounted gripper, a legged manipulator commanded through virtual reality, a tabletop arm, and a
           prosthetic hand worn on an operator&rsquo;s forearm.
         </p>
@@ -1012,9 +1047,9 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/spot_big_valve.mp4" data-poster="./assets/posters/spot_big_valve.webp"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="none" playsinline muted
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
-                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
                 <div class="video-overlay"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
                   onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
@@ -1031,9 +1066,9 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/spot_button.mp4" data-poster="./assets/posters/spot_button.webp"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="none" playsinline muted
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
-                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
                 <div class="video-overlay"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
                   onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
@@ -1050,9 +1085,9 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/spot_circuit_breaker.mp4" data-poster="./assets/posters/spot_circuit_breaker.webp"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="none" playsinline muted
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
-                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
                 <div class="video-overlay"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
                   onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
@@ -1069,9 +1104,9 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/spot_key.mp4" data-poster="./assets/posters/spot_key.webp"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="none" playsinline muted
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
-                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
                 <div class="video-overlay"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
                   onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
@@ -1088,9 +1123,9 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/spot_light_bulb.mp4" data-poster="./assets/posters/spot_light_bulb.webp"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="none" playsinline muted
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
-                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
                 <div class="video-overlay"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
                   onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
@@ -1107,9 +1142,9 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/spot_small_valve.mp4" data-poster="./assets/posters/spot_small_valve.webp"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="none" playsinline muted
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
-                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
                 <div class="video-overlay"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
                   onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
@@ -1126,9 +1161,9 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/spot_valve.mp4" data-poster="./assets/posters/spot_valve.webp"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="none" playsinline muted
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
-                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
                 <div class="video-overlay"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
                   onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
@@ -1157,9 +1192,9 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/s010_button.mp4" data-poster="./assets/posters/s010_button.webp"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain;"
-                  preload="none" playsinline muted
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
-                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
                 <div class="video-overlay"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
                   onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
@@ -1176,9 +1211,9 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/s010_circuit_breaker.mp4" data-poster="./assets/posters/s010_circuit_breaker.webp"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain;"
-                  preload="none" playsinline muted
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
-                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
                 <div class="video-overlay"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
                   onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
@@ -1195,9 +1230,9 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/s010_light_bulb.mp4" data-poster="./assets/posters/s010_light_bulb.webp"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="none" playsinline muted
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
-                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
                 <div class="video-overlay"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
                   onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
@@ -1214,9 +1249,9 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/s010_lock.mp4" data-poster="./assets/posters/s010_lock.webp"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain;"
-                  preload="none" playsinline muted
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
-                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
                 <div class="video-overlay"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
                   onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
@@ -1233,9 +1268,9 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/s010_shock_absorver.mp4" data-poster="./assets/posters/s010_shock_absorver.webp"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain;"
-                  preload="none" playsinline muted
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
-                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
                 <div class="video-overlay"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
                   onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
@@ -1252,9 +1287,9 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/s010_thread.mp4" data-poster="./assets/posters/s010_thread.webp"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain;"
-                  preload="none" playsinline muted
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
-                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
                 <div class="video-overlay"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
                   onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
@@ -1271,9 +1306,9 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/s010_valve_ball.mp4" data-poster="./assets/posters/s010_valve_ball.webp"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain;"
-                  preload="none" playsinline muted
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
-                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
                 <div class="video-overlay"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
                   onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
@@ -1290,9 +1325,9 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/s010_valve_gate_small.mp4" data-poster="./assets/posters/s010_valve_gate_small.webp"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain;"
-                  preload="none" playsinline muted
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
-                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
                 <div class="video-overlay"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
                   onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
@@ -1326,9 +1361,9 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/anymal_big_gate.mp4" data-poster="./assets/posters/anymal_big_gate.webp"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="none" playsinline muted
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
-                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
                 <div class="video-overlay"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
                   onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
@@ -1345,9 +1380,9 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/anymal_big_gate_vr.mp4" data-poster="./assets/posters/anymal_big_gate_vr.webp"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="none" playsinline muted
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
-                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
                 <div class="video-overlay"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
                   onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
@@ -1364,9 +1399,9 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/anymal_button.mp4" data-poster="./assets/posters/anymal_button.webp"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="none" playsinline muted
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
-                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
                 <div class="video-overlay"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
                   onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
@@ -1383,9 +1418,9 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/anymal_circuit_breaker.mp4" data-poster="./assets/posters/anymal_circuit_breaker.webp"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="none" playsinline muted
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
-                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
                 <div class="video-overlay"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
                   onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
@@ -1402,9 +1437,9 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/anymal_key.mp4" data-poster="./assets/posters/anymal_key.webp"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="none" playsinline muted
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
-                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
                 <div class="video-overlay"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
                   onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
@@ -1421,9 +1456,9 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/anymal_key_vr.mp4" data-poster="./assets/posters/anymal_key_vr.webp"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="none" playsinline muted
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
-                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
                 <div class="video-overlay"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
                   onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
@@ -1440,9 +1475,9 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/anymal_light_bulb.mp4" data-poster="./assets/posters/anymal_light_bulb.webp"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="none" playsinline muted
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
-                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
                 <div class="video-overlay"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
                   onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
@@ -1459,9 +1494,9 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/anymal_light_bulb_vr.mp4" data-poster="./assets/posters/anymal_light_bulb_vr.webp"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="none" playsinline muted
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
-                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
                 <div class="video-overlay"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
                   onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
@@ -1478,9 +1513,9 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/anymal_small_gate.mp4" data-poster="./assets/posters/anymal_small_gate.webp"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="none" playsinline muted
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
-                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
                 <div class="video-overlay"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
                   onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
@@ -1497,9 +1532,9 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/anymal_valve_lever.mp4" data-poster="./assets/posters/anymal_valve_lever.webp"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="none" playsinline muted
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
-                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
                 <div class="video-overlay"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
                   onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
@@ -1516,9 +1551,9 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/anymal_valve_lever_hard_vr.mp4" data-poster="./assets/posters/anymal_valve_lever_hard_vr.webp"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="none" playsinline muted
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
-                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
                 <div class="video-overlay"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
                   onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
@@ -1535,9 +1570,9 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/anymal_valve_lever_vr.mp4" data-poster="./assets/posters/anymal_valve_lever_vr.webp"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="none" playsinline muted
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
-                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
                 <div class="video-overlay"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
                   onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
@@ -1566,9 +1601,9 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/macao_big_valve.mp4" data-poster="./assets/posters/macao_big_valve.webp"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; transform: scale(2.25) translate(0%, -11%);"
-                  preload="none" playsinline muted
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
-                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
                 <div class="video-overlay"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
                   onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
@@ -1585,9 +1620,9 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/macao_box.mp4" data-poster="./assets/posters/macao_box.webp"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; transform: scale(2.25) translate(0%, -11%);"
-                  preload="none" playsinline muted
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
-                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
                 <div class="video-overlay"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
                   onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
@@ -1604,9 +1639,9 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/macao_bulb_lamp.mp4" data-poster="./assets/posters/macao_bulb_lamp.webp"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; transform: scale(2.25) translate(0%, -11%);"
-                  preload="none" playsinline muted
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
-                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
                 <div class="video-overlay"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
                   onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
@@ -1623,9 +1658,9 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/macao_button.mp4" data-poster="./assets/posters/macao_button.webp"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; transform: scale(2.25) translate(0%, -11%);"
-                  preload="none" playsinline muted
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
-                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
                 <div class="video-overlay"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
                   onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
@@ -1642,9 +1677,9 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/macao_circuit_breaker.mp4" data-poster="./assets/posters/macao_circuit_breaker.webp"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; transform: scale(2.25) translate(0%, -11%);"
-                  preload="none" playsinline muted
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
-                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
                 <div class="video-overlay"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
                   onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
@@ -1661,9 +1696,9 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/macao_key.mp4" data-poster="./assets/posters/macao_key.webp"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; transform: scale(2.25) translate(0%, -11%);"
-                  preload="none" playsinline muted
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
-                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
                 <div class="video-overlay"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
                   onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
@@ -1680,9 +1715,9 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/macao_peg_and_hole.mp4" data-poster="./assets/posters/macao_peg_and_hole.webp"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; transform: scale(2.25) translate(0%, -11%);"
-                  preload="none" playsinline muted
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
-                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
                 <div class="video-overlay"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
                   onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
@@ -1699,9 +1734,9 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/macao_small_valve.mp4" data-poster="./assets/posters/macao_small_valve.webp"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; transform: scale(2.25) translate(0%, -11%);"
-                  preload="none" playsinline muted
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
-                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
                 <div class="video-overlay"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
                   onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
@@ -1718,9 +1753,9 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/macao_spring.mp4" data-poster="./assets/posters/macao_spring.webp"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; transform: scale(2.25) translate(0%, -11%);"
-                  preload="none" playsinline muted
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
-                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
                 <div class="video-overlay"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
                   onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
@@ -1737,9 +1772,9 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/macao_torque_valve.mp4" data-poster="./assets/posters/macao_torque_valve.webp"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; transform: scale(2.25) translate(0%, -11%);"
-                  preload="none" playsinline muted
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
-                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
                 <div class="video-overlay"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
                   onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
@@ -1756,9 +1791,9 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/s010_m30_exp5.mp4" data-poster="./assets/posters/s010_m30_exp5.webp"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; transform: scale(2.25) translate(0%, -11%);"
-                  preload="none" playsinline muted
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
-                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
                 <div class="video-overlay"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
                   onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
@@ -1775,9 +1810,9 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/s010_m8_exp5.mp4" data-poster="./assets/posters/s010_m8_exp5.webp"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; transform: scale(2.25) translate(0%, -11%);"
-                  preload="none" playsinline muted
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
-                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
                 <div class="video-overlay"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
                   onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
@@ -1811,9 +1846,9 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/sim_spot_big_gate.mp4#t=0.5" data-poster="./assets/posters/sim_spot_big_gate.webp"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="none" playsinline muted
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
-                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
                 <div class="video-overlay"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
                   onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
@@ -1830,9 +1865,9 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/sim_spot_big_gate_orbit.mp4#t=0.5" data-poster="./assets/posters/sim_spot_big_gate_orbit.webp"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="none" playsinline muted
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
-                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
                 <div class="video-overlay"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
                   onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
@@ -1849,9 +1884,9 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/sim_spot_circuit_breaker.mp4#t=0.5" data-poster="./assets/posters/sim_spot_circuit_breaker.webp"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="none" playsinline muted
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
-                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
                 <div class="video-overlay"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
                   onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
@@ -1868,9 +1903,9 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/sim_spot_circuit_breaker_orbit.mp4#t=0.5" data-poster="./assets/posters/sim_spot_circuit_breaker_orbit.webp"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="none" playsinline muted
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
-                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
                 <div class="video-overlay"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
                   onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
@@ -1887,9 +1922,9 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/sim_spot_lever.mp4#t=0.5" data-poster="./assets/posters/sim_spot_lever.webp"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="none" playsinline muted
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
-                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
                 <div class="video-overlay"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
                   onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
@@ -1906,9 +1941,9 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/sim_spot_small_gate.mp4#t=0.5" data-poster="./assets/posters/sim_spot_small_gate.webp"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="none" playsinline muted
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
-                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
                 <div class="video-overlay"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
                   onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
@@ -1925,9 +1960,9 @@
                 <video
                   src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/sim_spot_small_gate_orbit.mp4#t=0.5" data-poster="./assets/posters/sim_spot_small_gate_orbit.webp"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="none" playsinline muted
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none'; this.setAttribute('controls', 'controls');"
-                  onpause="this.nextElementSibling.style.opacity = '1'; this.nextElementSibling.style.pointerEvents = 'auto'; this.removeAttribute('controls');"></video>
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
                 <div class="video-overlay"
                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
                   onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
@@ -1990,6 +2025,170 @@
           });
         });
 
+        // Format time helper (mm:ss)
+        const formatTime = (secs) => {
+          if (!secs || isNaN(secs)) return '0:00';
+          const m = Math.floor(secs / 60);
+          const s = Math.floor(secs % 60);
+          return `${m}:${s < 10 ? '0' : ''}${s}`;
+        };
+
+        // Initialize custom player on each video placeholder (No Volume Control)
+        document.querySelectorAll('.video-placeholder').forEach((container) => {
+          const video = container.querySelector('video');
+          const overlay = container.querySelector('.video-overlay');
+          if (!video) return;
+
+          // Strictly enforce mute and prevent downloads / context menu
+          video.muted = true;
+          video.volume = 0;
+          video.disablePictureInPicture = true;
+          if ('disableRemotePlayback' in video) video.disableRemotePlayback = true;
+          video.removeAttribute('controls');
+          video.setAttribute('controlslist', 'nodownload novolume noremoteplayback noplaybackrate');
+          video.setAttribute('oncontextmenu', 'return false;');
+          video.setAttribute('ondragstart', 'return false;');
+
+          video.addEventListener('volumechange', () => {
+            if (!video.muted || video.volume > 0) {
+              video.muted = true;
+              video.volume = 0;
+            }
+          });
+          video.addEventListener('play', () => {
+            video.muted = true;
+            video.volume = 0;
+            video.removeAttribute('controls');
+          });
+          video.addEventListener('contextmenu', (e) => e.preventDefault());
+          video.addEventListener('dragstart', (e) => e.preventDefault());
+          video.addEventListener('auxclick', (e) => {
+            if (e.button === 1) e.preventDefault();
+          });
+
+          // Build custom video controls
+          const playSvg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+          const pauseSvg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
+          const fsSvg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>';
+
+          const controls = document.createElement('div');
+          controls.className = 'custom-video-controls';
+          controls.innerHTML = `
+            <button class="custom-video-btn play-toggle-btn" aria-label="Play/Pause">${playSvg}</button>
+            <div class="custom-progress-container">
+              <div class="custom-progress-bg">
+                <div class="custom-progress-fill"></div>
+              </div>
+            </div>
+            <span class="custom-time-display">0:00 / 0:00</span>
+            <button class="custom-video-btn fullscreen-btn" aria-label="Fullscreen">${fsSvg}</button>
+          `;
+          container.appendChild(controls);
+
+          const playBtn = controls.querySelector('.play-toggle-btn');
+          const progressContainer = controls.querySelector('.custom-progress-container');
+          const progressFill = controls.querySelector('.custom-progress-fill');
+          const timeDisplay = controls.querySelector('.custom-time-display');
+          const fsBtn = controls.querySelector('.fullscreen-btn');
+
+          const updateTime = () => {
+            if (!video.duration) return;
+            const progress = (video.currentTime / video.duration) * 100;
+            progressFill.style.width = `${progress}%`;
+            timeDisplay.textContent = `${formatTime(video.currentTime)} / ${formatTime(video.duration)}`;
+          };
+
+          video.addEventListener('timeupdate', updateTime);
+          video.addEventListener('loadedmetadata', updateTime);
+
+          const updateState = (isPlaying) => {
+            if (isPlaying) {
+              controls.classList.add('is-active');
+              playBtn.innerHTML = pauseSvg;
+              if (overlay) {
+                overlay.style.opacity = '0';
+                overlay.style.pointerEvents = 'none';
+              }
+            } else {
+              playBtn.innerHTML = playSvg;
+              if (video.ended) {
+                controls.classList.remove('is-active');
+                if (overlay) {
+                  overlay.style.opacity = '1';
+                  overlay.style.pointerEvents = 'auto';
+                }
+              }
+            }
+          };
+
+          video.addEventListener('play', () => updateState(true));
+          video.addEventListener('pause', () => updateState(false));
+          video.addEventListener('ended', () => updateState(false));
+
+          playBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (video.paused) video.play();
+            else video.pause();
+          });
+
+          video.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (video.paused) video.play();
+            else video.pause();
+          });
+
+          // Scrub / Seek timeline
+          let isDragging = false;
+          const seek = (e) => {
+            const rect = progressContainer.getBoundingClientRect();
+            const pos = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+            if (video.duration) {
+              video.currentTime = pos * video.duration;
+              progressFill.style.width = `${pos * 100}%`;
+            }
+          };
+
+          progressContainer.addEventListener('click', (e) => {
+            e.stopPropagation();
+            seek(e);
+          });
+          progressContainer.addEventListener('mousedown', (e) => {
+            e.stopPropagation();
+            isDragging = true;
+            seek(e);
+          });
+          window.addEventListener('mousemove', (e) => {
+            if (isDragging) seek(e);
+          });
+          window.addEventListener('mouseup', () => {
+            isDragging = false;
+          });
+
+          // Fullscreen toggle
+          fsBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (!document.fullscreenElement) {
+              if (container.requestFullscreen) container.requestFullscreen();
+              else if (container.webkitRequestFullscreen) container.webkitRequestFullscreen();
+            } else {
+              if (document.exitFullscreen) document.exitFullscreen();
+              else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+            }
+          });
+
+          // Mobile touch support for controls
+          container.addEventListener('touchstart', () => {
+            container.classList.add('is-touch-active');
+            clearTimeout(container._touchTimer);
+            container._touchTimer = setTimeout(() => container.classList.remove('is-touch-active'), 3500);
+          }, { passive: true });
+        });
+
+        // Prevent context menu on all video elements and containers
+        document.querySelectorAll('.video-placeholder, .video-item, .video-overlay').forEach(el => {
+          el.addEventListener('contextmenu', (e) => e.preventDefault());
+          el.addEventListener('dragstart', (e) => e.preventDefault());
+        });
       });
     </script>
 
@@ -2002,7 +2201,7 @@
         </div>
 
         <p class="has-text-justified mb-5" style="color: #475569; line-height: 1.7;">
-          Each laboratory prints the board from the released files and runs the same protocol on its own hardware: five
+          Each laboratory prints the board from the released files and runs the same <a class="protocol-link" href="https://github.com/EESC-LabRoM/HiveBoard/blob/main/Documentation/PROTOCOL.md" target="_blank" rel="noopener noreferrer">protocol</a> on its own hardware: five
           recorded trials per attachment, a fixed neutral start pose, per-attachment timeouts, no scripted assistance.
           <strong style="color: #0f172a;">Select any cell, platform, or attachment</strong> to see what happened in
           those trials.
