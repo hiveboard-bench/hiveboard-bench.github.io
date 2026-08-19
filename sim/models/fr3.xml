@@ -270,9 +270,9 @@
   </contact>
   <equality>
     <joint joint1="finger_joint2" joint2="finger_joint1" polycoef="0 1 0 0 0" />
-    <joint joint1="lamp_PrismaticJoint" joint2="lamp_RevoluteJoint" polycoef="0 0.0082 0 0 0" />
+    <joint joint1="lamp_PrismaticJoint" joint2="lamp_RevoluteJoint" polycoef="0 0.0082 0 0 0" solref="0.01 1" solimp="0.95 0.999 0.001" />
   </equality>
   <keyframe>
-    <key name="home" qpos="0 -0.0881 0 -2.1491 0 2.0611 0.79 1.22058e-05 -0.000164563 -8.97273e-18 -2.38364e-06 -0.000269591 0.00130844" />
+    <key name="home" qpos="0 -0.0881 0 -2.1491 0 2.0611 0.79 1.22058e-05 -0.000164563 -8.97273e-18 -1.82521e-05 -0.000244895 0.00130844" />
   </keyframe>
 </mujoco>

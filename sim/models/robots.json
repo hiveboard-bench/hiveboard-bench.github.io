@@ -92,6 +92,7 @@
   ],
   "tasks": [
    "valve",
+   "lamp",
    "breaker"
   ]
  },

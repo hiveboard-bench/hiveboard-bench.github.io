@@ -38,8 +38,23 @@
       font-family: var(--font);
     }
 
-    #container { position: relative; width: 100%; height: 100%; }
+    /* The canvas lives in #stage, everything that floats over it is absolutely
+       positioned against #stage or #container. On a wide screen #stage is the
+       only thing in flow, so it fills the frame and the two are the same box;
+       on a phone the panels leave the overlay and become strips above and
+       below it (see the max-width rules at the end of this sheet). */
+    #container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    #stage { position: relative; flex: 1 1 auto; min-height: 0; order: 2; }
     canvas { display: block; width: 100%; height: 100%; }
+    /* The panels are absolutely positioned, so this wrapper only needs to exist
+       on phones, where it becomes the bottom dock. */
+    #dock { display: contents; }
 
     /* ── Loading overlay ─────────────────────────────────────── */
     #loading {
@@ -244,46 +259,142 @@
       transition: opacity 0.5s;
     }
 
-    /* Below this the overlays start colliding with each other, so the module
-       blurb and the drag hint give up their space first. */
+    /* ── Phones ──────────────────────────────────────────────
+       Below this width the three overlay panels cover more of the scene than
+       they leave visible, so they stop floating: the platform picker becomes a
+       strip along the top, the task picker and playback share a dock along the
+       bottom, and the canvas keeps everything in between to itself. */
     @media (max-width: 560px) {
-      #platforms { top: 6px; padding: 4px 5px; }
-      #robot-list button { padding: 4px 7px; font-size: 9px; }
+      .panel {
+        position: static;
+        transform: none;
+        width: auto;
+        max-width: none;
+        border-radius: 0;
+        background: rgba(248, 250, 252, 0.94);
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+      }
+
+      /* Titles are what the strips' own shape already says. */
+      .panel-title { display: none; }
+
+      .panel button {
+        padding: 7px 10px;
+        font-size: 10.5px;
+        min-height: 30px;         /* a thumb-sized target, not a mouse-sized one */
+      }
+
+      /* These repeat what .panel above already says, because the desktop rules
+         they undo are written against ids and would otherwise win. */
+      #platforms {
+        order: 1;
+        flex: 0 0 auto;
+        transform: none;
+        max-width: none;
+        padding: 6px 8px;
+        border-bottom: 1px solid var(--line);
+        /* More platforms than fit: scroll them, and fade the right edge so it
+           reads as a row that continues rather than one that ended. */
+        overflow-x: auto;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+        mask-image: linear-gradient(to right, #000 calc(100% - 22px), transparent);
+        -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 22px), transparent);
+      }
+      #platforms::-webkit-scrollbar { display: none; }
+      #robot-list button { padding: 6px 10px; font-size: 10px; }
       #robot-list button small { display: none; }
-      #modules { top: 40px; left: 8px; width: 118px; }
+
+      /* Tasks get a row of their own: sharing one with the playback buttons
+         left the labels a third of the width and every list scrolling. */
+      #dock {
+        order: 3;
+        flex: 0 0 auto;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        border-top: 1px solid var(--line);
+        background: rgba(248, 250, 252, 0.94);
+      }
+
+      #modules { width: auto; min-width: 0; padding: 7px 8px; }
+      #task-list {
+        flex-direction: row;
+        gap: 4px;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+        mask-image: linear-gradient(to right, #000 calc(100% - 18px), transparent);
+        -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 18px), transparent);
+      }
+      #task-list::-webkit-scrollbar { display: none; }
+      #task-list button { white-space: nowrap; flex: 0 0 auto; }
+      #task-list:empty::after { white-space: nowrap; }
       #task-readout { display: none; }
-      #motion { bottom: 8px; right: 8px; width: 118px; }
+
+      #motion { width: auto; text-align: left; padding: 0 8px 8px; }
+      #motion-row { gap: 6px; }
+      #motion-row button { flex: 1 1 0; min-height: 34px; text-align: center; }
+      /* Playback progress spans the whole dock instead of sitting under the two
+         buttons, where at this size it was a 40px stub. */
+      #progress {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        margin: 0;
+        border-radius: 0;
+      }
+
       #live { bottom: 8px; left: 8px; padding: 4px 8px; }
       #live .hint { display: none; }
-      #hint { bottom: 58px; font-size: 9.5px; padding: 4px 10px; }
-      .panel button { padding: 4px 6px; }
+      #hint { bottom: 10px; font-size: 9.5px; padding: 4px 10px; }
+    }
+
+    /* Landscape phones: the strips would eat a viewport that is already short,
+       so keep the overlay layout and just shrink it. */
+    @media (max-height: 430px) and (min-width: 561px) {
+      #platforms { top: 6px; padding: 4px 5px; }
+      #robot-list button small { display: none; }
+      #modules { top: 40px; left: 8px; width: 140px; }
+      #task-readout { display: none; }
+      #motion { bottom: 8px; right: 8px; width: 130px; }
+      #live { bottom: 8px; left: 8px; }
+      #hint { bottom: 52px; }
+      .panel button { padding: 4px 7px; }
     }
   </style>
 </head>
 
 <body>
   <div id="container">
+    <div id="stage">
+      <div id="live"><span class="dot"></span>Live physics<span class="hint">MuJoCo · WebAssembly</span></div>
+      <div id="hint">Drag to orbit · scroll to zoom</div>
+    </div>
+
     <div class="panel" id="platforms">
       <div id="robot-list"></div>
     </div>
 
-    <div class="panel" id="modules">
-      <div class="panel-title">Task</div>
-      <div id="task-list"></div>
-      <div id="task-readout">Pick a task. The arm runs a fixed trajectory for it.</div>
-    </div>
-
-    <div class="panel" id="motion">
-      <div class="panel-title">Playback</div>
-      <div id="motion-row">
-        <button id="play">Play</button>
-        <button id="reset">Reset</button>
+    <div id="dock">
+      <div class="panel" id="modules">
+        <div class="panel-title">Task</div>
+        <div id="task-list"></div>
+        <div id="task-readout">Pick a task. The arm runs a fixed trajectory for it.</div>
       </div>
-      <div id="progress"><span></span></div>
-    </div>
 
-    <div id="live"><span class="dot"></span>Live physics<span class="hint">MuJoCo · WebAssembly</span></div>
-    <div id="hint">Drag to orbit · scroll to zoom</div>
+      <div class="panel" id="motion">
+        <div class="panel-title">Playback</div>
+        <div id="motion-row">
+          <button id="play">Play</button>
+          <button id="reset">Reset</button>
+        </div>
+        <div id="progress"><span></span></div>
+      </div>
+    </div>
 
     <div id="loading">
       <div class="spinner"></div>
@@ -358,6 +469,10 @@
     const readoutEl = document.getElementById('task-readout');
     const progressEl = document.querySelector('#progress span');
     const playEl = document.getElementById('play');
+    const stageEl = document.getElementById('stage');
+
+    /** Touch input, i.e. treat this as a phone or tablet rather than a mouse. */
+    const coarsePointer = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
 
     function status(text, progress) {
       statusEl.textContent = text;
@@ -508,17 +623,20 @@
     // ═══════════════════════════════════════════════════════════
     function buildScene() {
       status('Building view…', 0.96);
-      const container = document.getElementById('container');
-      const w = container.clientWidth;
-      const h = container.clientHeight;
+      const stage = document.getElementById('stage');
+      const w = stage.clientWidth;
+      const h = stage.clientHeight;
 
       renderer = new THREE.WebGLRenderer({ antialias: true });
       renderer.setSize(w, h);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      // A phone's 3x panel costs three times the fragments for a difference
+      // nobody sees at this size, and this scene is already sharing the frame
+      // with a physics step.
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, coarsePointer ? 1.5 : 2));
       renderer.shadowMap.enabled = true;
       renderer.shadowMap.type = THREE.PCFShadowMap;
       renderer.toneMapping = THREE.ACESFilmicToneMapping;
-      container.appendChild(renderer.domElement);
+      stage.appendChild(renderer.domElement);
 
       scene = new THREE.Scene();
       scene.background = new THREE.Color(0xf8fafc);
@@ -531,6 +649,18 @@
       controls.minDistance = 0.25;
       controls.maxDistance = 3.5;
       controls.maxPolarAngle = Math.PI * 0.495;   // never duck under the floor
+
+      if (coarsePointer) {
+        // One finger has to keep scrolling the page: the widget is most of a
+        // phone screen, and a visitor who cannot swipe past it is stuck. Orbit
+        // moves to two fingers, the gesture that already zooms.
+        controls.touches.ONE = null;
+        controls.touches.TWO = THREE.TOUCH.DOLLY_ROTATE;
+        // OrbitControls sets touch-action: none on connect, which would kill
+        // that scroll before it starts.
+        renderer.domElement.style.touchAction = 'pan-y';
+        hintEl.textContent = 'Two fingers to orbit · pinch to zoom';
+      }
 
       scene.add(new THREE.AmbientLight(0xffffff, 0.75));
       const key = new THREE.DirectionalLight(0xffffff, 1.7);
@@ -765,8 +895,10 @@
      */
     function selectTask(key, { dolly = true, play = true } = {}) {
       task = trajectories[key];
+      const list = document.getElementById('task-list');
       document.querySelectorAll('#task-list button').forEach((btn) => {
         btn.classList.toggle('active', btn.dataset.task === key);
+        if (btn.dataset.task === key) revealChip(btn, list);
       });
 
       resetScene();
@@ -883,6 +1015,22 @@
       }
     }
 
+    /**
+     * Scroll a chip's own strip until the chip is inside it.
+     *
+     * scrollLeft rather than scrollIntoView: the latter walks up through every
+     * scrollable ancestor, and one of those is the page that embeds this
+     * iframe, so a platform coming into view would yank the whole article.
+     */
+    function revealChip(btn, strip) {
+      if (!btn || strip.scrollWidth <= strip.clientWidth) return;
+      const pad = 8;
+      const left = btn.offsetLeft - strip.offsetLeft - pad;
+      const right = left + btn.offsetWidth + 2 * pad - strip.clientWidth;
+      if (left < strip.scrollLeft) strip.scrollLeft = left;
+      else if (right > strip.scrollLeft) strip.scrollLeft = right;
+    }
+
     /** One button per platform; the ones without a model yet stay disabled. */
     function buildRobotList() {
       const list = document.getElementById('robot-list');
@@ -895,8 +1043,10 @@
           btn.addEventListener('click', async () => {
             if (robot && robot.name === entry.name) return;
             setPlaying(false);
+            const strip = document.getElementById('platforms');
             document.querySelectorAll('#robot-list button').forEach((b) => {
               b.classList.toggle('active', b.dataset.robot === entry.name);
+              if (b.dataset.robot === entry.name) revealChip(b, strip);
             });
             await loadRobot(entry);
             const first = Object.keys(trajectories)[0];
@@ -982,10 +1132,12 @@
     }
 
     function onResize() {
-      const container = document.getElementById('container');
       if (!renderer) return;
-      renderer.setSize(container.clientWidth, container.clientHeight);
-      camera.aspect = container.clientWidth / container.clientHeight;
+      const w = stageEl.clientWidth;
+      const h = stageEl.clientHeight;
+      if (!w || !h) return;
+      renderer.setSize(w, h);
+      camera.aspect = w / h;
       camera.updateProjectionMatrix();
     }
 
@@ -1026,8 +1178,10 @@
         buildRobotList();
 
         const opening = catalogue.find((r) => !r.soon && r.tasks.length);
+        const strip = document.getElementById('platforms');
         document.querySelectorAll('#robot-list button').forEach((b) => {
           b.classList.toggle('active', b.dataset.robot === opening.name);
+          if (b.dataset.robot === opening.name) revealChip(b, strip);
         });
         await loadRobot(opening);
 
@@ -1038,7 +1192,17 @@
         if (first) selectTask(first, { dolly: false });
         syncControls();
 
-        window.addEventListener('resize', onResize);
+        // selectTask() clears the hint, on the assumption that a visitor who
+        // just clicked a task does not need telling how to drive the camera.
+        // The opening selection is ours, not theirs, so put it back -- on a
+        // phone especially, where orbiting takes a gesture nobody guesses.
+        hintEl.style.opacity = '1';
+
+        // The stage is what the camera has to match, and it changes size
+        // without the window doing so: the strips above and below it grow a row
+        // when the frame narrows, and a phone's address bar sliding away
+        // resizes the embed but not always the frame's own window.
+        new ResizeObserver(onResize).observe(stageEl);
 
         status('Ready', 1);
         overlayEl.classList.add('hidden');

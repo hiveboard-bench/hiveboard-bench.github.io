@@ -247,9 +247,9 @@
     <general name="gripper" class="sts3215" joint="gripper" ctrlrange="-0.17453 1.74533" />
   </actuator>
   <equality>
-    <joint joint1="lamp_PrismaticJoint" joint2="lamp_RevoluteJoint" polycoef="0 0.0082 0 0 0" />
+    <joint joint1="lamp_PrismaticJoint" joint2="lamp_RevoluteJoint" polycoef="0 0.0082 0 0 0" solref="0.01 1" solimp="0.95 0.999 0.001" />
   </equality>
   <keyframe>
-    <key name="home" qpos="0 -0.6 0.9 0.6 0 -4.74751e-06 5.84817e-12 -6.2175e-13 -2.38364e-06 -0.000269591 0.00130845" />
+    <key name="home" qpos="0 -0.6 0.9 0.6 0 -4.74751e-06 5.84805e-12 -9.61004e-13 -1.82522e-05 -0.000244895 0.00130845" />
   </keyframe>
 </mujoco>
