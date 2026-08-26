@@ -77,7 +77,45 @@ npm run deploy
 ```
 
 
+---
+
+## 🕹️ Modifying & Authoring Trajectories
+
+The simulation viewer replays deterministic task-space trajectories (approach, grasp, actuate, release, retreat) solved with inverse kinematics and verified against MuJoCo physics. You can modify these trajectories in two ways:
+
+### 1. Interactive Browser-Based Editor
+
+The repository includes a live visual editor to adjust waypoints directly in 3D:
+
+1. **Start the editor backend server:**
+   ```bash
+   python3 tools/traj_edit.py
+   ```
+2. **Start the Vite dev server (in a separate terminal):**
+   ```bash
+   npm run dev
+   ```
+3. **Open the editor in your browser:**  
+   Navigate to `http://localhost:5173/sim/hiveboard-sim.html?edit=1`
+4. **Interact & Save:**
+   - Click and drag the keyframe beads along the motion path (or select a bead and use arrow keys to nudge coordinates).
+   - The backend re-solves IK and simulates acceptance replay in real-time.
+   - Click **Save** to persist waypoint offsets to `tools/traj_edits.json` and update the robot's `.traj.json` file.
+
+### 2. Programmatic Authoring via Python
+
+- **Task Keyframes & Logic:** Authored in [`tools/sim_trajectories.py`](tools/sim_trajectories.py) (defines Cartesian waypoints, approach directions, gripper actions, and acceptance criteria).
+- **Robot Specs & Layouts:** Configured in [`tools/build-sim-assets.py`](tools/build-sim-assets.py).
+- **Rebuild Assets & Trajectories:**
+  ```bash
+  python3 tools/build-sim-assets.py
+  ```
+  *(This compiles MuJoCo scenes, solves IK, and runs acceptance tests across all modules).*
+
+---
+
 ## Repository Structure
+
 
 ```text
 ├── assets-src/      # Source assets and 3D models
@@ -93,7 +131,7 @@ npm run deploy
 
 ---
 
-## 📄 Citation
+## Citation
 
 If you find HiveBoard useful in your research, please cite:
 
