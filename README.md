@@ -76,7 +76,6 @@ Deploy to GitHub Pages:
 npm run deploy
 ```
 
-
 ## Modifying & Authoring Trajectories
 
 The simulation viewer replays deterministic task-space trajectories (approach, grasp, actuate, release, retreat) solved with inverse kinematics and verified against MuJoCo physics. You can modify these trajectories in two ways:
@@ -110,8 +109,6 @@ The repository includes a live visual editor to adjust waypoints directly in 3D:
   ```
   *(This compiles MuJoCo scenes, solves IK, and runs acceptance tests across all modules).*
 
----
-
 ## Repository Structure
 
 
@@ -125,9 +122,6 @@ The repository includes a live visual editor to adjust waypoints directly in 3D:
 ├── style.css        # Website styling and responsive design rules
 └── package.json     # Node.js dependencies and scripts
 ```
-
-
----
 
 ## Citation
 
