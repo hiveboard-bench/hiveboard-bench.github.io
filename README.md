@@ -77,9 +77,7 @@ npm run deploy
 ```
 
 
----
-
-## 🕹️ Modifying & Authoring Trajectories
+## Modifying & Authoring Trajectories
 
 The simulation viewer replays deterministic task-space trajectories (approach, grasp, actuate, release, retreat) solved with inverse kinematics and verified against MuJoCo physics. You can modify these trajectories in two ways:
 
