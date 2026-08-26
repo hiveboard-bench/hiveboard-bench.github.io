@@ -230,7 +230,7 @@
         <geom pos="-0.0350036 0 0" quat="0.5 -0.5 0.5 -0.5" type="mesh" mesh="breaker_tn__corpo1_dC_Corpo1_Mesh" group="3" material="hb_shell" rgba="0 0 0 0" contype="0" conaffinity="0" />
         <body name="breaker_lever_pivot" quat="1 0 0 -5e-08">
           <inertial pos="0.02 0.01 -0.0015" quat="0.5 0.5 0.5 0.5" mass="0.0264" diaginertia="5.9158e-06 4.4e-06 3.2758e-06" />
-          <joint name="breaker_RevoluteJoint" pos="0 0 0" axis="0 1 0" range="-0.523599 0.523599" actuatorfrcrange="-100 100" springref="0" stiffness="0.1" damping="0.06" armature="0.002" frictionloss="0.01" />
+          <joint name="breaker_RevoluteJoint" pos="0 0 0" axis="0 1 0" range="-0.523599 0.523599" actuatorfrcrange="-100 100" springref="0" stiffness="0" damping="0.06" armature="0.002" frictionloss="0.01" />
           <geom pos="0.0081193 0.0200116 0.0099949" quat="0.5 -0.5 0.5 -0.5" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="breaker_tn__Alavanca1_zH_Corpo1_Mesh" material="hb_accent" />
           <geom pos="0.0081193 0.0200116 0.0099949" quat="0.5 -0.5 0.5 -0.5" type="mesh" mesh="breaker_tn__Alavanca1_zH_Corpo1_Mesh" group="3" material="hb_accent" rgba="0 0 0 0" contype="2" conaffinity="1" />
         </body>

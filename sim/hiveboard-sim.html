@@ -457,6 +457,7 @@
     let subStep = 0;            // physics steps taken within that sample
     let stepsPerSample = 10;
     let restGrip = 0;           // where the gripper sits between runs
+    let devHold = false;        // ?edit=1 only: park on the scrubbed sample
 
     let pathLine = null;        // the drawn trajectory
     let pathMarker = null;      // where along it the arm currently is
@@ -859,7 +860,7 @@
     // ═══════════════════════════════════════════════════════════
     /** Command one trajectory sample, or hold home when nothing is playing. */
     function applyControl() {
-      const target = task && playing ? task.qpos[sampleIndex] : robot.home;
+      const target = task && (playing || devHold) ? task.qpos[sampleIndex] : robot.home;
       for (let i = 0; i < robot.arm; i++) mjData.ctrl[i] = target[i];
       // The running task owns the gripper; between runs it sits open.
       mjData.ctrl[gripCtrl] = task && playing ? task.grip[sampleIndex] : restGrip;
@@ -1208,6 +1209,27 @@
         overlayEl.classList.add('hidden');
         setTimeout(() => { hintEl.style.opacity = '0'; }, 9000);
         start();
+
+        // ── Trajectory editor ────────────────────────────────────────
+        // Temporary dev tool: only with ?edit=1 in the URL, and only any use
+        // while `python3 tools/traj_edit.py` is running. Delete this block,
+        // `devHold` above and public/sim/edit.js to remove it.
+        if (new URLSearchParams(location.search).has('edit')) {
+          import('./edit.js').then((editor) => editor.attach({
+            THREE, scene, camera, renderer, controls, toThree,
+            resetScene, drawPath, setPlaying,
+            setSample(i) {
+              if (!task) return;
+              devHold = true;
+              sampleIndex = Math.max(0, Math.min(i, task.qpos.length - 1));
+              subStep = 0;
+            },
+            get robot() { return robot; },
+            get task() { return task; },
+            get trajectories() { return trajectories; },
+            get sample() { return sampleIndex; },
+          })).catch(console.error);
+        }
 
         // The parent's IntersectionObserver has almost certainly already fired
         // by now, so ask it for the answer we missed.
