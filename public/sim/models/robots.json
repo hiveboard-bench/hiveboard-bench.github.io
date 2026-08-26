@@ -1,0 +1,156 @@
+[
+ {
+  "name": "fr3",
+  "label": "Franka FR3",
+  "note": "reference arm",
+  "scene": "fr3.xml",
+  "traj": "fr3.traj.json",
+  "arm": 7,
+  "grip": {
+   "actuator": "gripper",
+   "open": 0.034,
+   "grasp": 0.002,
+   "fist": 0.0
+  },
+  "home": [
+   0.0,
+   -0.0881,
+   0.0,
+   -2.1491,
+   0.0,
+   2.0611,
+   0.79
+  ],
+  "gripIndex": 7,
+  "spinIndex": -1,
+  "board": [
+   0.52,
+   0.0,
+   0.2
+  ],
+  "view": {
+   "centre": [
+    0.2731,
+    0.0003,
+    0.3752
+   ],
+   "span": 1.1666
+  },
+  "framing": "over",
+  "boardNormal": [
+   -0.0,
+   0.0,
+   1.0
+  ],
+  "tasks": [
+   "valve",
+   "lamp",
+   "breaker"
+  ]
+ },
+ {
+  "name": "spot",
+  "label": "Spot + Spot Arm",
+  "note": "Platform A",
+  "scene": "spot.xml",
+  "traj": "spot.traj.json",
+  "arm": 6,
+  "grip": {
+   "actuator": "arm_f1x",
+   "open": -1.5,
+   "grasp": 0.0,
+   "fist": 0.0
+  },
+  "home": [
+   0.0,
+   -1.9,
+   2.0,
+   0.0,
+   -0.6,
+   0.0
+  ],
+  "gripIndex": 6,
+  "spinIndex": -1,
+  "board": [
+   1.08,
+   0.0,
+   0.7
+  ],
+  "view": {
+   "centre": [
+    0.2362,
+    -0.0,
+    0.554
+   ],
+   "span": 2.0718
+  },
+  "framing": "side",
+  "boardNormal": [
+   -1.0,
+   0.0,
+   0.0
+  ],
+  "tasks": [
+   "valve",
+   "lamp",
+   "breaker"
+  ]
+ },
+ {
+  "name": "so101",
+  "label": "LeRobot SO-101",
+  "note": "Platform B",
+  "scene": "so101.xml",
+  "traj": "so101.traj.json",
+  "arm": 5,
+  "grip": {
+   "actuator": "gripper",
+   "open": 1.6,
+   "grasp": -0.175,
+   "fist": -0.175
+  },
+  "home": [
+   0.0,
+   -0.6,
+   0.9,
+   0.6,
+   0.0
+  ],
+  "gripIndex": 5,
+  "spinIndex": 6,
+  "board": [
+   0.29,
+   0.0,
+   0.01
+  ],
+  "view": {
+   "centre": [
+    0.2197,
+    0.0003,
+    0.1187
+   ],
+   "span": 0.6149
+  },
+  "framing": "over",
+  "boardNormal": [
+   -0.0,
+   0.0,
+   1.0
+  ],
+  "tasks": [
+   "breaker"
+  ]
+ },
+ {
+  "name": "anymal",
+  "label": "ANYmal + DynaArm",
+  "note": "Platform C",
+  "soon": true
+ },
+ {
+  "name": "macao",
+  "label": "Macao hand",
+  "note": "Platform D",
+  "soon": true
+ }
+]
