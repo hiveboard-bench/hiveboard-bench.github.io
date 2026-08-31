@@ -186,6 +186,7 @@ ROBOTS = [
         "lamp_standoff": 0.01,
         "lamp_wind": 1.5,
         "lamp_approach": 0.25,
+        "lamp_demo": True,
         # And the valve lever held 15 mm further down the bar, towards the hub:
         # up at the middle of it the claw reads as hovering over the lever's tip
         # rather than holding it. Lower down there is less to slip against, so
@@ -203,7 +204,13 @@ ROBOTS = [
         "arm": ["shoulder_pan", "shoulder_lift", "elbow_flex", "wrist_flex", "wrist_roll"],
         "grip": {"actuator": "gripper", "open": 1.6, "grasp": -0.175, "fist": -0.175},
         "jaws": ("moving_jaw_so101_v1", "gripper"),
-        "home": [0.0, -0.6, 0.9, 0.6, 0.0],
+        # Park folded clear of every board angle. The former home posture sat
+        # over the lamp at its task angle and pushed the bulb out during reset,
+        # before the trajectory had even begun.
+        "home": [0.0, 0.0, 0.0, 0.0, 0.0],
+        # Keep the old, well-conditioned posture as the IK nullspace bias only;
+        # the authored path still starts and ends at the collision-free home.
+        "ik_home": [0.0, -0.6, 0.9, 0.6, 0.0],
         # Desk-sized: the board sits on the same surface as the arm's own base
         # rather than up on a stand.
         "board": (0.29, 0.0, 0.01),
@@ -220,16 +227,44 @@ ROBOTS = [
         "grip_depth": 0.85,
         # Turn the stand to bring each module round to the near side.
         "spin_board": True,
-        # The lever is reachable but the swing across the board reads badly at
-        # this scale, so it is left off until it is worth watching. The lamp is
-        # off for the same reason for now: five joints cannot hold the bulb
-        # square through a whole unscrew, and it misses at both board angles --
-        # +35.5 mm of the 34.2 mm it needs but left 1.75 mm proud, or 6.0 mm and
-        # barely out of the socket. Better absent than advertised and unmet.
-        "skip": ["valve", "lamp"],
+        # Put each task directly in front of the short arm. The geometric
+        # facing angle is only a starting point: the valve works best one cell
+        # clockwise from it, while the bulb needs a small extra turn to keep
+        # the elbow clear of the panel through the whole orbiting grasp.
+        "task_spins": {"valve": math.radians(-90), "lamp": math.radians(97)},
+        # Five joints cannot keep an arbitrary gripper roll while tracking the
+        # bulb axis. Hold it off-axis instead: orbiting this 42 mm radius turns
+        # the bulb mechanically without asking for a sixth wrist DOF.
+        "lamp_grasp_radius": 0.042,
+        # The clearance goal already includes 4 mm above the socket rim. The
+        # larger generic multiplier was added to mask Python/WASM differences;
+        # this path is accepted from its task-only motion instead of the old
+        # reset transient, so the measured clearance itself is the threshold.
+        "lamp_tolerance": 1.0,
+        # The gripper stays securely in contact, but the under-actuated wrist
+        # trades 6-7 mm of TCP position for its approach direction on the arc.
+        "lamp_ik_tolerance": 0.007,
+        "lamp_demo": True,
     },
-    {"name": "anymal", "label": "ANYmal + DynaArm", "note": "Platform C", "soon": True},
-    {"name": "macao", "label": "Macao hand", "note": "Platform D", "soon": True},
+    {
+        "name": "platform_c",
+        "label": "ANYmal with DynaArm",
+        "note": "Platform C",
+        "soon": True,
+    },
+    {
+        "name": "macao", "label": "Macao hand", "note": "Platform D",
+        "arm": ["macao_x", "macao_y", "macao_z", "macao_roll", "macao_pitch", "macao_yaw"],
+        "grip": {"actuator": "macao_grip", "open": 0.0, "grasp": 0.8, "fist": 1.1},
+        "home": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        "board": (0.85, 0.0, 0.55),
+        "board_quat": BOARD_UPRIGHT,
+        "stand": {"top": 0.55, "half": 0.17},
+        "framing": "side",
+        "mount": (0.45, 0.0, 0.52),
+        "tcp": ("macao_hand", (0.0, 0.0, 0.11)),
+        "skip": ["valve", "lamp", "breaker", "toggle", "button", "dial"],
+    },
 ]
 
 # MuJoCo needs a <mujoco> block inside the URDF to pick up mesh paths and to be
@@ -336,8 +371,262 @@ def emit_mesh(src: Path, dst_dir: Path, name: str = None, simplify=True) -> str:
 # ═══════════════════════════════════════════════════════════════════════════
 #  Sources
 # ═══════════════════════════════════════════════════════════════════════════
+def prepare_anymal_arm(menagerie_dir: Path):
+    """Assemble ANYmal C + DynaArm model and a symmetric standing stance.
+
+    The arm meshes are published in each link's own frame.  The previous
+    reconstruction chained them along a guessed +X axis, even though DynaArm's
+    forearm is authored along +Z and two wrist frames are rotated.  That made
+    intact meshes look like disconnected or missing parts.  The transforms
+    below follow Duatic's DynaArm description (baracuda12/corydoras12).
+    """
+    import mujoco
+    anymal_dir = menagerie_dir / "anybotics_anymal_c"
+    assets_dir = anymal_dir / "assets"
+    assets_dir.mkdir(parents=True, exist_ok=True)
+
+    src_dyna = REPO / "tools/assets/dynaarm"
+    if src_dyna.exists():
+        for f in src_dyna.glob("*.obj"):
+            shutil.copy(f, assets_dir / f.name)
+
+    xml_path = anymal_dir / "anymal_c.xml"
+    arm_xml_path = anymal_dir / "anymal_c_arm.xml"
+    if not xml_path.exists():
+        return
+
+    tree = ET.parse(xml_path)
+    root = tree.getroot()
+
+    asset = root.find("asset")
+    mesh_names = [
+        "0_base_alma_mesh", "1000_dynaarm_interface_parts",
+        "100_shoulder_mesh", "200_upperarm_mesh",
+        "300_elbow_mesh", "400_forearm_mesh", "500_wrist1_mesh"
+    ]
+    for m in mesh_names:
+        if root.find(f'.//mesh[@name="{m}"]') is None:
+            attrs = {"name": m, "file": f"{m}.obj"}
+            # The ALMA adapter is the one legacy mesh exported in millimetres.
+            if m == "0_base_alma_mesh":
+                attrs["scale"] = "0.001 0.001 0.001"
+            ET.SubElement(asset, "mesh", attrs)
+
+    anymal_mats = {
+        # Match the requested Spot-style red/grey livery.  The four materials
+        # are deliberately repeated across the body and arm so the silhouette
+        # stays readable without the upstream texture files in MuJoCo WASM.
+        "base": "0.16 0.18 0.20 1",
+        "top_shell": "0.72 0.055 0.065 1",
+        "bottom_shell": "0.20 0.22 0.24 1",
+        "hip_l": "0.18 0.20 0.22 1",
+        "hip_r": "0.18 0.20 0.22 1",
+        "thigh": "0.52 0.55 0.58 1",
+        "shank_l": "0.25 0.27 0.29 1",
+        "shank": "0.25 0.27 0.29 1",
+        "foot": "0.10 0.11 0.12 1",
+        "hatch": "0.72 0.055 0.065 1",
+        "remote": "0.16 0.18 0.20 1",
+        "handle": "0.55 0.58 0.61 1",
+        "face": "0.12 0.13 0.14 1",
+        "depth_camera": "0.1 0.1 0.1 1",
+        "wide_angle_camera": "0.1 0.1 0.1 1",
+        "battery": "0.52 0.55 0.58 1",
+        "lidar_cage": "0.1 0.1 0.1 1",
+        "lidar": "0.1 0.1 0.1 1",
+        "drive": "0.72 0.055 0.065 1",
+        "black_plastic": "0.10 0.11 0.12 1",
+        "green": "0.72 0.055 0.065 1",
+        "red": "0.28 0.30 0.32 1",
+        "yellow": "0.58 0.61 0.64 1",
+        "lwl": "0.76 0.78 0.80 1",
+        "arm_dark": "0.12 0.14 0.16 1",
+        "arm_grey": "0.56 0.59 0.62 1",
+        "arm_light": "0.76 0.78 0.80 1",
+        "arm_accent": "0.72 0.055 0.065 1",
+    }
+    for mat in root.findall(".//material"):
+        mname = mat.get("name")
+        mat.attrib.pop("texture", None)
+        if mname in anymal_mats:
+            mat.set("rgba", anymal_mats[mname])
+    for tex in root.findall(".//texture"):
+        asset.remove(tex)
+    for mname, rgba in anymal_mats.items():
+        if root.find(f'.//material[@name="{mname}"]') is None:
+            ET.SubElement(asset, "material", {"name": mname, "rgba": rgba})
+
+    base = root.find('.//body[@name="base"]')
+    if root.find('.//body[@name="dynaarm_base"]') is None:
+        dyna_base = ET.SubElement(base, "body", {"name": "dynaarm_base", "pos": "0.05 0 0.12"})
+        ET.SubElement(dyna_base, "geom", {"type": "mesh", "mesh": "0_base_alma_mesh",
+                                          "material": "arm_grey", "class": "visual"})
+        # The legacy interface export is a partial ALMA adapter (it contains a
+        # tall sensor bracket, not the DynaArm pedestal) and made the arm look
+        # like it was growing out of a black tower.  Use a complete, legible
+        # three-stage pedestal instead: mounting plate, red housing, and dark
+        # shoulder collar.  The mesh remains in the asset set for compatibility
+        # with older cached scenes, but is intentionally not drawn here.
+        ET.SubElement(dyna_base, "geom", {"type": "cylinder", "size": "0.135 0.010",
+                                          "pos": "0 0 0.015", "material": "arm_grey", "class": "visual"})
+        ET.SubElement(dyna_base, "geom", {"type": "cylinder", "size": "0.105 0.045",
+                                          "pos": "0 0 0.065", "material": "top_shell", "class": "visual"})
+        ET.SubElement(dyna_base, "geom", {"type": "cylinder", "size": "0.080 0.014",
+                                          "pos": "0 0 0.112", "material": "arm_dark", "class": "visual"})
+        ET.SubElement(dyna_base, "geom", {"type": "cylinder", "size": "0.105 0.045",
+                                          "pos": "0 0 0.065", "class": "collision"})
+        ET.SubElement(dyna_base, "geom", {"type": "box", "size": "0.08 0.08 0.04",
+                                          "pos": "0 0 0.04", "class": "collision"})
+
+        sh = ET.SubElement(dyna_base, "body", {"name": "dynaarm_shoulder", "pos": "0 0 0.1105"})
+        ET.SubElement(sh, "joint", {"name": "arm_joint1", "axis": "0 0 1", "range": "-3.14 3.14", "damping": "2"})
+        ET.SubElement(sh, "geom", {"type": "mesh", "mesh": "100_shoulder_mesh",
+                                   "material": "arm_dark", "class": "visual"})
+        ET.SubElement(sh, "geom", {"type": "cylinder", "size": "0.045 0.05", "class": "collision"})
+
+        up = ET.SubElement(sh, "body", {"name": "dynaarm_upperarm", "pos": "0 0 0.047",
+                                         "euler": "1.570796 -1.570796 0"})
+        ET.SubElement(up, "joint", {"name": "arm_joint2", "axis": "0 0 1", "range": "-1.7208 1.7208", "damping": "2"})
+        ET.SubElement(up, "geom", {"type": "mesh", "mesh": "200_upperarm_mesh",
+                                   "material": "arm_grey", "class": "visual"})
+        ET.SubElement(up, "geom", {"type": "capsule", "size": "0.04 0.2", "pos": "0.2 0 0",
+                                   "quat": "0.707 0 0.707 0", "class": "collision"})
+
+        el = ET.SubElement(up, "body", {"name": "dynaarm_elbow", "pos": "0.4127 0 0"})
+        ET.SubElement(el, "joint", {"name": "arm_joint3", "axis": "0 0 1", "range": "0 3.09159", "damping": "2"})
+        ET.SubElement(el, "geom", {"type": "mesh", "mesh": "300_elbow_mesh",
+                                   "material": "arm_dark", "class": "visual"})
+        ET.SubElement(el, "geom", {"type": "cylinder", "size": "0.045 0.05", "quat": "0.707 0.707 0 0",
+                                   "class": "collision"})
+
+        fa = ET.SubElement(el, "body", {"name": "dynaarm_forearm", "pos": "0.0262 -0.0855 0",
+                                         "euler": "1.570796 1.570796 1.570796"})
+        ET.SubElement(fa, "joint", {"name": "arm_joint4", "axis": "0 0 1", "range": "-4.71239 4.71239", "damping": "1.5"})
+        ET.SubElement(fa, "geom", {"type": "mesh", "mesh": "400_forearm_mesh",
+                                   "material": "arm_grey", "class": "visual"})
+        ET.SubElement(fa, "geom", {"type": "capsule", "size": "0.035 0.19", "pos": "0 0 0.21",
+                                   "class": "collision"})
+
+        w1 = ET.SubElement(fa, "body", {"name": "dynaarm_wrist1", "pos": "0.0295 0 0.4207",
+                                         "euler": "0 -1.570796 0"})
+        ET.SubElement(w1, "joint", {"name": "arm_joint5", "axis": "0 0 1", "range": "-1.8208 1.8208", "damping": "1"})
+        ET.SubElement(w1, "geom", {"type": "mesh", "mesh": "500_wrist1_mesh",
+                                   "material": "arm_dark", "class": "visual"})
+        ET.SubElement(w1, "geom", {"type": "cylinder", "size": "0.035 0.04", "quat": "0.707 0.707 0 0",
+                                   "class": "collision"})
+
+        w2 = ET.SubElement(w1, "body", {"name": "dynaarm_wrist2", "pos": "0.117 0 0.0295",
+                                         "euler": "-1.570796 1.570796 -1.570796"})
+        ET.SubElement(w2, "joint", {"name": "arm_joint6", "axis": "0 0 1", "range": "-1.5708 4.71239", "damping": "1"})
+        # The old asset bundle predates DynaArm's separate wrist-2 and flange
+        # exports.  Build those small coaxial parts from primitives so the
+        # published kinematic chain is visually complete instead of ending in
+        # a floating cube.
+        ET.SubElement(w2, "geom", {"type": "cylinder", "size": "0.050 0.034",
+                                     "pos": "0 0 0.034", "material": "arm_grey", "class": "visual"})
+        ET.SubElement(w2, "geom", {"type": "cylinder", "size": "0.043 0.038",
+                                     "pos": "0 0 0.037", "material": "arm_dark", "class": "visual"})
+        ET.SubElement(w2, "geom", {"type": "cylinder", "size": "0.037 0.012",
+                                     "pos": "0 0 0.080", "material": "arm_accent", "class": "visual"})
+        ET.SubElement(w2, "geom", {"type": "cylinder", "size": "0.049 0.006",
+                                     "pos": "0 0 0.096", "material": "arm_light", "class": "visual"})
+        ET.SubElement(w2, "geom", {"type": "cylinder", "size": "0.047 0.048",
+                                     "pos": "0 0 0.048", "class": "collision"})
+
+        palm = ET.SubElement(w2, "body", {"name": "dynaarm_gripper", "pos": "0 0 0.108"})
+        ET.SubElement(palm, "geom", {"type": "box", "size": "0.045 0.038 0.018",
+                                      "pos": "0 0 0.018", "material": "arm_grey", "class": "visual"})
+        ET.SubElement(palm, "geom", {"type": "box", "size": "0.039 0.031 0.008",
+                                      "pos": "0 0 0.043", "material": "arm_dark", "class": "visual"})
+        ET.SubElement(palm, "geom", {"type": "box", "size": "0.045 0.038 0.018",
+                                      "pos": "0 0 0.018", "class": "collision"})
+
+        jaw1 = ET.SubElement(palm, "body", {"name": "dynaarm_jaw_left", "pos": "0 0.018 0.048"})
+        ET.SubElement(jaw1, "joint", {"name": "gripper", "axis": "0 1 0", "range": "0 0.04",
+                                      "type": "slide", "damping": "5"})
+        ET.SubElement(jaw1, "geom", {"type": "box", "size": "0.010 0.010 0.050", "pos": "0 0 0.050",
+                                     "material": "arm_dark", "class": "visual"})
+        ET.SubElement(jaw1, "geom", {"type": "box", "size": "0.012 0.012 0.020", "pos": "0 -0.003 0.098",
+                                     "material": "arm_accent", "class": "visual"})
+        ET.SubElement(jaw1, "geom", {"type": "box", "size": "0.010 0.010 0.050", "pos": "0 0 0.050",
+                                     "class": "collision"})
+
+        jaw2 = ET.SubElement(palm, "body", {"name": "dynaarm_jaw_right", "pos": "0 -0.018 0.048"})
+        ET.SubElement(jaw2, "geom", {"type": "box", "size": "0.010 0.010 0.050", "pos": "0 0 0.050",
+                                     "material": "arm_dark", "class": "visual"})
+        ET.SubElement(jaw2, "geom", {"type": "box", "size": "0.012 0.012 0.020", "pos": "0 0.003 0.098",
+                                     "material": "arm_accent", "class": "visual"})
+        ET.SubElement(jaw2, "geom", {"type": "box", "size": "0.010 0.010 0.050", "pos": "0 0 0.050",
+                                     "class": "collision"})
+
+        actuator = root.find("actuator")
+        for i in range(1, 7):
+            ET.SubElement(actuator, "position", {"name": f"arm_joint{i}", "joint": f"arm_joint{i}",
+                                                 "class": "affine", "kp": "200"})
+        ET.SubElement(actuator, "position", {"name": "gripper", "joint": "gripper",
+                                             "class": "affine", "kp": "300", "ctrlrange": "0 0.04"})
+
+        # Welding the quadruped base for this stationary demo removes MuJoCo's
+        # usual parent/child collision filtering.  Explicit exclusions keep the
+        # arm from pushing against its own mounting block while its position
+        # servos hold the parked pose.
+        contact = root.find("contact")
+        if contact is None:
+            contact = ET.SubElement(root, "contact")
+        for body1, body2 in (
+            ("dynaarm_base", "dynaarm_shoulder"),
+            ("dynaarm_base", "dynaarm_upperarm"),
+            ("dynaarm_shoulder", "dynaarm_upperarm"),
+            ("dynaarm_upperarm", "dynaarm_elbow"),
+            ("dynaarm_elbow", "dynaarm_forearm"),
+            ("dynaarm_forearm", "dynaarm_wrist1"),
+            ("dynaarm_wrist1", "dynaarm_wrist2"),
+            ("dynaarm_wrist2", "dynaarm_gripper"),
+            ("dynaarm_gripper", "dynaarm_jaw_left"),
+            ("dynaarm_gripper", "dynaarm_jaw_right"),
+        ):
+            ET.SubElement(contact, "exclude", {"body1": body1, "body2": body2})
+
+    kf = root.find("keyframe")
+    if kf is None:
+        kf = ET.SubElement(root, "keyframe")
+
+    tree.write(str(arm_xml_path))
+    m = mujoco.MjModel.from_xml_path(str(arm_xml_path))
+    jnames = [m.joint(i).name for i in range(m.njnt)]
+    stance_dict = {
+        # ANYmal C's front and rear feet have an 11.8 mm authored frame offset,
+        # so a numerically mirrored knee angle leaves the front pair hovering.
+        # This calibrated front angle puts all four contact spheres on one
+        # plane while retaining a left/right symmetric, level stance.
+        "LF_HAA": 0.03, "LF_HFE": 0.4, "LF_KFE": -0.513,
+        "RF_HAA": -0.03, "RF_HFE": 0.4, "RF_KFE": -0.513,
+        "LH_HAA": -0.03, "LH_HFE": -0.4, "LH_KFE": 0.6,
+        "RH_HAA": 0.03, "RH_HFE": -0.4, "RH_KFE": 0.6,
+        "arm_joint1": 0.0, "arm_joint2": -0.8, "arm_joint3": 1.8,
+        "arm_joint4": 0.0, "arm_joint5": -1.0, "arm_joint6": 0.0,
+        "gripper": 0.02
+    }
+    # qpos is not one scalar per joint: the floating base consumes seven slots
+    # (xyz + unit quaternion).  Building one value per joint shifted every leg
+    # command, producing the mangled stance seen in the browser after the leg
+    # joints were baked into fixed body transforms.
+    qpos_list = np.zeros(m.nq)
+    for j in range(m.njnt):
+        name = m.joint(j).name
+        adr = m.jnt_qposadr[j]
+        if m.jnt_type[j] == mujoco.mjtJoint.mjJNT_FREE:
+            qpos_list[adr:adr + 7] = (0.0, 0.0, 0.62, 1.0, 0.0, 0.0, 0.0)
+        else:
+            qpos_list[adr] = stance_dict.get(name, 0.0)
+    for k in kf.findall("key"):
+        kf.remove(k)
+    ET.SubElement(kf, "key", {"name": "standing", "qpos": fmt(qpos_list)})
+    tree.write(str(arm_xml_path))
+
+
 def ensure_menagerie() -> Path:
-    """Sparse-clone the two menagerie models we need, once."""
+    """Sparse-clone the menagerie models we need, once."""
     root = CACHE / "mujoco_menagerie"
     if not (root / "franka_fr3/fr3.xml").exists():
         CACHE.mkdir(exist_ok=True)
@@ -348,9 +637,11 @@ def ensure_menagerie() -> Path:
             check=True,
         )
         subprocess.run(
-            ["git", "sparse-checkout", "set", "franka_fr3", "franka_emika_panda"],
+            ["git", "sparse-checkout", "set", "franka_fr3", "franka_emika_panda",
+             "boston_dynamics_spot", "robotstudio_so101", "anybotics_anymal_c"],
             cwd=root, check=True,
         )
+    prepare_anymal_arm(root)
     return root
 
 
@@ -721,14 +1012,171 @@ def fr3_parts(menagerie: Path):
     return ET.fromstring(ARM_BODY), elems, [], extras
 
 
+def macao_parts(cfg):
+    """Import the Macao STLs as an articulated hand and forearm.
+
+    The upstream project publishes individual parts rather than a robot
+    description. Their coordinates are already in millimetres in the assembly
+    frame, so preserve that layout and apply MuJoCo's metre scale once. The
+    published finger is instanced for four fingers and a separately posed,
+    opposed thumb.
+    """
+    src = REPO / "tools/assets/macao"
+    names = {
+        "forearm": "Short Forearm.stl",
+        "forearm_base": "Short Forearm Base Lid.stl",
+        "forearm_lid": "Short Forearm Arduino Cavity Lid.stl",
+        "palm_middle": "HandPalm Middle Segment.stl",
+        "palm_outer": "HandPalm Outer Segment.stl",
+        "palm_cover": "Palm Cover.stl",
+        "finger_base": "Finger Base.stl",
+        "finger_first": "Finger First Phalange.stl",
+        "finger_first_pad": "Finger First Pad.stl",
+        "finger_medial": "Finger Medial Phalange.stl",
+        "finger_medial_pad": "Finger Medial Pad.stl",
+        "finger_distal": "Finger Distal Phalange.stl",
+        "finger_distal_pad": "Finger Distal Pad.stl",
+    }
+    meshes = []
+
+    def add_mesh(name, filename):
+        out = emit_mesh(src / filename, OUT / "assets/macao", name=f"{name}.obj")
+        meshes.append(ET.Element("mesh", {
+            "name": name, "file": f"macao/{out}", "scale": "0.001 0.001 0.001"}))
+
+    for key, filename in names.items():
+        add_mesh(key, filename)
+
+    def visual(parent, mesh, material="macao_shell", pos=None):
+        attrs = {
+            "type": "mesh", "mesh": mesh, "material": material,
+            "contype": "0", "conaffinity": "0", "group": "2"}
+        if pos:
+            attrs["pos"] = pos
+        ET.SubElement(parent, "geom", attrs)
+
+    # The CAD assembly points its fingers along local +Z. Rotate it so they
+    # point along world +X, toward the upright board, with the forearm behind.
+    body = ET.Element("body", {"name": "macao_hand", "pos": fmt(cfg.get("mount", (0.15, 0.0, 0.52))),
+                                "quat": "0.707107 0 0.707107 0", "gravcomp": "1"})
+    for name, kind, axis, limits in (
+        ("macao_x", "slide", "1 0 0", "-0.12 0.12"),
+        ("macao_y", "slide", "0 1 0", "-0.10 0.10"),
+        ("macao_z", "slide", "0 0 1", "-0.10 0.10"),
+        ("macao_roll", "hinge", "1 0 0", "-0.6 0.6"),
+        ("macao_pitch", "hinge", "0 1 0", "-0.6 0.6"),
+        ("macao_yaw", "hinge", "0 0 1", "-0.8 0.8"),
+    ):
+        ET.SubElement(body, "joint", {"name": name, "type": kind, "axis": axis,
+                                       "range": limits, "damping": "2"})
+
+    # Flip only the forearm/wrist/palm shell around the hand's longitudinal
+    # axis. Finger and thumb bodies remain siblings, so their corrected side,
+    # roots, hinge axes and trajectories are unchanged.
+    shell = ET.SubElement(body, "body", {
+        "name": "macao_arm_wrist", "quat": "0 0 0 1"})
+
+    visual(shell, "forearm", "macao_wrist")
+    visual(shell, "forearm_base", "macao_base")
+    for key in ("palm_middle", "palm_outer", "palm_cover", "forearm_lid"):
+        visual(shell, key, "macao_shell")
+
+    finger_joints = []
+
+    def digit(parent, prefix, master=False):
+        """Build the printed finger around its three physical hinge axes."""
+        visual(parent, "finger_base")
+
+        proximal = ET.SubElement(parent, "body", {"name": f"{prefix}_proximal", "pos": "0 0 0.016"})
+        proximal_joint = "macao_grip" if master else f"{prefix}_prox_joint"
+        ET.SubElement(proximal, "joint", {"name": proximal_joint, "type": "hinge",
+                                           "axis": "-1 0 0", "range": "0 1.15", "damping": "0.35"})
+        finger_joints.append((proximal_joint, 1.0))
+        visual(proximal, "finger_first", pos="0 0 -0.016")
+        visual(proximal, "finger_first_pad", "macao_pad", "0 0 -0.016")
+
+        medial = ET.SubElement(proximal, "body", {"name": f"{prefix}_medial", "pos": "0 0 0.030"})
+        medial_joint = f"{prefix}_medial_joint"
+        ET.SubElement(medial, "joint", {"name": medial_joint, "type": "hinge",
+                                         "axis": "-1 0 0", "range": "0 1.0", "damping": "0.3"})
+        finger_joints.append((medial_joint, 0.78))
+        visual(medial, "finger_medial", pos="0 0 -0.046")
+        visual(medial, "finger_medial_pad", "macao_pad", "0 0 -0.046")
+
+        distal = ET.SubElement(medial, "body", {"name": f"{prefix}_distal", "pos": "0 0 0.0245"})
+        distal_joint = f"{prefix}_distal_joint"
+        ET.SubElement(distal, "joint", {"name": distal_joint, "type": "hinge",
+                                         "axis": "-1 0 0", "range": "0 0.9", "damping": "0.25"})
+        finger_joints.append((distal_joint, 0.65))
+        visual(distal, "finger_distal", pos="0 0 -0.0705")
+        visual(distal, "finger_distal_pad", "macao_pad", "0 0 -0.0705")
+
+    # Four fingers across the palm. Lift their bases out to the shell edge.
+    # The hand rotation makes local X appear as vertical height in the viewer.
+    # Add one hardcoded correction per finger here, in metres. Positive values
+    # move that finger downward in world Z.
+    finger_height_offsets = (-0.02, -0.005, 0.005, -0.015)
+    for i, x in enumerate((-0.033, -0.011, 0.011, 0.033)):
+        mount = ET.SubElement(body, "body", {
+            "name": f"macao_finger_body_{i}",
+            "pos": f"{x} 0.01 {finger_height_offsets[i] + 0.04}"})
+        digit(mount, f"macao_finger_{i}", master=(i == 0))
+
+
+    # The source has no separate thumb STL. Macao uses the same printed finger
+    # mechanism, mounted under the palm in an opposed orientation.
+    thumb = ET.SubElement(body, "body", {
+        "name": "macao_thumb_body", "pos": "0.018 0.063 -0.005",
+        # Keep the previous 180-degree local-X flip, then add a 180-degree
+        # local-Y turn. The composed quaternion leaves all thumb joints intact.
+        "quat": "0 0 0.573576 0.819152"})
+    digit(thumb, "macao_thumb")
+
+
+    materials = [
+        ET.Element("material", {"name": "macao_shell", "rgba": "0.08 0.09 0.11 1"}),
+        ET.Element("material", {"name": "macao_base", "rgba": "0.7059 0.7804 0.3490 1"}),
+        ET.Element("material", {"name": "macao_wrist", "rgba": "0.8196 0.3529 0.0118 1"}),
+        ET.Element("material", {"name": "macao_pad", "rgba": "0.82 0.84 0.86 1"}),
+    ]
+    actuators = ET.Element("actuator")
+    for joint in ("macao_x", "macao_y", "macao_z"):
+        ET.SubElement(actuators, "position", {"name": joint, "joint": joint, "kp": "900", "kv": "80"})
+    for joint in ("macao_roll", "macao_pitch", "macao_yaw"):
+        ET.SubElement(actuators, "position", {"name": joint, "joint": joint, "kp": "80", "kv": "18"})
+    ET.SubElement(actuators, "position", {"name": "macao_grip", "joint": finger_joints[0][0],
+                                           "kp": "30", "ctrlrange": "0 1.1"})
+
+    equality = ET.Element("equality")
+    for joint, ratio in finger_joints[1:]:
+        ET.SubElement(equality, "joint", {"joint1": joint, "joint2": finger_joints[0][0],
+                                           "polycoef": f"0 {ratio} 0 0 0", "solref": "0.005 1"})
+
+    # This custom platform returns before robot_parts()' shared gravity
+    # compensation pass, so apply it to the shell and every articulated digit
+    # here as well as the root body.
+    for elem in body.iter("body"):
+        elem.set("gravcomp", "1")
+    return body, meshes, materials, {"actuator": actuators, "equality": equality}
+
+
 def robot_parts(cfg, menagerie: Path, workdir: Path):
     """Whatever this robot contributes to a scene: a body, meshes, actuators."""
+    if cfg["name"] == "macao":
+        return macao_parts(cfg)
     if "source" not in cfg:
         return fr3_parts(menagerie)
 
     (OUT / "assets" / cfg["name"]).mkdir(parents=True, exist_ok=True)
     body, meshes, materials, extras = adopt_robot(
         cfg, menagerie, workdir, OUT / "assets" / cfg["name"])
+
+    if cfg["name"] == "so101":
+        # Match the requested SO-101 body color while retaining the dark servo
+        # housings and fasteners.
+        for material in materials:
+            if material.get("name", "").endswith("_material") and "sts3215" not in material.get("name", ""):
+                material.set("rgba", "0.094118 0.611765 0.792157 1")
 
     if cfg.get("stow"):
         import mujoco
@@ -754,7 +1202,7 @@ def robot_parts(cfg, menagerie: Path, workdir: Path):
     # Only the joints we drive keep an actuator.
     driven = set(cfg["arm"]) | {cfg["grip"]["actuator"]}
     actuators = ET.Element("actuator")
-    for act in extras["actuator"] or []:
+    for act in (extras["actuator"] if extras.get("actuator") is not None else []):
         if act.get("joint") in driven:
             actuators.append(act)
     extras["actuator"] = actuators
@@ -897,6 +1345,57 @@ def board_normal(cfg):
     return tuple(quat_matrix(np.array(cfg.get("board_quat", BOARD_FLAT))) @ [1.0, 0, 0])
 
 
+def macao_motions(model):
+    """Looping demonstrations for the hand pose and synchronized digits."""
+    import mujoco
+
+    rate = 50
+
+    def make(label, caption, seconds, pose, close):
+        count = rate * seconds + 1
+        data = mujoco.MjData(model)
+        site = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_SITE, "tcp")
+        qpos, grip, tcp = [], [], []
+        for i in range(count):
+            phase = 2 * math.pi * i / (count - 1)
+            q = pose(phase)
+            g = close(phase)
+            data.qpos[:6] = q
+            mujoco.mj_forward(model, data)
+            qpos.append([round(v, 6) for v in q])
+            grip.append(round(g, 6))
+            tcp.append([round(float(v), 6) for v in data.site_xpos[site]])
+        return {
+            "label": label, "caption": caption, "rate": rate,
+            "watch": "macao_yaw", "goal": 0.0, "left": 0.0, "spin": 0.0,
+            "qpos": qpos, "grip": grip, "tcp": tcp,
+        }
+
+    sweep = lambda p: [
+        0.055 * math.sin(p), 0.035 * math.sin(2 * p), 0.045 * math.sin(p),
+        0.22 * math.sin(2 * p), 0.30 * math.sin(p), 0.42 * math.sin(p),
+    ]
+    still = lambda _p: [0.0] * 6
+    open_hand = lambda _p: 0.0
+    one_close = lambda p: 0.55 * (1 - math.cos(p))
+    two_closes = lambda p: 0.55 * (1 - math.cos(2 * p))
+
+    return {
+        "finger_flex": make(
+            "Flex fingers",
+            "Close and reopen all four fingers and the opposed thumb twice.",
+            7, still, two_closes),
+        "hand_sweep": make(
+            "Move whole hand",
+            "Translate and rotate the complete Macao hand while the fingers remain open.",
+            8, sweep, open_hand),
+        "hand_motion": make(
+            "Move hand and fingers",
+            "Move the complete Macao hand through space while all four fingers and the opposed thumb close and reopen.",
+            10, sweep, one_close),
+    }
+
+
 def emit_robot(cfg, menagerie: Path, board, hiveboard: Path):
     """Assemble, settle, verify and solve one robot's scene."""
     import mujoco
@@ -943,12 +1442,24 @@ def emit_robot(cfg, menagerie: Path, board, hiveboard: Path):
 
     # The board's own constraints -- the lamp's thread -- belong to every scene.
     equality = ET.Element("equality")
-    for elem in list(extras.get("equality") or []) + board["equality"]:
+    for elem in (list(extras["equality"]) if extras.get("equality") is not None else []) + board["equality"]:
         equality.append(elem)
     if len(equality):
         scene.append(equality)
-    for elem in meshes + materials + board["meshes"]:
-        asset.append(elem)
+    existing_mat_names = {m.get("name") for m in asset.findall("material")}
+    existing_mesh_names = {m.get("name") for m in asset.findall("mesh")}
+    for elem in meshes + board["meshes"]:
+        name = elem.get("name")
+        if not name or name not in existing_mesh_names:
+            asset.append(elem)
+            if name:
+                existing_mesh_names.add(name)
+    for elem in materials:
+        name = elem.get("name")
+        if not name or name not in existing_mat_names:
+            asset.append(elem)
+            if name:
+                existing_mat_names.add(name)
 
     # The robot goes in first so its driven joints own the low qpos indices;
     # the widget indexes them positionally.
@@ -1001,7 +1512,8 @@ def emit_robot(cfg, menagerie: Path, board, hiveboard: Path):
           f"nbody={model.nbody} nmesh={model.nmesh}")
 
     cfg = dict(cfg, board_normal=board_normal(cfg))
-    tasks = sim_trajectories.build(path, cfg)
+    tasks = (macao_motions(model) if cfg["name"] == "macao"
+             else sim_trajectories.build(path, cfg))
     sim_trajectories.dump(tasks, OUT / f"{cfg['name']}.traj.json")
 
     # These robots differ in size by a factor of five, so the widget is handed a
@@ -1110,11 +1622,26 @@ def settle(cfg, path: Path, key):
     mujoco.mj_resetDataKeyframe(model, data, 0)
     held = len(cfg["home"])
     arm = np.array(cfg["home"])
+    grip_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_ACTUATOR,
+                                cfg["grip"]["actuator"])
+    grip_joint = int(model.actuator_trnid[grip_id][0]) if grip_id >= 0 else -1
+    grip_qpos = int(model.jnt_qposadr[grip_joint]) if grip_joint >= 0 else -1
+    grip_dof = int(model.jnt_dofadr[grip_joint]) if grip_joint >= 0 else -1
+    grip_open = cfg["grip"]["open"]
     for _ in range(4000):
         data.qpos[:held] = arm   # hold the robot; only the modules are settling
         data.qvel[:held] = 0
+        if grip_qpos >= 0:
+            # The hand is part of the robot, not one of the loose modules being
+            # settled.  Letting an uncommanded jaw drift against its stop wrote
+            # an out-of-range gripper value into the browser's home keyframe.
+            data.qpos[grip_qpos] = grip_open
+            data.qvel[grip_dof] = 0
+            data.ctrl[grip_id] = grip_open
         mujoco.mj_step(model, data)
 
+    if grip_qpos >= 0:
+        data.qpos[grip_qpos] = grip_open
     key.set("qpos", fmt(np.concatenate([arm, data.qpos[held:]])))
 
 

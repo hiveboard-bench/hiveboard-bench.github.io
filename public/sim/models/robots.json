@@ -80,9 +80,9 @@
    "centre": [
     0.2362,
     -0.0,
-    0.554
+    0.6025
    ],
-   "span": 2.0718
+   "span": 2.1252
   },
   "framing": "side",
   "boardNormal": [
@@ -111,9 +111,9 @@
   },
   "home": [
    0.0,
-   -0.6,
-   0.9,
-   0.6,
+   0.0,
+   0.0,
+   0.0,
    0.0
   ],
   "gripIndex": 5,
@@ -127,9 +127,9 @@
    "centre": [
     0.2197,
     0.0003,
-    0.1187
+    0.1676
    ],
-   "span": 0.6149
+   "span": 0.6596
   },
   "framing": "over",
   "boardNormal": [
@@ -138,12 +138,14 @@
    1.0
   ],
   "tasks": [
+   "valve",
+   "lamp",
    "breaker"
   ]
  },
  {
-  "name": "anymal",
-  "label": "ANYmal + DynaArm",
+  "name": "platform_c",
+  "label": "ANYmal with DynaArm",
   "note": "Platform C",
   "soon": true
  },
@@ -151,6 +153,48 @@
   "name": "macao",
   "label": "Macao hand",
   "note": "Platform D",
-  "soon": true
+  "scene": "macao.xml",
+  "traj": "macao.traj.json",
+  "arm": 6,
+  "grip": {
+   "actuator": "macao_grip",
+   "open": 0.0,
+   "grasp": 0.8,
+   "fist": 1.1
+  },
+  "home": [
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0
+  ],
+  "gripIndex": 6,
+  "spinIndex": -1,
+  "board": [
+   0.85,
+   0.0,
+   0.55
+  ],
+  "view": {
+   "centre": [
+    0.5062,
+    0.0003,
+    0.5777
+   ],
+   "span": 0.7961
+  },
+  "framing": "side",
+  "boardNormal": [
+   -1.0,
+   0.0,
+   0.0
+  ],
+  "tasks": [
+   "finger_flex",
+   "hand_sweep",
+   "hand_motion"
+  ]
  }
 ]
