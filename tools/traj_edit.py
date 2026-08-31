@@ -102,6 +102,45 @@ def factories(cfg):
     return out
 
 
+def joint_info(ctx):
+    """Joint labels and limits exposed to the browser editor."""
+    import mujoco
+
+    model = ctx["model"]
+    names, ranges = [], []
+    for name in ctx["cfg"].get("arm", ()):
+        jid = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_JOINT, name)
+        names.append(name)
+        ranges.append([float(model.jnt_range[jid, 0]), float(model.jnt_range[jid, 1])])
+    return names, ranges
+
+
+def grip_range(ctx):
+    import mujoco
+
+    model = ctx["model"]
+    aid = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_ACTUATOR,
+                             ctx["cfg"]["grip"]["actuator"])
+    return [float(model.actuator_ctrlrange[aid, 0]),
+            float(model.actuator_ctrlrange[aid, 1])]
+
+
+def object_info(ctx, module):
+    import mujoco
+
+    model = ctx["model"]
+    names, addresses, ranges = [], [], []
+    prefix = f"{module}_"
+    for jid in range(model.njnt):
+        name = model.joint(jid).name
+        if not name or not name.startswith(prefix):
+            continue
+        names.append(name)
+        addresses.append(int(model.jnt_qposadr[jid]))
+        ranges.append([float(model.jnt_range[jid, 0]), float(model.jnt_range[jid, 1])])
+    return names, addresses, ranges
+
+
 def published(name):
     """That robot's shipped trajectories, for the board angles they were solved at."""
     path = MODELS / f"{name}.traj.json"
@@ -111,8 +150,10 @@ def published(name):
 # ═══════════════════════════════════════════════════════════════════════════
 #  Keyframes, as the editor sees them
 # ═══════════════════════════════════════════════════════════════════════════
-def describe(task, home, off=()):
-    """Where each authored keyframe puts the hand, once the path is expanded.
+def describe(task, home, edits=None, samples=None, original_samples=None,
+             original_grips=None, states=None, original_states=None,
+             object_addresses=None):
+    """Where each authored or added keyframe puts the hand, once the path is expanded.
 
     A pose key sits exactly where it says it does, but an `arc` key only says
     how far to sweep -- its endpoint falls out of the path. Both get a bead,
@@ -126,34 +167,99 @@ def describe(task, home, off=()):
     """
     keys = task["keys"]
     path = st.sample_path(keys)
-    off = set(off)
-    live = [i for i in range(len(keys) + len(off)) if i not in off]
-    at, out = 0, [{"index": i, "kind": "off", "off": True, "pos": None,
-                   "secs": None, "grip": None, "transit": False, "home": False,
-                   "angle": None, "rise": None, "draggable": False} for i in sorted(off)]
+    at = 0
+    live_rows = []
     for i, key in enumerate(keys):
         if i:
             at += max(int(round(key["secs"] * st.RATE)), 1)
         arc = key.get("arc")
         pos = np.asarray(path[at][0], float)
-        # A key sitting on the arm's own rest pose is the trajectory leaving
-        # or coming back to home. Where that is belongs to the robot's config,
-        # not to one task, so it is shown but not draggable.
         home_key = bool(np.linalg.norm(pos - home) < 1e-6)
-        out.append({
-            "index": live[i],
+        is_added = bool(key.get("_added"))
+        key_id = key.get("_id", str(i))
+        auth_idx = key.get("_authored")
+
+        finger = key.get("finger")
+        if finger is None and at < len(path):
+            finger = path[at][1]
+        approach = key.get("approach")
+        if approach is None and at < len(path):
+            approach = path[at][2]
+
+        live_rows.append({
+            "index": key_id,
+            "authored": auth_idx,
+            "added": is_added,
             "off": False,
             "kind": "arc" if arc else "pose",
             "pos": [round(float(v), 5) for v in pos],
+            "finger": [round(float(v), 5) for v in finger] if finger is not None else [0.0, 1.0, 0.0],
+            "approach": [round(float(v), 5) for v in approach] if approach is not None else [0.0, 0.0, -1.0],
             "secs": round(float(key.get("secs", 0.0)), 3),
             "grip": round(float(key["grip"]), 4),
+            "originalGrip": (round(float(original_grips[key["_authored"]]), 4)
+                             if original_grips is not None and key.get("_authored") is not None
+                             and key["_authored"] < len(original_grips)
+                             else round(float(key["grip"]), 4)),
+            "objectQpos": ([round(float(states[min(at, len(states) - 1)][a]), 6)
+                            for a in object_addresses]
+                           if states and object_addresses else None),
+            "originalObjectQpos": ([round(float(original_states[min(at, len(original_states) - 1)][a]), 6)
+                                    for a in object_addresses]
+                                   if original_states and object_addresses else None),
             "transit": bool(key.get("transit")),
             "home": home_key,
             "angle": round(float(arc["angle"]), 4) if arc else None,
             "rise": round(float(arc.get("rise", 0.0)), 5) if arc else None,
             "draggable": arc is None and not home_key,
+            # Joint-space values at this keyframe. The editor can use these
+            # as explicit anchors instead of relying only on the TCP IK pose.
+            "qpos": ([round(float(v), 6) for v in samples[min(at, len(samples) - 1)][0]]
+                     if samples else None),
+            "originalQpos": ([round(float(v), 6) for v in original_samples[min(at, len(original_samples) - 1)][0]]
+                              if original_samples else None),
+            "sample": min(at, len(samples) - 1) if samples else None,
         })
-    return sorted(out, key=lambda row: row["index"])
+
+    off_indices = st.dropped(edits)
+    if not off_indices:
+        return live_rows
+
+    out = list(live_rows)
+    for off_idx in sorted(off_indices):
+        placeholder = {
+            "index": str(off_idx),
+            "authored": off_idx,
+            "added": False,
+            "kind": "off",
+            "off": True,
+            "pos": None,
+            "finger": None,
+            "approach": None,
+            "secs": None,
+            "grip": None,
+            "originalGrip": None,
+            "objectQpos": None,
+            "originalObjectQpos": None,
+            "transit": False,
+            "home": False,
+            "angle": None,
+            "rise": None,
+            "draggable": False,
+            "qpos": None,
+            "originalQpos": None,
+            "sample": None,
+        }
+        inserted = False
+        for pos_idx, row in enumerate(out):
+            if row.get("authored") is not None and row["authored"] > off_idx:
+                out.insert(pos_idx, placeholder)
+                inserted = True
+                break
+        if not inserted:
+            out.append(placeholder)
+
+    return out
 
 
 def solve(name, module, edits, spin=0.0):
@@ -162,7 +268,12 @@ def solve(name, module, edits, spin=0.0):
     cfg, model, data = ctx["cfg"], ctx["model"], ctx["data"]
     factory = factories(cfg).get(module)
     if factory is None:
-        raise KeyError(f"{name} has no {module} task")
+        return {
+            "module": module,
+            "ok": False,
+            "why": f"{name} has no {module} task",
+            "keys": [],
+        }
 
     result = st.attempt(model, data, ctx["site"], cfg, factory,
                         spin, ctx["spin_adr"], edits)
@@ -172,14 +283,89 @@ def solve(name, module, edits, spin=0.0):
         "module": module,
         "ok": bool(result["ok"]),
         "why": result["why"],
-        "keys": describe(task, home, st.dropped(edits)),
+        "keys": describe(task, home, edits, result.get("samples"),
+                          result.get("original_samples"),
+                          result.get("original_grips"), result.get("states"),
+                          result.get("original_states"),
+                          result.get("object_addresses")),
+        "joints": list(cfg["arm"]),
+        "jointRanges": joint_info(ctx)[1],
+        "gripRange": grip_range(ctx),
+        "objectJoints": object_info(ctx, module)[0],
+        "objectRanges": object_info(ctx, module)[2],
     }
     if "samples" in result:
         out["traj"] = st.package(model, ctx["site"], cfg, result)
     return out
 
 
-def republish(name, edits):
+def manual_solve(name, module, keys, spin=0.0):
+    """Build a trajectory only from poses supplied by the editor."""
+    ctx = scene(name)
+    cfg, model = ctx["cfg"], ctx["model"]
+    import mujoco
+
+    usable = [k for k in keys if not k.get("off") and k.get("qpos")]
+    if len(usable) < 2:
+        return {"module": module, "ok": False, "why": "need at least two manual poses", "keys": keys}
+    samples = []
+    object_names, object_addresses, object_ranges = object_info(ctx, module)
+    base = np.zeros(model.nq, float)
+    mujoco.mj_resetDataKeyframe(model, base_data := mujoco.MjData(model), 0)
+    turn = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_JOINT, "board_spin")
+    if turn >= 0:
+        base_data.qpos[model.jnt_qposadr[turn]] = spin
+        mujoco.mj_forward(model, base_data)
+    base[:] = base_data.qpos
+    def object_pose(key):
+        values = key.get("objectQpos")
+        return (np.asarray(values, float) if values and len(values) == len(object_addresses)
+                else np.asarray([base[a] for a in object_addresses], float))
+
+    sample_indices = []
+    for index, key in enumerate(usable):
+        q1 = np.asarray(key["qpos"], float)
+        g1 = float(key.get("grip", 0.0))
+        if index == 0:
+            samples.append((q1.copy(), g1))
+            object_samples = [object_pose(key)]
+            sample_indices.append(0)
+            continue
+        q0, g0 = samples[-1]
+        o0, o1 = object_samples[-1], object_pose(key)
+        count = max(int(round(float(key.get("secs", 1.0)) * st.RATE)), 1)
+        sample_indices.append(len(samples) + count - 1)
+        for j in range(1, count + 1):
+            t = j / count
+            samples.append(((1 - t) * q0 + t * q1, (1 - t) * g0 + t * g1))
+            object_samples.append((1 - t) * o0 + t * o1)
+
+    # The browser uses this index when teleporting to a pose. Recompute it;
+    # manual timing changes make all old indices invalid.
+    for key, sample_index in zip(usable, sample_indices):
+        key["sample"] = sample_index
+
+    states = []
+    for (q, _), obj in zip(samples, object_samples):
+        state = base.copy()
+        state[:len(cfg["arm"])] = q
+        for address, value in zip(object_addresses, obj):
+            state[address] = value
+        states.append(state)
+    task = factories(cfg)[module](model, mujoco.MjData(model), cfg)
+    fake = {"task": task, "samples": samples, "states": states,
+            "spin": spin, "left": 0.0}
+    out = st.package(model, ctx["site"], cfg, fake)
+    out["label"] = "Change the lamp"
+    out["caption"] = "Manual pose trajectory"
+    out["manual"] = True
+    return {"module": module, "ok": True, "why": f"manual trajectory: {len(samples)} samples",
+            "traj": out, "keys": keys, "joints": list(cfg["arm"]),
+            "jointRanges": joint_info(ctx)[1], "gripRange": grip_range(ctx),
+            "objectJoints": object_names, "objectRanges": object_ranges}
+
+
+def republish(name, edits, manual_keys=None):
     """Re-solve the edited tasks and rewrite the .traj.json the widget loads.
 
     Only the tasks that were actually edited: a published trajectory can
@@ -195,11 +381,19 @@ def republish(name, edits):
     tasks = published(name)
     report = []
     for module in factories(scene(name)["cfg"]):
-        if not edits.get(module, {}).get("keys"):
+        if module == "lamp" and manual_keys:
+            result = manual_solve(name, module, manual_keys,
+                                  float(tasks.get(module, {}).get("spin", 0.0)))
+            if "traj" in result:
+                tasks[module] = result["traj"]
+            report.append({"module": module, "ok": result["ok"], "why": result["why"]})
+            continue
+        mod_edits = edits.get(module, {})
+        if not mod_edits.get("keys") and not mod_edits.get("added"):
             report.append({"module": module, "ok": True, "why": "left as published"})
             continue
         spin = float(tasks.get(module, {}).get("spin", 0.0))
-        result = solve(name, module, edits[module], spin)
+        result = solve(name, module, mod_edits, spin)
         report.append({"module": module, "ok": result["ok"], "why": result["why"]})
         if "traj" in result:
             tasks[module] = result["traj"]
@@ -224,20 +418,26 @@ def write_edits(all_edits):
 # ═══════════════════════════════════════════════════════════════════════════
 class Handler(BaseHTTPRequestHandler):
     def reply(self, payload, code=200):
-        body = json.dumps(payload).encode()
-        self.send_response(code)
-        self.send_header("Content-Type", "application/json")
-        self.send_header("Content-Length", str(len(body)))
-        self.send_header("Access-Control-Allow-Origin", "*")
-        self.end_headers()
-        self.wfile.write(body)
+        try:
+            body = json.dumps(payload).encode()
+            self.send_response(code)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Length", str(len(body)))
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.end_headers()
+            self.wfile.write(body)
+        except (BrokenPipeError, ConnectionResetError):
+            pass
 
     def do_OPTIONS(self):
-        self.send_response(204)
-        self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type")
-        self.end_headers()
+        try:
+            self.send_response(204)
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+            self.send_header("Access-Control-Allow-Headers", "Content-Type")
+            self.end_headers()
+        except (BrokenPipeError, ConnectionResetError):
+            pass
 
     def body(self):
         return json.loads(self.rfile.read(int(self.headers["Content-Length"] or 0)) or "{}")
@@ -246,26 +446,57 @@ class Handler(BaseHTTPRequestHandler):
         name = payload.get("robot", "spot")
 
         if path == "/state":
+            ctx = scene(name)
+            joint_names, joint_ranges = joint_info(ctx)
+            robot_edits = read_edits().get(name, {})
             return {"robot": name,
-                    "modules": list(factories(scene(name)["cfg"])),
-                    "edits": read_edits().get(name, {})}
+                    "modules": list(factories(ctx["cfg"])),
+                    "joints": joint_names,
+                    "jointRanges": joint_ranges,
+                    "gripRange": grip_range(ctx),
+                    "edits": robot_edits,
+                    "manualKeys": robot_edits.get("lamp", {}).get("manualKeys")}
 
         if path == "/solve":
             return solve(name, payload["module"], payload.get("edits", {}),
                          float(payload.get("spin", 0.0)))
 
+        if path == "/manual":
+            return manual_solve(name, payload["module"], payload.get("keys", []),
+                                float(payload.get("spin", 0.0)))
+
         if path == "/save":
             all_edits = read_edits()
-            all_edits[name] = {k: v for k, v in payload.get("edits", {}).items()
-                               if v.get("keys")}
-            if not all_edits[name]:
-                all_edits.pop(name)
+            clean_robot_edits = {}
+            for k, v in payload.get("edits", {}).items():
+                mod_dict = {}
+                if v.get("keys"):
+                    mod_dict["keys"] = v["keys"]
+                if v.get("added"):
+                    mod_dict["added"] = v["added"]
+                if v.get("manualKeys"):
+                    mod_dict["manualKeys"] = v["manualKeys"]
+                if mod_dict:
+                    clean_robot_edits[k] = mod_dict
+
+            if clean_robot_edits:
+                all_edits[name] = clean_robot_edits
+            else:
+                all_edits.pop(name, None)
+
+            if payload.get("manualKeys"):
+                all_edits.setdefault(name, {}).setdefault("lamp", {})["manualKeys"] = payload["manualKeys"]
+
             write_edits(all_edits)
-            report = republish(name, payload.get("edits", {}))
+            report = republish(name, payload.get("edits", {}),
+                               payload.get("manualKeys"))
             for line in report:
                 print(f"  saved {line['module']:8s} {line['why']} "
                       f"[{'ok' if line['ok'] else 'MISSED'}]")
-            return {"saved": str(st.EDITS_FILE.relative_to(REPO)), "report": report}
+            response = {"saved": str(st.EDITS_FILE.relative_to(REPO)), "report": report}
+            if payload.get("manualKeys"):
+                response["trajectory"] = published(name).get("lamp")
+            return response
 
         return None
 
@@ -294,6 +525,16 @@ class Handler(BaseHTTPRequestHandler):
         pass                                            # the solves log enough
 
 
+class Server(ThreadingHTTPServer):
+    daemon_threads = True
+
+    def handle_error(self, request, client_address):
+        exc_type, _, _ = sys.exc_info()
+        if exc_type and issubclass(exc_type, (BrokenPipeError, ConnectionResetError)):
+            return
+        super().handle_error(request, client_address)
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--port", type=int, default=8770)
@@ -305,7 +546,7 @@ def main():
     print(f"  tasks: {', '.join(factories(ctx['cfg']))}")
     print(f"trajectory editor on http://localhost:{args.port}")
     print("open  http://localhost:5173/sim/hiveboard-sim.html?edit=1")
-    ThreadingHTTPServer(("127.0.0.1", args.port), Handler).serve_forever()
+    Server(("127.0.0.1", args.port), Handler).serve_forever()
 
 
 if __name__ == "__main__":
