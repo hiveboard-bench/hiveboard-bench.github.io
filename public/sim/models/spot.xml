@@ -70,8 +70,6 @@
     <mesh name="arm_link_wr1_1" file="spot/arm_link_wr1_1.obj" />
     <mesh name="arm_link_fngr_0" file="spot/arm_link_fngr_0.obj" />
     <mesh name="arm_link_fngr_1" file="spot/arm_link_fngr_1.obj" />
-    <material name="BlackAbs" rgba="0.1 0.1 0.1 1" />
-    <material name="wrap" rgba="0.878431 0.666666 0.22745 1" />
     <mesh name="panel_tn__Hexagono_Suporte1_bX0_Corpo1_Mesh" file="hb/panel_tn__Hexagono_Suporte1_bX0_Corpo1_Mesh.obj" scale="0.001 0.001 0.001" />
     <mesh name="panel_tn__Hexagono_Suporte2_bX0_Corpo1_Mesh" file="hb/panel_tn__Hexagono_Suporte2_bX0_Corpo1_Mesh.obj" scale="0.001 0.001 0.001" />
     <mesh name="panel_tn__Hexagono_Suporte3_bX0_Corpo1_Mesh" file="hb/panel_tn__Hexagono_Suporte3_bX0_Corpo1_Mesh.obj" scale="0.001 0.001 0.001" />
@@ -87,6 +85,8 @@
     <mesh name="lamp_tn__Corpo12_j7m1J_Mesh" file="hb/lamp_tn__Corpo12_j7m1J_Mesh.obj" />
     <mesh name="breaker_tn__corpo1_dC_Corpo1_Mesh" file="hb/breaker_tn__corpo1_dC_Corpo1_Mesh.obj" />
     <mesh name="breaker_tn__Alavanca1_zH_Corpo1_Mesh" file="hb/breaker_tn__Alavanca1_zH_Corpo1_Mesh.obj" />
+    <material name="BlackAbs" rgba="0.1 0.1 0.1 1" />
+    <material name="wrap" rgba="0.878431 0.666666 0.22745 1" />
   </asset>
   <worldbody>
     <light pos="0 0 2.4" dir="0 0 -1" directional="true" />
@@ -329,6 +329,6 @@
     <joint joint1="lamp_PrismaticJoint" joint2="lamp_RevoluteJoint" polycoef="0 0.0082 0 0 0" solref="0.01 1" solimp="0.95 0.999 0.001" />
   </equality>
   <keyframe>
-    <key name="home" qpos="0 -1.9 2 0 -0.6 0 0.00522927 0.000569965 0.0222804 0.000174798 0.0139196" />
+    <key name="home" qpos="0 -1.9 2 0 -0.6 0 -1.5 0.000569965 0.0222804 0.000174798 0.0169247" />
   </keyframe>
 </mujoco>
