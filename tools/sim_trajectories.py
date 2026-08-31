@@ -244,7 +244,9 @@ def solve_ik(model, data, site, path, cfg):
 
     n = len(cfg["arm"])
     lo, hi = model.jnt_range[:n].T
-    rest = np.array(cfg["home"], float)
+    # A short arm may need a folded, collision-free parked pose while still
+    # benefiting from a different posture as its IK nullspace bias.
+    rest = np.array(cfg.get("ik_home", cfg["home"]), float)
     # Bias every joint toward home except the last, which carries the tool roll.
     weight = np.ones(n)
     weight[-1] = 0.0
@@ -334,6 +336,7 @@ def replay(model, samples, watch, cfg, spin=0.0):
 
     steps_per_sample = max(int(round((1.0 / RATE) / model.opt.timestep)), 1)
     seen = []
+    states = []
     for q, grip in samples:
         for _ in range(steps_per_sample):
             mujoco.mj_step1(model, data)
@@ -341,8 +344,9 @@ def replay(model, samples, watch, cfg, spin=0.0):
             data.ctrl[grip_id] = grip
             mujoco.mj_step2(model, data)
         seen.append(float(data.qpos[adr]))
+        states.append(data.qpos.copy())
 
-    return np.array(seen)
+    return np.array(seen), states
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -559,7 +563,50 @@ def lamp_task(model, data, cfg):
     # the bulb 10 mm back off its seat. It stops short along the thread instead.
     # The arc still turns about `seated`, which is on the axis either way.
     hold = seated + out * cfg.get("lamp_standoff", 0.0)
+    # A five-joint arm has no independent tool roll. Give it a small moment arm
+    # around the bulb instead: carrying the gripper around this circle turns the
+    # glass through contact while position and approach remain reachable. The
+    # direction is always toward the robot in the board plane, so it follows a
+    # rotated board rather than encoding a world-axis offset.
+    grasp_radius = cfg.get("lamp_grasp_radius", 0.0)
+    if grasp_radius:
+        toward = robot_base(model, data) - anchor
+        toward = toward - out * (toward @ out)
+        hold = hold + unit(toward) * grasp_radius
     approach = hold + out * cfg.get("lamp_approach", cfg.get("clearance", 0.14))   # clear of the glass
+
+    lean = approach_for(cfg, anchor, robot_base(model, data))
+    if cfg.get("lamp_demo"):
+        # Presentation-only lamp motion: leave the lamp, turn around its axis,
+        # turn back, and return. The browser disables collisions for this task,
+        # so the motion is only a visual demonstration and does not manipulate
+        # the physical lamp.
+        return {
+            "module": "lamp",
+            "label": "Change the lamp",
+            "caption": "Leave the lamp, turn out and back without interaction.",
+            "watch": "lamp_PrismaticJoint",
+            "goal": 0.0,
+            "demo": True,
+            "tolerance": 0.0,
+            "ik_tolerance": 1.0,
+            "keys": [
+                dict(home_key(model, data, cfg, OPEN), transit=True),
+                {"pos": approach, "finger": spin(a0), "approach": lean,
+                 "grip": OPEN, "secs": 1.5, "transit": True},
+                {"pos": hold, "finger": spin(a0), "approach": lean,
+                 "grip": OPEN, "secs": 1.0},
+                {"arc": {"anchor": seated, "axis": axis, "angle": turn,
+                          "rise": lift}, "approach": lean,
+                 "grip": OPEN, "secs": 3.4},
+                {"arc": {"anchor": seated, "axis": axis, "angle": -turn,
+                          "rise": -lift}, "approach": lean,
+                 "grip": OPEN, "secs": 3.4},
+                {"pos": approach, "finger": spin(a0), "approach": lean,
+                 "grip": OPEN, "secs": 1.2},
+                dict(home_key(model, data, cfg, OPEN), secs=1.5, transit=True),
+            ],
+        }
 
     # What "out of the socket" actually means: the bulb's base has to clear the
     # rim of the cup it sits in, measured along the thread. Measured, not
@@ -567,7 +614,6 @@ def lamp_task(model, data, cfg):
     socket = visual_points(model, data, "lamp_World")
     clearance = float((socket @ axis).max() - (points @ axis).min()) + 0.004
 
-    lean = approach_for(cfg, anchor, robot_base(model, data))
     return {
         "module": "lamp",
         "label": "Change the lamp",
@@ -584,7 +630,12 @@ def lamp_task(model, data, cfg):
         # rim comfortably here reproduces there -- but the SO-101's, which
         # cleared it by 4%, did not move the bulb at all in the browser, and a
         # task list is only worth anything if what it lists actually happens.
-        "tolerance": 1.10,
+        "tolerance": cfg.get("lamp_tolerance", 1.10),
+        "ik_tolerance": cfg.get("lamp_ik_tolerance", 0.005),
+        # Ignore the reset/constraint settling while the hand is still at
+        # home. Measurement starts once the arm is parked clear of the bulb;
+        # any later peak must therefore have been caused by this task.
+        "measure_from": 1,
         # The bulb has to end up seated again, or "screw it back home" is only
         # a claim.
         "returns": True,
@@ -717,31 +768,170 @@ def apply_edits(task, edits):
     the segment before it runs on to whatever comes next. That is how a
     standoff or a settling beat gets tested for whether it was needed at all.
     """
+    # Tag authored keys so we can track them by original index/id
+    for i, key in enumerate(task["keys"]):
+        key["_id"] = str(i)
+        key["_authored"] = i
+
+    if not edits:
+        return task
+
     keys = (edits or {}).get("keys", {})
     for index, edit in keys.items():
-        key = task["keys"][int(index)]
-        if "dpos" in edit and "pos" in key:
-            key["pos"] = np.asarray(key["pos"], float) + np.asarray(edit["dpos"], float)
-        if "secs" in edit:
-            key["secs"] = float(edit["secs"])
-        if "grip" in edit:
-            key["grip"] = float(edit["grip"])
-        if "arc" in key:
-            for field in ("angle", "rise"):
-                if field in edit:
-                    key["arc"][field] = float(edit[field])
+        if str(index).isdigit():
+            idx = int(index)
+            if idx < len(task["keys"]):
+                key = task["keys"][idx]
+                if "dpos" in edit and "pos" in key:
+                    key["pos"] = np.asarray(key["pos"], float) + np.asarray(edit["dpos"], float)
+                if "secs" in edit:
+                    key["secs"] = float(edit["secs"])
+                if "grip" in edit:
+                    key["grip"] = float(edit["grip"])
+                if "arc" in key:
+                    for field in ("angle", "rise"):
+                        if field in edit:
+                            key["arc"][field] = float(edit[field])
+
+    # Insert added poses
+    added = (edits or {}).get("added", [])
+    for idx, add in enumerate(added):
+        after_id = str(add.get("after", ""))
+        pos = np.asarray(add["pos"], float)
+        if "dpos" in add:
+            pos = pos + np.asarray(add["dpos"], float)
+        new_key = {
+            "_id": str(add.get("id", f"a{idx+1}")),
+            "_added": True,
+            "pos": pos,
+            "finger": np.asarray(add.get("finger", [0.0, 1.0, 0.0]), float),
+            "approach": np.asarray(add.get("approach", DOWN), float),
+            "grip": float(add.get("grip", 0.0)),
+            "secs": float(add.get("secs", 1.0)),
+            "transit": bool(add.get("transit", False)),
+        }
+        # Find insertion position
+        insert_idx = None
+        for i, k in enumerate(task["keys"]):
+            if str(k.get("_id")) == after_id or str(k.get("_authored")) == after_id:
+                insert_idx = i + 1
+                break
+        if insert_idx is not None:
+            task["keys"].insert(insert_idx, new_key)
+        else:
+            task["keys"].insert(max(1, len(task["keys"]) - 1), new_key)
 
     # Last, and from the back, so the indices above still mean what they said.
     # Never the first key: that one is not a step, it is where the arm starts.
-    for index in sorted(dropped(edits), reverse=True):
-        task["keys"].pop(index)
+    drop_indices = []
+    for i, k in enumerate(task["keys"]):
+        if k.get("_authored") is not None:
+            auth_idx = str(k["_authored"])
+            if auth_idx != "0" and keys.get(auth_idx, {}).get("off"):
+                drop_indices.append(i)
+        elif k.get("_added") and k.get("_id") in keys and keys[k["_id"]].get("off"):
+            drop_indices.append(i)
+
+    for i in sorted(drop_indices, reverse=True):
+        task["keys"].pop(i)
+
     return task
+
+
+def apply_joint_edits(samples, task, edits):
+    """Use edited joint poses as anchors between the task keyframes.
+
+    TCP edits still go through IK first. Explicit ``qpos`` edits then replace
+    the corresponding keyframe and are linearly blended across its adjacent
+    segment, which keeps a hand-edited joint pose from causing a one-frame
+    discontinuity.
+    """
+    if not edits or not samples:
+        return samples
+    overrides = (edits or {}).get("keys", {})
+    if not overrides:
+        return samples
+
+    anchors = []
+    frame = 0
+    for i, key in enumerate(task["keys"]):
+        if i:
+            frame += max(int(round(key["secs"] * RATE)), 1)
+        anchors.append(min(frame, len(samples) - 1))
+
+    out = [(np.asarray(q, float).copy(), grip) for q, grip in samples]
+    override_frames = {}
+    for key_index, edit in overrides.items():
+        if "qpos" not in edit:
+            continue
+        wanted = str(key_index)
+        for task_index, key in enumerate(task["keys"]):
+            if (str(key.get("_id")) == wanted or
+                    str(key.get("_authored")) == wanted):
+                override_frames[anchors[task_index]] = edit
+                break
+    for frame, edit in override_frames.items():
+        target = np.asarray(edit["qpos"], float)
+        if target.shape == out[0][0].shape:
+            out[frame] = (target.copy(), out[frame][1])
+
+    # Interpolate each segment only when at least one endpoint was explicitly
+    # edited. Unedited segments remain the IK solution exactly as authored.
+    edited_frames = set(override_frames)
+    for start, end in zip(anchors[:-1], anchors[1:]):
+        if start not in edited_frames and end not in edited_frames:
+            continue
+        a, b = out[start][0], out[end][0]
+        span = max(end - start, 1)
+        for j in range(start, end + 1):
+            t = (j - start) / span
+            q = (1.0 - t) * a + t * b
+            out[j] = (q, out[j][1])
+    return out
+
+
+def apply_object_edits(states, task, edits, addresses):
+    """Apply independent object-joint anchors to recorded scene states."""
+    if not edits or not states or not addresses:
+        return states
+    overrides = (edits or {}).get("keys", {})
+    if not overrides:
+        return states
+    anchors, frame = [], 0
+    for i, key in enumerate(task["keys"]):
+        if i:
+            frame += max(int(round(key["secs"] * RATE)), 1)
+        anchors.append(min(frame, len(states) - 1))
+    out = [np.asarray(s, float).copy() for s in states]
+    frames = {}
+    for key_index, edit in overrides.items():
+        if "objectQpos" not in edit:
+            continue
+        wanted = str(key_index)
+        for i, key in enumerate(task["keys"]):
+            if str(key.get("_id")) == wanted or str(key.get("_authored")) == wanted:
+                values = np.asarray(edit["objectQpos"], float)
+                if values.shape == (len(addresses),):
+                    frames[anchors[i]] = values
+                break
+    for f, values in frames.items():
+        for a, value in zip(addresses, values):
+            out[f][a] = value
+    for start, end in zip(anchors[:-1], anchors[1:]):
+        if start not in frames and end not in frames:
+            continue
+        span = max(end - start, 1)
+        for j in range(start, end + 1):
+            t = (j - start) / span
+            for a in addresses:
+                out[j][a] = (1 - t) * out[start][a] + t * out[end][a]
+    return out
 
 
 def dropped(edits):
     """Which keys are switched off, first key excluded."""
     return [int(i) for i, edit in (edits or {}).get("keys", {}).items()
-            if edit.get("off") and int(i) > 0]
+            if edit.get("off") and str(i).isdigit() and int(i) > 0]
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -761,20 +951,38 @@ def attempt(model, data, site, cfg, factory, spin, spin_adr, edits=None):
     # heavier robots time to actually be where the path says they are.
     for key in task["keys"][1:]:
         key["secs"] = key["secs"] * cfg.get("pace", 1.0)
+    original_grips = [float(key.get("grip", 0.0)) for key in task["keys"]]
     apply_edits(task, edits)
 
     path = sample_path(task["keys"])
     samples, worst = solve_ik(model, data, site, path, cfg)
+    original_samples = [(np.asarray(q, float).copy(), grip) for q, grip in samples]
+    samples = apply_joint_edits(samples, task, edits)
 
     # An arm that could not track the path never really did the task, no matter
     # what the module ended up doing -- a flailing gripper can knock a lever
     # further than a grasp would.
-    if worst > 0.005:
-        return {"task": task, "ok": False, "worst": worst, "samples": samples, "spin": spin, "left": 0.0,
+    if worst > task.get("ik_tolerance", 0.005):
+        return {"task": task, "ok": False, "worst": worst, "samples": samples,
+                "original_samples": original_samples, "original_grips": original_grips,
+                "spin": spin, "left": 0.0,
                 "why": f"out of reach: fingertips off by {worst * 1000:.0f} mm"}
 
-    swing = replay(model, samples, task["watch"], cfg, spin)
-    reached = swing.max() if task["goal"] > 0 else swing.min()
+    swing, states = replay(model, samples, task["watch"], cfg, spin)
+    original_states = [np.asarray(s, float).copy() for s in states]
+    module = task["module"]
+    object_addresses = [model.jnt_qposadr[jid] for jid in range(model.njnt)
+                        if (model.joint(jid).name or "").startswith(f"{module}_")]
+    states = apply_object_edits(states, task, edits, object_addresses)
+    # Equality constraints and contacts can move a module for a few frames
+    # immediately after reset. Do not let that startup motion pass a task the
+    # arm never performed (the short-arm lamp once did exactly that). Tasks
+    # opt into a keyframe after which their own interaction is measured.
+    measure_from = int(task.get("measure_from", 0))
+    start = sum(max(int(round(k["secs"] * RATE)), 1)
+                for k in task["keys"][1:measure_from + 1])
+    measured = swing[start:]
+    reached = measured.max() if task["goal"] > 0 else measured.min()
     ok = abs(reached) >= abs(task["goal"]) * task.get("tolerance", 0.85)
 
     # A task that puts something back has to actually put it back -- and a task
@@ -794,7 +1002,10 @@ def attempt(model, data, site, cfg, factory, spin, spin_adr, edits=None):
     ending = (f" back to {swing[-1] * scale:+.2f}" if task.get("returns")
               else f", left at {swing[-1] * scale:+.2f}" if task.get("holds") else "")
     return {
-        "task": task, "ok": ok, "worst": worst, "samples": samples, "spin": spin,
+        "task": task, "ok": ok, "worst": worst, "samples": samples,
+        "states": states, "original_samples": original_samples,
+        "original_states": original_states, "object_addresses": object_addresses,
+        "original_grips": original_grips, "spin": spin,
         "left": round(float(swing[-1]), 4),
         "why": (f"{len(samples):4d} samples ({len(samples) / RATE:4.1f}s)  "
                 f"ik error {worst * 1000:4.1f} mm  "
@@ -838,7 +1049,8 @@ def build(scene_path, cfg):
 
         spins = [0.0]
         if spin_adr is not None:
-            facing = board_spin_for(model, data, cfg, module)
+            facing = cfg.get("task_spins", {}).get(
+                module, board_spin_for(model, data, cfg, module))
             spins = [facing, 0.0] if abs(facing) > 1e-3 else [0.0]
 
         best = None
@@ -851,10 +1063,19 @@ def build(scene_path, cfg):
             turned = f" [board {math.degrees(spin):+.0f}°]" if spin else ""
             print(f"    {module:8s} {result['why']}{turned}"
                   f"  [{'ok' if result['ok'] else 'MISSED'}]")
-            best = result
+            # Prefer the first candidate (the task-facing board angle) when
+            # no candidate passes. The zero-angle fallback is only a fallback
+            # for a successful solve; it must not silently disable board
+            # rotation just because we keep missed tasks visible.
+            if best is None or result["ok"]:
+                best = result
             if result["ok"]:
                 break
 
+        # Keep a usable attempted path even when acceptance reports a miss.
+        # The widget should still expose every task for inspection and manual
+        # editing; the build log remains the source of truth about whether the
+        # current path actually passed.
         if not best or "samples" not in best:
             continue
 
@@ -874,7 +1095,10 @@ def package(model, site, cfg, result):
         "goal": task["goal"],
         "left": result["left"],
         "spin": round(result["spin"], 5),
+        "demo": bool(task.get("demo")),
         "qpos": [[round(v, 5) for v in q] for q, _ in samples],
+        "stateQpos": [[round(float(v), 6) for v in state]
+                      for state in result.get("states", [])],
         "grip": [round(g, 5) for _, g in samples],
         # Where the fingertips go, so the widget can draw the path the arm
         # is about to take rather than making the viewer infer it.

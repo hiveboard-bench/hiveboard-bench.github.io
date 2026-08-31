@@ -194,7 +194,7 @@
       width: 0;
       background: var(--accent);
     }
-    .panel button:disabled { opacity: 0.4; cursor: default; }
+    .panel button:disabled { opacity: 0.4; cursor: not-allowed; }
     .panel button:disabled:hover { color: var(--ink-soft); border-color: var(--line); }
 
     /* ── Live badge (bottom left) ────────────────────────────── */
@@ -444,20 +444,26 @@
     let mujocoRoot = null;      // holds every body's meshes, rebuilt per robot
     let bodies = {};            // MuJoCo body id -> THREE.Group
     let bodyNames = [];         // MuJoCo body id -> name
+    let jointNames = [];        // cached: WASM name wrappers must not run every step
 
     let catalogue = [];         // every platform, including the ones not built
     let robot = null;           // the selected platform's entry
     let gripCtrl = 0;           // index of its gripper actuator
+    let gripQposIndex = -1;     // qpos slot driven by that actuator
     let spinIndex = -1;         // qpos slot of the board turntable, -1 if fixed
     let homeView = null;        // framing measured off its scene at build time
     let trajectories = {};
     let task = null;            // the selected trajectory, or null
+    let demoStateQposAddrs = []; // qpos slots belonging only to the active module
+    let demoCollisionState = null;
+    let devObjectPose = null;
     let playing = false;
     let sampleIndex = 0;        // which trajectory sample is being tracked
     let subStep = 0;            // physics steps taken within that sample
     let stepsPerSample = 10;
     let restGrip = 0;           // where the gripper sits between runs
     let devHold = false;        // ?edit=1 only: park on the scrubbed sample
+    let devPose = null;         // live joint target from the trajectory editor
 
     let pathLine = null;        // the drawn trajectory
     let pathMarker = null;      // where along it the arm currently is
@@ -588,12 +594,21 @@
 
       mjModel = mujoco.MjModel.from_xml_path(`/working/${entry.scene}`);
       mjData = new mujoco.MjData(mjModel);
+      // Collision masks are model-owned arrays. Never carry the saved masks
+      // from the previously loaded robot into this newly compiled model.
+      demoCollisionState = null;
 
       bodyNames = [];
       for (let b = 0; b < mjModel.nbody; b++) {
         bodyNames[b] = mujoco.mj_id2name(mjModel, MJ_OBJ_BODY, b) || '';
       }
+      jointNames = [];
+      for (let j = 0; j < mjModel.njnt; j++) {
+        jointNames[j] = mujoco.mj_id2name(mjModel, MJ_OBJ_JOINT, j) || '';
+      }
       gripCtrl = entry.gripIndex;
+      const gripJointId = jointNames.indexOf(entry.grip.actuator);
+      gripQposIndex = gripJointId >= 0 ? mjModel.jnt_qposadr[gripJointId] : -1;
       spinIndex = entry.spinIndex ?? -1;
       restGrip = entry.grip.open;
 
@@ -855,15 +870,59 @@
       }
     }
 
+    function applyDemoSample() {
+      if (!task || !task.demo || !playing || !task.stateQpos?.[sampleIndex]) return false;
+      const state = task.stateQpos[sampleIndex];
+      const target = task.qpos[sampleIndex];
+      for (let i = 0; i < robot.arm; i++) {
+        mjData.qpos[i] = target[i];
+        mjData.qvel[i] = 0;
+      }
+      if (gripQposIndex >= 0) {
+        mjData.qpos[gripQposIndex] = task.grip[sampleIndex];
+        mjData.qvel[gripQposIndex] = 0;
+      }
+      for (const adr of demoStateQposAddrs) {
+        if (adr < state.length) mjData.qpos[adr] = state[adr];
+      }
+      if (spinIndex >= 0) {
+        mjData.qpos[spinIndex] = task.spin || 0;
+        mjData.qvel[spinIndex] = 0;
+      }
+      return true;
+    }
+
     // ═══════════════════════════════════════════════════════════
     //  CONTROL
     // ═══════════════════════════════════════════════════════════
     /** Command one trajectory sample, or hold home when nothing is playing. */
     function applyControl() {
-      const target = task && (playing || devHold) ? task.qpos[sampleIndex] : robot.home;
+      const target = devPose ? devPose.qpos : (task && (playing || devHold)
+        ? task.qpos[sampleIndex] : robot.home);
+      if (devObjectPose && task && !playing) {
+        const prefix = `${task.watch.split('_')[0]}_`;
+        let oi = 0;
+        for (let jid = 0; jid < mjModel.njnt && oi < devObjectPose.length; jid++) {
+          const name = mjModel.joint(jid).name;
+          if (name && name.startsWith(prefix)) {
+            mjData.qpos[mjModel.jnt_qposadr[jid]] = devObjectPose[oi++];
+          }
+        }
+      }
+      if (task && task.demo && playing && task.stateQpos?.[sampleIndex]) {
+        // Keep the board/module state from the authored demonstration in sync
+        // with the arm, while leaving the arm itself under its normal smooth
+        // position controller. This makes the carried lamp visible without
+        // allowing contacts to influence either body.
+        applyDemoSample();
+      }
       for (let i = 0; i < robot.arm; i++) mjData.ctrl[i] = target[i];
-      // The running task owns the gripper; between runs it sits open.
-      mjData.ctrl[gripCtrl] = task && playing ? task.grip[sampleIndex] : restGrip;
+      // The selected editor pose is held just like a running task, including
+      // its gripper command. Only an ordinary idle scene uses restGrip.
+      mjData.ctrl[gripCtrl] = devPose
+        ? devPose.grip
+        : task && (playing || devHold)
+        ? task.grip[sampleIndex] : restGrip;
     }
 
     function resetScene() {
@@ -876,8 +935,44 @@
       mujoco.mj_forward(mjModel, mjData);
       sampleIndex = 0;
       subStep = 0;
+      devPose = null;
+      devObjectPose = null;
       restGrip = robot ? robot.grip.open : 0;
       if (mjModel) syncBodies();
+    }
+
+    function setDemoCollisions(disabled) {
+      if (!mjModel) return;
+      if (disabled) {
+        if (!demoCollisionState) {
+          demoCollisionState = {
+            contype: Array.from(mjModel.geom_contype),
+            conaffinity: Array.from(mjModel.geom_conaffinity),
+          };
+        }
+        // Reassert this on trajectory replacement as well as task selection.
+        mjModel.geom_contype.fill(0);
+        mjModel.geom_conaffinity.fill(0);
+      } else if (!disabled && demoCollisionState) {
+        mjModel.geom_contype.set(demoCollisionState.contype);
+        mjModel.geom_conaffinity.set(demoCollisionState.conaffinity);
+        demoCollisionState = null;
+      }
+    }
+
+    function teleportSample() {
+      if (!mjModel || !task) return;
+      const saved = task.stateQpos?.[sampleIndex];
+      if (saved && saved.length === mjModel.nq) {
+        mjData.qpos.set(saved);
+      } else {
+        // Older trajectory files have only the robot joints. Keep their
+        // selected-pose behavior while leaving the board object at reset.
+        for (let i = 0; i < robot.arm; i++) mjData.qpos[i] = task.qpos[sampleIndex][i];
+      }
+      mjData.qvel.fill(0);
+      mujoco.mj_forward(mjModel, mjData);
+      syncBodies();
     }
 
     // ═══════════════════════════════════════════════════════════
@@ -896,6 +991,14 @@
      */
     function selectTask(key, { dolly = true, play = true } = {}) {
       task = trajectories[key];
+      const prefix = `${modulePrefix()}_`;
+      demoStateQposAddrs = [];
+      for (let jid = 0; jid < jointNames.length; jid++) {
+        if (jointNames[jid].startsWith(prefix)) {
+          demoStateQposAddrs.push(mjModel.jnt_qposadr[jid]);
+        }
+      }
+      setDemoCollisions(!!task.demo);
       const list = document.getElementById('task-list');
       document.querySelectorAll('#task-list button').forEach((btn) => {
         btn.classList.toggle('active', btn.dataset.task === key);
@@ -921,6 +1024,20 @@
       pathLine.geometry = new THREE.BufferGeometry().setFromPoints(task.tcp.map(toThree));
       pathLine.visible = true;
       pathMarker.visible = true;
+    }
+
+    function setTrajectoryPending(pending) {
+      if (pathLine) pathLine.visible = !pending && !!task;
+      if (pathMarker) pathMarker.visible = !pending && !!task;
+    }
+
+    function replaceTrajectory(name, replacement) {
+      if (!replacement) return;
+      trajectories[name] = replacement;
+      if (task && modulePrefix() === name) {
+        task = replacement;
+        setDemoCollisions(!!task.demo);
+      }
     }
 
     /** Dolly onto the module the task acts on, or back out to the overview. */
@@ -1062,6 +1179,13 @@
     //  PLAYBACK
     // ═══════════════════════════════════════════════════════════
     function setPlaying(value) {
+      if (value) {
+        // A selected-pose preview is a temporary override. Playback must use
+        // the trajectory samples again, including their gripper commands.
+        devHold = false;
+        devPose = null;
+        devObjectPose = null;
+      }
       playing = !!value && !!task;
       playEl.textContent = playing ? 'Pause' : 'Play';
       playEl.classList.toggle('active', playing);
@@ -1122,6 +1246,11 @@
         mujoco.mj_step2(mjModel, mjData);
         advance();
       }
+
+      // qpos may be authored directly for a collision-independent demo.
+      // Recompute xpos/xquat after that write so Three.js receives the board,
+      // arm, gripper and lamp transforms from the same current sample.
+      if (applyDemoSample()) mujoco.mj_forward(mjModel, mjData);
 
       syncBodies();
       if (task) {
@@ -1217,12 +1346,44 @@
         if (new URLSearchParams(location.search).has('edit')) {
           import('./edit.js').then((editor) => editor.attach({
             THREE, scene, camera, renderer, controls, toThree,
-            resetScene, drawPath, setPlaying,
+            resetScene, drawPath, setPlaying, setTrajectoryPending, replaceTrajectory,
             setSample(i) {
               if (!task) return;
               devHold = true;
+              devPose = null;
+              devObjectPose = null;
               sampleIndex = Math.max(0, Math.min(i, task.qpos.length - 1));
               subStep = 0;
+              teleportSample();
+            },
+            setEditorPose(qpos, grip) {
+              if (!task || !Array.isArray(qpos)) return;
+              devHold = true;
+              setPlaying(false);
+              devPose = { qpos, grip };
+              devObjectPose = null;
+              for (let i = 0; i < robot.arm; i++) mjData.qpos[i] = qpos[i];
+              mjData.qvel.fill(0);
+              mujoco.mj_forward(mjModel, mjData);
+              syncBodies();
+            },
+            setEditorObjectPose(qpos) {
+              if (!task || !Array.isArray(qpos)) return;
+              devHold = true;
+              setPlaying(false);
+              devPose = null;
+              devObjectPose = qpos;
+              const prefix = `${task.watch.split('_')[0]}_`;
+              let oi = 0;
+              for (let jid = 0; jid < mjModel.njnt && oi < qpos.length; jid++) {
+                const name = mjModel.joint(jid).name;
+                if (name && name.startsWith(prefix)) {
+                  mjData.qpos[mjModel.jnt_qposadr[jid]] = qpos[oi++];
+                }
+              }
+              mjData.qvel.fill(0);
+              mujoco.mj_forward(mjModel, mjData);
+              syncBodies();
             },
             get robot() { return robot; },
             get task() { return task; },
