@@ -390,6 +390,8 @@
 
     const MJ_OBJ_BODY = 1;
     const MJ_OBJ_JOINT = 3;
+    const MJ_OBJ_GEOM = 5;
+    const MJ_OBJ_MATERIAL = 14;
     const MJ_JNT_SLIDE = 2;
     const MJ_GEOM_PLANE = 0;
     const MJ_GEOM_SPHERE = 2;
@@ -848,13 +850,35 @@
         : [mjModel.geom_rgba[g * 4 + 0], mjModel.geom_rgba[g * 4 + 1],
            mjModel.geom_rgba[g * 4 + 2], mjModel.geom_rgba[g * 4 + 3]];
 
+      const matName = matID !== -1 ? (mujoco.mj_id2name(mjModel, MJ_OBJ_MATERIAL, matID) || '').toLowerCase() : '';
+      let roughness = 0.40;
+      let metalness = 0.10;
+      let clearcoat = 0.05;
+
+      if (matName.includes('metal') || matName.includes('shank') || matName.includes('handle')) {
+        roughness = 0.28;
+        metalness = 0.70;
+      } else if (matName.includes('carbon') || matName.includes('thigh') || matName.includes('dark')) {
+        roughness = 0.35;
+        metalness = 0.20;
+        clearcoat = 0.15;
+      } else if (matName.includes('top_shell') || matName.includes('drive') || matName.includes('hatch') || matName.includes('shell')) {
+        roughness = 0.25;
+        metalness = 0.08;
+        clearcoat = 0.40;
+      } else if (matName.includes('accent') || matName.includes('yellow')) {
+        roughness = 0.25;
+        metalness = 0.25;
+        clearcoat = 0.25;
+      }
+
       return new THREE.MeshPhysicalMaterial({
         color: new THREE.Color(rgba[0], rgba[1], rgba[2]),
         transparent: rgba[3] < 1,
         opacity: rgba[3],
-        roughness: 0.45,
-        metalness: 0.08,
-        clearcoat: 0.06,
+        roughness: roughness,
+        metalness: metalness,
+        clearcoat: clearcoat,
       });
     }
 

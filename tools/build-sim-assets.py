@@ -298,15 +298,15 @@ def prepare_platform_c(menagerie_dir: Path):
     # ship. Flatten each to a plain rgba matching the real robot: dark body,
     # red actuator drives and top shell, near-black feet, light-grey thighs.
     ANYMAL_RGBA = {
-        "base": "0.16 0.18 0.20 1", "top_shell": "0.72 0.055 0.065 1",
-        "bottom_shell": "0.20 0.22 0.24 1", "hip_l": "0.18 0.20 0.22 1",
-        "hip_r": "0.18 0.20 0.22 1", "thigh": "0.52 0.55 0.58 1",
-        "shank": "0.24 0.26 0.28 1", "shank_l": "0.24 0.26 0.28 1",
-        "foot": "0.09 0.10 0.11 1", "hatch": "0.72 0.055 0.065 1",
-        "remote": "0.16 0.18 0.20 1", "handle": "0.55 0.58 0.61 1",
-        "face": "0.12 0.13 0.14 1", "depth_camera": "0.09 0.09 0.09 1",
-        "wide_angle_camera": "0.09 0.09 0.09 1", "battery": "0.52 0.55 0.58 1",
-        "lidar_cage": "0.09 0.09 0.09 1", "lidar": "0.09 0.09 0.09 1",
+        "base": "0.14 0.15 0.17 1", "top_shell": "0.72 0.055 0.065 1",
+        "bottom_shell": "0.20 0.22 0.24 1", "hip_l": "0.14 0.15 0.17 1",
+        "hip_r": "0.14 0.15 0.17 1", "thigh": "0.12 0.13 0.15 1",
+        "shank": "0.14 0.15 0.17 1", "shank_l": "0.14 0.15 0.17 1",
+        "foot": "0.08 0.09 0.10 1", "hatch": "0.72 0.055 0.065 1",
+        "remote": "0.14 0.15 0.17 1", "handle": "0.45 0.48 0.52 1",
+        "face": "0.12 0.13 0.14 1", "depth_camera": "0.08 0.08 0.08 1",
+        "wide_angle_camera": "0.08 0.08 0.08 1", "battery": "0.14 0.15 0.17 1",
+        "lidar_cage": "0.08 0.08 0.08 1", "lidar": "0.08 0.08 0.08 1",
         "drive": "0.72 0.055 0.065 1",
     }
     for tex in asset.findall("texture"):
@@ -316,13 +316,25 @@ def prepare_platform_c(menagerie_dir: Path):
         if mat.get("name") in ANYMAL_RGBA:
             mat.set("rgba", ANYMAL_RGBA[mat.get("name")])
         mat.attrib.setdefault("rgba", "0.5 0.5 0.5 1")
-    for _, stem, _ in DYNAARM_LINKS:
-        if root.find(f'.//mesh[@name="dynaarm_{stem}"]') is None:
-            ET.SubElement(asset, "mesh",
-                          {"name": f"dynaarm_{stem}", "file": f"dynaarm_{stem}.obj"})
-    for name, rgba in (("arm_grey", "0.56 0.59 0.62 1"),
-                       ("arm_dark", "0.13 0.15 0.17 1"),
-                       ("arm_accent", "0.93 0.69 0.10 1")):
+    DYNAARM_PARTS = {
+        "base": [("dynaarm_base_dark", "arm_dark"), ("dynaarm_base_metal", "arm_metal")],
+        "shoulder": [("dynaarm_shoulder_dark", "arm_dark"), ("dynaarm_shoulder_metal", "arm_metal")],
+        "upperarm": [("dynaarm_upperarm_dark", "arm_carbon"), ("dynaarm_upperarm_metal", "arm_metal")],
+        "elbow": [("dynaarm_elbow_dark", "arm_dark"), ("dynaarm_elbow_metal", "arm_metal")],
+        "forearm": [("dynaarm_forearm_dark", "arm_carbon"), ("dynaarm_forearm_metal", "arm_metal")],
+        "wrist1": [("dynaarm_wrist1_dark", "arm_dark"), ("dynaarm_wrist1_metal", "arm_metal")],
+        "wrist2": [("dynaarm_wrist2_metal", "arm_metal")],
+    }
+    for parts in DYNAARM_PARTS.values():
+        for mesh_name, _ in parts:
+            if root.find(f'.//mesh[@name="{mesh_name}"]') is None:
+                ET.SubElement(asset, "mesh",
+                              {"name": mesh_name, "file": f"{mesh_name}.obj"})
+    for name, rgba in (("arm_carbon", "0.14 0.15 0.17 1"),
+                       ("arm_metal", "0.78 0.80 0.84 1"),
+                       ("arm_dark", "0.15 0.16 0.18 1"),
+                       ("arm_accent", "0.93 0.69 0.10 1"),
+                       ("arm_red", "0.72 0.055 0.065 1")):
         if root.find(f'.//material[@name="{name}"]') is None:
             ET.SubElement(asset, "material", {"name": name, "rgba": rgba})
 
@@ -330,8 +342,9 @@ def prepare_platform_c(menagerie_dir: Path):
     parent = ET.SubElement(base, "body",
                            {"name": DYNAARM_LINKS[0][0], "pos": "0.12 0 0.08",
                             "quat": "0 0 0 1"})
-    ET.SubElement(parent, "geom", {"type": "mesh", "mesh": "dynaarm_base",
-                                   "material": "arm_grey", "class": "visual"})
+    for mesh_name, mat in DYNAARM_PARTS["base"]:
+        ET.SubElement(parent, "geom", {"type": "mesh", "mesh": mesh_name,
+                                       "material": mat, "class": "visual"})
     ET.SubElement(parent, "geom", {"type": "cylinder", "size": "0.06 0.05",
                                    "pos": "0 0 0.05", "class": "collision"})
     arm_bodies = [DYNAARM_LINKS[0][0]]
@@ -342,31 +355,39 @@ def prepare_platform_c(menagerie_dir: Path):
         ET.SubElement(child, "joint", {
             "name": jn, "axis": "0 0 1", "range": fmt(jr),
             "damping": "3", "armature": "0.1"})
-        ET.SubElement(child, "geom", {"type": "mesh", "mesh": f"dynaarm_{stem}",
-                                      "material": "arm_grey", "class": "visual"})
+        for mesh_name, mat in DYNAARM_PARTS.get(stem, []):
+            ET.SubElement(child, "geom", {"type": "mesh", "mesh": mesh_name,
+                                          "material": mat, "class": "visual"})
         ET.SubElement(child, "geom", {"type": "capsule", "size": "0.045 0.06",
                                       "class": "collision"})
         parent = child
         arm_bodies.append(link_name)
 
-
     flange = ET.SubElement(parent, "body",
                            {"name": "dynaarm_flange", "pos": "0 0 0.009",
                             "quat": fmt(_rpy_quat((0, 0, 1.570796)))})
+    ET.SubElement(flange, "geom", {"type": "cylinder", "size": "0.042 0.004",
+                                   "material": "arm_metal", "class": "visual"})
     palm = ET.SubElement(flange, "body", {"name": "dynaarm_palm", "pos": "0 0 0.02"})
-    ET.SubElement(palm, "geom", {"type": "box", "size": "0.045 0.05 0.02",
+    ET.SubElement(palm, "geom", {"type": "box", "size": "0.038 0.042 0.016",
                                  "material": "arm_dark", "class": "visual"})
+    ET.SubElement(palm, "geom", {"type": "box", "size": "0.032 0.035 0.006", "pos": "0 0 0.012",
+                                 "material": "arm_metal", "class": "visual"})
     ET.SubElement(palm, "geom", {"type": "box", "size": "0.045 0.05 0.02",
                                  "class": "collision"})
     jaw_l = ET.SubElement(palm, "body", {"name": "dynaarm_jaw", "pos": "0 0.03 0.055"})
     ET.SubElement(jaw_l, "joint", {"name": "gripper", "type": "slide", "axis": "0 -1 0",
                                    "range": "0 0.04", "damping": "8"})
-    ET.SubElement(jaw_l, "geom", {"type": "box", "size": "0.008 0.01 0.045",
+    ET.SubElement(jaw_l, "geom", {"type": "box", "size": "0.012 0.008 0.042",
+                                  "material": "arm_dark", "class": "visual"})
+    ET.SubElement(jaw_l, "geom", {"type": "box", "size": "0.010 0.003 0.038", "pos": "0 -0.006 0",
                                   "material": "arm_accent", "class": "visual"})
     ET.SubElement(jaw_l, "geom", {"type": "box", "size": "0.008 0.01 0.045",
                                   "class": "collision"})
     jaw_r = ET.SubElement(palm, "body", {"name": "dynaarm_jaw_fixed", "pos": "0 -0.03 0.055"})
-    ET.SubElement(jaw_r, "geom", {"type": "box", "size": "0.008 0.01 0.045",
+    ET.SubElement(jaw_r, "geom", {"type": "box", "size": "0.012 0.008 0.042",
+                                  "material": "arm_dark", "class": "visual"})
+    ET.SubElement(jaw_r, "geom", {"type": "box", "size": "0.010 0.003 0.038", "pos": "0 0.006 0",
                                   "material": "arm_accent", "class": "visual"})
     ET.SubElement(jaw_r, "geom", {"type": "box", "size": "0.008 0.01 0.045",
                                   "class": "collision"})

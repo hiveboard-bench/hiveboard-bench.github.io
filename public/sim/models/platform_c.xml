@@ -10,9 +10,9 @@
     <material name="white" rgba="1 1 1 1" />
     <material name="off_white" rgba="0.901961 0.921569 0.929412 1" />
     <material name="black" rgba="0.25 0.25 0.25 1" />
-    <material name="green" rgba="0 1 0 1" />
+    <material name="green" rgba="0.052 0.178 0.033 1" />
     <material name="light_blue" rgba="0.039216 0.541176 0.780392 1" />
-    <material name="red" rgba="1 0 0 1" />
+    <material name="red" rgba="0.178 0.006 0.005 1" />
     <material name="hb_shell" rgba="0.925 0.933 0.945 1" specular="0.3" shininess="0.2" />
     <material name="hb_panel" rgba="0.76 0.79 0.83 1" specular="0.25" shininess="0.15" />
     <material name="hb_accent" rgba="0.929 0.686 0.098 1" specular="0.4" shininess="0.3" />
@@ -40,13 +40,19 @@
     <mesh name="hip_r" file="platform_c/hip_r.obj" />
     <mesh name="hatch" file="platform_c/hatch.obj" />
     <mesh name="shank_r" file="platform_c/shank_r.obj" />
-    <mesh name="dynaarm_base" file="platform_c/dynaarm_base.obj" />
-    <mesh name="dynaarm_shoulder" file="platform_c/dynaarm_shoulder.obj" />
-    <mesh name="dynaarm_upperarm" file="platform_c/dynaarm_upperarm.obj" />
-    <mesh name="dynaarm_elbow" file="platform_c/dynaarm_elbow.obj" />
-    <mesh name="dynaarm_forearm" file="platform_c/dynaarm_forearm.obj" />
-    <mesh name="dynaarm_wrist1" file="platform_c/dynaarm_wrist1.obj" />
-    <mesh name="dynaarm_wrist2" file="platform_c/dynaarm_wrist2.obj" />
+    <mesh name="dynaarm_base_dark" file="platform_c/dynaarm_base_dark.obj" />
+    <mesh name="dynaarm_base_metal" file="platform_c/dynaarm_base_metal.obj" />
+    <mesh name="dynaarm_shoulder_dark" file="platform_c/dynaarm_shoulder_dark.obj" />
+    <mesh name="dynaarm_shoulder_metal" file="platform_c/dynaarm_shoulder_metal.obj" />
+    <mesh name="dynaarm_upperarm_dark" file="platform_c/dynaarm_upperarm_dark.obj" />
+    <mesh name="dynaarm_upperarm_metal" file="platform_c/dynaarm_upperarm_metal.obj" />
+    <mesh name="dynaarm_elbow_dark" file="platform_c/dynaarm_elbow_dark.obj" />
+    <mesh name="dynaarm_elbow_metal" file="platform_c/dynaarm_elbow_metal.obj" />
+    <mesh name="dynaarm_forearm_dark" file="platform_c/dynaarm_forearm_dark.obj" />
+    <mesh name="dynaarm_forearm_metal" file="platform_c/dynaarm_forearm_metal.obj" />
+    <mesh name="dynaarm_wrist1_dark" file="platform_c/dynaarm_wrist1_dark.obj" />
+    <mesh name="dynaarm_wrist1_metal" file="platform_c/dynaarm_wrist1_metal.obj" />
+    <mesh name="dynaarm_wrist2_metal" file="platform_c/dynaarm_wrist2_metal.obj" />
     <mesh name="panel_tn__Hexagono_Suporte1_bX0_Corpo1_Mesh" file="hb/panel_tn__Hexagono_Suporte1_bX0_Corpo1_Mesh.obj" scale="0.001 0.001 0.001" />
     <mesh name="panel_tn__Hexagono_Suporte2_bX0_Corpo1_Mesh" file="hb/panel_tn__Hexagono_Suporte2_bX0_Corpo1_Mesh.obj" scale="0.001 0.001 0.001" />
     <mesh name="panel_tn__Hexagono_Suporte3_bX0_Corpo1_Mesh" file="hb/panel_tn__Hexagono_Suporte3_bX0_Corpo1_Mesh.obj" scale="0.001 0.001 0.001" />
@@ -65,28 +71,30 @@
     <material name="black_plastic" rgba="0.007 0.007 0.007 1" />
     <material name="yellow" rgba="0.178 0.119 0.006 1" />
     <material name="lwl" rgba="0.8 0.8 0.8 1" />
-    <material name="base" rgba="0.16 0.18 0.2 1" />
+    <material name="base" rgba="0.14 0.15 0.17 1" />
     <material name="top_shell" rgba="0.72 0.055 0.065 1" />
     <material name="bottom_shell" rgba="0.2 0.22 0.24 1" />
-    <material name="hip_l" rgba="0.18 0.2 0.22 1" />
-    <material name="thigh" rgba="0.52 0.55 0.58 1" />
-    <material name="shank_l" rgba="0.24 0.26 0.28 1" />
-    <material name="foot" rgba="0.09 0.1 0.11 1" />
-    <material name="hip_r" rgba="0.18 0.2 0.22 1" />
-    <material name="shank" rgba="0.24 0.26 0.28 1" />
+    <material name="hip_l" rgba="0.14 0.15 0.17 1" />
+    <material name="thigh" rgba="0.12 0.13 0.15 1" />
+    <material name="shank_l" rgba="0.14 0.15 0.17 1" />
+    <material name="foot" rgba="0.08 0.09 0.1 1" />
+    <material name="hip_r" rgba="0.14 0.15 0.17 1" />
+    <material name="shank" rgba="0.14 0.15 0.17 1" />
     <material name="hatch" rgba="0.72 0.055 0.065 1" />
-    <material name="remote" rgba="0.16 0.18 0.2 1" />
-    <material name="handle" rgba="0.55 0.58 0.61 1" />
+    <material name="remote" rgba="0.14 0.15 0.17 1" />
+    <material name="handle" rgba="0.45 0.48 0.52 1" />
     <material name="face" rgba="0.12 0.13 0.14 1" />
-    <material name="depth_camera" rgba="0.09 0.09 0.09 1" />
-    <material name="wide_angle_camera" rgba="0.09 0.09 0.09 1" />
-    <material name="battery" rgba="0.52 0.55 0.58 1" />
-    <material name="lidar_cage" rgba="0.09 0.09 0.09 1" />
-    <material name="lidar" rgba="0.09 0.09 0.09 1" />
+    <material name="depth_camera" rgba="0.08 0.08 0.08 1" />
+    <material name="wide_angle_camera" rgba="0.08 0.08 0.08 1" />
+    <material name="battery" rgba="0.14 0.15 0.17 1" />
+    <material name="lidar_cage" rgba="0.08 0.08 0.08 1" />
+    <material name="lidar" rgba="0.08 0.08 0.08 1" />
     <material name="drive" rgba="0.72 0.055 0.065 1" />
-    <material name="arm_grey" rgba="0.56 0.59 0.62 1" />
-    <material name="arm_dark" rgba="0.13 0.15 0.17 1" />
+    <material name="arm_carbon" rgba="0.14 0.15 0.17 1" />
+    <material name="arm_metal" rgba="0.78 0.80 0.84 1" />
+    <material name="arm_dark" rgba="0.15 0.16 0.18 1" />
     <material name="arm_accent" rgba="0.93 0.69 0.1 1" />
+    <material name="arm_red" rgba="0.72 0.055 0.065 1" />
   </asset>
   <worldbody>
     <light pos="0 0 2.4" dir="0 0 -1" directional="true" />
@@ -226,43 +234,53 @@
         </body>
       </body>
       <body name="dynaarm_base" pos="0.12 0 0.08" quat="0 0 0 1" gravcomp="1">
-        <geom class="visual" material="arm_grey" mesh="dynaarm_base" />
+        <geom class="visual" material="arm_dark" mesh="dynaarm_base_dark" />
+        <geom class="visual" material="arm_metal" mesh="dynaarm_base_metal" />
         <geom class="collision" size="0.06 0.05" pos="0 0 0.05" />
         <body name="dynaarm_shoulder" pos="0 0 0.1105" gravcomp="1">
           <joint name="dynaarm_shoulder_rotation" pos="0 0 0" axis="0 0 1" range="-4.3124 4.3124" armature="0.1" damping="3" />
-          <geom class="visual" material="arm_grey" mesh="dynaarm_shoulder" />
+          <geom class="visual" material="arm_dark" mesh="dynaarm_shoulder_dark" />
+          <geom class="visual" material="arm_metal" mesh="dynaarm_shoulder_metal" />
           <geom class="collision" size="0.045 0.06" type="capsule" />
           <body name="dynaarm_upperarm" pos="0 0 0.047" quat="0.5 0.5 -0.5 0.5" gravcomp="1">
             <joint name="dynaarm_shoulder_flexion" pos="0 0 0" axis="0 0 1" range="-1.7208 1.7208" armature="0.1" damping="3" />
-            <geom class="visual" material="arm_grey" mesh="dynaarm_upperarm" />
+            <geom class="visual" material="arm_carbon" mesh="dynaarm_upperarm_dark" />
+            <geom class="visual" material="arm_metal" mesh="dynaarm_upperarm_metal" />
             <geom class="collision" size="0.045 0.06" type="capsule" />
             <body name="dynaarm_elbow" pos="0.4127 0 0" gravcomp="1">
               <joint name="dynaarm_elbow_flexion" pos="0 0 0" axis="0 0 1" range="0 3.09159" armature="0.1" damping="3" />
-              <geom class="visual" material="arm_grey" mesh="dynaarm_elbow" />
+              <geom class="visual" material="arm_dark" mesh="dynaarm_elbow_dark" />
+              <geom class="visual" material="arm_metal" mesh="dynaarm_elbow_metal" />
               <geom class="collision" size="0.045 0.06" type="capsule" />
               <body name="dynaarm_forearm" pos="0.0262 -0.0855 0" quat="0.707107 1.15539e-07 0.707107 1.15539e-07" gravcomp="1">
                 <joint name="dynaarm_forearm_rotation" pos="0 0 0" axis="0 0 1" range="-4.7124 4.7124" armature="0.1" damping="3" />
-                <geom class="visual" material="arm_grey" mesh="dynaarm_forearm" />
+                <geom class="visual" material="arm_carbon" mesh="dynaarm_forearm_dark" />
+                <geom class="visual" material="arm_metal" mesh="dynaarm_forearm_metal" />
                 <geom class="collision" size="0.045 0.06" type="capsule" />
                 <body name="dynaarm_wrist_1" pos="0.0295 0 0.4207" quat="0.707107 0 -0.707107 0" gravcomp="1">
                   <joint name="dynaarm_wrist_flexion" pos="0 0 0" axis="0 0 1" range="-1.8208 1.8208" armature="0.1" damping="3" />
-                  <geom class="visual" material="arm_grey" mesh="dynaarm_wrist1" />
+                  <geom class="visual" material="arm_dark" mesh="dynaarm_wrist1_dark" />
+                  <geom class="visual" material="arm_metal" mesh="dynaarm_wrist1_metal" />
                   <geom class="collision" size="0.045 0.06" type="capsule" />
                   <body name="dynaarm_wrist_2" pos="0.117 0 0.0295" quat="0.707107 -1.15539e-07 0.707107 -1.15539e-07" gravcomp="1">
                     <joint name="dynaarm_wrist_rotation" pos="0 0 0" axis="0 0 1" range="-1.5708 4.7124" armature="0.1" damping="3" />
-                    <geom class="visual" material="arm_grey" mesh="dynaarm_wrist2" />
+                    <geom class="visual" material="arm_metal" mesh="dynaarm_wrist2_metal" />
                     <geom class="collision" size="0.045 0.06" type="capsule" />
                     <body name="dynaarm_flange" pos="0 0 0.009" quat="0.707107 0 0 0.707107" gravcomp="1">
+                      <geom class="visual" type="cylinder" size="0.042 0.004" material="arm_metal" />
                       <body name="dynaarm_palm" pos="0 0 0.02" gravcomp="1">
-                        <geom class="visual" size="0.045 0.05 0.02" type="box" material="arm_dark" />
+                        <geom class="visual" size="0.038 0.042 0.016" type="box" material="arm_dark" />
+                        <geom class="visual" size="0.032 0.035 0.006" pos="0 0 0.012" type="box" material="arm_metal" />
                         <geom class="collision" size="0.045 0.05 0.02" type="box" />
                         <body name="dynaarm_jaw" pos="0 0.03 0.055" gravcomp="1">
                           <joint name="gripper" pos="0 0 0" axis="0 -1 0" type="slide" range="0 0.04" damping="8" />
-                          <geom class="visual" size="0.008 0.01 0.045" type="box" material="arm_accent" />
+                          <geom class="visual" size="0.012 0.008 0.042" type="box" material="arm_dark" />
+                          <geom class="visual" size="0.010 0.003 0.038" pos="0 -0.006 0" type="box" material="arm_accent" />
                           <geom class="collision" size="0.008 0.01 0.045" type="box" />
                         </body>
                         <body name="dynaarm_jaw_fixed" pos="0 -0.03 0.055" gravcomp="1">
-                          <geom class="visual" size="0.008 0.01 0.045" type="box" material="arm_accent" />
+                          <geom class="visual" size="0.012 0.008 0.042" type="box" material="arm_dark" />
+                          <geom class="visual" size="0.010 0.003 0.038" pos="0 0.006 0" type="box" material="arm_accent" />
                           <geom class="collision" size="0.008 0.01 0.045" type="box" />
                         </body>
                         <site name="tcp" pos="0 0 0.09" quat="1 0 0 0" size="0.005" group="4" />
