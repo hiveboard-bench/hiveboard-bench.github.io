@@ -327,10 +327,8 @@ def prepare_platform_c(menagerie_dir: Path):
             ET.SubElement(asset, "material", {"name": name, "rgba": rgba})
 
     base = root.find('.//body[@name="base"]')
-    # assets/anymal/anymal.py DYNAARM_MOUNT: pos (0,0,0.12), 180 deg yaw so the
-    # zero-config reach runs along the trunk +X (forward).
     parent = ET.SubElement(base, "body",
-                           {"name": DYNAARM_LINKS[0][0], "pos": "0 0 0.12",
+                           {"name": DYNAARM_LINKS[0][0], "pos": "0.12 0 0.08",
                             "quat": "0 0 0 1"})
     ET.SubElement(parent, "geom", {"type": "mesh", "mesh": "dynaarm_base",
                                    "material": "arm_grey", "class": "visual"})

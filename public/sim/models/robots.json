@@ -45,7 +45,8 @@
   "tasks": [
    "valve",
    "lamp",
-   "breaker"
+   "breaker",
+   "high-valve"
   ]
  },
  {
@@ -176,9 +177,9 @@
    "centre": [
     0.212,
     -0.0,
-    0.6254
+    0.6054
    ],
-   "span": 2.0514
+   "span": 2.0272
   },
   "framing": "side",
   "boardNormal": [

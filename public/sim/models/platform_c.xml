@@ -225,7 +225,7 @@
           </body>
         </body>
       </body>
-      <body name="dynaarm_base" pos="0 0 0.12" quat="0 0 0 1" gravcomp="1">
+      <body name="dynaarm_base" pos="0.12 0 0.08" quat="0 0 0 1" gravcomp="1">
         <geom class="visual" material="arm_grey" mesh="dynaarm_base" />
         <geom class="collision" size="0.06 0.05" pos="0 0 0.05" />
         <body name="dynaarm_shoulder" pos="0 0 0.1105" gravcomp="1">
@@ -394,6 +394,6 @@
     <joint joint1="lamp_PrismaticJoint" joint2="lamp_RevoluteJoint" polycoef="0 0.0082 0 0 0" solref="0.01 1" solimp="0.95 0.999 0.001" />
   </equality>
   <keyframe>
-    <key name="home" qpos="0 0.8 1.4 0 0.6 0 0 0.000569965 0.0222804 0.000174798 0.0169247" />
+    <key name="home" qpos="0 0.8 1.4 0 0.6 0 0 0.000569965 -0.00350826 -0.000954041 -0.22997" />
   </keyframe>
 </mujoco>
