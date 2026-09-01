@@ -1,16 +1,4 @@
 #!/usr/bin/env python3
-"""Regenerate the WebP images the site actually ships.
-
-Source PNGs live in assets-src/ (not deployed). Outputs go to public/assets/.
-Run after adding or replacing any artwork:
-
-    python3 tools/optimize-images.py
-
-Sizing rule: every image is emitted at roughly 2x the CSS box it is drawn in,
-which is why the hero images are only 500-600 px wide. The module _3d renders
-are magnified 2.35x on screen, so those stay at native size and use lossless
-WebP to avoid magnifying compression artifacts.
-"""
 import glob
 import os
 from PIL import Image
@@ -18,11 +6,11 @@ from PIL import Image
 SRC = "assets-src"
 OUT = "public/assets"
 
-# name -> output width (2x the inline CSS container width in index.html)
 HERO = {"Hiveboard4": 500, "spot": 600, "anymal": 600, "hand": 560, "s010": 460}
 
 
 def convert(path, out, width=None, box=None, **kw):
+
     im = Image.open(path)
     if im.mode != "RGBA":
         im = im.convert("RGBA")
@@ -36,13 +24,13 @@ def convert(path, out, width=None, box=None, **kw):
 
 
 def main():
+
     before = after = 0
     jobs = []
 
     for name, w in HERO.items():
         jobs.append((f"{SRC}/{name}.png", f"{OUT}/{name}.webp", dict(width=w, quality=90)))
 
-    # Comparison-slider placeholder: magnified 2.2x, keep native + lossless.
     jobs.append((f"{SRC}/hiveboard_preview.png", f"{OUT}/hiveboard_preview.webp",
                  dict(lossless=True)))
 

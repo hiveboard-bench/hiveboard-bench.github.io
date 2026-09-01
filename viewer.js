@@ -101,12 +101,6 @@ loadingOverlay.id = 'loading-overlay';
 loadingOverlay.textContent = 'Loading 3D model...';
 document.getElementById('app').appendChild(loadingOverlay);
 
-/*
- * GitHub Pages serves .stl as application/vnd.ms-pki.stl and does not compress
- * it, so a 4.5 MB mesh crosses the wire in full. Every mesh is also stored
- * pre-gzipped; binary STL compresses about 2.7x. Fetch the .gz and inflate it
- * in the browser, falling back to the plain .stl if anything goes wrong.
- */
 const canInflate = typeof DecompressionStream !== 'undefined';
 
 async function fetchMesh(path) {
@@ -116,7 +110,7 @@ async function fetchMesh(path) {
             if (res.ok) {
                 const buffer = await res.arrayBuffer();
                 const head = new Uint8Array(buffer, 0, Math.min(2, buffer.byteLength));
-                // If a host applied Content-Encoding itself, fetch already inflated this.
+
                 if (head[0] !== 0x1f || head[1] !== 0x8b) return buffer;
                 const stream = new Blob([buffer]).stream()
                     .pipeThrough(new DecompressionStream('gzip'));
@@ -131,7 +125,6 @@ async function fetchMesh(path) {
     return res.arrayBuffer();
 }
 
-// Same signature as STLLoader.load, so existing call sites are unchanged.
 loader.load = function (path, onLoad, onProgress, onError) {
     fetchMesh(path)
         .then((buffer) => onLoad(this.parse(buffer)))
@@ -957,7 +950,6 @@ document.querySelectorAll('.add-piece, .change-board').forEach(btn => {
     });
 });
 
-
 document.addEventListener('pointerdown', (event) => {
     if (!controlsPanel.classList.contains('mobile-hidden')) {
         if (!controlsPanel.contains(event.target) && !mobileMenuBtn.contains(event.target)) {
@@ -1005,9 +997,6 @@ window.addEventListener('resize', () => {
 
 const clock = new THREE.Clock();
 
-// Scratch objects reused across frames. Allocating these inside animate() meant
-// nine new THREE instances per frame per shock absorber, which showed up as
-// periodic GC stutter while dragging.
 const _pos1 = new THREE.Vector3();
 const _pos2 = new THREE.Vector3();
 const _mid = new THREE.Vector3();
@@ -1039,8 +1028,6 @@ function animate() {
         }
     }
 
-    // Resolve every shock-absorber base in one pass instead of scanning
-    // loadedMeshes twice per spring (which made this quadratic).
     _springLinks.clear();
     for (const m of loadedMeshes) {
         const t = m.userData.type;

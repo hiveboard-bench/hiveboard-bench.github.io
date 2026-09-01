@@ -1,35 +1,4 @@
 #!/usr/bin/env python3
-"""Drag a trajectory's waypoints around in the browser. TEMPORARY dev tool.
-
-The tasks in sim_trajectories.py are authored as a handful of task-space
-keyframes -- stand off the lever, come down onto it, close, swing -- and every
-one of those is derived from the compiled scene. That is what keeps them
-honest, but it also means the only way to move one has been to reason back
-from a knob like `valve_grasp` to where the hand ends up. This serves the
-other direction: the widget draws the keyframes as beads on the path it
-already shows, you drag one, and this re-solves that task with the real IK and
-the real acceptance replay -- the same code the build runs, so a path that
-looks right here is a path that passes there.
-
-    python3 tools/traj_edit.py                  # then, in another terminal
-    npm run dev
-    open http://localhost:5173/sim/hiveboard-sim.html?edit=1
-
-Drag a bead, or nudge the selected one with the arrow keys; the task re-solves
-in about a second and plays back straight away. `Save` writes the offsets to
-tools/traj_edits.json and republishes that robot's .traj.json, so the widget
-shows them without the editor too, and the next full
-`python3 tools/build-sim-assets.py` picks them up rather than solving them
-away again.
-
-Nothing here is served to visitors: the widget only loads the editor when the
-page is opened with `?edit=1`, and this server is not part of the site.
-
-To remove the editor entirely, delete:
-    tools/traj_edit.py, tools/traj_edits.json, public/sim/edit.js,
-    the "Hand edits" block and its two callers in tools/sim_trajectories.py,
-    the `?edit=1` block at the bottom of public/sim/hiveboard-sim.html.
-"""
 import argparse
 import gzip
 import importlib.util
@@ -38,33 +7,25 @@ import sys
 import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-
+import mujoco
 import numpy as np
 
 REPO = Path(__file__).resolve().parent.parent
 MODELS = REPO / "public/sim/models"
 
 sys.path.insert(0, str(REPO / "tools"))
-import sim_trajectories as st                                    # noqa: E402
+import sim_trajectories as st
 
-# build-sim-assets.py is not importable by name (the hyphens), and it is the
-# one place the per-robot config lives -- reach into it rather than keeping a
-# second copy of Spot's numbers here that would quietly drift.
 _spec = importlib.util.spec_from_file_location(
     "build_sim_assets", REPO / "tools/build-sim-assets.py")
 build_sim_assets = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(build_sim_assets)
 
-# One MuJoCo model per robot, compiled from the scene the build already wrote,
-# and one lock around it: MjData is not re-entrant and the browser will happily
-# fire two solves at once.
 _scenes = {}
 _lock = threading.Lock()
 
 
 def scene(name):
-    """Compile a robot's published scene once, with its build-time config."""
-    import mujoco
 
     if name not in _scenes:
         cfg = next((r for r in build_sim_assets.ROBOTS if r["name"] == name), None)
@@ -73,9 +34,6 @@ def scene(name):
         path = MODELS / f"{name}.xml"
         if not path.exists():
             raise FileNotFoundError(f"{path} -- run tools/build-sim-assets.py first")
-        # emit_robot() hands the solver the board's facing rather than its
-        # quaternion, and every task's approach direction comes off that, so
-        # the same derivation has to happen here.
         cfg = dict(cfg, board_normal=build_sim_assets.board_normal(cfg))
         model = mujoco.MjModel.from_xml_path(str(path))
         data = mujoco.MjData(model)
@@ -91,7 +49,7 @@ def scene(name):
 
 
 def factories(cfg):
-    """The task factories this robot runs, keyed by module name."""
+
     out = {}
     for factory in st.TASKS:
         if factory.__name__.endswith("_for"):
@@ -103,8 +61,6 @@ def factories(cfg):
 
 
 def joint_info(ctx):
-    """Joint labels and limits exposed to the browser editor."""
-    import mujoco
 
     model = ctx["model"]
     names, ranges = [], []
@@ -116,7 +72,6 @@ def joint_info(ctx):
 
 
 def grip_range(ctx):
-    import mujoco
 
     model = ctx["model"]
     aid = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_ACTUATOR,
@@ -126,7 +81,6 @@ def grip_range(ctx):
 
 
 def object_info(ctx, module):
-    import mujoco
 
     model = ctx["model"]
     names, addresses, ranges = [], [], []
@@ -142,29 +96,15 @@ def object_info(ctx, module):
 
 
 def published(name):
-    """That robot's shipped trajectories, for the board angles they were solved at."""
+
     path = MODELS / f"{name}.traj.json"
     return json.loads(path.read_text()) if path.exists() else {}
 
 
-# ═══════════════════════════════════════════════════════════════════════════
-#  Keyframes, as the editor sees them
-# ═══════════════════════════════════════════════════════════════════════════
 def describe(task, home, edits=None, samples=None, original_samples=None,
              original_grips=None, states=None, original_states=None,
              object_addresses=None):
-    """Where each authored or added keyframe puts the hand, once the path is expanded.
 
-    A pose key sits exactly where it says it does, but an `arc` key only says
-    how far to sweep -- its endpoint falls out of the path. Both get a bead,
-    so run the sampler and read the position off the end of each segment.
-
-    Keys switched off are already gone from the path by the time this runs, so
-    they come back as placeholder rows at the index they came from: the editor
-    numbers its edits against the task as authored, and a row that renumbered
-    itself when its neighbour was switched off would move somebody else's
-    offset onto the wrong keyframe.
-    """
     keys = task["keys"]
     path = st.sample_path(keys)
     at = 0
@@ -211,9 +151,7 @@ def describe(task, home, edits=None, samples=None, original_samples=None,
             "home": home_key,
             "angle": round(float(arc["angle"]), 4) if arc else None,
             "rise": round(float(arc.get("rise", 0.0)), 5) if arc else None,
-            "draggable": arc is None and not home_key,
-            # Joint-space values at this keyframe. The editor can use these
-            # as explicit anchors instead of relying only on the TCP IK pose.
+            "draggable": arc is None,
             "qpos": ([round(float(v), 6) for v in samples[min(at, len(samples) - 1)][0]]
                      if samples else None),
             "originalQpos": ([round(float(v), 6) for v in original_samples[min(at, len(original_samples) - 1)][0]]
@@ -263,7 +201,7 @@ def describe(task, home, edits=None, samples=None, original_samples=None,
 
 
 def solve(name, module, edits, spin=0.0):
-    """Solve and replay one task with the given edits. The build's own code."""
+
     ctx = scene(name)
     cfg, model, data = ctx["cfg"], ctx["model"], ctx["data"]
     factory = factories(cfg).get(module)
@@ -300,10 +238,9 @@ def solve(name, module, edits, spin=0.0):
 
 
 def manual_solve(name, module, keys, spin=0.0):
-    """Build a trajectory only from poses supplied by the editor."""
+
     ctx = scene(name)
     cfg, model = ctx["cfg"], ctx["model"]
-    import mujoco
 
     usable = [k for k in keys if not k.get("off") and k.get("qpos")]
     if len(usable) < 2:
@@ -317,7 +254,9 @@ def manual_solve(name, module, keys, spin=0.0):
         base_data.qpos[model.jnt_qposadr[turn]] = spin
         mujoco.mj_forward(model, base_data)
     base[:] = base_data.qpos
+
     def object_pose(key):
+
         values = key.get("objectQpos")
         return (np.asarray(values, float) if values and len(values) == len(object_addresses)
                 else np.asarray([base[a] for a in object_addresses], float))
@@ -340,8 +279,6 @@ def manual_solve(name, module, keys, spin=0.0):
             samples.append(((1 - t) * q0 + t * q1, (1 - t) * g0 + t * g1))
             object_samples.append((1 - t) * o0 + t * o1)
 
-    # The browser uses this index when teleporting to a pose. Recompute it;
-    # manual timing changes make all old indices invalid.
     for key, sample_index in zip(usable, sample_indices):
         key["sample"] = sample_index
 
@@ -365,19 +302,109 @@ def manual_solve(name, module, keys, spin=0.0):
             "objectJoints": object_names, "objectRanges": object_ranges}
 
 
+def draft_rows(keys, cfg):
+
+    open_grip = float(cfg["grip"]["open"])
+    rows = []
+    for i, key in enumerate(keys):
+        q = [round(float(v), 6) for v in key["qpos"]]
+        rows.append({
+            "index": str(i),
+            "authored": i,
+            "added": False,
+            "off": False,
+            "kind": "pose",
+            "pos": None,
+            "finger": None,
+            "approach": None,
+            "secs": round(float(key.get("secs", 0.0 if i == 0 else 1.0)), 3),
+            "grip": round(float(key.get("grip", open_grip)), 4),
+            "originalGrip": round(float(key.get("grip", open_grip)), 4),
+            "objectQpos": None,
+            "originalObjectQpos": None,
+            "transit": bool(key.get("transit")),
+            "home": i == 0,
+            "angle": None,
+            "rise": None,
+            "draggable": False,
+            "qpos": q,
+            "originalQpos": q,
+            "sample": int(key.get("sample", 0)),
+        })
+    return rows
+
+
+def saved_draft_keys(name, module):
+
+    return read_edits().get(name, {}).get(module, {}).get("draftKeys")
+
+
+def handle_draft(name, module, keys):
+
+    if module not in st.DRAFT_MODULES:
+        return {"module": module, "ok": False,
+                "why": f"{module} is not a draft module", "keys": []}
+    ctx = scene(name)
+    cfg, model = ctx["cfg"], ctx["model"]
+    keys = keys or saved_draft_keys(name, module) or [st.draft_home_key(cfg)]
+    built = st.draft_build(model, ctx["site"], cfg, module, keys)
+    return {
+        "module": module,
+        "ok": True,
+        "armOnly": True,
+        "why": f"draft: {len(built['keys'])} pose(s), "
+               f"{len(built['traj']['qpos'])} samples",
+        "traj": built["traj"],
+        "keys": draft_rows(built["keys"], cfg),
+        "joints": list(cfg["arm"]),
+        "jointRanges": joint_info(ctx)[1],
+        "gripRange": grip_range(ctx),
+        "objectJoints": [],
+        "objectRanges": [],
+    }
+
+
+def handle_draft_save(name, module, keys):
+
+    if module not in st.DRAFT_MODULES:
+        return {"module": module, "ok": False,
+                "why": f"{module} is not a draft module"}
+    ctx = scene(name)
+    cfg = ctx["cfg"]
+    clean = [{k: key[k] for k in ("qpos", "grip", "secs", "transit") if k in key}
+             for key in keys if key.get("qpos") and not key.get("off")]
+
+    all_edits = read_edits()
+    node = all_edits.setdefault(name, {}).setdefault(module, {})
+    if clean:
+        node["draftKeys"] = clean
+    else:
+        node.pop("draftKeys", None)
+        if not node:
+            all_edits[name].pop(module, None)
+            if not all_edits[name]:
+                all_edits.pop(name, None)
+    write_edits(all_edits)
+
+    tasks = published(name)
+    if clean:
+        built = st.draft_build(ctx["model"], ctx["site"], cfg, module, clean)
+        tasks[module] = built["traj"]
+        samples = len(built["traj"]["qpos"])
+    else:
+        tasks.pop(module, None)
+        samples = 0
+    path = MODELS / f"{name}.traj.json"
+    st.dump(tasks, path)
+    path.with_suffix(path.suffix + ".gz").write_bytes(
+        gzip.compress(path.read_bytes(), 9))
+    print(f"  saved {module:12s} draft: {len(clean)} pose(s), {samples} samples")
+    return {"saved": str(st.EDITS_FILE.relative_to(REPO)), "module": module,
+            "ok": True, "poses": len(clean), "samples": samples}
+
+
 def republish(name, edits, manual_keys=None):
-    """Re-solve the edited tasks and rewrite the .traj.json the widget loads.
 
-    Only the tasks that were actually edited: a published trajectory can
-    predate a later change to the robot's config, and re-solving one nobody
-    touched would quietly swap it for a different motion in the same commit as
-    an unrelated tweak. `python3 tools/build-sim-assets.py` is still the way to
-    bring the whole robot up to date.
-
-    The widget fetches the gzipped copy, so both are written -- as
-    build-sim-assets.py's manifest step does, minus the meshes, which have not
-    changed and take a minute to rebuild.
-    """
     tasks = published(name)
     report = []
     for module in factories(scene(name)["cfg"]):
@@ -406,18 +433,52 @@ def republish(name, edits, manual_keys=None):
 
 
 def read_edits():
+
     return st.load_edits()
 
 
 def write_edits(all_edits):
+
     st.EDITS_FILE.write_text(json.dumps(all_edits, indent=1, sort_keys=True) + "\n")
 
 
-# ═══════════════════════════════════════════════════════════════════════════
-#  HTTP
-# ═══════════════════════════════════════════════════════════════════════════
+PLACEMENT_FILE = MODELS / "module_placement.json"
+
+
+def read_placement():
+
+    if PLACEMENT_FILE.exists():
+        return json.loads(PLACEMENT_FILE.read_text() or "{}")
+    return {}
+
+
+def handle_place_save(name, module, offset, spin, scale):
+
+    data = read_placement()
+    entry = {
+        "offset": [round(float(v), 5) for v in (offset or [0, 0, 0])][:3],
+        "spin": round(float(spin or 0.0), 5),
+        "scale": round(float(scale if scale else 1.0), 4),
+    }
+    zero = entry["offset"] == [0.0, 0.0, 0.0] and entry["spin"] == 0.0 \
+        and entry["scale"] == 1.0
+    node = data.setdefault(name, {})
+    if zero:
+        node.pop(module, None)
+        if not node:
+            data.pop(name, None)
+    else:
+        node[module] = entry
+    PLACEMENT_FILE.write_text(json.dumps(data, indent=1, sort_keys=True) + "\n")
+    print(f"  placed {name}/{module}: {entry if not zero else 'reset'}")
+    return {"saved": str(PLACEMENT_FILE.relative_to(REPO)), "robot": name,
+            "module": module, "placement": data.get(name, {}).get(module),
+            "ok": True}
+
+
 class Handler(BaseHTTPRequestHandler):
     def reply(self, payload, code=200):
+
         try:
             body = json.dumps(payload).encode()
             self.send_response(code)
@@ -430,6 +491,7 @@ class Handler(BaseHTTPRequestHandler):
             pass
 
     def do_OPTIONS(self):
+
         try:
             self.send_response(204)
             self.send_header("Access-Control-Allow-Origin", "*")
@@ -440,9 +502,11 @@ class Handler(BaseHTTPRequestHandler):
             pass
 
     def body(self):
+
         return json.loads(self.rfile.read(int(self.headers["Content-Length"] or 0)) or "{}")
 
     def route(self, path, payload):
+
         name = payload.get("robot", "spot")
 
         if path == "/state":
@@ -450,11 +514,13 @@ class Handler(BaseHTTPRequestHandler):
             joint_names, joint_ranges = joint_info(ctx)
             robot_edits = read_edits().get(name, {})
             return {"robot": name,
-                    "modules": list(factories(ctx["cfg"])),
+                    "modules": list(factories(ctx["cfg"])) + list(st.DRAFT_MODULES),
+                    "drafts": list(st.DRAFT_MODULES),
                     "joints": joint_names,
                     "jointRanges": joint_ranges,
                     "gripRange": grip_range(ctx),
                     "edits": robot_edits,
+                    "placement": read_placement().get(name, {}),
                     "manualKeys": robot_edits.get("lamp", {}).get("manualKeys")}
 
         if path == "/solve":
@@ -464,6 +530,18 @@ class Handler(BaseHTTPRequestHandler):
         if path == "/manual":
             return manual_solve(name, payload["module"], payload.get("keys", []),
                                 float(payload.get("spin", 0.0)))
+
+        if path == "/draft":
+            return handle_draft(name, payload["module"], payload.get("keys"))
+
+        if path == "/draft-save":
+            return handle_draft_save(name, payload["module"],
+                                     payload.get("keys", []))
+
+        if path == "/place-save":
+            return handle_place_save(name, payload["module"],
+                                     payload.get("offset"), payload.get("spin"),
+                                     payload.get("scale"))
 
         if path == "/save":
             all_edits = read_edits()
@@ -501,10 +579,11 @@ class Handler(BaseHTTPRequestHandler):
         return None
 
     def handle_request(self, path, payload):
+
         try:
             with _lock:
                 result = self.route(path, payload)
-        except Exception as err:                       # bad geometry, typo, …
+        except Exception as err:
             import traceback
 
             traceback.print_exc()
@@ -514,21 +593,25 @@ class Handler(BaseHTTPRequestHandler):
         self.reply(result)
 
     def do_GET(self):
+
         path, _, query = self.path.partition("?")
         payload = dict(p.split("=", 1) for p in query.split("&") if "=" in p)
         self.handle_request(path, payload)
 
     def do_POST(self):
+
         self.handle_request(self.path.partition("?")[0], self.body())
 
     def log_message(self, fmt, *args):
-        pass                                            # the solves log enough
+
+        pass
 
 
 class Server(ThreadingHTTPServer):
     daemon_threads = True
 
     def handle_error(self, request, client_address):
+
         exc_type, _, _ = sys.exc_info()
         if exc_type and issubclass(exc_type, (BrokenPipeError, ConnectionResetError)):
             return
@@ -536,7 +619,8 @@ class Server(ThreadingHTTPServer):
 
 
 def main():
-    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+
+    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0] if __doc__ else "")
     ap.add_argument("--port", type=int, default=8770)
     ap.add_argument("--robot", default="spot", help="preload this robot's scene")
     args = ap.parse_args()

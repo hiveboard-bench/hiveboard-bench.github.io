@@ -54,7 +54,7 @@
     <geom name="floor" type="plane" size="0 0 0.05" rgba="0.62 0.66 0.72 1" />
     <geom name="stand_post" type="box" rgba="0.34 0.38 0.45 1" size="0.016 0.016 0.275" pos="0.88 0 0.275" />
     <geom name="stand_foot" type="box" rgba="0.44 0.48 0.55 1" size="0.17 0.17 0.01" pos="0.88 0 0.01" />
-    <body name="macao_hand" pos="0.45 0 0.52" quat="0.707107 0 0.707107 0" gravcomp="1">
+    <body name="macao_hand" pos="0.7 0 0.52" quat="0.707107 0 0.707107 0" gravcomp="1">
       <joint name="macao_x" type="slide" axis="1 0 0" range="-0.12 0.12" damping="2" />
       <joint name="macao_y" type="slide" axis="0 1 0" range="-0.10 0.10" damping="2" />
       <joint name="macao_z" type="slide" axis="0 0 1" range="-0.10 0.10" damping="2" />
@@ -70,91 +70,91 @@
         <geom type="mesh" mesh="forearm_lid" material="macao_shell" contype="0" conaffinity="0" group="2" />
       </body>
       <body name="macao_finger_body_0" pos="-0.033 0.01 0.02" gravcomp="1">
-        <geom type="mesh" mesh="finger_base" material="macao_shell" contype="0" conaffinity="0" group="2" />
+        <geom type="mesh" mesh="finger_base" material="macao_shell" contype="1" conaffinity="2" group="2" />
         <body name="macao_finger_0_proximal" pos="0 0 0.016" gravcomp="1">
           <joint name="macao_grip" type="hinge" axis="-1 0 0" range="0 1.15" damping="0.35" />
-          <geom type="mesh" mesh="finger_first" material="macao_shell" contype="0" conaffinity="0" group="2" pos="0 0 -0.016" />
-          <geom type="mesh" mesh="finger_first_pad" material="macao_pad" contype="0" conaffinity="0" group="2" pos="0 0 -0.016" />
+          <geom type="mesh" mesh="finger_first" material="macao_shell" contype="1" conaffinity="2" group="2" pos="0 0 -0.016" />
+          <geom type="mesh" mesh="finger_first_pad" material="macao_pad" contype="1" conaffinity="2" group="2" pos="0 0 -0.016" />
           <body name="macao_finger_0_medial" pos="0 0 0.030" gravcomp="1">
             <joint name="macao_finger_0_medial_joint" type="hinge" axis="-1 0 0" range="0 1.0" damping="0.3" />
-            <geom type="mesh" mesh="finger_medial" material="macao_shell" contype="0" conaffinity="0" group="2" pos="0 0 -0.046" />
-            <geom type="mesh" mesh="finger_medial_pad" material="macao_pad" contype="0" conaffinity="0" group="2" pos="0 0 -0.046" />
+            <geom type="mesh" mesh="finger_medial" material="macao_shell" contype="1" conaffinity="2" group="2" pos="0 0 -0.046" />
+            <geom type="mesh" mesh="finger_medial_pad" material="macao_pad" contype="1" conaffinity="2" group="2" pos="0 0 -0.046" />
             <body name="macao_finger_0_distal" pos="0 0 0.0245" gravcomp="1">
               <joint name="macao_finger_0_distal_joint" type="hinge" axis="-1 0 0" range="0 0.9" damping="0.25" />
-              <geom type="mesh" mesh="finger_distal" material="macao_shell" contype="0" conaffinity="0" group="2" pos="0 0 -0.0705" />
-              <geom type="mesh" mesh="finger_distal_pad" material="macao_pad" contype="0" conaffinity="0" group="2" pos="0 0 -0.0705" />
+              <geom type="mesh" mesh="finger_distal" material="macao_shell" contype="1" conaffinity="2" group="2" pos="0 0 -0.0705" />
+              <geom type="mesh" mesh="finger_distal_pad" material="macao_pad" contype="1" conaffinity="2" group="2" pos="0 0 -0.0705" />
             </body>
           </body>
         </body>
       </body>
       <body name="macao_finger_body_1" pos="-0.011 0.01 0.035" gravcomp="1">
-        <geom type="mesh" mesh="finger_base" material="macao_shell" contype="0" conaffinity="0" group="2" />
+        <geom type="mesh" mesh="finger_base" material="macao_shell" contype="1" conaffinity="2" group="2" />
         <body name="macao_finger_1_proximal" pos="0 0 0.016" gravcomp="1">
           <joint name="macao_finger_1_prox_joint" type="hinge" axis="-1 0 0" range="0 1.15" damping="0.35" />
-          <geom type="mesh" mesh="finger_first" material="macao_shell" contype="0" conaffinity="0" group="2" pos="0 0 -0.016" />
-          <geom type="mesh" mesh="finger_first_pad" material="macao_pad" contype="0" conaffinity="0" group="2" pos="0 0 -0.016" />
+          <geom type="mesh" mesh="finger_first" material="macao_shell" contype="1" conaffinity="2" group="2" pos="0 0 -0.016" />
+          <geom type="mesh" mesh="finger_first_pad" material="macao_pad" contype="1" conaffinity="2" group="2" pos="0 0 -0.016" />
           <body name="macao_finger_1_medial" pos="0 0 0.030" gravcomp="1">
             <joint name="macao_finger_1_medial_joint" type="hinge" axis="-1 0 0" range="0 1.0" damping="0.3" />
-            <geom type="mesh" mesh="finger_medial" material="macao_shell" contype="0" conaffinity="0" group="2" pos="0 0 -0.046" />
-            <geom type="mesh" mesh="finger_medial_pad" material="macao_pad" contype="0" conaffinity="0" group="2" pos="0 0 -0.046" />
+            <geom type="mesh" mesh="finger_medial" material="macao_shell" contype="1" conaffinity="2" group="2" pos="0 0 -0.046" />
+            <geom type="mesh" mesh="finger_medial_pad" material="macao_pad" contype="1" conaffinity="2" group="2" pos="0 0 -0.046" />
             <body name="macao_finger_1_distal" pos="0 0 0.0245" gravcomp="1">
               <joint name="macao_finger_1_distal_joint" type="hinge" axis="-1 0 0" range="0 0.9" damping="0.25" />
-              <geom type="mesh" mesh="finger_distal" material="macao_shell" contype="0" conaffinity="0" group="2" pos="0 0 -0.0705" />
-              <geom type="mesh" mesh="finger_distal_pad" material="macao_pad" contype="0" conaffinity="0" group="2" pos="0 0 -0.0705" />
+              <geom type="mesh" mesh="finger_distal" material="macao_shell" contype="1" conaffinity="2" group="2" pos="0 0 -0.0705" />
+              <geom type="mesh" mesh="finger_distal_pad" material="macao_pad" contype="1" conaffinity="2" group="2" pos="0 0 -0.0705" />
             </body>
           </body>
         </body>
       </body>
       <body name="macao_finger_body_2" pos="0.011 0.01 0.045" gravcomp="1">
-        <geom type="mesh" mesh="finger_base" material="macao_shell" contype="0" conaffinity="0" group="2" />
+        <geom type="mesh" mesh="finger_base" material="macao_shell" contype="1" conaffinity="2" group="2" />
         <body name="macao_finger_2_proximal" pos="0 0 0.016" gravcomp="1">
           <joint name="macao_finger_2_prox_joint" type="hinge" axis="-1 0 0" range="0 1.15" damping="0.35" />
-          <geom type="mesh" mesh="finger_first" material="macao_shell" contype="0" conaffinity="0" group="2" pos="0 0 -0.016" />
-          <geom type="mesh" mesh="finger_first_pad" material="macao_pad" contype="0" conaffinity="0" group="2" pos="0 0 -0.016" />
+          <geom type="mesh" mesh="finger_first" material="macao_shell" contype="1" conaffinity="2" group="2" pos="0 0 -0.016" />
+          <geom type="mesh" mesh="finger_first_pad" material="macao_pad" contype="1" conaffinity="2" group="2" pos="0 0 -0.016" />
           <body name="macao_finger_2_medial" pos="0 0 0.030" gravcomp="1">
             <joint name="macao_finger_2_medial_joint" type="hinge" axis="-1 0 0" range="0 1.0" damping="0.3" />
-            <geom type="mesh" mesh="finger_medial" material="macao_shell" contype="0" conaffinity="0" group="2" pos="0 0 -0.046" />
-            <geom type="mesh" mesh="finger_medial_pad" material="macao_pad" contype="0" conaffinity="0" group="2" pos="0 0 -0.046" />
+            <geom type="mesh" mesh="finger_medial" material="macao_shell" contype="1" conaffinity="2" group="2" pos="0 0 -0.046" />
+            <geom type="mesh" mesh="finger_medial_pad" material="macao_pad" contype="1" conaffinity="2" group="2" pos="0 0 -0.046" />
             <body name="macao_finger_2_distal" pos="0 0 0.0245" gravcomp="1">
               <joint name="macao_finger_2_distal_joint" type="hinge" axis="-1 0 0" range="0 0.9" damping="0.25" />
-              <geom type="mesh" mesh="finger_distal" material="macao_shell" contype="0" conaffinity="0" group="2" pos="0 0 -0.0705" />
-              <geom type="mesh" mesh="finger_distal_pad" material="macao_pad" contype="0" conaffinity="0" group="2" pos="0 0 -0.0705" />
+              <geom type="mesh" mesh="finger_distal" material="macao_shell" contype="1" conaffinity="2" group="2" pos="0 0 -0.0705" />
+              <geom type="mesh" mesh="finger_distal_pad" material="macao_pad" contype="1" conaffinity="2" group="2" pos="0 0 -0.0705" />
             </body>
           </body>
         </body>
       </body>
       <body name="macao_finger_body_3" pos="0.033 0.01 0.025" gravcomp="1">
-        <geom type="mesh" mesh="finger_base" material="macao_shell" contype="0" conaffinity="0" group="2" />
+        <geom type="mesh" mesh="finger_base" material="macao_shell" contype="1" conaffinity="2" group="2" />
         <body name="macao_finger_3_proximal" pos="0 0 0.016" gravcomp="1">
           <joint name="macao_finger_3_prox_joint" type="hinge" axis="-1 0 0" range="0 1.15" damping="0.35" />
-          <geom type="mesh" mesh="finger_first" material="macao_shell" contype="0" conaffinity="0" group="2" pos="0 0 -0.016" />
-          <geom type="mesh" mesh="finger_first_pad" material="macao_pad" contype="0" conaffinity="0" group="2" pos="0 0 -0.016" />
+          <geom type="mesh" mesh="finger_first" material="macao_shell" contype="1" conaffinity="2" group="2" pos="0 0 -0.016" />
+          <geom type="mesh" mesh="finger_first_pad" material="macao_pad" contype="1" conaffinity="2" group="2" pos="0 0 -0.016" />
           <body name="macao_finger_3_medial" pos="0 0 0.030" gravcomp="1">
             <joint name="macao_finger_3_medial_joint" type="hinge" axis="-1 0 0" range="0 1.0" damping="0.3" />
-            <geom type="mesh" mesh="finger_medial" material="macao_shell" contype="0" conaffinity="0" group="2" pos="0 0 -0.046" />
-            <geom type="mesh" mesh="finger_medial_pad" material="macao_pad" contype="0" conaffinity="0" group="2" pos="0 0 -0.046" />
+            <geom type="mesh" mesh="finger_medial" material="macao_shell" contype="1" conaffinity="2" group="2" pos="0 0 -0.046" />
+            <geom type="mesh" mesh="finger_medial_pad" material="macao_pad" contype="1" conaffinity="2" group="2" pos="0 0 -0.046" />
             <body name="macao_finger_3_distal" pos="0 0 0.0245" gravcomp="1">
               <joint name="macao_finger_3_distal_joint" type="hinge" axis="-1 0 0" range="0 0.9" damping="0.25" />
-              <geom type="mesh" mesh="finger_distal" material="macao_shell" contype="0" conaffinity="0" group="2" pos="0 0 -0.0705" />
-              <geom type="mesh" mesh="finger_distal_pad" material="macao_pad" contype="0" conaffinity="0" group="2" pos="0 0 -0.0705" />
+              <geom type="mesh" mesh="finger_distal" material="macao_shell" contype="1" conaffinity="2" group="2" pos="0 0 -0.0705" />
+              <geom type="mesh" mesh="finger_distal_pad" material="macao_pad" contype="1" conaffinity="2" group="2" pos="0 0 -0.0705" />
             </body>
           </body>
         </body>
       </body>
       <body name="macao_thumb_body" pos="0.018 0.063 -0.005" quat="0 0 0.573576 0.819152" gravcomp="1">
-        <geom type="mesh" mesh="finger_base" material="macao_shell" contype="0" conaffinity="0" group="2" />
+        <geom type="mesh" mesh="finger_base" material="macao_shell" contype="1" conaffinity="2" group="2" />
         <body name="macao_thumb_proximal" pos="0 0 0.016" gravcomp="1">
           <joint name="macao_thumb_prox_joint" type="hinge" axis="-1 0 0" range="0 1.15" damping="0.35" />
-          <geom type="mesh" mesh="finger_first" material="macao_shell" contype="0" conaffinity="0" group="2" pos="0 0 -0.016" />
-          <geom type="mesh" mesh="finger_first_pad" material="macao_pad" contype="0" conaffinity="0" group="2" pos="0 0 -0.016" />
+          <geom type="mesh" mesh="finger_first" material="macao_shell" contype="1" conaffinity="2" group="2" pos="0 0 -0.016" />
+          <geom type="mesh" mesh="finger_first_pad" material="macao_pad" contype="1" conaffinity="2" group="2" pos="0 0 -0.016" />
           <body name="macao_thumb_medial" pos="0 0 0.030" gravcomp="1">
             <joint name="macao_thumb_medial_joint" type="hinge" axis="-1 0 0" range="0 1.0" damping="0.3" />
-            <geom type="mesh" mesh="finger_medial" material="macao_shell" contype="0" conaffinity="0" group="2" pos="0 0 -0.046" />
-            <geom type="mesh" mesh="finger_medial_pad" material="macao_pad" contype="0" conaffinity="0" group="2" pos="0 0 -0.046" />
+            <geom type="mesh" mesh="finger_medial" material="macao_shell" contype="1" conaffinity="2" group="2" pos="0 0 -0.046" />
+            <geom type="mesh" mesh="finger_medial_pad" material="macao_pad" contype="1" conaffinity="2" group="2" pos="0 0 -0.046" />
             <body name="macao_thumb_distal" pos="0 0 0.0245" gravcomp="1">
               <joint name="macao_thumb_distal_joint" type="hinge" axis="-1 0 0" range="0 0.9" damping="0.25" />
-              <geom type="mesh" mesh="finger_distal" material="macao_shell" contype="0" conaffinity="0" group="2" pos="0 0 -0.0705" />
-              <geom type="mesh" mesh="finger_distal_pad" material="macao_pad" contype="0" conaffinity="0" group="2" pos="0 0 -0.0705" />
+              <geom type="mesh" mesh="finger_distal" material="macao_shell" contype="1" conaffinity="2" group="2" pos="0 0 -0.0705" />
+              <geom type="mesh" mesh="finger_distal_pad" material="macao_pad" contype="1" conaffinity="2" group="2" pos="0 0 -0.0705" />
             </body>
           </body>
         </body>
@@ -251,6 +251,6 @@
     <joint joint1="lamp_PrismaticJoint" joint2="lamp_RevoluteJoint" polycoef="0 0.0082 0 0 0" solref="0.01 1" solimp="0.95 0.999 0.001" />
   </equality>
   <keyframe>
-    <key name="home" qpos="0 0 0 0 0 0 0 2.97636e-18 3.34913e-18 8.71611e-19 3.77105e-18 1.33048e-18 2.83732e-18 1.15496e-18 1.43029e-18 4.84581e-18 -1.51046e-18 1.53379e-18 1.99664e-18 2.62758e-18 1.32464e-18 0.000569965 0.0222804 0.000174798 0.0169247" />
+    <key name="home" qpos="0 0 0 0 0 0 0 3.13891e-18 2.46038e-18 9.73361e-19 3.14982e-18 1.21435e-18 2.45773e-18 1.15042e-18 1.26057e-18 3.97651e-18 -8.89988e-19 1.30936e-18 1.87867e-18 2.50225e-18 1.43759e-18 0.000569965 0.0222804 0.000174798 0.0169247" />
   </keyframe>
 </mujoco>

@@ -1,16 +1,3 @@
-<!--
-  Interactive HiveBoard simulation widget.
-
-  Runs MuJoCo in the browser (WASM) against the scene tools/build-sim-assets.py
-  generates: a Franka Research 3 over a honeycomb board with four HiveBoard
-  modules seated in it, one per cell. Pick a task and the arm plays a fixed
-  trajectory -- solved and verified offline by tools/sim_trajectories.py -- that
-  actually turns the valve, unscrews the lamp or flips the breaker. Physics is
-  real; the motion is not improvised.
-
-  Embedded as an iframe from index.html's Simulation Compatibility section.
-  Dependencies are self-hosted under vendor/; nothing is fetched off-site.
--->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -38,11 +25,6 @@
       font-family: var(--font);
     }
 
-    /* The canvas lives in #stage, everything that floats over it is absolutely
-       positioned against #stage or #container. On a wide screen #stage is the
-       only thing in flow, so it fills the frame and the two are the same box;
-       on a phone the panels leave the overlay and become strips above and
-       below it (see the max-width rules at the end of this sheet). */
     #container {
       position: relative;
       width: 100%;
@@ -52,11 +34,9 @@
     }
     #stage { position: relative; flex: 1 1 auto; min-height: 0; order: 2; }
     canvas { display: block; width: 100%; height: 100%; }
-    /* The panels are absolutely positioned, so this wrapper only needs to exist
-       on phones, where it becomes the bottom dock. */
+
     #dock { display: contents; }
 
-    /* ── Loading overlay ─────────────────────────────────────── */
     #loading {
       position: absolute;
       inset: 0;
@@ -99,7 +79,6 @@
     #loading.failed #loading-bar { display: none; }
     #loading.failed #loading-status { color: #b91c1c; max-width: 30ch; text-align: center; line-height: 1.5; }
 
-    /* ── Shared panel chrome ─────────────────────────────────── */
     .panel {
       position: absolute;
       z-index: 20;
@@ -139,7 +118,6 @@
       color: #fff;
     }
 
-    /* ── Platforms (a single row across the top) ─────────────── */
     #platforms {
       top: 10px;
       left: 50%;
@@ -158,16 +136,35 @@
       opacity: 0.65;
     }
 
-    /* ── Task (top left) ─────────────────────────────────────── */
     #modules { top: 58px; left: 12px; width: 178px; }
-    #task-list { display: flex; flex-direction: column; gap: 3px; }
-    #task-list button { text-align: left; }
-    #task-list:empty::after {
-      content: "No task verified for this platform yet.";
+    #task-select {
+      width: 100%;
+      font-family: var(--font);
       font-size: 10px;
-      color: var(--ink-soft);
-      line-height: 1.4;
+      font-weight: 500;
+      padding: 5px 9px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.7);
+      color: var(--ink);
+      cursor: pointer;
     }
+    #task-select:hover { border-color: rgba(15, 23, 42, 0.25); }
+    #task-select option.pending { color: var(--ink-soft); }
+
+    #place-panel { top: 58px; left: 202px; width: 176px; z-index: 30; }
+    #place-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 6px; }
+    #place-grid label { display: flex; flex-direction: column; font-size: 9px;
+      color: var(--ink-soft); gap: 2px; }
+    #place-grid input { font-family: var(--font); font-size: 10px; padding: 3px 4px;
+      border: 1px solid var(--line); border-radius: 4px; background: #fff; color: var(--ink); }
+    #place-row { display: flex; gap: 5px; margin-top: 7px; }
+    #place-row button { flex: 1; font-family: var(--font); font-size: 9.5px;
+      padding: 4px 5px; border: 1px solid var(--line); border-radius: 4px;
+      background: rgba(255,255,255,0.8); color: var(--ink); cursor: pointer; }
+    #place-row button:hover { border-color: rgba(15, 23, 42, 0.3); }
+    #place-msg { margin-top: 6px; font-size: 9px; line-height: 1.4; color: var(--ink-soft);
+      min-height: 12px; word-break: break-word; }
     #task-readout {
       margin-top: 7px;
       font-size: 10px;
@@ -177,7 +174,6 @@
     }
     #task-readout b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
 
-    /* ── Playback + gripper (bottom right) ───────────────────── */
     #motion { bottom: 12px; right: 12px; width: 152px; text-align: right; }
     #motion-row { display: flex; gap: 3px; justify-content: flex-end; }
     #motion-row button { flex: 1; }
@@ -197,7 +193,6 @@
     .panel button:disabled { opacity: 0.4; cursor: not-allowed; }
     .panel button:disabled:hover { color: var(--ink-soft); border-color: var(--line); }
 
-    /* ── Live badge (bottom left) ────────────────────────────── */
     #live {
       position: absolute;
       bottom: 12px;
@@ -239,7 +234,6 @@
       50% { opacity: 0.65; box-shadow: 0 0 9px 4px rgba(239, 68, 68, 0.25); }
     }
 
-    /* ── First-run hint ──────────────────────────────────────── */
     #hint {
       position: absolute;
       bottom: 14px;
@@ -259,11 +253,6 @@
       transition: opacity 0.5s;
     }
 
-    /* ── Phones ──────────────────────────────────────────────
-       Below this width the three overlay panels cover more of the scene than
-       they leave visible, so they stop floating: the platform picker becomes a
-       strip along the top, the task picker and playback share a dock along the
-       bottom, and the canvas keeps everything in between to itself. */
     @media (max-width: 560px) {
       .panel {
         position: static;
@@ -276,17 +265,14 @@
         -webkit-backdrop-filter: none;
       }
 
-      /* Titles are what the strips' own shape already says. */
       .panel-title { display: none; }
 
       .panel button {
         padding: 7px 10px;
         font-size: 10.5px;
-        min-height: 30px;         /* a thumb-sized target, not a mouse-sized one */
+        min-height: 30px;
       }
 
-      /* These repeat what .panel above already says, because the desktop rules
-         they undo are written against ids and would otherwise win. */
       #platforms {
         order: 1;
         flex: 0 0 auto;
@@ -294,8 +280,7 @@
         max-width: none;
         padding: 6px 8px;
         border-bottom: 1px solid var(--line);
-        /* More platforms than fit: scroll them, and fade the right edge so it
-           reads as a row that continues rather than one that ended. */
+
         overflow-x: auto;
         scrollbar-width: none;
         -webkit-overflow-scrolling: touch;
@@ -306,8 +291,6 @@
       #robot-list button { padding: 6px 10px; font-size: 10px; }
       #robot-list button small { display: none; }
 
-      /* Tasks get a row of their own: sharing one with the playback buttons
-         left the labels a third of the width and every list scrolling. */
       #dock {
         order: 3;
         flex: 0 0 auto;
@@ -320,25 +303,13 @@
       }
 
       #modules { width: auto; min-width: 0; padding: 7px 8px; }
-      #task-list {
-        flex-direction: row;
-        gap: 4px;
-        overflow-x: auto;
-        scrollbar-width: none;
-        -webkit-overflow-scrolling: touch;
-        mask-image: linear-gradient(to right, #000 calc(100% - 18px), transparent);
-        -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 18px), transparent);
-      }
-      #task-list::-webkit-scrollbar { display: none; }
-      #task-list button { white-space: nowrap; flex: 0 0 auto; }
-      #task-list:empty::after { white-space: nowrap; }
+      #task-select { min-width: 160px; }
       #task-readout { display: none; }
 
       #motion { width: auto; text-align: left; padding: 0 8px 8px; }
       #motion-row { gap: 6px; }
       #motion-row button { flex: 1 1 0; min-height: 34px; text-align: center; }
-      /* Playback progress spans the whole dock instead of sitting under the two
-         buttons, where at this size it was a 40px stub. */
+
       #progress {
         position: absolute;
         top: 0;
@@ -353,8 +324,6 @@
       #hint { bottom: 10px; font-size: 9.5px; padding: 4px 10px; }
     }
 
-    /* Landscape phones: the strips would eat a viewport that is already short,
-       so keep the overlay layout and just shrink it. */
     @media (max-height: 430px) and (min-width: 561px) {
       #platforms { top: 6px; padding: 4px 5px; }
       #robot-list button small { display: none; }
@@ -382,7 +351,7 @@
     <div id="dock">
       <div class="panel" id="modules">
         <div class="panel-title">Task</div>
-        <div id="task-list"></div>
+        <select id="task-select" aria-label="Task"></select>
         <div id="task-readout">Pick a task. The arm runs a fixed trajectory for it.</div>
       </div>
 
@@ -413,20 +382,13 @@
 
   <script type="module">
     import * as THREE from 'three';
+    import { STLLoader } from './vendor/STLLoader.js';
     import { OrbitControls } from './vendor/OrbitControls.js';
     import loadMujoco from './vendor/mujoco.js';
 
-    // ═══════════════════════════════════════════════════════════
-    //  CONFIG
-    // ═══════════════════════════════════════════════════════════
     const MODEL_BASE = './models/';
 
-    // Every robot is position-controlled: the command is the joint angle, and
-    // the servo gains live in each robot's own MJCF. tools/sim_trajectories.py
-    // verifies each trajectory by stepping this exact loop, so what passes the
-    // build is what runs here.
-
-    const MJ_OBJ_BODY = 1;   // mjtObj::mjOBJ_BODY
+    const MJ_OBJ_BODY = 1;
     const MJ_OBJ_JOINT = 3;
     const MJ_JNT_SLIDE = 2;
     const MJ_GEOM_PLANE = 0;
@@ -436,38 +398,117 @@
     const MJ_GEOM_BOX = 6;
     const MJ_GEOM_MESH = 7;
 
-    // ═══════════════════════════════════════════════════════════
-    //  STATE
-    // ═══════════════════════════════════════════════════════════
     let mujoco, mjModel, mjData;
     let scene, camera, renderer, controls;
-    let mujocoRoot = null;      // holds every body's meshes, rebuilt per robot
-    let bodies = {};            // MuJoCo body id -> THREE.Group
-    let bodyNames = [];         // MuJoCo body id -> name
-    let jointNames = [];        // cached: WASM name wrappers must not run every step
+    let mujocoRoot = null;
+    let bodies = {};
+    let bodyNames = [];
+    let jointNames = [];
 
-    let catalogue = [];         // every platform, including the ones not built
-    let robot = null;           // the selected platform's entry
-    let gripCtrl = 0;           // index of its gripper actuator
-    let gripQposIndex = -1;     // qpos slot driven by that actuator
-    let spinIndex = -1;         // qpos slot of the board turntable, -1 if fixed
-    let homeView = null;        // framing measured off its scene at build time
+    let catalogue = [];
+    let robot = null;
+    let gripCtrl = 0;
+    let gripQposIndex = -1;
+    let spinIndex = -1;
+    let homeView = null;
     let trajectories = {};
-    let task = null;            // the selected trajectory, or null
-    let demoStateQposAddrs = []; // qpos slots belonging only to the active module
+    let task = null;
+    let demoStateQposAddrs = [];
     let demoCollisionState = null;
     let devObjectPose = null;
     let playing = false;
-    let sampleIndex = 0;        // which trajectory sample is being tracked
-    let subStep = 0;            // physics steps taken within that sample
+    let sampleIndex = 0;
+    let subStep = 0;
     let stepsPerSample = 10;
-    let restGrip = 0;           // where the gripper sits between runs
-    let devHold = false;        // ?edit=1 only: park on the scrubbed sample
-    let devPose = null;         // live joint target from the trajectory editor
+    let restGrip = 0;
+    let devHold = false;
+    let devPose = null;
 
-    let pathLine = null;        // the drawn trajectory
-    let pathMarker = null;      // where along it the arm currently is
-    let boardCentre = null;     // middle of the honeycomb panel, for framing
+    let pathLine = null;
+    let pathMarker = null;
+    let boardCentre = null;
+    let previewItem = null;
+
+    const TASK_CATALOGUE = [
+      { key: 'high-valve',     label: 'Gate Valve (Large)' },
+      { key: 'small-valve',    label: 'Gate Valve (Small)' },
+      { key: 'thread-m30',     label: 'Thread M30' },
+      { key: 'thread-m8',      label: 'Thread M8' },
+      { key: 'peg-insertion',  label: 'Peg Insertion Plate' },
+      { key: 'breaker',        label: 'Circuit Breaker',   traj: 'breaker', module: 'breaker' },
+      { key: 'button-cover',   label: 'Hidden Push Button' },
+      { key: 'valve',          label: 'Ball Valve',        traj: 'valve',   module: 'valve' },
+      { key: 'key-lock',       label: 'Lock and Key' },
+      { key: 'lamp',           label: 'Light Bulb Socket', traj: 'lamp',    module: 'lamp' },
+      { key: 'drawer',         label: 'Sliding Drawer' },
+      { key: 'shock-absorber', label: 'Shock Absorber' },
+    ];
+
+    const MODULE_PREFIXES = ['valve', 'lamp', 'breaker'];
+
+    const MODULE_STL_BASE = './parts/';
+
+    const MODULE_PREVIEW = {
+      'high-valve': {
+        base: ['torque_based/High_Torque_Valve_Base.stl'],
+        move: ['torque_based/High_Torque_Valve_Screw.stl'],
+        demo: { spin: Math.PI, secs: 1.8 },
+      },
+      'small-valve': {
+        base: ['torque_based/Small_Valve_Base.stl'],
+        move: ['torque_based/Small_Valve_Screw.stl'],
+        demo: { spin: Math.PI, secs: 1.8 },
+      },
+      'thread-m30': {
+        base: ['torque_based/M30_Screw_Base.stl'],
+        move: ['torque_based/M30_Nut.stl'],
+        demo: { spin: 4 * Math.PI, move: [0, 0, 35], secs: 3 },
+      },
+      'thread-m8': {
+        base: ['torque_based/M8_Screw_Base.stl'],
+        move: ['torque_based/M8_Nut.stl'],
+        demo: { spin: 4 * Math.PI, move: [0, 0, 28], secs: 3 },
+      },
+      'peg-insertion': {
+        base: ['composed_assembly/Shock_Absorber_Base.stl'],
+        move: ['composed_assembly/Shock_Absorber_Pin.stl'],
+        demo: { spin: 3 * Math.PI, move: [0, 0, 30], secs: 3 },
+      },
+      'button-cover': {
+        base: ['precision_based/Button_Base.stl'],
+        move: ['precision_based/Button.stl', 'composed_assembly/Button_Cover.stl'],
+        demo: { swing: -0.6, move: [0, 0, -6], secs: 1.6 },
+      },
+      'key-lock': {
+        base: ['composed_assembly/Key_Base.stl'],
+        move: ['composed_assembly/Key.stl'],
+        demo: { spin: Math.PI / 2, move: [0, 0, 30], secs: 2 },
+      },
+      'drawer': {
+        base: ['composed_assembly/Drawer_Base.stl'],
+        move: ['composed_assembly/Drawer.stl'],
+        demo: { move: [0, 50, 0], secs: 2.2 },
+      },
+      'shock-absorber': {
+        base: ['composed_assembly/Shock_Absorber_Base.stl'],
+        move: ['composed_assembly/Shock_Absorber_Screw.stl'],
+        demo: { spin: 3 * Math.PI, move: [0, 0, 30], secs: 3 },
+        pair: 90,
+      },
+    };
+
+    const MODULE_PLACEMENT_DEFAULT = { offset: [0, 0, 0], spin: 0, scale: 1 };
+    const MODULE_PLACEMENT = {
+    };
+    const stlLoader = new STLLoader();
+    let previewMesh = null;
+    let previewDemo = null;
+    let previewToken = 0;
+    let previewAdjust = { offset: [0, 0, 0], spin: 0, scale: 1 };
+    let committedPlacement = {};
+    const PLACE_EDIT = new URLSearchParams(location.search).has('edit');
+    const PLACE_API = new URLSearchParams(location.search).get('api')
+      || 'http://localhost:8770';
 
     const statusEl = document.getElementById('loading-status');
     const barEl = document.querySelector('#loading-bar span');
@@ -478,7 +519,6 @@
     const playEl = document.getElementById('play');
     const stageEl = document.getElementById('stage');
 
-    /** Touch input, i.e. treat this as a phone or tablet rather than a mouse. */
     const coarsePointer = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
 
     function status(text, progress) {
@@ -493,10 +533,6 @@
       statusEl.textContent = `Could not start the simulation: ${err.message || err}`;
     }
 
-    // ═══════════════════════════════════════════════════════════
-    //  COORDINATES
-    //  MuJoCo is Z-up, three.js is Y-up.
-    // ═══════════════════════════════════════════════════════════
     function getPosition(buffer, index, target) {
       return target.set(
         buffer[index * 3 + 0],
@@ -512,20 +548,10 @@
         -buffer[index * 4 + 0]);
     }
 
-    /** A world point straight from MuJoCo, in three.js axes. */
     function toThree(p) {
       return new THREE.Vector3(p[0], p[2], -p[1]);
     }
 
-    // ═══════════════════════════════════════════════════════════
-    //  ASSET LOADING
-    // ═══════════════════════════════════════════════════════════
-    /**
-     * Fetch `path.gz` and inflate it. Everything the widget loads is published
-     * pre-gzipped, the same arrangement viewer.js uses for its STLs: GitHub
-     * Pages compresses JavaScript but not .wasm or .obj, so a 10 MB engine and
-     * 3 MB of meshes would otherwise cross the wire in full.
-     */
     async function fetchGzip(path) {
       if (typeof DecompressionStream === 'undefined') {
         throw new Error('this browser cannot decompress the simulation assets');
@@ -534,7 +560,7 @@
       if (!resp.ok) throw new Error(`${path}.gz → HTTP ${resp.status}`);
       const buffer = await resp.arrayBuffer();
       const head = new Uint8Array(buffer, 0, Math.min(2, buffer.byteLength));
-      // A host that applied Content-Encoding itself already inflated this.
+
       if (head[0] !== 0x1f || head[1] !== 0x8b) return new Uint8Array(buffer);
       const stream = new Blob([buffer]).stream().pipeThrough(new DecompressionStream('gzip'));
       return new Uint8Array(await new Response(stream).arrayBuffer());
@@ -546,8 +572,7 @@
 
     async function startMujoco() {
       status('Loading MuJoCo…', 0.05);
-      // The 10 MB engine is published gzip-only, so hand the factory the bytes
-      // rather than letting it fetch a .wasm that is not there.
+
       const wasmBinary = await fetchGzip('./vendor/mujoco.wasm');
       status('Starting MuJoCo…', 0.35);
       mujoco = await loadMujoco({ wasmBinary });
@@ -557,7 +582,6 @@
       status('Loading scene…', 0.4);
       const manifest = await fetchJson(`${MODEL_BASE}manifest.json`);
 
-      // Recreate the directory tree inside MuJoCo's in-memory filesystem.
       const dirs = new Set(['/working']);
       for (const file of manifest) {
         const parts = file.split('/');
@@ -568,7 +592,7 @@
         }
       }
       for (const dir of dirs) {
-        try { mujoco.FS.mkdir(dir); } catch (_) { /* already exists */ }
+        try { mujoco.FS.mkdir(dir); } catch (_) {  }
       }
 
       let done = 0;
@@ -580,22 +604,20 @@
       }));
 
       catalogue = await fetchJson(`${MODEL_BASE}robots.json`);
+
+      try {
+        const resp = await fetch(`${MODEL_BASE}module_placement.json`);
+        committedPlacement = resp.ok ? await resp.json() : {};
+      } catch (_) { committedPlacement = {}; }
     }
 
-    /**
-     * Compile one platform's scene and hand the viewer over to it.
-     *
-     * Every robot's files are already in MuJoCo's filesystem, so switching is a
-     * recompile rather than another download -- a second or so, no network.
-     */
     async function loadRobot(entry) {
       robot = entry;
       trajectories = await fetchJson(`${MODEL_BASE}${entry.traj}`);
 
       mjModel = mujoco.MjModel.from_xml_path(`/working/${entry.scene}`);
       mjData = new mujoco.MjData(mjModel);
-      // Collision masks are model-owned arrays. Never carry the saved masks
-      // from the previously loaded robot into this newly compiled model.
+
       demoCollisionState = null;
 
       bodyNames = [];
@@ -612,12 +634,9 @@
       spinIndex = entry.spinIndex ?? -1;
       restGrip = entry.grip.open;
 
-      // Physics steps per trajectory sample, matching the offline verification.
       const rate = Object.values(trajectories)[0]?.rate ?? 50;
       stepsPerSample = Math.max(Math.round((1 / rate) / mjModel.opt.timestep), 1);
 
-      // Framing measured off this scene at build time: these platforms differ
-      // in size by a factor of five, so one camera does not suit them all.
       const centre = toThree(entry.view.centre);
       const reach = entry.view.span;
       homeView = {
@@ -634,9 +653,6 @@
       buildTaskList();
     }
 
-    // ═══════════════════════════════════════════════════════════
-    //  THREE.JS SCENE
-    // ═══════════════════════════════════════════════════════════
     function buildScene() {
       status('Building view…', 0.96);
       const stage = document.getElementById('stage');
@@ -645,9 +661,7 @@
 
       renderer = new THREE.WebGLRenderer({ antialias: true });
       renderer.setSize(w, h);
-      // A phone's 3x panel costs three times the fragments for a difference
-      // nobody sees at this size, and this scene is already sharing the frame
-      // with a physics step.
+
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, coarsePointer ? 1.5 : 2));
       renderer.shadowMap.enabled = true;
       renderer.shadowMap.type = THREE.PCFShadowMap;
@@ -664,16 +678,13 @@
       controls.dampingFactor = 0.09;
       controls.minDistance = 0.25;
       controls.maxDistance = 3.5;
-      controls.maxPolarAngle = Math.PI * 0.495;   // never duck under the floor
+      controls.maxPolarAngle = Math.PI * 0.495;
 
       if (coarsePointer) {
-        // One finger has to keep scrolling the page: the widget is most of a
-        // phone screen, and a visitor who cannot swipe past it is stuck. Orbit
-        // moves to two fingers, the gesture that already zooms.
+
         controls.touches.ONE = null;
         controls.touches.TWO = THREE.TOUCH.DOLLY_ROTATE;
-        // OrbitControls sets touch-action: none on connect, which would kill
-        // that scroll before it starts.
+
         renderer.domElement.style.touchAction = 'pan-y';
         hintEl.textContent = 'Two fingers to orbit · pinch to zoom';
       }
@@ -694,8 +705,6 @@
       fill.position.set(-1.8, 1.2, -1.4);
       scene.add(fill);
 
-      // MuJoCo's floor plane is skipped when building geoms; this is the one
-      // the viewer actually sees.
       const ground = new THREE.Mesh(
         new THREE.PlaneGeometry(12, 12),
         new THREE.ShadowMaterial({ opacity: 0.13 }));
@@ -717,7 +726,6 @@
       controls.update();
     }
 
-    /** The line the fingertips will follow, plus a bead showing where they are. */
     function buildPathVisual() {
       pathLine = new THREE.Line(
         new THREE.BufferGeometry(),
@@ -733,16 +741,8 @@
       scene.add(pathMarker);
     }
 
-    /**
-     * Mirror MuJoCo's geom list into three.js meshes.
-     *
-     * Adapted from the mujoco_wasm sample viewer. Group 3 is collision
-     * geometry in this scene and never drawn; the floor plane is skipped
-     * because buildScene() already laid down a nicer one.
-     */
     function buildBodies() {
-      // Switching platform swaps the whole model, so the previous robot's
-      // meshes and their GPU buffers go with it.
+
       if (mujocoRoot) {
         mujocoRoot.traverse((node) => {
           if (node.isMesh) { node.geometry.dispose(); node.material.dispose(); }
@@ -801,8 +801,6 @@
         bodies[b].add(mesh);
       }
 
-      // MuJoCo reports every body pose in world coordinates, so the three.js
-      // hierarchy is deliberately flat: one level under the root.
       for (let b = 0; b < mjModel.nbody; b++) {
         if (!(b in bodies)) bodies[b] = Object.assign(new THREE.Group(), { bodyID: b });
         root.add(bodies[b]);
@@ -823,8 +821,6 @@
     function meshGeometry(meshID) {
       const geometry = new THREE.BufferGeometry();
 
-      // Copy rather than subarray: the swizzle below would otherwise rewrite
-      // MuJoCo's own vertex buffer.
       const verts = new Float32Array(mjModel.mesh_vert.subarray(
         mjModel.mesh_vertadr[meshID] * 3,
         (mjModel.mesh_vertadr[meshID] + mjModel.mesh_vertnum[meshID]) * 3));
@@ -892,13 +888,13 @@
       return true;
     }
 
-    // ═══════════════════════════════════════════════════════════
-    //  CONTROL
-    // ═══════════════════════════════════════════════════════════
-    /** Command one trajectory sample, or hold home when nothing is playing. */
     function applyControl() {
+      // A platform with no trajectory for this module can still pose its arm
+      // toward the cell -- taskHome[key] in robots.json, keyed by catalogue id.
+      const idleHome = (previewItem && robot.taskHome
+        && robot.taskHome[previewItem.key]) || robot.home;
       const target = devPose ? devPose.qpos : (task && (playing || devHold)
-        ? task.qpos[sampleIndex] : robot.home);
+        ? task.qpos[sampleIndex] : idleHome);
       if (devObjectPose && task && !playing) {
         const prefix = `${task.watch.split('_')[0]}_`;
         let oi = 0;
@@ -910,15 +906,11 @@
         }
       }
       if (task && task.demo && playing && task.stateQpos?.[sampleIndex]) {
-        // Keep the board/module state from the authored demonstration in sync
-        // with the arm, while leaving the arm itself under its normal smooth
-        // position controller. This makes the carried lamp visible without
-        // allowing contacts to influence either body.
+
         applyDemoSample();
       }
       for (let i = 0; i < robot.arm; i++) mjData.ctrl[i] = target[i];
-      // The selected editor pose is held just like a running task, including
-      // its gripper command. Only an ordinary idle scene uses restGrip.
+
       mjData.ctrl[gripCtrl] = devPose
         ? devPose.grip
         : task && (playing || devHold)
@@ -927,10 +919,7 @@
 
     function resetScene() {
       mujoco.mj_resetDataKeyframe(mjModel, mjData, 0);
-      // Swing the stand round to the angle this task was solved at. On the
-      // short arm the far cells are simply out of reach otherwise, so its
-      // board turns to present each module rather than the robot walking
-      // around it.
+
       if (spinIndex >= 0) mjData.qpos[spinIndex] = task ? (task.spin || 0) : 0;
       mujoco.mj_forward(mjModel, mjData);
       sampleIndex = 0;
@@ -950,7 +939,7 @@
             conaffinity: Array.from(mjModel.geom_conaffinity),
           };
         }
-        // Reassert this on trajectory replacement as well as task selection.
+
         mjModel.geom_contype.fill(0);
         mjModel.geom_conaffinity.fill(0);
       } else if (!disabled && demoCollisionState) {
@@ -966,8 +955,7 @@
       if (saved && saved.length === mjModel.nq) {
         mjData.qpos.set(saved);
       } else {
-        // Older trajectory files have only the robot joints. Keep their
-        // selected-pose behavior while leaving the board object at reset.
+
         for (let i = 0; i < robot.arm; i++) mjData.qpos[i] = task.qpos[sampleIndex][i];
       }
       mjData.qvel.fill(0);
@@ -975,20 +963,10 @@
       syncBodies();
     }
 
-    // ═══════════════════════════════════════════════════════════
-    //  TASKS
-    // ═══════════════════════════════════════════════════════════
     function modulePrefix() {
       return task ? task.watch.split('_')[0] : null;
     }
 
-    /**
-     * Switch to a task, framed and running from the top.
-     *
-     * Picking a task never toggles it off: the widget opens with one already
-     * selected, so a click that deselected would leave a visitor's first
-     * interaction doing nothing at all.
-     */
     function selectTask(key, { dolly = true, play = true } = {}) {
       task = trajectories[key];
       const prefix = `${modulePrefix()}_`;
@@ -999,13 +977,14 @@
         }
       }
       setDemoCollisions(!!task.demo);
-      const list = document.getElementById('task-list');
-      document.querySelectorAll('#task-list button').forEach((btn) => {
-        btn.classList.toggle('active', btn.dataset.task === key);
-        if (btn.dataset.task === key) revealChip(btn, list);
-      });
+      previewItem = null;
+      clearModulePreview();
+      const catItem = TASK_CATALOGUE.find((t) => t.traj === key);
+      const select = document.getElementById('task-select');
+      if (select && catItem) select.value = catItem.key;
 
       resetScene();
+      setModuleVisibility(modulePrefix());
       drawPath();
       if (dolly) frameTask();
       updateReadout();
@@ -1013,7 +992,6 @@
       hintEl.style.opacity = '0';
     }
 
-    /** Show the fingertip path for the selected task, in three.js axes. */
     function drawPath() {
       if (!task) {
         pathLine.visible = false;
@@ -1040,7 +1018,6 @@
       }
     }
 
-    /** Dolly onto the module the task acts on, or back out to the overview. */
     function frameTask() {
       if (!task) {
         lookAt(homeView.target, homeView.position);
@@ -1056,30 +1033,20 @@
       }
       if (!n) return;
       focus.divideScalar(n);
-      focus.y += 0.03;          // the action happens above the cell, not in it
+      focus.y += 0.03;
 
       if (robot.framing === 'side') {
-        // Stand off to one side of the line the robot works along, a little
-        // beyond the module and only slightly raised, at a distance scaled to
-        // the robot. A quadruped is three times the size of an arm on a bench,
-        // and the fixed framing below puts the camera inside Spot's legs.
+
         const span = robot.view.span;
         const base = bodies[1] ? bodies[1].position.clone().setY(0) : new THREE.Vector3();
         const toward = focus.clone().setY(0).sub(base);
         if (toward.lengthSq() < 1e-6) toward.set(1, 0, 0);
         toward.normalize();
         const flank = new THREE.Vector3(0, 1, 0).cross(toward);
-        // Mostly from the flank, leaning round to the side the modules stick
-        // out of. Leaning the other way put the camera behind the panel,
-        // watching the arm work through the back of the board.
-        // Stand on the side the modules stick out of, close in, with the board
-        // nearest the camera and the robot behind it. Enough flank to clear the
-        // machine's own body -- straight down the board's normal would put the
-        // camera inside Spot's chest.
+
         const face = toThree(robot.boardNormal).setY(0).normalize();
         const dir = face.multiplyScalar(0.55).add(flank.multiplyScalar(0.85)).normalize();
-        // Close enough that the board reads, and never mind if the machine
-        // behind it runs off the edge -- the module being worked is the shot.
+
         const centre = focus.clone().lerp(
           new THREE.Vector3(base.x, focus.y, base.z), 0.10);
         lookAt(centre, centre.clone().add(
@@ -1087,30 +1054,348 @@
         return;
       }
 
-      // Watch from beyond the board, looking back past the module at the robot.
-      // Any viewpoint on the arm's own side spends the interesting part of the
-      // motion behind the forearm. The module's offset from the middle of the
-      // board swings the shot off-axis so the tasks do not all look the same,
-      // but the bias keeps every one of them in front.
       const dir = focus.clone().setY(0)
         .sub(boardCentre.clone().setY(0)).multiplyScalar(4)
         .add(new THREE.Vector3(0.55, 0, 0)).normalize();
-      // Low, near eye level with the board: from higher up the hand covers the
-      // very feature it is working on, since it is by definition right on top
-      // of it.
+
       const offset = dir.multiplyScalar(0.40).setY(0.15);
       lookAt(focus, focus.clone().add(offset));
     }
 
+    function setModuleVisibility(activePrefix) {
+      if (!mjModel) return;
+      for (let b = 1; b < mjModel.nbody; b++) {
+        const name = bodyNames[b] || '';
+        const prefix = MODULE_PREFIXES.find((p) => name.startsWith(`${p}_`));
+        if (prefix && (b in bodies)) bodies[b].visible = prefix === activePrefix;
+      }
+    }
+
+    function previewDemoStep(time) {
+      if (!previewDemo) return;
+      const { groups, cfg, start } = previewDemo;
+      if (task) {
+        for (const g of groups) { g.position.set(0, 0, 0); g.rotation.set(0, 0, 0); }
+        return;
+      }
+      const secs = cfg.secs || 2.5;
+      const p = (((time - start) / 1000) % (2 * secs)) / secs;
+      const tri = p < 1 ? p : 2 - p;
+      const e = tri * tri * (3 - 2 * tri);
+      const m = cfg.move || [0, 0, 0];
+      for (const g of groups) {
+        g.position.set(e * m[0], e * m[1], e * m[2]);
+        g.rotation.set(e * (cfg.swing || 0), 0, e * (cfg.spin || 0));
+      }
+    }
+
+    function clearModulePreview() {
+      previewToken++;
+      previewDemo = null;
+      refreshPlacePanel();
+      if (!previewMesh) return;
+      previewMesh.traverse((n) => {
+        if (n.isMesh) { n.geometry.dispose(); n.material.dispose(); }
+      });
+      scene.remove(previewMesh);
+      previewMesh = null;
+    }
+
+    function boardAnchor() {
+      const anchor = new THREE.Vector3();
+      let n = 0;
+      for (let b = 1; b < mjModel.nbody; b++) {
+        const nm = bodyNames[b] || '';
+        if (MODULE_PREFIXES.some((p) => nm.startsWith(`${p}_`))) {
+          anchor.add(bodies[b].position);
+          n++;
+        }
+      }
+      if (n) return anchor.divideScalar(n);
+      return (boardCentre || homeView.target).clone();
+    }
+
+    function boardFrame() {
+      const normal = toThree(robot.boardNormal).normalize();
+      const up = Math.abs(normal.y) > 0.9
+        ? new THREE.Vector3(0, 0, 1) : new THREE.Vector3(0, 1, 0);
+      const right = new THREE.Vector3().crossVectors(up, normal).normalize();
+      up.crossVectors(normal, right).normalize();
+      return { normal, right, up };
+    }
+
+    function placeModulePreview() {
+      if (!previewMesh) return;
+      const group = previewMesh;
+      const adj = previewAdjust;
+      const { normal, right, up } = boardFrame();
+      const anchor = boardAnchor();
+
+      if (previewDemo) for (const g of previewDemo.groups) {
+        g.position.set(0, 0, 0); g.rotation.set(0, 0, 0);
+      }
+      group.position.set(0, 0, 0);
+      group.scale.setScalar(0.001 * (adj.scale || 1));
+      group.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), normal);
+      group.quaternion.premultiply(
+        new THREE.Quaternion().setFromAxisAngle(normal, adj.spin || 0));
+      group.updateMatrixWorld(true);
+
+      const box = new THREE.Box3().setFromObject(group);
+      const c = box.getCenter(new THREE.Vector3());
+      const size = box.getSize(new THREE.Vector3());
+      const halfN = 0.5 * (Math.abs(size.x * normal.x)
+        + Math.abs(size.y * normal.y) + Math.abs(size.z * normal.z));
+      const off = adj.offset || [0, 0, 0];
+
+      group.position
+        .addScaledVector(right, anchor.dot(right) - c.dot(right) + off[0])
+        .addScaledVector(up, anchor.dot(up) - c.dot(up) + off[1])
+        .addScaledVector(normal,
+          anchor.dot(normal) + 0.003 - (c.dot(normal) - halfN) + off[2]);
+    }
+
+    async function showModulePreview(key) {
+      clearModulePreview();
+      const parts = MODULE_PREVIEW[key];
+      if (!parts) {
+        lookAt(homeView.target, homeView.position);
+        return;
+      }
+      const token = previewToken;
+
+      const baseMat = new THREE.MeshPhysicalMaterial({
+        color: new THREE.Color(0.925, 0.933, 0.945),
+        roughness: 0.45, metalness: 0.08, clearcoat: 0.06,
+      });
+      const moveMat = new THREE.MeshPhysicalMaterial({
+        color: new THREE.Color(0.929, 0.686, 0.098),
+        roughness: 0.45, metalness: 0.08, clearcoat: 0.06,
+      });
+      const load = (list) => Promise.all((list || []).map(
+        (p) => stlLoader.loadAsync(MODULE_STL_BASE + p).catch(() => null)));
+      const [baseGeoms, moveGeoms] = await Promise.all([load(parts.base), load(parts.move)]);
+      if (token !== previewToken) {
+        [...baseGeoms, ...moveGeoms].forEach((g) => g && g.dispose());
+        return;
+      }
+
+      const meshOf = (geo, mat) => {
+        const m = new THREE.Mesh(geo, mat);
+        m.castShadow = true;
+        m.receiveShadow = true;
+        return m;
+      };
+
+      const moveGroups = [];
+      const assemble = () => {
+        const asm = new THREE.Group();
+        for (const geo of baseGeoms) if (geo) asm.add(meshOf(geo, baseMat));
+        const mv = new THREE.Group();
+        for (const geo of moveGeoms) if (geo) mv.add(meshOf(geo, moveMat));
+        asm.add(mv);
+        moveGroups.push(mv);
+        return asm;
+      };
+
+      const group = new THREE.Group();
+      if (parts.pair) {
+        const a = assemble(); a.position.x = -parts.pair / 2;
+        const b = assemble(); b.position.x = parts.pair / 2;
+        group.add(a, b);
+      } else {
+        group.add(assemble());
+      }
+      if (!baseGeoms.some(Boolean) && !moveGeoms.some(Boolean)) {
+        lookAt(homeView.target, homeView.position);
+        return;
+      }
+
+      scene.add(group);
+      previewMesh = group;
+      previewDemo = parts.demo
+        ? { groups: moveGroups, cfg: parts.demo, start: performance.now() }
+        : null;
+      previewAdjust = loadPreviewAdjust(key);
+      placeModulePreview();
+
+      const anchor = boardAnchor();
+      const span = new THREE.Box3().setFromObject(group).getSize(new THREE.Vector3()).length();
+      const dir = homeView.position.clone().sub(homeView.target).normalize();
+      const look = anchor.clone().setY(anchor.y + span * 0.15);
+      lookAt(look, look.clone().add(dir.multiplyScalar(Math.max(span * 2.2, 0.35))));
+      refreshPlacePanel();
+    }
+
+    function loadPreviewAdjust(key) {
+
+      const src = (committedPlacement[robot?.name] || {})[key]
+        || MODULE_PLACEMENT[key] || MODULE_PLACEMENT_DEFAULT;
+      return {
+        offset: [...(src.offset || [0, 0, 0])],
+        spin: src.spin || 0,
+        scale: src.scale || 1,
+      };
+    }
+
+    let placePanel = null;
+
+    function buildPlacePanel() {
+      const el = document.createElement('div');
+      el.className = 'panel';
+      el.id = 'place-panel';
+      el.hidden = true;
+      el.innerHTML = `
+        <div class="panel-title">Module placement</div>
+        <div id="place-grid"></div>
+        <div id="place-row">
+          <button id="place-save">Save forever</button>
+          <button id="place-reset">Reset</button>
+        </div>
+        <div id="place-msg"></div>`;
+      document.body.appendChild(el);
+      const grid = el.querySelector('#place-grid');
+      const fields = {};
+      const add = (name, label, step, get, set) => {
+        const wrap = document.createElement('label');
+        wrap.textContent = label;
+        const input = document.createElement('input');
+        input.type = 'number';
+        input.step = step;
+        input.addEventListener('input', () => {
+          const v = parseFloat(input.value);
+          if (Number.isFinite(v)) { set(v); placeModulePreview(); }
+        });
+        wrap.appendChild(input);
+        grid.appendChild(wrap);
+        fields[name] = { input, get };
+      };
+      add('x', 'right (m)', '0.005',
+        () => previewAdjust.offset[0], (v) => { previewAdjust.offset[0] = v; });
+      add('y', 'up (m)', '0.005',
+        () => previewAdjust.offset[1], (v) => { previewAdjust.offset[1] = v; });
+      add('z', 'out (m)', '0.005',
+        () => previewAdjust.offset[2], (v) => { previewAdjust.offset[2] = v; });
+      add('spin', 'spin (°)', '5',
+        () => previewAdjust.spin * 180 / Math.PI,
+        (v) => { previewAdjust.spin = v * Math.PI / 180; });
+      add('scale', 'scale', '0.02',
+        () => previewAdjust.scale, (v) => { previewAdjust.scale = v || 1; });
+
+      el.querySelector('#place-save').addEventListener('click', savePlacementForever);
+      el.querySelector('#place-reset').addEventListener('click', () => {
+        previewAdjust = { offset: [0, 0, 0], spin: 0, scale: 1 };
+        placeModulePreview();
+        refreshPlacePanel();
+      });
+      return { el, fields, msg: el.querySelector('#place-msg') };
+    }
+
+    function refreshPlacePanel() {
+      if (!placePanel) return;
+
+      const show = PLACE_EDIT && !!previewItem && (!task || task.armOnly);
+      placePanel.el.hidden = !show;
+      if (!show) return;
+      placePanel.el.querySelector('.panel-title').textContent =
+        `Placement · ${previewItem.label}`;
+      const r = (v) => Math.round(v * 1e4) / 1e4;
+      for (const f of Object.values(placePanel.fields)) {
+        if (document.activeElement !== f.input) f.input.value = r(f.get());
+      }
+    }
+
+    async function savePlacementForever() {
+      if (!previewItem) return;
+      const a = previewAdjust;
+      placePanel.msg.textContent = 'saving…';
+      try {
+        const resp = await fetch(`${PLACE_API}/place-save`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            robot: robot.name, module: previewItem.key,
+            offset: a.offset, spin: a.spin, scale: a.scale,
+          }),
+        });
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        committedPlacement[robot.name] = committedPlacement[robot.name] || {};
+        if (data.placement) committedPlacement[robot.name][previewItem.key] = data.placement;
+        else delete committedPlacement[robot.name][previewItem.key];
+        placePanel.msg.textContent = `saved → ${data.saved}`;
+      } catch (err) {
+        placePanel.msg.textContent = `no answer from ${PLACE_API} — is traj_edit.py running?`;
+      }
+    }
+
+    if (PLACE_EDIT) {
+      placePanel = buildPlacePanel();
+      window.addEventListener('keydown', (e) => {
+
+        if (!previewMesh || !previewItem || task) return;
+        if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
+        const step = e.shiftKey ? 0.02 : 0.005;
+        const a = previewAdjust;
+        let handled = true;
+        switch (e.key) {
+          case 'ArrowLeft':  a.offset[0] -= step; break;
+          case 'ArrowRight': a.offset[0] += step; break;
+          case 'ArrowUp':    a.offset[1] += step; break;
+          case 'ArrowDown':  a.offset[1] -= step; break;
+          case 'PageUp':     a.offset[2] += step; break;
+          case 'PageDown':   a.offset[2] -= step; break;
+          case '[':          a.spin -= Math.PI / 36; break;
+          case ']':          a.spin += Math.PI / 36; break;
+          case '-': case '_': a.scale *= 0.98; break;
+          case '=': case '+': a.scale *= 1.02; break;
+          case '0': previewAdjust = { offset: [0, 0, 0], spin: 0, scale: 1 }; break;
+          default: handled = false;
+        }
+        if (!handled) return;
+        e.preventDefault();
+        placeModulePreview();
+        refreshPlacePanel();
+      });
+    }
+
+    function previewModule(item) {
+      setPlaying(false);
+      task = null;
+      previewItem = item;
+      drawPath();
+      const select = document.getElementById('task-select');
+      if (select) select.value = item.key;
+      resetScene();
+      setModuleVisibility(item.module || null);
+      showModulePreview(item.key);
+      updateReadout();
+      hintEl.style.opacity = '0';
+    }
+
     function updateReadout() {
       if (!task) {
-        readoutEl.textContent = 'Pick a task. The arm runs a fixed trajectory for it.';
+        if (previewItem && PLACE_EDIT) {
+          readoutEl.textContent =
+            `${previewItem.label} — reposition in the Placement panel, then Save forever`;
+        } else {
+          readoutEl.textContent = previewItem
+            ? `${previewItem.label}: no verified trajectory for this platform yet.`
+            : 'Pick a task. The arm runs a fixed trajectory for it.';
+        }
+        return;
+      }
+      if (task.armOnly || !task.watch) {
+        const seconds = (task.qpos.length / task.rate).toFixed(1);
+        readoutEl.innerHTML =
+          `${previewItem ? previewItem.label : task.label} — arm-only draft`
+          + `<br><b>${seconds}s</b> path · no module or physics check`;
         return;
       }
       const jid = mujoco.mj_name2id(mjModel, MJ_OBJ_JOINT, task.watch);
       const value = mjData.qpos[mjModel.jnt_qposadr[jid]];
       const slide = mjModel.jnt_type[jid] === MJ_JNT_SLIDE;
-      // The lamp's thread is unlimited, so wrap rather than run off the panel.
+
       const shown = slide
         ? `${(value * 1000).toFixed(1)} mm`
         : `${(((value * 180 / Math.PI + 180) % 360 + 360) % 360 - 180).toFixed(0)}°`;
@@ -1120,26 +1405,29 @@
     }
 
     function buildTaskList() {
-      const list = document.getElementById('task-list');
-      list.replaceChildren();
+      const select = document.getElementById('task-select');
+      select.replaceChildren();
       task = null;
+      previewItem = null;
+      clearModulePreview();
       drawPath();
-      for (const [key, entry] of Object.entries(trajectories)) {
-        const btn = document.createElement('button');
-        btn.textContent = entry.label;
-        btn.dataset.task = key;
-        btn.addEventListener('click', () => selectTask(key));
-        list.appendChild(btn);
+      for (const item of TASK_CATALOGUE) {
+        const entry = item.traj ? trajectories[item.traj] : null;
+        const opt = document.createElement('option');
+        opt.value = item.key;
+        opt.textContent = entry ? entry.label : `${item.label} — soon`;
+        if (!entry) opt.classList.add('pending');
+        select.appendChild(opt);
       }
+      select.onchange = () => {
+        const item = TASK_CATALOGUE.find((t) => t.key === select.value);
+        if (!item) return;
+        if (item.traj && trajectories[item.traj]) selectTask(item.traj);
+        else previewModule(item);
+      };
+      setModuleVisibility(null);
     }
 
-    /**
-     * Scroll a chip's own strip until the chip is inside it.
-     *
-     * scrollLeft rather than scrollIntoView: the latter walks up through every
-     * scrollable ancestor, and one of those is the page that embeds this
-     * iframe, so a platform coming into view would yank the whole article.
-     */
     function revealChip(btn, strip) {
       if (!btn || strip.scrollWidth <= strip.clientWidth) return;
       const pad = 8;
@@ -1149,7 +1437,6 @@
       else if (right > strip.scrollLeft) strip.scrollLeft = right;
     }
 
-    /** One button per platform; the ones without a model yet stay disabled. */
     function buildRobotList() {
       const list = document.getElementById('robot-list');
       for (const entry of catalogue) {
@@ -1175,13 +1462,9 @@
       }
     }
 
-    // ═══════════════════════════════════════════════════════════
-    //  PLAYBACK
-    // ═══════════════════════════════════════════════════════════
     function setPlaying(value) {
       if (value) {
-        // A selected-pose preview is a temporary override. Playback must use
-        // the trajectory samples again, including their gripper commands.
+
         devHold = false;
         devPose = null;
         devObjectPose = null;
@@ -1198,7 +1481,6 @@
       progressEl.style.width = task ? `${(100 * sampleIndex / total).toFixed(1)}%` : '0%';
     }
 
-    /** Advance the trajectory by one physics step's worth, looping at the end. */
     function advance() {
       if (!playing || !task) return;
       if (++subStep < stepsPerSample) return;
@@ -1206,19 +1488,15 @@
       if (sampleIndex < task.qpos.length - 1) {
         sampleIndex++;
       } else {
-        // Start the next lap from a clean scene, so a run never inherits the
-        // last one's leftovers.
+
         resetScene();
       }
     }
 
-    // ═══════════════════════════════════════════════════════════
-    //  LOOP
-    // ═══════════════════════════════════════════════════════════
     let lastTime = 0;
     let running = false;
     let tabVisible = !document.hidden;
-    let inView = true;          // toggled by the parent page's IntersectionObserver
+    let inView = true;
     let uiSkip = 0;
 
     function start() {
@@ -1229,7 +1507,7 @@
     }
 
     function stop() {
-      running = false;   // animate() bails on the next tick, ending the chain
+      running = false;
     }
 
     function animate(time) {
@@ -1247,9 +1525,6 @@
         advance();
       }
 
-      // qpos may be authored directly for a collision-independent demo.
-      // Recompute xpos/xquat after that write so Three.js receives the board,
-      // arm, gripper and lamp transforms from the same current sample.
       if (applyDemoSample()) mujoco.mj_forward(mjModel, mjData);
 
       syncBodies();
@@ -1257,6 +1532,7 @@
         pathMarker.position.copy(toThree(task.tcp[sampleIndex]));
       }
       if (++uiSkip >= 6) { uiSkip = 0; updateReadout(); syncControls(); }
+      previewDemoStep(time);
       controls.update();
       renderer.render(scene, camera);
     }
@@ -1271,9 +1547,6 @@
       camera.updateProjectionMatrix();
     }
 
-    // ═══════════════════════════════════════════════════════════
-    //  WIRING
-    // ═══════════════════════════════════════════════════════════
     playEl.addEventListener('click', () => {
       if (!task) return;
       if (!playing && sampleIndex >= task.qpos.length - 1) resetScene();
@@ -1292,8 +1565,6 @@
       if (tabVisible && inView) start(); else stop();
     });
 
-    // The parent page owns the IntersectionObserver: an iframe cannot see
-    // whether it is on screen in the document that embeds it.
     window.addEventListener('message', (e) => {
       if (!e.data || e.data.type !== 'hiveboard-sim-visibility') return;
       inView = !!e.data.visible;
@@ -1315,23 +1586,12 @@
         });
         await loadRobot(opening);
 
-        // Open on the first task already running -- an idle arm reads as
-        // broken -- but hold the wide shot until the viewer picks one, so the
-        // embed establishes the whole cell before it dollies into a module.
         const first = Object.keys(trajectories)[0];
         if (first) selectTask(first, { dolly: false });
         syncControls();
 
-        // selectTask() clears the hint, on the assumption that a visitor who
-        // just clicked a task does not need telling how to drive the camera.
-        // The opening selection is ours, not theirs, so put it back -- on a
-        // phone especially, where orbiting takes a gesture nobody guesses.
         hintEl.style.opacity = '1';
 
-        // The stage is what the camera has to match, and it changes size
-        // without the window doing so: the strips above and below it grow a row
-        // when the frame narrows, and a phone's address bar sliding away
-        // resizes the embed but not always the frame's own window.
         new ResizeObserver(onResize).observe(stageEl);
 
         status('Ready', 1);
@@ -1339,10 +1599,6 @@
         setTimeout(() => { hintEl.style.opacity = '0'; }, 9000);
         start();
 
-        // ── Trajectory editor ────────────────────────────────────────
-        // Temporary dev tool: only with ?edit=1 in the URL, and only any use
-        // while `python3 tools/traj_edit.py` is running. Delete this block,
-        // `devHold` above and public/sim/edit.js to remove it.
         if (new URLSearchParams(location.search).has('edit')) {
           import('./edit.js').then((editor) => editor.attach({
             THREE, scene, camera, renderer, controls, toThree,
@@ -1385,15 +1641,27 @@
               mujoco.mj_forward(mjModel, mjData);
               syncBodies();
             },
+
+            setDraftTrajectory(key, traj) {
+              if (!traj) return;
+              traj.watch = traj.watch || '';
+              traj.armOnly = true;
+              trajectories[key] = traj;
+              task = traj;
+              demoStateQposAddrs = [];
+              setDemoCollisions(true);
+              resetScene();
+              drawPath();
+              updateReadout();
+            },
             get robot() { return robot; },
             get task() { return task; },
+            get previewItem() { return previewItem; },
             get trajectories() { return trajectories; },
             get sample() { return sampleIndex; },
           })).catch(console.error);
         }
 
-        // The parent's IntersectionObserver has almost certainly already fired
-        // by now, so ask it for the answer we missed.
         if (window.parent !== window) {
           window.parent.postMessage({ type: 'hiveboard-sim-ready' }, '*');
         }
@@ -1405,3 +1673,4 @@
 </body>
 
 </html>
+

@@ -1,19 +1,5 @@
 #!/usr/bin/env python3
-"""Rebuild public/fonts/ -- self-hosted Poppins plus subset icon fonts.
-
-Replaces four CDN origins (Google Fonts, Bulma's jsDelivr, Font Awesome on
-cdnjs, Academicons) with same-origin files. The icon fonts are subset to only
-the glyphs index.html actually uses: 283 KB of webfonts becomes ~3 KB.
-
-Requires: fonttools, brotli or brotlicffi.
-
-    python3 tools/build-fonts.py
-
-If you add an icon to index.html, add it to USED below and re-run, otherwise
-the glyph will not be in the subset and will render as a blank box.
-"""
 import io
-import json
 import os
 import re
 import urllib.request
@@ -38,15 +24,16 @@ USED = {
 }
 FILES = {"solid": "fa-solid-900", "regular": "fa-regular-400",
          "brands": "fa-brands-400"}
-# Poppins subsets to keep; the rest (cyrillic, greek, devanagari) are unused.
 SUBSETS = ("latin", "latin-ext")
 
 
 def get(url):
+
     return urllib.request.urlopen(urllib.request.Request(url, headers=UA)).read()
 
 
 def subset_font(ttf_bytes, codepoints, out_path):
+
     font = TTFont(io.BytesIO(ttf_bytes))
     opts = Options()
     opts.flavor = "woff2"
@@ -62,8 +49,9 @@ def subset_font(ttf_bytes, codepoints, out_path):
 
 
 def main():
+
     os.makedirs(OUT, exist_ok=True)
-    n_glyphs = sum(len(v) for v in USED.values()) + 1  # +1 for ai-arxiv
+    n_glyphs = sum(len(v) for v in USED.values()) + 1
     lines = [
         "/* Self-hosted fonts for HiveBoard.",
         "   Poppins: latin + latin-ext subsets, served from this origin instead of Google Fonts.",
@@ -72,7 +60,6 @@ def main():
         "",
     ]
 
-    # --- Poppins -------------------------------------------------------
     css = get(GF).decode()
     faces = re.findall(r"/\*\s*([\w-]+)\s*\*/\s*@font-face\s*\{(.*?)\}", css, re.S)
     for name, body in faces:
@@ -88,10 +75,10 @@ def main():
             f"font-display:swap;src:url('{fname}') format('woff2');unicode-range:{rng}}}")
     lines.append("")
 
-    # --- icon fonts ----------------------------------------------------
     fa_css = get(FA + "css/all.min.css").decode()
 
     def cp(icon):
+
         m = re.search(r'\.fa-%s:{1,2}before\s*\{\s*content:\s*"\\([0-9a-f]+)"'
                       % re.escape(icon), fa_css)
         if not m:

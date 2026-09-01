@@ -1,5 +1,4 @@
-/* Bulma is bundled through Vite instead of fetched from a CDN, so it ships
-   from this origin in the same request chain as the rest of the CSS. */
+
 @import 'bulma/css/bulma.min.css';
 
 :root {
@@ -63,7 +62,7 @@ textarea {
   height: 100%;
   z-index: 10;
   pointer-events: none;
-  /* Let clicks pass through to canvas */
+
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -317,7 +316,6 @@ button:hover {
   transform: translate(-50%, -20px);
 }
 
-/* Info Panel */
 .info-panel {
   position: absolute;
   top: 2rem;
@@ -441,7 +439,6 @@ button:hover {
   }
 }
 
-/* View Options Desktop */
 .mobile-only {
   display: none !important;
 }
@@ -451,7 +448,6 @@ button:hover {
   gap: 1rem;
 }
 
-/* Mobile View Options */
 @media (max-width: 768px) {
   .mobile-only {
     display: flex !important;
@@ -492,7 +488,6 @@ button:hover {
   }
 }
 
-/* Action Buttons Desktop/Mobile */
 .action-btn {
   padding: 1rem;
   border-radius: 50%;
@@ -575,7 +570,6 @@ button:hover {
   transform: translateX(-3px);
 }
 
-/* Presentation Site Animations */
 @keyframes subtlePulse {
   0% {
     transform: scale(1);
@@ -617,8 +611,7 @@ button:hover {
 .viewer-block {
   width: 100%;
   aspect-ratio: 21/9;
-  /* Absolute public path so this shares one cache entry with the same image
-     referenced from index.html, instead of Vite emitting a second hashed copy. */
+
   background: url('/assets/hiveboard_preview.webp') center/cover no-repeat;
   border: 1px solid #e2e8f0;
   border-radius: 12px;
@@ -694,8 +687,6 @@ button:hover {
   }
 }
 
-/* --- Hero Links & Email Styling --- */
-
 .hero-link-btn:hover {
   background-color: #f1f5f9 !important;
   border-color: #94a3b8 !important;
@@ -713,7 +704,6 @@ button:hover {
   text-decoration: underline;
 }
 
-/* --- Mobile Responsiveness --- */
 @media screen and (max-width: 768px) {
   .hero-divider-line {
     display: none !important;
@@ -735,7 +725,6 @@ button:hover {
   }
 }
 
-/* --- Interactive Image Hotspots --- */
 .hotspot {
   position: absolute;
   width: 24px;
@@ -752,7 +741,7 @@ button:hover {
   width: 12px;
   height: 12px;
   background-color: #edaf19ff;
-  /* Hive yellow */
+
   border-radius: 50%;
   transform: translate(-50%, -50%);
   z-index: 2;
@@ -824,7 +813,6 @@ button:hover {
   transform: translate(-50%, -20px);
 }
 
-/* --- Validation Hand Interactions --- */
 .validation-container:hover {
   z-index: 30 !important;
 }
@@ -839,7 +827,6 @@ button:hover {
   transform: translateY(15px) !important;
 }
 
-/* --- Slider Animation --- */
 @keyframes sliderWiggle {
 
   0%,
@@ -873,7 +860,6 @@ button:hover {
   animation-delay: 2s;
 }
 
-/* --- Video Carousels --- */
 .carousel-wrapper {
   margin-bottom: 3rem;
 }
@@ -957,7 +943,6 @@ button:hover {
   margin-bottom: 0 !important;
 }
 
-/* --- Custom Bulma Dropdown Enhancements --- */
 .custom-bulma-dropdown .dropdown-trigger button {
   background-color: rgba(255, 255, 255, 0.8) !important;
   backdrop-filter: blur(10px);
@@ -993,7 +978,6 @@ button:hover {
   font-weight: 500;
 }
 
-/* --- Video Filter Toggle --- */
 .video-toggle-buttons {
   display: flex;
   gap: 2px;
@@ -1045,8 +1029,6 @@ button:hover {
   }
 }
 
-
-/* --- Responsive Spacing for Abstract & Interactive Image --- */
 #Interactive-Image {
   padding-top: 4.5rem;
 }
@@ -1055,21 +1037,16 @@ button:hover {
   #Abstract {
     padding-bottom: 1rem;
   }
-  
+
   #Interactive-Image {
     padding-top: 1rem;
   }
 }
 
-/* --- Live MuJoCo simulation frame --- */
 #sim-frame-wrap {
   aspect-ratio: 16 / 9;
 }
 
-/* A 16:9 box on a phone is barely 190px tall, which leaves the widget's
-   controls sitting on top of the robot. Drive the height off the viewport
-   instead so the scene gets a usable share of the screen, and cap it so the
-   embed never grows taller than the page it sits in. */
 @media screen and (max-width: 768px) {
   #sim-frame-wrap {
     aspect-ratio: auto;
@@ -1077,8 +1054,6 @@ button:hover {
   }
 }
 
-/* Landscape phones: 68vh of a 380px-tall viewport is nothing, and the frame is
-   wide enough here to go back to a proportional box. */
 @media screen and (max-width: 768px) and (max-height: 500px) and (orientation: landscape) {
   #sim-frame-wrap {
     aspect-ratio: 16 / 9;
@@ -1086,7 +1061,6 @@ button:hover {
   }
 }
 
-/* --- Protocol link styling in Results --- */
 .protocol-link {
   color: #edaf19;
   text-decoration: none;
@@ -1102,7 +1076,6 @@ button:hover {
   text-underline-offset: 3px;
 }
 
-/* --- Disable & hide all video audio and download/overflow controls --- */
 video::-webkit-media-controls-volume-control-container,
 video::-webkit-media-controls-volume-slider,
 video::-webkit-media-controls-mute-button,
@@ -1120,7 +1093,6 @@ video::-webkit-media-controls-picture-in-picture-button {
   -webkit-user-drag: none;
 }
 
-/* --- Custom Video Player Controls (No Volume Control) --- */
 .video-placeholder {
   position: relative;
 }
@@ -1209,7 +1181,6 @@ video::-webkit-media-controls-picture-in-picture-button {
   text-align: center;
 }
 
-/* --- Development Tooltip on Try it in the browser --- */
 .dev-tooltip-wrap {
   position: relative;
   display: inline-flex;
@@ -1271,7 +1242,4 @@ video::-webkit-media-controls-picture-in-picture-button {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
 }
-
-
-
 

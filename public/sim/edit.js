@@ -1,28 +1,5 @@
-/**
- * Trajectory editor overlay. TEMPORARY dev tool -- see tools/traj_edit.py.
- *
- * The widget already draws the path the fingertips will take. This puts the
- * handful of keyframes that path was authored from on top of it as beads,
- * lets one be dragged, and hands the result back to tools/traj_edit.py, which
- * re-solves the task with the real IK and the real acceptance replay and
- * sends the new trajectory straight back into the running scene. What you see
- * play back after a drag is what the next build will produce.
- *
- * Only loaded when the page is opened with ?edit=1, and only useful while the
- * editor server is running:
- *
- *     python3 tools/traj_edit.py
- *     http://localhost:5173/sim/hiveboard-sim.html?edit=1
- *
- * To remove the editor, delete this file and the `?edit=1` block at the
- * bottom of hiveboard-sim.html (tools/traj_edit.py lists the rest).
- */
-
 const API = new URLSearchParams(location.search).get('api') || 'http://localhost:8770';
 
-// How far an arrow key moves a bead: a centimetre is about the smallest
-// change worth looking at, and shift drops it to a millimetre for the last
-// bit of a grasp.
 const NUDGE = 0.01;
 const FINE = 0.001;
 
@@ -39,14 +16,15 @@ export function attach(sim) {
     objectJoints: [],
     objectRanges: [],
     editMode: 'arm',
-    edits: {},          // module -> { keys: { index: {dpos, secs, grip, angle} }, added: [ {id, after, pos, dpos, finger, approach, grip, secs, transit} ] }
+    edits: {},
     selected: null,
     busy: false,
-    loaded: false,      // false while the solver is unreachable, so we retry
-    link: true,         // drag beads that sit on top of each other together
-    auto: true,         // re-solve as soon as a bead is dropped
+    loaded: false,
+    link: true,
+    auto: true,
     holdAfterSolve: false,
-    manualMode: false,  // lamp keyframes are authored directly, not by IK
+    manualMode: false,
+    draftMode: false,
   };
 
   const markers = new THREE.Group();
@@ -56,7 +34,6 @@ export function attach(sim) {
   const ui = buildPanel();
   document.body.appendChild(ui.root);
 
-  // ── talking to the solver ────────────────────────────────────────────────
   async function api(path, payload, signal) {
     const opts = { signal };
     if (payload) {
@@ -69,9 +46,7 @@ export function attach(sim) {
       resp = await fetch(API + path, opts);
     } catch (err) {
       if (err.name === 'AbortError') throw err;
-      // fetch() reports every network failure as the same bare "Failed to
-      // fetch", which is no help at all when the answer is almost always
-      // that the solver is not running.
+
       state.loaded = false;
       throw new Error(`no answer from ${API} — is \`python3 tools/traj_edit.py\` running?`);
     }
@@ -108,6 +83,24 @@ export function attach(sim) {
 
   function addPose() {
     if (!state.module || !state.keys.length) return;
+
+    if (state.draftMode) {
+
+      const from = (state.selected !== null
+        && state.keys.find((k) => String(k.index) === String(state.selected)))
+        || state.keys[state.keys.length - 1];
+      const clone = {
+        qpos: [...(from.qpos || [])],
+        grip: from.grip,
+        secs: 1.0,
+      };
+      const at = state.keys.indexOf(from) + 1;
+      state.keys.splice(at, 0, clone);
+      state.selected = null;
+      sim.setPlaying(false);
+      solve();
+      return;
+    }
 
     let afterKey = null;
     if (state.selected !== null) {
@@ -204,28 +197,27 @@ export function attach(sim) {
     }
   }
 
-  /**
-   * Switch a keyframe out of the path, or back into it.
-   *
-   * The step before it then runs straight on to whatever came next -- which
-   * is the quickest way to find out whether a standoff, a settling beat or a
-   * whole arc was doing anything for the motion.
-   */
   function toggle(index) {
     const key = state.keys.find((k) => String(k.index) === String(index));
     if (!key) return;
+    if (state.draftMode) {
+      if (String(index) === '0') return;
+      state.keys = state.keys.filter((k) => k !== key);
+      if (String(state.selected) === String(index)) state.selected = null;
+      solve();
+      return;
+    }
     if (key.added) {
       removeAdded(index);
       return;
     }
-    if (String(index) === '0') return;         // the first key is the start pose
+    if (String(index) === '0') return;
     const edit = editFor(index);
     if (edit.off) delete edit.off; else edit.off = true;
     prune(index);
     solve();
   }
 
-  /** Drop an edit that no longer says anything, so /save stays readable. */
   function prune(index) {
     const addedKey = getAddedKey(index);
     if (addedKey) {
@@ -242,14 +234,6 @@ export function attach(sim) {
     if (!Object.keys(edit).length) delete keys[strIdx];
   }
 
-  /**
-   * Pick up whatever edits are on file, then solve this task from source.
-   *
-   * Solving rather than trusting the published trajectory: it may have been
-   * built before a later change to the robot's config, in which case the
-   * beads and the path the widget is drawing would disagree with each other.
-   * What the editor shows is always what today's sources produce.
-   */
   async function load() {
     const targetRobot = state.robot;
     const targetModule = state.module;
@@ -263,6 +247,11 @@ export function attach(sim) {
       state.jointRanges = data.jointRanges || [];
       state.gripRange = data.gripRange || [0, 1];
       state.loaded = true;
+      if (state.draftMode || (data.drafts || []).includes(state.module)) {
+        state.draftMode = true;
+        await loadDraft();
+        return;
+      }
       if (data.modules && data.modules.length && !data.modules.includes(state.module)) {
         const currentActive = sim.task ? sim.task.watch.split('_')[0] : null;
         state.module = (currentActive && data.modules.includes(currentActive))
@@ -272,13 +261,36 @@ export function attach(sim) {
       state.manualMode = state.module === 'lamp'
         && Array.isArray(data.manualKeys) && data.manualKeys.length > 0;
       if (state.manualMode) state.keys = data.manualKeys;
-      // Restore a saved hand-authored lamp path directly. Other tasks still
-      // start from the normal solver and their saved edits.
+
       await solve(state.module, state.robot, state.manualMode);
     } catch (err) {
       if (err.name !== 'AbortError') {
         status(err.message, false);
       }
+    }
+  }
+
+  async function loadDraft() {
+    const robot = state.robot;
+    const module = state.module;
+    try {
+      const data = await api('/draft', { robot, module, keys: state.keys });
+      if (state.robot !== robot || state.module !== module) return;
+      state.joints = data.joints || [];
+      state.jointRanges = data.jointRanges || [];
+      state.gripRange = data.gripRange || [0, 1];
+      state.keys = data.keys || [];
+      state.loaded = true;
+      if (data.traj && sim.setDraftTrajectory) {
+        sim.setDraftTrajectory(module, data.traj);
+        sim.setPlaying(true);
+      }
+      status(data.why, data.ok);
+    } catch (err) {
+      if (err.name !== 'AbortError') status(err.message, false);
+    } finally {
+      draw();
+      render();
     }
   }
 
@@ -294,6 +306,7 @@ export function attach(sim) {
   async function solve(targetModule = state.module, targetRobot = state.robot, forceManual = false) {
     clearTimeout(solveTimer);
     if (!targetModule || !targetRobot) return;
+    if (state.draftMode) { await loadDraft(); return; }
 
     const mySeq = ++solveSeq;
     if (activeAbortController) {
@@ -326,12 +339,10 @@ export function attach(sim) {
       if (result.objectJoints) state.objectJoints = result.objectJoints;
       if (result.objectRanges) state.objectRanges = result.objectRanges;
 
-      // Always write the solved trajectory into its dedicated module slot in sim.trajectories
       if (result.traj && sim.trajectories && sim.trajectories[resultModule]) {
         sim.replaceTrajectory(resultModule, result.traj);
       }
 
-      // ONLY update the active scene if the active task is still this exact module and robot
       const currentActiveModule = sim.task ? sim.task.watch.split('_')[0] : null;
       const currentActiveRobot = sim.robot ? sim.robot.name : null;
       if (currentActiveRobot === targetRobot && currentActiveModule === resultModule) {
@@ -371,6 +382,16 @@ export function attach(sim) {
     state.busy = true;
     status('saving…');
     try {
+      if (state.draftMode) {
+        const result = await api('/draft-save', {
+          robot: state.robot,
+          module: state.module,
+          keys: state.keys,
+        });
+        status(`saved ${result.module} — ${result.poses} pose(s), `
+          + `${result.samples} samples → ${result.saved}`, result.ok);
+        return;
+      }
       const result = await api('/save', {
         robot: state.robot,
         edits: state.edits,
@@ -394,19 +415,17 @@ export function attach(sim) {
     }
   }
 
-  // ── beads ────────────────────────────────────────────────────────────────
   const geoPose = new THREE.SphereGeometry(0.011, 18, 12);
-  // Bigger than a pose bead: an arc ends where the next key starts, so the
-  // two sit on top of each other and the arc has to show past it.
+
   const geoArc = new THREE.OctahedronGeometry(0.019);
   const colours = { pose: 0x2563eb, arc: 0xea580c, home: 0x94a3b8, added: 0x059669, selected: 0xdc2626 };
 
   function draw() {
     for (const child of [...markers.children]) {
-      child.material.dispose();      // the two geometries are shared, not per bead
+      child.material.dispose();
       markers.remove(child);
     }
-    // Draw unselected first, then selected on top so selected bead is always rendered in front
+
     const sortedKeys = [...state.keys].sort((a, b) => {
       const aSel = String(a.index) === String(state.selected);
       const bSel = String(b.index) === String(state.selected);
@@ -414,7 +433,7 @@ export function attach(sim) {
     });
 
     for (const key of sortedKeys) {
-      if (key.off) continue;
+      if (key.off || !key.pos) continue;
       const isSel = String(key.index) === String(state.selected);
       const isArc = key.kind === 'arc';
       const colour = isSel ? colours.selected
@@ -436,7 +455,6 @@ export function attach(sim) {
     }
   }
 
-  /** Every key sitting on the same point as this one -- a grasp is two or three. */
   function stacked(index) {
     const here = state.keys.find((k) => String(k.index) === String(index));
     if (!state.link || !here) return [index];
@@ -450,7 +468,6 @@ export function attach(sim) {
     return Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
   }
 
-  /** Add a world-space offset (MuJoCo axes) to a key's edit. */
   function move(index, delta) {
     for (const i of stacked(index)) {
       const edit = editFor(i);
@@ -460,12 +477,10 @@ export function attach(sim) {
     }
   }
 
-  /** three.js is Y-up, MuJoCo is Z-up: the widget's toThree(), backwards. */
   function toMujoco(v) {
     return [v.x, -v.z, v.y];
   }
 
-  // ── dragging ─────────────────────────────────────────────────────────────
   const ray = new THREE.Raycaster();
   const plane = new THREE.Plane();
   const pointer = new THREE.Vector2();
@@ -488,14 +503,13 @@ export function attach(sim) {
     const hitMesh = hits[0].object;
     const hitPos = hitMesh.position;
 
-    // Find all keys whose 3D bead sits in this cluster (within 25mm)
     const cluster = state.keys.filter(
       (k) => !k.off && k.pos && sim.toThree(k.pos).distanceTo(hitPos) < 0.025
     );
 
     let index;
     if (cluster.length > 1) {
-      // If one of the beads in this cluster is already selected, cycle to the next one!
+
       const curIdx = cluster.findIndex((k) => String(k.index) === String(state.selected));
       if (curIdx >= 0) {
         index = cluster[(curIdx + 1) % cluster.length].index;
@@ -510,7 +524,6 @@ export function attach(sim) {
     const key = state.keys.find((k) => String(k.index) === String(index));
     if (!key || !key.draggable) return;
 
-    // Take the gesture off OrbitControls, which listens on the same canvas.
     event.stopPropagation();
     event.preventDefault();
     sim.controls.enabled = false;
@@ -531,8 +544,8 @@ export function attach(sim) {
     if (!ray.ray.intersectPlane(plane, hit)) return;
 
     const delta = hit.clone().sub(drag.start);
-    if (event.shiftKey) delta.setX(0).setZ(0);          // straight up and down
-    else if (event.ctrlKey || event.metaKey) delta.setY(0);   // along the board
+    if (event.shiftKey) delta.setX(0).setZ(0);
+    else if (event.ctrlKey || event.metaKey) delta.setY(0);
     for (const i of stacked(drag.index)) {
       const mesh = markers.children.find((m) => String(m.userData.index) === String(i));
       if (mesh) mesh.position.copy(drag.origin).add(delta);
@@ -599,10 +612,8 @@ export function attach(sim) {
   window.addEventListener('pointerup', onPointerUp);
   window.addEventListener('keydown', onKeyDown);
 
-  // ── panel ────────────────────────────────────────────────────────────────
   function select(index) {
-    // Selecting a pose is an inspection action: stop the running trajectory
-    // and jump there immediately, before rendering the controls.
+
     if (activeAbortController) {
       activeAbortController.abort();
       activeAbortController = null;
@@ -637,12 +648,44 @@ export function attach(sim) {
     return input;
   }
 
+  function rangeNumber(value, min, max, step, onChange) {
+    const wrap = document.createElement('div');
+    wrap.className = 'range-number';
+    const range = document.createElement('input');
+    range.type = 'range';
+    range.min = min;
+    range.max = max;
+    range.step = step;
+    const number = document.createElement('input');
+    number.type = 'number';
+    number.min = min;
+    number.max = max;
+    number.step = step;
+
+    const update = (raw) => {
+      const parsed = parseFloat(raw);
+      if (!Number.isFinite(parsed)) return;
+      const next = Math.min(Number(max), Math.max(Number(min), parsed));
+      range.value = next;
+      number.value = next;
+      onChange(next);
+    };
+    range.value = value;
+    number.value = value;
+    range.addEventListener('input', () => update(range.value));
+    number.addEventListener('change', () => update(number.value));
+    wrap.append(range, number);
+    return wrap;
+  }
+
   function renderJointControls(key) {
     ui.joints.replaceChildren();
     if (!key || key.off || !key.qpos || !state.joints.length) return;
 
     const title = document.createElement('div');
-    title.textContent = state.editMode === 'arm'
+    title.textContent = state.draftMode
+      ? 'joint pose — move sliders, playback rebuilds'
+      : state.editMode === 'arm'
       ? 'arm points — move sliders, then press Go'
       : 'lamp points — move sliders, then press Go';
     title.style.marginTop = '8px';
@@ -651,7 +694,7 @@ export function attach(sim) {
 
     const modes = document.createElement('div');
     modes.style.margin = '6px 0';
-    for (const [mode, text] of [['arm', 'Arm points'], ['object', 'Lamp points']]) {
+    for (const [mode, text] of (state.draftMode ? [] : [['arm', 'Arm points'], ['object', 'Lamp points']])) {
       const button = document.createElement('button');
       button.type = 'button';
       button.textContent = text;
@@ -677,20 +720,12 @@ export function attach(sim) {
       state.objectJoints.forEach((joint, i) => {
         const label = document.createElement('label');
         label.textContent = joint;
-        const input = document.createElement('input');
-        input.type = 'range';
-        input.min = state.objectRanges[i][0];
-        input.max = state.objectRanges[i][1];
-        input.step = '0.001';
-        input.value = values[i];
-        const output = document.createElement('output');
-        output.textContent = Number(values[i]).toFixed(4);
-        input.addEventListener('input', () => {
+        const control = rangeNumber(values[i], state.objectRanges[i][0],
+          state.objectRanges[i][1], '0.001', (value) => {
           const next = [...key.objectQpos];
-          next[i] = parseFloat(input.value);
+          next[i] = value;
           key.objectQpos = next;
           editFor(key.index).objectQpos = next;
-          output.textContent = next[i].toFixed(4);
           sim.setEditorObjectPose(next);
         });
         const reset = document.createElement('button');
@@ -700,10 +735,11 @@ export function attach(sim) {
           event.stopPropagation();
           const next = [...key.objectQpos]; next[i] = original[i];
           key.objectQpos = next; editFor(key.index).objectQpos = next;
-          input.value = next[i]; output.textContent = Number(next[i]).toFixed(4);
+          control.querySelector('input[type=range]').value = next[i];
+          control.querySelector('input[type=number]').value = next[i];
           sim.setEditorObjectPose(next);
         });
-        label.append(input, output, reset); grid.appendChild(label);
+        label.append(control, reset); grid.appendChild(label);
       });
       ui.joints.appendChild(grid);
       return;
@@ -711,27 +747,17 @@ export function attach(sim) {
 
     const gripLabel = document.createElement('label');
     gripLabel.textContent = 'gripper';
-    const gripInput = document.createElement('input');
-    gripInput.type = 'range';
-    gripInput.min = state.gripRange[0];
-    gripInput.max = state.gripRange[1];
-    gripInput.step = '0.001';
-    gripInput.value = key.grip;
-    const gripOutput = document.createElement('output');
-    gripOutput.textContent = Number(key.grip).toFixed(4);
-    gripOutput.style.marginLeft = '8px';
-    gripInput.addEventListener('input', () => {
-      const value = parseFloat(gripInput.value);
+    const gripControl = rangeNumber(key.grip, state.gripRange[0], state.gripRange[1],
+      '0.001', (value) => {
       editFor(key.index).grip = value;
       key.grip = value;
-      gripOutput.textContent = value.toFixed(4);
       sim.setEditorPose(key.qpos, value);
-      // In hand-authored mode the playback trajectory is built from the
-      // pose rows, so keep it synchronized with the live gripper preview.
+
       if (state.module === 'lamp') {
         state.manualMode = true;
         solveSoon(180);
       }
+      if (state.draftMode) solveSoon(220);
     });
     const gripReset = document.createElement('button');
     gripReset.type = 'button';
@@ -744,15 +770,15 @@ export function attach(sim) {
       const value = key.originalGrip ?? key.grip;
       editFor(key.index).grip = value;
       key.grip = value;
-      gripInput.value = value;
-      gripOutput.textContent = Number(value).toFixed(4);
+      gripControl.querySelector('input[type=range]').value = value;
+      gripControl.querySelector('input[type=number]').value = value;
       sim.setEditorPose(key.qpos, value);
       if (state.module === 'lamp') {
         state.manualMode = true;
         solveSoon(180);
       }
     });
-    gripLabel.append(gripInput, gripOutput, gripReset);
+    gripLabel.append(gripControl, gripReset);
     ui.joints.appendChild(gripLabel);
 
     const grid = document.createElement('div');
@@ -765,31 +791,17 @@ export function attach(sim) {
       label.textContent = joint;
       label.style.marginTop = '4px';
       const range = state.jointRanges[i] || [-3.14, 3.14];
-      const input = document.createElement('input');
-      input.type = 'range';
-      input.min = range[0];
-      input.max = range[1];
-      input.step = '0.001';
-      input.value = key.qpos[i];
-      input.title = 'MuJoCo joint position';
-      const value = document.createElement('output');
-      value.textContent = Number(key.qpos[i]).toFixed(4);
-      value.style.display = 'block';
-      value.style.color = '#0f172a';
-      input.addEventListener('input', () => {
+      const control = rangeNumber(key.qpos[i], range[0], range[1], '0.001', (nextValue) => {
         const edit = editFor(key.index);
         const qpos = [...key.qpos];
-        const value = parseFloat(input.value);
-        if (!Number.isFinite(value)) return;
-        qpos[i] = value;
+        qpos[i] = nextValue;
         edit.qpos = qpos;
-        key.qpos[i] = value;
-        output.textContent = value.toFixed(4);
+        key.qpos[i] = nextValue;
         sim.setEditorPose(qpos, key.grip);
+        if (state.draftMode) solveSoon(220);
       });
-      const output = value;
-      label.appendChild(input);
-      label.appendChild(output);
+      control.querySelector('input[type=range]').title = 'MuJoCo joint position';
+      label.appendChild(control);
       const reset = document.createElement('button');
       reset.type = 'button';
       reset.textContent = '↺';
@@ -802,8 +814,8 @@ export function attach(sim) {
         qpos[i] = original[i];
         editFor(key.index).qpos = qpos;
         key.qpos[i] = original[i];
-        input.value = original[i];
-        output.textContent = Number(original[i]).toFixed(4);
+        control.querySelector('input[type=range]').value = original[i];
+        control.querySelector('input[type=number]').value = original[i];
         sim.setEditorPose(qpos, key.grip);
       });
       label.appendChild(reset);
@@ -823,9 +835,7 @@ export function attach(sim) {
       const row = document.createElement('div');
       row.className = 'row' + (isSelected ? ' on' : '');
       row.addEventListener('click', (e) => {
-        // The whole row is a pose selector. Keep number/range inputs and the
-        // enable/disable button independent so editing them does not jump the
-        // current pose unexpectedly.
+
         if (!e.target.closest('input, button')) select(key.index);
       });
 
@@ -843,12 +853,11 @@ export function attach(sim) {
       what.textContent = key.off ? 'off' : key.home ? 'home'
         : key.added ? 'added'
         : key.kind === 'arc' ? 'arc' : 'pose';
-      if (key.transit) what.textContent += ' ·';        // transit: may be missed
+      if (key.transit) what.textContent += ' ·';
       row.appendChild(what);
 
       if (key.off) {
-        // Nothing to show: the key is out of the path, so it has no timing,
-        // no grip and nowhere it puts the hand until it is switched back on.
+
         const gone = document.createElement('span');
         gone.className = 'gone';
         gone.textContent = 'not in the path';
@@ -856,20 +865,19 @@ export function attach(sim) {
         row.appendChild(gone);
       } else {
         row.appendChild(num(key.secs, 0.1, (v) => {
-          // Manual lamp trajectories consume timing directly from each pose;
-          // keep the displayed keyframe and the edit record in sync.
+
           key.secs = v;
           editFor(key.index).secs = v;
+          if (state.draftMode) solveSoon(260);
         }));
-        row.appendChild(num(key.grip, 0.05, (v) => { editFor(key.index).grip = v; }));
+        row.appendChild(num(key.grip, 0.05, (v) => {
+          editFor(key.index).grip = v;
+          if (state.draftMode) { key.grip = v; solveSoon(260); }
+        }));
         if (key.kind === 'arc') {
-          // How far it sweeps, and how far it climbs while sweeping. On the
-          // lamp the second one is the whole task: the hand has to walk up
-          // the thread at the pitch the bulb actually rides, or it drags the
-          // glass against its own thread instead of following it.
+
           row.appendChild(num(key.angle, 0.05, (v) => { editFor(key.index).angle = v; }));
-          // In millimetres, like every other distance the panel shows; the
-          // solver wants metres.
+
           row.appendChild(num(Math.round(key.rise * 1e5) / 100, 1,
                               (v) => { editFor(key.index).rise = v / 1000; }));
         } else {
@@ -942,6 +950,8 @@ export function attach(sim) {
       #traj-edit .power:disabled { opacity: .3; cursor: default; }
       #traj-edit input[type=number] { width: 100%; font: inherit; padding: 1px 3px;
         border: 1px solid #e2e8f0; border-radius: 4px; background: #fff; }
+      #traj-edit .range-number { display: grid; grid-template-columns: minmax(0, 1fr) 5.5em;
+        gap: 5px; align-items: center; }
       #traj-edit .detail { margin: 6px 0; color: #475569; min-height: 16px; }
       #traj-edit .status { margin: 6px 0; min-height: 30px; color: #475569; }
       #traj-edit .buttons { display: flex; gap: 6px; flex-wrap: wrap; }
@@ -976,7 +986,8 @@ export function attach(sim) {
         </div>
         <label><input type="checkbox" id="te-auto" checked> re-solve on drop</label>
         <label><input type="checkbox" id="te-link" checked> move stacked beads together</label>
-        <label>scrub <input type="range" id="te-scrub" min="0" max="1" value="0"></label>
+        <label class="scrub-control">scrub <input type="range" id="te-scrub" min="0" max="1" value="0">
+          <input type="number" id="te-scrub-value" min="0" max="1" step="1" value="0"></label>
         <div class="help">
           drag a bead to move that keyframe · click overlapping beads to cycle selection ([ and ] step through) ·
           shift = straight up and down · ctrl = along the board · arrows nudge the selected bead 10 mm
@@ -993,6 +1004,7 @@ export function attach(sim) {
       detail: root.querySelector('#te-detail'),
       status: root.querySelector('#te-status'),
       scrub: root.querySelector('#te-scrub'),
+      scrubValue: root.querySelector('#te-scrub-value'),
     };
   }
 
@@ -1019,12 +1031,28 @@ export function attach(sim) {
     solve();
   });
   ui.root.querySelector('#te-clear').addEventListener('click', () => {
+    if (state.draftMode) {
+      state.keys = state.keys.slice(0, 1);
+      state.selected = null;
+      solve();
+      return;
+    }
     state.edits[state.module] = { keys: {}, added: [] };
     solve();
   });
   ui.scrub.addEventListener('input', () => {
     sim.setPlaying(false);
-    sim.setSample(parseInt(ui.scrub.value, 10));
+    const sample = parseInt(ui.scrub.value, 10);
+    ui.scrubValue.value = sample;
+    sim.setSample(sample);
+  });
+  ui.scrubValue.addEventListener('change', () => {
+    const max = parseInt(ui.scrub.max, 10) || 0;
+    const sample = Math.min(max, Math.max(0, parseInt(ui.scrubValue.value, 10) || 0));
+    ui.scrub.value = sample;
+    ui.scrubValue.value = sample;
+    sim.setPlaying(false);
+    sim.setSample(sample);
   });
 
   let lastTry = 0;
@@ -1036,10 +1064,20 @@ export function attach(sim) {
 
   function syncTask() {
     const robot = sim.robot ? sim.robot.name : null;
-    const module = sim.task ? sim.task.watch.split('_')[0] : null;
+    const active = sim.task;
+    let module = null;
+    let draft = false;
+    if (active) {
+      module = active.module || (active.watch ? active.watch.split('_')[0] : null);
+      draft = !!active.armOnly;
+    } else if (sim.previewItem) {
+      module = sim.previewItem.key;
+      draft = true;
+    }
     if (robot !== state.robot || module !== state.module) {
       state.robot = robot;
       state.module = module;
+      state.draftMode = draft;
       state.selected = null;
       state.keys = [];
       draw();
@@ -1048,28 +1086,32 @@ export function attach(sim) {
     }
   }
 
-  // Fast response to UI clicks on task list and robot picker
   document.addEventListener('click', (e) => {
-    if (e.target.closest('#task-list') || e.target.closest('#platform-picker')) {
+    if (e.target.closest('#task-select') || e.target.closest('#platform-picker')) {
       setTimeout(syncTask, 0);
     }
   });
+  document.addEventListener('change', (e) => {
+    if (e.target.closest('#task-select')) setTimeout(syncTask, 0);
+  });
 
-  // The widget owns which robot and task are showing, and says so only by
-  // changing what it is playing -- so watch rather than reach in and hook it.
   setInterval(() => {
     syncTask();
     if (state.robot && state.module && !state.loaded && !state.busy) {
-      // The solver was not up when this task came round. Keep trying, so
-      // starting it is all it takes -- no reloading the page.
+
       if (Date.now() - lastTry > 3000) reload();
     }
-    if (sim.task && drag.index === null && document.activeElement !== ui.scrub) {
+    if (sim.task && drag.index === null
+        && document.activeElement !== ui.scrub
+        && document.activeElement !== ui.scrubValue) {
       ui.scrub.max = sim.task.qpos.length - 1;
       ui.scrub.value = sim.sample;
+      ui.scrubValue.max = ui.scrub.max;
+      ui.scrubValue.value = sim.sample;
     }
   }, 100);
 
   render();
   status(`editor ready — ${API}`);
 }
+
