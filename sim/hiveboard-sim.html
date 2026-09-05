@@ -152,6 +152,14 @@
     #task-select:hover { border-color: rgba(15, 23, 42, 0.25); }
     #task-select option.pending { color: var(--ink-soft); }
 
+    #view-panel { top: 58px; left: 202px; width: 176px; z-index: 30; }
+    #view-row { display: flex; gap: 5px; margin-top: 7px; }
+    #view-row button { flex: 1; font-family: var(--font); font-size: 9.5px;
+      padding: 4px 5px; border: 1px solid var(--line); border-radius: 5px;
+      background: rgba(255, 255, 255, 0.7); color: var(--ink); cursor: pointer; }
+    #view-msg { margin-top: 6px; font-size: 9px; color: var(--ink-soft);
+      overflow-wrap: anywhere; }
+
     #place-panel { top: 58px; left: 202px; width: 176px; z-index: 30; }
     #place-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 6px; }
     #place-grid label { display: flex; flex-direction: column; font-size: 9px;
@@ -437,16 +445,20 @@
       { key: 'thread-m30',     label: 'Thread M30' },
       { key: 'thread-m8',      label: 'Thread M8' },
       { key: 'peg-insertion',  label: 'Peg Insertion Plate' },
-      { key: 'breaker',        label: 'Circuit Breaker',   traj: 'breaker', module: 'breaker' },
+      { key: 'breaker',        label: 'Circuit Breaker' },
       { key: 'button-cover',   label: 'Hidden Push Button' },
-      { key: 'valve',          label: 'Ball Valve',        traj: 'valve',   module: 'valve' },
+      { key: 'valve',          label: 'Ball Valve' },
       { key: 'key-lock',       label: 'Lock and Key' },
-      { key: 'lamp',           label: 'Light Bulb Socket', traj: 'lamp',    module: 'lamp' },
+      { key: 'lamp',           label: 'Light Bulb Socket' },
       { key: 'drawer',         label: 'Sliding Drawer' },
       { key: 'shock-absorber', label: 'Shock Absorber' },
     ];
 
-    const MODULE_PREFIXES = ['valve', 'lamp', 'breaker'];
+    // Every task now has its module in the scene, keyed by its own name, and
+    // only the one under test is shown.
+    for (const item of TASK_CATALOGUE) { item.traj = item.key; item.module = item.key; }
+
+    const MODULE_PREFIXES = TASK_CATALOGUE.map((item) => item.key);
 
     const MODULE_STL_BASE = './parts/';
 
@@ -508,6 +520,7 @@
     let previewToken = 0;
     let previewAdjust = { offset: [0, 0, 0], spin: 0, scale: 1 };
     let committedPlacement = {};
+    let savedViews = {};
     const PLACE_EDIT = new URLSearchParams(location.search).has('edit');
     const PLACE_API = new URLSearchParams(location.search).get('api')
       || 'http://localhost:8770';
@@ -613,6 +626,24 @@
       } catch (_) { committedPlacement = {}; }
     }
 
+    // Saved views live in tools/task_views.json, which the asset build folds
+    // into each trajectory.  Until that rebuild happens the file is the only
+    // copy, so edit mode reads it back rather than losing the pose on reload.
+    async function loadSavedViews() {
+      if (!PLACE_EDIT || !robot) return;
+      try {
+        const resp = await fetch(`${PLACE_API}/views`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ robot: robot.name }),
+        });
+        const data = await resp.json();
+        savedViews[robot.name] = data.views || {};
+      } catch (_) { savedViews[robot.name] = savedViews[robot.name] || {}; }
+      if (task && taskView()) frameTask();
+      refreshViewPanel();
+    }
+
     async function loadRobot(entry) {
       robot = entry;
       trajectories = await fetchJson(`${MODEL_BASE}${entry.traj}`);
@@ -653,6 +684,7 @@
       buildBodies();
       lookAt(homeView.target, homeView.position);
       buildTaskList();
+      loadSavedViews();
     }
 
     function buildScene() {
@@ -890,9 +922,21 @@
       }
     }
 
+    // The module is demonstrated, not manipulated: it plays the motion the
+    // trajectory authored rather than waiting to be shoved by the arm.  That
+    // holds whether or not the clip is running, so a paused module stays put
+    // instead of sagging back under gravity.
     function applyDemoSample() {
-      if (!task || !task.demo || !playing || !task.stateQpos?.[sampleIndex]) return false;
+      if (!task || !task.demo || !task.stateQpos?.[sampleIndex]) return false;
       const state = task.stateQpos[sampleIndex];
+      for (const adr of demoStateQposAddrs) {
+        if (adr < state.length) {
+          mjData.qpos[adr] = state[adr];
+          mjData.qvel[adr] = 0;
+        }
+      }
+      if (!playing) return true;
+
       const target = task.qpos[sampleIndex];
       for (let i = 0; i < robot.arm; i++) {
         mjData.qpos[i] = target[i];
@@ -901,9 +945,6 @@
       if (gripQposIndex >= 0) {
         mjData.qpos[gripQposIndex] = task.grip[sampleIndex];
         mjData.qvel[gripQposIndex] = 0;
-      }
-      for (const adr of demoStateQposAddrs) {
-        if (adr < state.length) mjData.qpos[adr] = state[adr];
       }
       if (spinIndex >= 0) {
         mjData.qpos[spinIndex] = task.spin || 0;
@@ -954,22 +995,41 @@
       if (mjModel) syncBodies();
     }
 
+    // Every swappable module sits in the same board cell, so all twelve are
+    // in the scene at once and only the one under test is drawn.  This runs
+    // live physics, so hiding the others is not enough: their collision has
+    // to go too, or the arm reaching for one task is fouled by a module it
+    // cannot see.  The trajectories were solved under exactly this masking.
+    function moduleCollisions(live) {
+      if (!mjModel) return;
+      if (!demoCollisionState) {
+        demoCollisionState = {
+          contype: Array.from(mjModel.geom_contype),
+          conaffinity: Array.from(mjModel.geom_conaffinity),
+        };
+      }
+      mjModel.geom_contype.set(demoCollisionState.contype);
+      mjModel.geom_conaffinity.set(demoCollisionState.conaffinity);
+      if (live === undefined) return;
+
+      for (let g = 0; g < mjModel.ngeom; g++) {
+        const name = bodyNames[mjModel.geom_bodyid[g]] || '';
+        const prefix = MODULE_PREFIXES.find((p) => name.startsWith(`${p}_`));
+        if (prefix && prefix !== live) {
+          mjModel.geom_contype[g] = 0;
+          mjModel.geom_conaffinity[g] = 0;
+        }
+      }
+    }
+
     function setDemoCollisions(disabled) {
       if (!mjModel) return;
       if (disabled) {
-        if (!demoCollisionState) {
-          demoCollisionState = {
-            contype: Array.from(mjModel.geom_contype),
-            conaffinity: Array.from(mjModel.geom_conaffinity),
-          };
-        }
-
+        moduleCollisions();
         mjModel.geom_contype.fill(0);
         mjModel.geom_conaffinity.fill(0);
-      } else if (!disabled && demoCollisionState) {
-        mjModel.geom_contype.set(demoCollisionState.contype);
-        mjModel.geom_conaffinity.set(demoCollisionState.conaffinity);
-        demoCollisionState = null;
+      } else {
+        moduleCollisions(modulePrefix() || undefined);
       }
     }
 
@@ -991,6 +1051,17 @@
       return task ? task.watch.split('_')[0] : null;
     }
 
+    function taskKey() {
+      const item = TASK_CATALOGUE.find((t) => trajectories[t.traj] === task);
+      return item ? item.key : (task ? modulePrefix() : null);
+    }
+
+    function taskView() {
+      const key = taskKey();
+      if (!key) return null;
+      return (savedViews[robot?.name] || {})[key] || task?.view || null;
+    }
+
     function selectTask(key, { dolly = true, play = true } = {}) {
       task = trajectories[key];
       const prefix = `${modulePrefix()}_`;
@@ -1000,7 +1071,6 @@
           demoStateQposAddrs.push(mjModel.jnt_qposadr[jid]);
         }
       }
-      setDemoCollisions(!!task.demo);
       previewItem = null;
       clearModulePreview();
       const catItem = TASK_CATALOGUE.find((t) => t.traj === key);
@@ -1009,6 +1079,8 @@
 
       resetScene();
       setModuleVisibility(modulePrefix());
+      setDemoCollisions(!!task.demo);
+      refreshViewPanel();
       drawPath();
       if (dolly) frameTask();
       updateReadout();
@@ -1045,6 +1117,13 @@
     function frameTask() {
       if (!task) {
         lookAt(homeView.target, homeView.position);
+        return;
+      }
+      // A view saved for this task in the editor beats the computed framing.
+      const saved = taskView();
+      if (saved) {
+        lookAt(new THREE.Vector3(...saved.target),
+               new THREE.Vector3(...saved.position));
         return;
       }
       const prefix = modulePrefix();
@@ -1093,6 +1172,7 @@
         const prefix = MODULE_PREFIXES.find((p) => name.startsWith(`${p}_`));
         if (prefix && (b in bodies)) bodies[b].visible = prefix === activePrefix;
       }
+      moduleCollisions(activePrefix || undefined);
     }
 
     function previewDemoStep(time) {
@@ -1262,6 +1342,68 @@
       };
     }
 
+    let viewPanel = null;
+
+    // Edit mode only: park the camera where you want a task framed and save
+    // it.  The pose is written to tools/task_views.json, which the asset
+    // build folds into the trajectory so the deployed sim opens there too.
+    function buildViewPanel() {
+      const el = document.createElement('div');
+      el.className = 'panel';
+      el.id = 'view-panel';
+      el.hidden = true;
+      el.innerHTML = `
+        <div class="panel-title">Camera view</div>
+        <div id="view-row">
+          <button id="view-save">Save view</button>
+          <button id="view-clear">Clear</button>
+        </div>
+        <div id="view-msg"></div>`;
+      document.body.appendChild(el);
+      el.querySelector('#view-save').addEventListener('click', () => saveTaskView(true));
+      el.querySelector('#view-clear').addEventListener('click', () => saveTaskView(false));
+      return { el, msg: el.querySelector('#view-msg') };
+    }
+
+    function refreshViewPanel() {
+      if (!viewPanel) return;
+      const show = PLACE_EDIT && !!task;
+      viewPanel.el.hidden = !show;
+      if (!show) return;
+      const key = taskKey();
+      viewPanel.el.querySelector('.panel-title').textContent = `Camera view · ${key}`;
+      if (!viewPanel.msg.dataset.busy) {
+        viewPanel.msg.textContent = taskView() ? 'saved view in use' : 'no saved view';
+      }
+    }
+
+    async function saveTaskView(keep) {
+      const key = taskKey();
+      if (!key || !robot) return;
+      const body = { robot: robot.name, task: key };
+      if (keep) {
+        body.target = controls.target.toArray();
+        body.position = camera.position.toArray();
+      }
+      viewPanel.msg.dataset.busy = '1';
+      viewPanel.msg.textContent = keep ? 'saving…' : 'clearing…';
+      try {
+        const resp = await fetch(`${PLACE_API}/view-save`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        });
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        savedViews[robot.name] = data.views || {};
+        if (task) { if (data.view) task.view = data.view; else delete task.view; }
+        viewPanel.msg.textContent = keep ? `saved → ${data.saved}` : 'cleared';
+      } catch (err) {
+        viewPanel.msg.textContent = `no answer from ${PLACE_API} — is traj_edit.py running?`;
+      }
+      delete viewPanel.msg.dataset.busy;
+    }
+
     let placePanel = null;
 
     function buildPlacePanel() {
@@ -1316,6 +1458,7 @@
     }
 
     function refreshPlacePanel() {
+      refreshViewPanel();
       if (!placePanel) return;
 
       const show = PLACE_EDIT && !!previewItem && (!task || task.armOnly);
@@ -1354,6 +1497,7 @@
     }
 
     if (PLACE_EDIT) {
+      viewPanel = buildViewPanel();
       placePanel = buildPlacePanel();
       window.addEventListener('keydown', (e) => {
 
@@ -1424,8 +1568,11 @@
         ? `${(value * 1000).toFixed(1)} mm`
         : `${(((value * 180 / Math.PI + 180) % 360 + 360) % 360 - 180).toFixed(0)}°`;
       const seconds = (task.qpos.length / task.rate).toFixed(1);
+      // A best-effort run is still shipped so the platform has something to
+      // show; say so rather than let it read as a solved task.
+      const short = task.ok === false ? ' · falls short of the goal' : '';
       readoutEl.innerHTML =
-        `${task.caption}<br>joint <b>${shown}</b> · <b>${seconds}s</b> path`;
+        `${task.caption}<br>joint <b>${shown}</b> · <b>${seconds}s</b> path${short}`;
     }
 
     function buildTaskList() {
@@ -1484,7 +1631,7 @@
             });
             await loadRobot(entry);
             const first = Object.keys(trajectories)[0];
-            if (first) selectTask(first, { dolly: false });
+            if (first) selectTask(first);
           });
         }
         list.appendChild(btn);
@@ -1616,7 +1763,7 @@
         await loadRobot(opening);
 
         const first = Object.keys(trajectories)[0];
-        if (first) selectTask(first, { dolly: false });
+        if (first) selectTask(first);
         syncControls();
 
         hintEl.style.opacity = '1';
