@@ -567,11 +567,17 @@
       return new THREE.Vector3(p[0], p[2], -p[1]);
     }
 
+    // The page is embedded with ?v=<hash of the sim and its assets>; carrying
+    // that onto every fetch means a deploy actually reaches the browser
+    // instead of being served from cache.
+    const CACHE_TAG = new URLSearchParams(location.search).get('v');
+
     async function fetchGzip(path) {
       if (typeof DecompressionStream === 'undefined') {
         throw new Error('this browser cannot decompress the simulation assets');
       }
-      const resp = await fetch(`${path}.gz`);
+      const url = `${path}.gz` + (CACHE_TAG ? `?v=${CACHE_TAG}` : '');
+      const resp = await fetch(url);
       if (!resp.ok) throw new Error(`${path}.gz → HTTP ${resp.status}`);
       const buffer = await resp.arrayBuffer();
       const head = new Uint8Array(buffer, 0, Math.min(2, buffer.byteLength));
