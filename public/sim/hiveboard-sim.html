@@ -1307,7 +1307,9 @@
         buildScene();
         buildRobotList();
 
-        const opening = catalogue.find((r) => !r.soon && r.tasks.length);
+        const requestedRobot = new URLSearchParams(location.search).get('robot');
+        const opening = catalogue.find((r) => r.name === requestedRobot && !r.soon && r.tasks.length)
+          || catalogue.find((r) => !r.soon && r.tasks.length);
         const strip = document.getElementById('platforms');
         document.querySelectorAll('#robot-list button').forEach((b) => {
           b.classList.toggle('active', b.dataset.robot === opening.name);

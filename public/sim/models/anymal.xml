@@ -1,0 +1,401 @@
+<mujoco model="hiveboard anymal">
+  <compiler angle="radian" meshdir="assets" autolimits="true" />
+  <option integrator="implicitfast" timestep="0.002" />
+  <size memory="24M" />
+  <visual>
+    <global offwidth="1920" offheight="1080" />
+    <headlight diffuse="0.6 0.6 0.6" ambient="0.35 0.35 0.35" specular="0 0 0" />
+  </visual>
+  <asset>
+    <material name="white" rgba="1 1 1 1" />
+    <material name="off_white" rgba="0.901961 0.921569 0.929412 1" />
+    <material name="black" rgba="0.25 0.25 0.25 1" />
+    <material name="green" rgba="0 1 0 1" />
+    <material name="light_blue" rgba="0.039216 0.541176 0.780392 1" />
+    <material name="red" rgba="1 0 0 1" />
+    <material name="hb_shell" rgba="0.925 0.933 0.945 1" specular="0.3" shininess="0.2" />
+    <material name="hb_panel" rgba="0.76 0.79 0.83 1" specular="0.25" shininess="0.15" />
+    <material name="hb_accent" rgba="0.929 0.686 0.098 1" specular="0.4" shininess="0.3" />
+    <mesh name="anymal_000_base" file="anymal/anymal_000_base.obj" />
+    <mesh name="anymal_001_base" file="anymal/anymal_001_base.obj" />
+    <mesh name="anymal_002_base" file="anymal/anymal_002_base.obj" />
+    <mesh name="anymal_003_base" file="anymal/anymal_003_base.obj" />
+    <mesh name="anymal_004_base" file="anymal/anymal_004_base.obj" />
+    <mesh name="anymal_005_base" file="anymal/anymal_005_base.obj" />
+    <mesh name="anymal_006_base" file="anymal/anymal_006_base.obj" />
+    <mesh name="anymal_007_base" file="anymal/anymal_007_base.obj" />
+    <mesh name="anymal_008_base" file="anymal/anymal_008_base.obj" />
+    <mesh name="anymal_009_base" file="anymal/anymal_009_base.obj" />
+    <mesh name="anymal_010_base" file="anymal/anymal_010_base.obj" />
+    <mesh name="anymal_011_base" file="anymal/anymal_011_base.obj" />
+    <mesh name="anymal_012_base" file="anymal/anymal_012_base.obj" />
+    <mesh name="anymal_013_base" file="anymal/anymal_013_base.obj" />
+    <mesh name="anymal_014_LF_HIP" file="anymal/anymal_014_LF_HIP.obj" />
+    <mesh name="anymal_015_LF_THIGH" file="anymal/anymal_015_LF_THIGH.obj" />
+    <mesh name="anymal_016_LF_THIGH" file="anymal/anymal_016_LF_THIGH.obj" />
+    <mesh name="anymal_017_LF_THIGH" file="anymal/anymal_017_LF_THIGH.obj" />
+    <mesh name="anymal_018_LF_SHANK" file="anymal/anymal_018_LF_SHANK.obj" />
+    <mesh name="anymal_019_LF_FOOT" file="anymal/anymal_019_LF_FOOT.obj" />
+    <mesh name="anymal_020_LH_HIP" file="anymal/anymal_020_LH_HIP.obj" />
+    <mesh name="anymal_021_LH_THIGH" file="anymal/anymal_021_LH_THIGH.obj" />
+    <mesh name="anymal_022_LH_THIGH" file="anymal/anymal_022_LH_THIGH.obj" />
+    <mesh name="anymal_023_LH_THIGH" file="anymal/anymal_023_LH_THIGH.obj" />
+    <mesh name="anymal_024_LH_SHANK" file="anymal/anymal_024_LH_SHANK.obj" />
+    <mesh name="anymal_025_LH_FOOT" file="anymal/anymal_025_LH_FOOT.obj" />
+    <mesh name="anymal_026_RF_HIP" file="anymal/anymal_026_RF_HIP.obj" />
+    <mesh name="anymal_027_RF_THIGH" file="anymal/anymal_027_RF_THIGH.obj" />
+    <mesh name="anymal_028_RF_THIGH" file="anymal/anymal_028_RF_THIGH.obj" />
+    <mesh name="anymal_029_RF_THIGH" file="anymal/anymal_029_RF_THIGH.obj" />
+    <mesh name="anymal_030_RF_SHANK" file="anymal/anymal_030_RF_SHANK.obj" />
+    <mesh name="anymal_031_RF_FOOT" file="anymal/anymal_031_RF_FOOT.obj" />
+    <mesh name="anymal_032_RH_HIP" file="anymal/anymal_032_RH_HIP.obj" />
+    <mesh name="anymal_033_RH_THIGH" file="anymal/anymal_033_RH_THIGH.obj" />
+    <mesh name="anymal_034_RH_THIGH" file="anymal/anymal_034_RH_THIGH.obj" />
+    <mesh name="anymal_035_RH_THIGH" file="anymal/anymal_035_RH_THIGH.obj" />
+    <mesh name="anymal_036_RH_SHANK" file="anymal/anymal_036_RH_SHANK.obj" />
+    <mesh name="anymal_037_RH_FOOT" file="anymal/anymal_037_RH_FOOT.obj" />
+    <mesh name="anymal_038_dynaarm_base" file="anymal/anymal_038_dynaarm_base.obj" />
+    <mesh name="anymal_039_dynaarm_shoulder" file="anymal/anymal_039_dynaarm_shoulder.obj" />
+    <mesh name="anymal_040_dynaarm_upperarm" file="anymal/anymal_040_dynaarm_upperarm.obj" />
+    <mesh name="anymal_041_dynaarm_elbow" file="anymal/anymal_041_dynaarm_elbow.obj" />
+    <mesh name="anymal_042_dynaarm_forearm" file="anymal/anymal_042_dynaarm_forearm.obj" />
+    <mesh name="anymal_043_dynaarm_wrist_1" file="anymal/anymal_043_dynaarm_wrist_1.obj" />
+    <mesh name="anymal_044_dynaarm_wrist_2" file="anymal/anymal_044_dynaarm_wrist_2.obj" />
+    <mesh name="anymal_045_left_outer_knuckle" file="anymal/anymal_045_left_outer_knuckle.obj" />
+    <mesh name="anymal_046_left_outer_finger" file="anymal/anymal_046_left_outer_finger.obj" />
+    <mesh name="anymal_047_left_inner_finger" file="anymal/anymal_047_left_inner_finger.obj" />
+    <mesh name="anymal_048_left_inner_finger" file="anymal/anymal_048_left_inner_finger.obj" />
+    <mesh name="anymal_049_left_inner_knuckle" file="anymal/anymal_049_left_inner_knuckle.obj" />
+    <mesh name="anymal_050_right_outer_knuckle" file="anymal/anymal_050_right_outer_knuckle.obj" />
+    <mesh name="anymal_051_right_outer_finger" file="anymal/anymal_051_right_outer_finger.obj" />
+    <mesh name="anymal_052_right_inner_finger" file="anymal/anymal_052_right_inner_finger.obj" />
+    <mesh name="anymal_053_right_inner_finger" file="anymal/anymal_053_right_inner_finger.obj" />
+    <mesh name="anymal_054_right_inner_knuckle" file="anymal/anymal_054_right_inner_knuckle.obj" />
+    <mesh name="anymal_055_robotiq_base_link" file="anymal/anymal_055_robotiq_base_link.obj" />
+    <mesh name="panel_tn__Hexagono_Suporte1_bX0_Corpo1_Mesh" file="hb/panel_tn__Hexagono_Suporte1_bX0_Corpo1_Mesh.obj" scale="0.001 0.001 0.001" />
+    <mesh name="panel_tn__Hexagono_Suporte2_bX0_Corpo1_Mesh" file="hb/panel_tn__Hexagono_Suporte2_bX0_Corpo1_Mesh.obj" scale="0.001 0.001 0.001" />
+    <mesh name="panel_tn__Hexagono_Suporte3_bX0_Corpo1_Mesh" file="hb/panel_tn__Hexagono_Suporte3_bX0_Corpo1_Mesh.obj" scale="0.001 0.001 0.001" />
+    <mesh name="panel_tn__Hexagono_Suporte4_bX0_Corpo1_Mesh" file="hb/panel_tn__Hexagono_Suporte4_bX0_Corpo1_Mesh.obj" scale="0.001 0.001 0.001" />
+    <mesh name="panel_tn__Hexagono_Suporte5_bX0_Corpo1_Mesh" file="hb/panel_tn__Hexagono_Suporte5_bX0_Corpo1_Mesh.obj" scale="0.001 0.001 0.001" />
+    <mesh name="panel_tn__Hexagono_Suporte6_bX0_Corpo1_Mesh" file="hb/panel_tn__Hexagono_Suporte6_bX0_Corpo1_Mesh.obj" scale="0.001 0.001 0.001" />
+    <mesh name="panel_tn__Hexagono_Suporte7_bX0_Corpo1_Mesh" file="hb/panel_tn__Hexagono_Suporte7_bX0_Corpo1_Mesh.obj" scale="0.001 0.001 0.001" />
+    <mesh name="valve_Mesh_1" file="hb/valve_Mesh_1.obj" />
+    <mesh name="valve_Mesh" file="hb/valve_Mesh.obj" />
+    <mesh name="lamp_base_pivot_Mesh" file="hb/lamp_base_pivot_Mesh.obj" />
+    <mesh name="lamp_Corpo1_Mesh" file="hb/lamp_Corpo1_Mesh.obj" />
+    <mesh name="lamp_tn__Corpo11_j7m1J_Mesh" file="hb/lamp_tn__Corpo11_j7m1J_Mesh.obj" />
+    <mesh name="lamp_tn__Corpo12_j7m1J_Mesh" file="hb/lamp_tn__Corpo12_j7m1J_Mesh.obj" />
+    <mesh name="breaker_tn__corpo1_dC_Corpo1_Mesh" file="hb/breaker_tn__corpo1_dC_Corpo1_Mesh.obj" />
+    <mesh name="breaker_tn__Alavanca1_zH_Corpo1_Mesh" file="hb/breaker_tn__Alavanca1_zH_Corpo1_Mesh.obj" />
+  </asset>
+  <worldbody>
+    <light pos="0 0 2.4" dir="0 0 -1" directional="true" />
+    <geom name="floor" type="plane" size="0 0 0.05" rgba="0.62 0.66 0.72 1" />
+    <geom name="stand_post" type="box" rgba="0.34 0.38 0.45 1" size="0.016 0.016 0.45" pos="0.83 0 0.45" />
+    <geom name="stand_foot" type="box" rgba="0.44 0.48 0.55 1" size="0.17 0.17 0.01" pos="0.83 0 0.01" />
+    <body name="base" gravcomp="1" pos="0 0 0.591284">
+      <body name="arm_mount" gravcomp="1" pos="0 0 0.12" quat="0 0 0 1">
+        <inertial mass="0.0010000000474974513" pos="0 0 0" quat="1 0 0 0" diaginertia="9.99999997e-07 9.99999997e-07 9.99999997e-07" />
+        <body name="dynaarm_base" gravcomp="1" pos="0 0 0" quat="1 0 0 0">
+          <inertial mass="1.9421979188919067" pos="0.00243204995 0.00250861002 0.0529930592" quat="0.908156335 -0.266714633 0.0456583351 -0.319422603" diaginertia="0.00411015516 0.00483479537 0.00433035893" />
+          <geom rgba="0.7 0.72 0.75 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_038_dynaarm_base" />
+          <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="0 0 0.0500000007" quat="1 0 0 0" type="cylinder" size="0.0500000007 0.0500000007" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+          <body name="dynaarm_shoulder" gravcomp="1" pos="0 0 0.1105" quat="1 0 0 0">
+            <inertial mass="2.8254690170288086" pos="1.20000004e-05 0.000479999988 0.0395129994" quat="0.999992371 0.00308424747 0.00132642139 0.00199692324" diaginertia="0.0130691389 0.00479258411 0.012242279" />
+            <joint name="dynaarm_shoulder_rotation" type="hinge" pos="0 0 0" axis="0 0 1" damping="0.1" armature="0.002" range="-4.31238858 4.31238858" />
+            <geom rgba="0.7 0.72 0.75 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_039_dynaarm_shoulder" />
+            <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="0 0 0.0500000007" quat="0.707106769 0.707106793 0 0" type="cylinder" size="0.0599999987 0.125" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+            <body name="dynaarm_upperarm" gravcomp="1" pos="0 0 0.0469999984" quat="0.500000045 0.499999985 -0.499999985 0.499999985">
+              <inertial mass="2.1204047203063965" pos="0.203913003 -5.2800001e-06 -0.000152239998" quat="0.999777496 0.0210945085 0.000417531701 -1.87986479e-05" diaginertia="0.0015549555 0.0506792814 0.0507131927" />
+              <joint name="dynaarm_shoulder_flexion" type="hinge" pos="0 0 0" axis="0 0 1" damping="0.1" armature="0.002" range="-1.72079621 1.72079621" />
+              <geom rgba="0.7 0.72 0.75 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_040_dynaarm_upperarm" />
+              <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="0.150000006 -8.27180613e-25 0" quat="0.707106769 3.03284118e-24 0.707106793 1.25817599e-23" type="cylinder" size="0.0500000007 0.200000003" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+              <body name="dynaarm_elbow" gravcomp="1" pos="0.412699997 0 0" quat="1 0 0 0">
+                <inertial mass="0.82320237159729" pos="0.00383865996 -0.0780263767 -0.00026927999" quat="0.993778229 0.0248454195 -0.051740393 0.095448941" diaginertia="0.00108173594 0.000862561224 0.00113966293" />
+                <joint name="dynaarm_elbow_flexion" type="hinge" pos="0 0 0" axis="0 0 1" damping="0.1" armature="0.002" range="0 3.09159234" />
+                <geom rgba="0.7 0.72 0.75 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_041_dynaarm_elbow" />
+                <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="-0.00999999978 -0.0500000007 0" quat="0.707106769 0.707106793 -2.33962004e-24 -8.00817829e-32" type="cylinder" size="0.0649999976 0.100000001" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+                <body name="dynaarm_elbow_camera_mount" gravcomp="1" pos="0.0344999991 -0.123499997 0" quat="1 0 0 0">
+                  <inertial mass="0.0010000000474974513" pos="0 0 0" quat="1 0 0 0" diaginertia="1.00000001e-07 1.00000001e-07 1.00000001e-07" />
+                  <geom rgba="0.7 0.72 0.75 1" group="2" contype="0" conaffinity="0" mass="0" pos="1.11022302e-16 0 6.6174449e-24" quat="1 0 0 0" type="box" size="0.00499999989 0.00499999989 0.00499999989" />
+                  <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="1.11022302e-16 0 6.6174449e-24" quat="1 0 0 0" type="box" size="0.00499999989 0.00499999989 0.00499999989" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+                </body>
+                <body name="dynaarm_forearm" gravcomp="1" pos="0.0262000002 -0.0855000019 0" quat="0.707106853 0 0.707106709 0">
+                  <inertial mass="1.237246036529541" pos="-0.00156799995 4.6000001e-05 0.292163014" quat="0.991243303 0.000826710078 0.00412996719 0.131981537" diaginertia="0.0338748209 0.0338675044 0.00103867007" />
+                  <joint name="dynaarm_forearm_rotation" type="hinge" pos="0 0 0" axis="0 0 1" damping="0.1" armature="0.002" range="-4.71238898 4.71238898" />
+                  <geom rgba="0.7 0.72 0.75 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_042_dynaarm_forearm" />
+                  <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="3.30872245e-24 0 0.200000003" quat="1 0 0 0" type="cylinder" size="0.0399999991 0.200000003" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+                  <body name="dynaarm_wrist_1" gravcomp="1" pos="0.0295000002 0 0.420700014" quat="0.707106793 0 -0.707106769 0">
+                    <inertial mass="1.15007483959198" pos="0.0797255337 -5.03800002e-05 0.0233474709" quat="0.96274358 -0.00498218462 0.270369947 -0.000465911085" diaginertia="0.000587608898 0.000882826513 0.000852974656" />
+                    <joint name="dynaarm_wrist_flexion" type="hinge" pos="0 0 0" axis="0 0 1" damping="0.1" armature="0.002" range="-1.82079631 1.82079631" />
+                    <geom rgba="0.7 0.72 0.75 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_043_dynaarm_wrist_1" />
+                    <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="-2.22044605e-16 -1.38777878e-17 0.0250000004" quat="0.707106769 -1.30772898e-23 -1.76394476e-23 0.707106793" type="cylinder" size="0.0500000007 0.0625" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+                    <body name="dynaarm_wrist_1_camera_mount" gravcomp="1" pos="0.0320000015 0 -0.0170000009" quat="1 0 0 0">
+                      <inertial mass="0.0010000000474974513" pos="0 0 0" quat="1 0 0 0" diaginertia="1.00000001e-07 1.00000001e-07 1.00000001e-07" />
+                      <geom rgba="0.7 0.72 0.75 1" group="2" contype="0" conaffinity="0" mass="0" pos="-2.22044605e-16 0 0" quat="1 0 0 0" type="box" size="0.00499999989 0.00499999989 0.00499999989" />
+                      <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="-2.22044605e-16 0 0" quat="1 0 0 0" type="box" size="0.00499999989 0.00499999989 0.00499999989" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+                    </body>
+                    <body name="dynaarm_wrist_2" gravcomp="1" pos="0.116999999 0 0.0295000002" quat="0.707106853 0 0.707106709 0">
+                      <inertial mass="0.04784059897065163" pos="0.00045711 5.57000021e-06 0.00344945001" quat="0.99999553 0 0.00299386494 0" diaginertia="1.36595208e-05 1.419e-05 2.70204764e-05" />
+                      <joint name="dynaarm_wrist_rotation" type="hinge" pos="0 0 0" axis="0 0 1" damping="0.1" armature="0.002" range="-1.57079633 4.71238898" />
+                      <geom rgba="0.745097995 0.745097995 0.745097995 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_044_dynaarm_wrist_2" />
+                      <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="0.00499999989 1.38777878e-17 -0.0350000001" quat="1 0 0 0" type="cylinder" size="0.0520000011 0.0450000018" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+                      <body name="dynaarm_flange" gravcomp="1" pos="0 0 0.00899999961" quat="0.707106793 0 0 0.707106769">
+                        <inertial mass="0.0010000000474974513" pos="0 0 0" quat="1 0 0 0" diaginertia="1.00000001e-07 1.00000001e-07 1.00000001e-07" />
+                        <geom rgba="0.7 0.72 0.75 1" group="2" contype="0" conaffinity="0" mass="0" pos="0 0 0" quat="1 0 0 0" type="box" size="0.00499999989 0.00499999989 0.00499999989" />
+                        <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="0 0 0" quat="1 0 0 0" type="box" size="0.00499999989 0.00499999989 0.00499999989" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+                        <body name="robotiq_base_link" gravcomp="1">
+                          <body name="left_outer_knuckle" gravcomp="1" pos="-2.85001487e-17 -6.9388939e-18 -0.000241998583" quat="0.5 0.5 0.5 0.5">
+                            <inertial mass="0.009163293056190014" pos="-0.052893769 0.0531833768 -2.19358807e-18" quat="1 0 0 0" diaginertia="2.13106688e-07 6.73438819e-07 7.51600794e-07" />
+                            <joint name="finger_joint" type="hinge" pos="-0.0306011457 0.0549045168 -6.16297582e-32" axis="-1.22464685e-16 -1.22464685e-16 -1" damping="0.1" armature="0.002" range="0 0.785398163" />
+                            <geom rgba="0.784313738 0.784313738 0.784313738 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_045_left_outer_knuckle" />
+                            <geom rgba="0.784313738 0.784313738 0.784313738 1" group="3" contype="2" conaffinity="1" type="mesh" mesh="anymal_045_left_outer_knuckle" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+                            <body name="left_outer_finger" gravcomp="1" pos="0 0 -8.17210594e-30" quat="1 0 0 0">
+                              <inertial mass="0.07706425338983536" pos="-0.0767080188 0.0845726952 3.06424522e-06" quat="0.610674679 0.610674679 -0.356477827 -0.356477827" diaginertia="6.81568963e-06 5.35424406e-05 5.75693994e-05" />
+                              <joint name="left_outer_finger_joint" type="hinge" pos="-0.0620259978 0.0503722876 8.18443189e-30" axis="0 0 1" damping="0.1" armature="0.002" range="0 3.14159265" />
+                              <geom rgba="0.18 0.19 0.21 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_046_left_outer_finger" />
+                              <geom rgba="0.18 0.19 0.21 1" group="3" contype="2" conaffinity="1" type="mesh" mesh="anymal_046_left_outer_finger" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+                              <body name="left_inner_finger" gravcomp="1" pos="7.75226555e-09 0.000241987106 9.49485039e-17" quat="0.707106781 -3.8315474e-16 -6.22058978e-16 0.707106781">
+                                <inertial mass="0.04983438178896904" pos="0.160889998 0.0814799964 -1.47829735e-06" quat="0.994152308 -0.00084205647 0.000479106267 -0.107982397" diaginertia="3.05109756e-06 1.91144482e-05 1.7129656e-05" />
+                                <joint name="left_inner_finger_joint" type="hinge" pos="0.12902917 0.0974562317 0" axis="-1.62371128e-17 1.44550224e-15 -0.999999932" damping="0.1" armature="0.002" />
+                                <geom rgba="0.18 0.19 0.21 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_047_left_inner_finger" />
+                                <geom rgba="0.18 0.19 0.21 1" group="3" contype="2" conaffinity="1" type="mesh" mesh="anymal_047_left_inner_finger" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+                                <geom rgba="0.18 0.19 0.21 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_048_left_inner_finger" />
+                                <geom rgba="0.18 0.19 0.21 1" group="3" contype="2" conaffinity="1" type="mesh" mesh="anymal_048_left_inner_finger" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+                                <body name="left_inner_knuckle" gravcomp="1" pos="-0.00024200239 7.37425897e-09 9.97162101e-17" quat="-0.707106781 1.37667464e-17 -1.20120178e-15 0.707106781">
+                                  <inertial mass="0.06811221688985825" pos="-0.0482579768 0.101011693 -4.59329508e-09" quat="0.638647258 -0.644041955 0.298778653 -0.296767384" diaginertia="7.31063301e-06 4.53842986e-05 5.10923091e-05" />
+                                  <joint name="left_inner_finger_pad_joint" type="hinge" pos="-0.0795550868 0.135786653 0" axis="1.8568872e-16 1.65389218e-15 -1" damping="0.1" armature="0.002" range="-0.785398163 0.785398163" />
+                                  <geom rgba="0.0392156877 0.0392156877 0.0392156877 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_049_left_inner_knuckle" />
+                                  <geom rgba="0.0392156877 0.0392156877 0.0392156877 1" group="3" contype="2" conaffinity="1" type="mesh" mesh="anymal_049_left_inner_knuckle" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+                                </body>
+                              </body>
+                            </body>
+                          </body>
+                          <body name="right_outer_knuckle" gravcomp="1" pos="-2.28567305e-17 6.9388939e-18 -0.000241998583" quat="0.5 0.5 -0.5 -0.5">
+                            <inertial mass="0.009163293056190014" pos="-0.052893769 0.0531833768 -2.19358807e-18" quat="1 0 0 0" diaginertia="2.13106688e-07 6.73438819e-07 7.51600794e-07" />
+                            <joint name="right_outer_knuckle_joint" type="hinge" pos="-0.0306011457 0.0549045168 -2.56726525e-18" axis="-1.22464685e-16 -1.22464685e-16 -1" damping="0.1" armature="0.002" range="0 1.30899694" />
+                            <geom rgba="0.784313738 0.784313738 0.784313738 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_050_right_outer_knuckle" />
+                            <geom rgba="0.784313738 0.784313738 0.784313738 1" group="3" contype="2" conaffinity="1" type="mesh" mesh="anymal_050_right_outer_knuckle" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+                            <body name="right_outer_finger" gravcomp="1" pos="0 0 -2.55666638e-17" quat="1 0 0 0">
+                              <inertial mass="0.07706425338983536" pos="-0.0767080188 0.0845726952 3.06424522e-06" quat="0.610674679 0.610674679 -0.356477827 -0.356477827" diaginertia="6.81568963e-06 5.35424406e-05 5.75693994e-05" />
+                              <joint name="right_outer_finger_joint" type="hinge" pos="-0.0620259978 0.0503722876 2.55666638e-17" axis="0 0 1" damping="0.1" armature="0.002" range="0 3.14159265" />
+                              <geom rgba="0.18 0.19 0.21 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_051_right_outer_finger" />
+                              <geom rgba="0.18 0.19 0.21 1" group="3" contype="2" conaffinity="1" type="mesh" mesh="anymal_051_right_outer_finger" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+                              <body name="right_inner_finger" gravcomp="1" pos="-1.08069594e-09 0.000241987106 3.04538185e-16" quat="9.4941076e-16 0.707106793 0.707106769 1.93317663e-16">
+                                <inertial mass="0.04983438178896904" pos="0.16088824 -0.0814771429 -1.47829735e-06" quat="0.994152427 -0.000719804491 0.000645117951 0.107981525" diaginertia="3.05109756e-06 1.91144482e-05 1.7129656e-05" />
+                                <joint name="right_inner_finger_joint" type="hinge" pos="0.12902917 -0.0974562317 0" axis="1.43097011e-15 -1.68004595e-15 1" damping="0.1" armature="0.002" />
+                                <geom rgba="0.18 0.19 0.21 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_052_right_inner_finger" />
+                                <geom rgba="0.18 0.19 0.21 1" group="3" contype="2" conaffinity="1" type="mesh" mesh="anymal_052_right_inner_finger" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+                                <geom rgba="0.18 0.19 0.21 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_053_right_inner_finger" />
+                                <geom rgba="0.18 0.19 0.21 1" group="3" contype="2" conaffinity="1" type="mesh" mesh="anymal_053_right_inner_finger" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+                                <body name="right_inner_knuckle" gravcomp="1" pos="-0.00024200239 1.92130849e-09 4.07043509e-17" quat="-1.60812265e-16 0.707106793 0.707106769 -1.90000125e-16">
+                                  <inertial mass="0.06811221688985825" pos="-0.0482579768 0.101011693 -4.59329508e-09" quat="0.638647258 -0.644041955 0.298778653 -0.296767384" diaginertia="7.31063301e-06 4.53842986e-05 5.10923091e-05" />
+                                  <joint name="right_inner_finger_pad_joint" type="hinge" pos="-0.0795550868 0.135786653 0" axis="2.42842885e-15 7.65713761e-16 -1" damping="0.1" armature="0.002" range="-0.785398163 0.785398163" />
+                                  <geom rgba="0.0392156877 0.0392156877 0.0392156877 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_054_right_inner_knuckle" />
+                                  <geom rgba="0.0392156877 0.0392156877 0.0392156877 1" group="3" contype="2" conaffinity="1" type="mesh" mesh="anymal_054_right_inner_knuckle" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+                                </body>
+                              </body>
+                            </body>
+                          </body>
+                          <geom rgba="0.18 0.19 0.21 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_055_robotiq_base_link" />
+                          <geom rgba="0.18 0.19 0.21 1" group="3" contype="2" conaffinity="1" type="mesh" mesh="anymal_055_robotiq_base_link" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+                          <site name="tcp" pos="0 0 0.2" quat="1 0 0 0" size="0.005" group="4" />
+                        </body>
+                      </body>
+                    </body>
+                  </body>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+      <inertial mass="26.459579467773438" pos="-0.0156262126 0.000679618679 -0.0115341041" quat="0.999949753 -0.0052297106 0.00830976665 -0.00204678066" diaginertia="0.252864093 1.47548699 1.54082787" />
+      <geom rgba="0.12 0.13 0.15 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_000_base" />
+      <geom rgba="0.12 0.13 0.15 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_001_base" />
+      <geom rgba="0.12 0.13 0.15 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_002_base" />
+      <geom rgba="0.12 0.13 0.15 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_003_base" />
+      <geom rgba="0.12 0.13 0.15 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_004_base" />
+      <geom rgba="0.12 0.13 0.15 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_005_base" />
+      <geom rgba="0.12 0.13 0.15 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_006_base" />
+      <geom rgba="0.72 0.74 0.76 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_007_base" />
+      <geom rgba="0.72 0.74 0.76 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_008_base" />
+      <geom rgba="0.12 0.13 0.15 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_009_base" />
+      <geom rgba="0.12 0.13 0.15 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_010_base" />
+      <geom rgba="0.12 0.13 0.15 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_011_base" />
+      <geom rgba="0.12 0.13 0.15 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_012_base" />
+      <geom rgba="0.72 0.74 0.76 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_013_base" />
+      <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="0 0 0" quat="0.707106781 0 0.707106781 0" type="capsule" size="0.12 0.350000005" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+      <body name="LF_HIP" gravcomp="1" pos="0.30399999 0.108999997 0" quat="1 0 0 0">
+        <inertial mass="0.3658599853515625" pos="0.0350469984 -0.0012267672 0" quat="0.999987066 7.94789521e-05 3.00965658e-05 -0.00509019336" diaginertia="0.000238490378 0.000558278814 0.0004433211" />
+        <geom rgba="0.72 0.74 0.76 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_014_LF_HIP" />
+        <body name="LF_THIGH" gravcomp="1" pos="0.0689999983 0.00600000005 0" quat="0.693011735 -0.140480431 0.140480431 -0.693011711">
+          <inertial mass="5.132199764251709" pos="-0.0905113071 -8.79575382e-05 -0.140188009" quat="0.990359902 -0.0077139237 0.10339988 -0.0918496102" diaginertia="0.109149449 0.107918635 0.00970372185" />
+          <geom rgba="0.72 0.74 0.76 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_015_LF_THIGH" />
+          <geom rgba="0.72 0.74 0.76 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_016_LF_THIGH" />
+          <geom rgba="0.72 0.74 0.76 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_017_LF_THIGH" />
+          <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="-0.0951299965 -5.67018965e-09 -0.142499968" quat="0.707106769 0 0 0.707106793" type="box" size="0.0465000011 0.0315000005 0.142499998" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+          <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="-0.125064999 -7.45445483e-09 -0.284999937" quat="0.49999997 0.50000001 0.50000001 0.50000001" type="cylinder" size="0.0700000003 0.0815650001" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+          <body name="LF_SHANK" gravcomp="1" pos="-0.180499986 -1.07586384e-08 -0.284999937" quat="6.123234e-17 0 -0.389418342 0.921060994">
+            <inertial mass="0.4995400011539459" pos="0.00893208291 -0.0218162388 0.000419159216" quat="0.999884248 0.0115914429 -0.00266802637 -0.00949545205" diaginertia="0.00167160423 0.000549681194 0.00127452367" />
+            <geom rgba="0.12 0.13 0.15 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_018_LF_SHANK" />
+            <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="0.00535884034 -0.100000001 -0.164216787" quat="-0.707106769 0 0 0.707106793" type="cylinder" size="0.0175000001 0.197860003" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+            <body name="LF_FOOT" gravcomp="1" pos="0.0222499948 -0.100000001 -0.392459959" quat="0.707106793 0 0 -0.707106769">
+              <inertial mass="0.2964400053024292" pos="0 -0.01559 0.150040001" quat="0.999867857 0.0162580702 -3.06376455e-06 0.000146843653" diaginertia="0.00514263101 0.0051369057 0.000113591734" />
+              <geom rgba="0.12 0.13 0.15 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_019_LF_FOOT" />
+              <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="0 -0.00814115349 0.0303831976" quat="1 0 0 0" type="ellipsoid" size="0.031454999 0.031454999 0.031454999" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+            </body>
+          </body>
+        </body>
+      </body>
+      <body name="LH_HIP" gravcomp="1" pos="-0.30399999 0.108999997 0" quat="4.37113883e-08 -8.27180613e-23 -7.89268628e-25 1">
+        <inertial mass="0.3658599853515625" pos="0.0350469984 0.00122676417 0" quat="0.999987066 -7.94789594e-05 3.00965694e-05 0.00509014959" diaginertia="0.000238490364 0.000558278814 0.0004433211" />
+        <geom rgba="0.72 0.74 0.76 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_020_LH_HIP" />
+        <body name="LH_THIGH" gravcomp="1" pos="0.0689999983 -0.00600000611 0" quat="0.693011794 0.140480443 0.140480419 0.693011653">
+          <inertial mass="5.132199764251709" pos="-0.0905113071 8.7952154e-05 -0.140188009" quat="0.986364424 0.0124144442 0.102930084 0.127814844" diaginertia="0.109193645 0.107873425 0.00970475469" />
+          <geom rgba="0.72 0.74 0.76 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_021_LH_THIGH" />
+          <geom rgba="0.72 0.74 0.76 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_022_LH_THIGH" />
+          <geom rgba="0.72 0.74 0.76 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_023_LH_THIGH" />
+          <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="-0.0951299965 -5.6701896e-09 -0.142499968" quat="0.707106769 0 0 0.707106793" type="box" size="0.0465000011 0.0315000005 0.142499998" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+          <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="-0.125064999 -7.45445483e-09 -0.284999937" quat="0.49999997 0.50000001 0.50000001 0.50000001" type="cylinder" size="0.0700000003 0.0815650001" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+          <body name="LH_SHANK" gravcomp="1" pos="-0.180499986 -1.07586384e-08 -0.284999937" quat="6.123234e-17 0 0.389418342 0.921060994">
+            <inertial mass="0.4995400011539459" pos="0.00893208478 0.0218162388 0.000419159216" quat="0.999884248 -0.0115914457 -0.00266802544 0.00949539244" diaginertia="0.00167160423 0.000549681194 0.00127452367" />
+            <geom rgba="0.12 0.13 0.15 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_024_LH_SHANK" />
+            <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="0.00535885245 0.100000001 -0.164216787" quat="-0.707106769 0 0 0.707106793" type="cylinder" size="0.0175000001 0.197860003" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+            <body name="LH_FOOT" gravcomp="1" pos="0.022250006 0.100000001 -0.392459959" quat="0.707106793 0 0 -0.707106769">
+              <inertial mass="0.2964400053024292" pos="0 -0.01559 0.150040001" quat="0.999867857 0.0162580702 3.06376455e-06 -0.000146843653" diaginertia="0.00514263101 0.0051369057 0.000113591734" />
+              <geom rgba="0.12 0.13 0.15 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_025_LH_FOOT" />
+              <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="0 -0.00814115349 0.0303831976" quat="1 0 0 0" type="ellipsoid" size="0.031454999 0.031454999 0.031454999" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+            </body>
+          </body>
+        </body>
+      </body>
+      <body name="RF_HIP" gravcomp="1" pos="0.30399999 -0.108999997 0" quat="1 0 0 0">
+        <inertial mass="0.3658599853515625" pos="0.0350469984 0.0012267672 0" quat="0.999987066 -7.94789521e-05 3.00965658e-05 0.00509019336" diaginertia="0.000238490378 0.000558278814 0.0004433211" />
+        <geom rgba="0.72 0.74 0.76 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_026_RF_HIP" />
+        <body name="RF_THIGH" gravcomp="1" pos="0.0689999983 -0.00600000005 0" quat="0.693011735 0.140480433 0.140480429 0.693011711">
+          <inertial mass="5.132199764251709" pos="-0.0905113071 8.79575164e-05 -0.140188009" quat="0.986364365 0.0124144368 0.102930076 0.127814651" diaginertia="0.109193631 0.107873425 0.00970475469" />
+          <geom rgba="0.72 0.74 0.76 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_027_RF_THIGH" />
+          <geom rgba="0.72 0.74 0.76 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_028_RF_THIGH" />
+          <geom rgba="0.72 0.74 0.76 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_029_RF_THIGH" />
+          <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="-0.0951299965 5.67018965e-09 -0.142499968" quat="-0.707106769 0 0 0.707106793" type="box" size="0.0465000011 0.0315000005 0.142499998" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+          <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="-0.125064999 7.45445483e-09 -0.284999937" quat="-0.49999997 -0.50000001 0.50000001 0.50000001" type="cylinder" size="0.0700000003 0.0815650001" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+          <body name="RF_SHANK" gravcomp="1" pos="-0.180499986 1.07586384e-08 -0.284999937" quat="3.40440321e-08 8.72532018e-16 0.389418342 0.921060994">
+            <inertial mass="0.4995400011539459" pos="0.00893208291 0.0218162388 0.000419159216" quat="0.999884248 -0.0115914429 -0.00266802637 0.00949545205" diaginertia="0.00167160423 0.000549681194 0.00127452367" />
+            <geom rgba="0.12 0.13 0.15 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_030_RF_SHANK" />
+            <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="0.00535884034 0.100000001 -0.164216787" quat="0.707106769 0 0 0.707106793" type="cylinder" size="0.0175000001 0.197860003" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+            <body name="RF_FOOT" gravcomp="1" pos="0.0222499948 0.100000001 -0.392459959" quat="0.707106793 0 0 0.707106769">
+              <inertial mass="0.2964400053024292" pos="0 0.01559 0.150040001" quat="0.999867857 -0.0162580702 -3.06376455e-06 -0.000146843653" diaginertia="0.00514263101 0.0051369057 0.000113591734" />
+              <geom rgba="0.12 0.13 0.15 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_031_RF_FOOT" />
+              <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="0 0.00814115349 0.0303831976" quat="1 0 0 0" type="ellipsoid" size="0.031454999 0.031454999 0.031454999" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+            </body>
+          </body>
+        </body>
+      </body>
+      <body name="RH_HIP" gravcomp="1" pos="-0.30399999 -0.108999997 0" quat="4.37113883e-08 -8.27180613e-23 -7.89268628e-25 1">
+        <inertial mass="0.3658599853515625" pos="0.0350469984 -0.00122677023 0" quat="0.999987066 7.94789448e-05 3.00965621e-05 -0.00509023713" diaginertia="0.000238490378 0.000558278814 0.0004433211" />
+        <geom rgba="0.72 0.74 0.76 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_032_RH_HIP" />
+        <body name="RH_THIGH" gravcomp="1" pos="0.0689999983 0.005999994 0" quat="-0.693011677 0.140480422 -0.14048044 0.69301177">
+          <inertial mass="5.132199764251709" pos="-0.0905113071 -8.79521613e-05 -0.140188009" quat="0.990359783 -0.00771401869 0.10339988 -0.0918506235" diaginertia="0.109149449 0.107918642 0.00970372185" />
+          <geom rgba="0.72 0.74 0.76 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_033_RH_THIGH" />
+          <geom rgba="0.72 0.74 0.76 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_034_RH_THIGH" />
+          <geom rgba="0.72 0.74 0.76 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_035_RH_THIGH" />
+          <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="-0.0951299965 5.6701896e-09 -0.142499968" quat="-0.707106769 0 0 0.707106793" type="box" size="0.0465000011 0.0315000005 0.142499998" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+          <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="-0.125064999 7.45445483e-09 -0.284999937" quat="0.49999997 0.50000001 -0.50000001 -0.50000001" type="cylinder" size="0.0700000003 0.0815650001" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+          <body name="RH_SHANK" gravcomp="1" pos="-0.180499986 1.07586384e-08 -0.284999937" quat="-3.40440324e-08 8.72532018e-16 -0.389418342 0.921060994">
+            <inertial mass="0.4995400011539459" pos="0.00893208478 -0.0218162388 0.000419159216" quat="0.999884248 0.0115914457 -0.00266802544 -0.00949539244" diaginertia="0.00167160423 0.000549681194 0.00127452367" />
+            <geom rgba="0.12 0.13 0.15 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_036_RH_SHANK" />
+            <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="0.00535885245 -0.100000001 -0.164216787" quat="0.707106769 0 0 0.707106793" type="cylinder" size="0.0175000001 0.197860003" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+            <body name="RH_FOOT" gravcomp="1" pos="0.022250006 -0.100000001 -0.392459959" quat="0.707106793 0 0 0.707106769">
+              <inertial mass="0.2964400053024292" pos="0 0.01559 0.150040001" quat="0.999867857 -0.0162580702 3.06376455e-06 0.000146843653" diaginertia="0.00514263101 0.0051369057 0.000113591734" />
+              <geom rgba="0.12 0.13 0.15 1" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_037_RH_FOOT" />
+              <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="-5.55111512e-17 0.00814115349 0.0303831976" quat="1 0 0 0" type="ellipsoid" size="0.031454999 0.031454999 0.031454999" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+    <body name="hiveboard" pos="0.8 0 0.9" quat="0 0 0 1">
+      <body name="panel_Honeycomb_Panel" pos="0 0 0">
+        <inertial pos="0 0 1e-05" mass="0.005" diaginertia="1e-06 1e-06 1e-06" />
+        <geom quat="0.707107 0 0.707107 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="panel_tn__Hexagono_Suporte1_bX0_Corpo1_Mesh" material="hb_panel" />
+        <geom pos="0 0.086603 0" quat="0.707107 0 0.707107 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="panel_tn__Hexagono_Suporte2_bX0_Corpo1_Mesh" material="hb_panel" />
+        <geom pos="0 0.043301 0.075" quat="0.612372 0.353553 0.612372 0.353553" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="panel_tn__Hexagono_Suporte3_bX0_Corpo1_Mesh" material="hb_panel" />
+        <geom pos="0 -0.043301 0.075" quat="0.353553 0.612372 0.353553 0.612372" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="panel_tn__Hexagono_Suporte4_bX0_Corpo1_Mesh" material="hb_panel" />
+        <geom pos="0 -0.086603 0" quat="-1.64085e-08 -0.707107 1.64085e-08 -0.707107" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="panel_tn__Hexagono_Suporte5_bX0_Corpo1_Mesh" material="hb_panel" />
+        <geom pos="0 -0.043301 -0.075" quat="0.353553 -0.612372 0.353553 -0.612372" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="panel_tn__Hexagono_Suporte6_bX0_Corpo1_Mesh" material="hb_panel" />
+        <geom pos="0 0.043301 -0.075" quat="0.612372 -0.353553 0.612372 -0.353553" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="panel_tn__Hexagono_Suporte7_bX0_Corpo1_Mesh" material="hb_panel" />
+        <geom quat="0.707107 0 0.707107 0" type="mesh" mesh="panel_tn__Hexagono_Suporte1_bX0_Corpo1_Mesh" group="3" material="hb_panel" rgba="0 0 0 0" contype="0" conaffinity="0" />
+        <geom pos="0 0.086603 0" quat="0.707107 0 0.707107 0" type="mesh" mesh="panel_tn__Hexagono_Suporte2_bX0_Corpo1_Mesh" group="3" material="hb_panel" rgba="0 0 0 0" contype="0" conaffinity="0" />
+        <geom pos="0 0.043301 0.075" quat="0.612372 0.353553 0.612372 0.353553" type="mesh" mesh="panel_tn__Hexagono_Suporte3_bX0_Corpo1_Mesh" group="3" material="hb_panel" rgba="0 0 0 0" contype="0" conaffinity="0" />
+        <geom pos="0 -0.043301 0.075" quat="0.353553 0.612372 0.353553 0.612372" type="mesh" mesh="panel_tn__Hexagono_Suporte4_bX0_Corpo1_Mesh" group="3" material="hb_panel" rgba="0 0 0 0" contype="0" conaffinity="0" />
+        <geom pos="0 -0.086603 0" quat="-1.64085e-08 -0.707107 1.64085e-08 -0.707107" type="mesh" mesh="panel_tn__Hexagono_Suporte5_bX0_Corpo1_Mesh" group="3" material="hb_panel" rgba="0 0 0 0" contype="0" conaffinity="0" />
+        <geom pos="0 -0.043301 -0.075" quat="0.353553 -0.612372 0.353553 -0.612372" type="mesh" mesh="panel_tn__Hexagono_Suporte6_bX0_Corpo1_Mesh" group="3" material="hb_panel" rgba="0 0 0 0" contype="0" conaffinity="0" />
+        <geom pos="0 0.043301 -0.075" quat="0.612372 -0.353553 0.612372 -0.353553" type="mesh" mesh="panel_tn__Hexagono_Suporte7_bX0_Corpo1_Mesh" group="3" material="hb_panel" rgba="0 0 0 0" contype="0" conaffinity="0" />
+      </body>
+      <body name="valve_valvula_esfera" pos="0.0400277 0.043301 0.075" quat="0.86619 0.499715 0 0">
+        <inertial pos="0 0 0.02" quat="0 0.707107 0 0.707107" mass="0.2689" diaginertia="0.000304335 0.000209756 0.000166279" />
+        <geom pos="-0.0400277 0 0" quat="0.5 0.5 0.5 0.5" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="valve_Mesh" material="hb_shell" />
+        <geom pos="-0.0400277 0 0" quat="0.5 0.5 0.5 0.5" type="mesh" mesh="valve_Mesh" group="3" material="hb_shell" rgba="0 0 0 0" contype="0" conaffinity="0" />
+        <body name="valve_alavanca_pivot">
+          <inertial pos="0.033278 0.0115 0.052028" quat="0.5 0.5 0.5 0.5" mass="0.123" diaginertia="0.000199351 0.000188323 2.18765e-05" />
+          <joint name="valve_RevoluteJoint" range="-1.5708 0" actuatorfrcrange="-100 100" axis="1 0 0" springref="0" stiffness="0" damping="0.1" armature="0.002" frictionloss="0.02" />
+          <geom pos="-0.0468898 0.0175836 -0.0114654" quat="0.5 0.5 0.5 0.5" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="valve_Mesh_1" material="hb_accent" />
+          <geom pos="-0.0468898 0.0175836 -0.0114654" quat="0.5 0.5 0.5 0.5" type="mesh" mesh="valve_Mesh_1" group="3" material="hb_accent" rgba="0 0 0 0" contype="2" conaffinity="1" />
+        </body>
+      </body>
+      <body name="lamp_World" pos="0.0447325 -0.086603 0" quat="0.974966 0.222355 0 0">
+        <inertial pos="0 0 0.02235" quat="0 0.707107 0 0.707107" mass="0.3005" diaginertia="0.000340094 0.000244368 0.000195784" />
+        <geom pos="-0.0447325 0 0" quat="0.707107 0 0.707107 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="lamp_base_pivot_Mesh" material="hb_shell" />
+        <geom pos="-0.0447325 0 0" quat="0.707107 0 0.707107 0" type="mesh" mesh="lamp_base_pivot_Mesh" group="3" material="hb_shell" rgba="0 0 0 0" contype="0" conaffinity="0" />
+        <body name="lamp_rotation_pivot">
+          <inertial pos="0 0 0" mass="0.05" diaginertia="1e-05 1e-05 1e-05" />
+          <joint name="lamp_RevoluteJoint" axis="1 0 0" springref="0" stiffness="0" damping="0.02" armature="0.0005" frictionloss="0.002" range="0 6.1" limited="true" />
+          <geom size="0.005 0.005" pos="-0.0390718 0 0" quat="0.707107 0 0.707107 0" type="cylinder" contype="0" conaffinity="0" group="2" density="0" material="hb_accent" />
+          <geom size="0.005 0.005" pos="-0.0390718 0 0" quat="0.707107 0 0.707107 0" type="cylinder" group="3" material="hb_accent" rgba="0 0 0 0" contype="2" conaffinity="1" />
+          <body name="lamp_lamp_pivot">
+            <inertial pos="-1e-06 -1e-06 0.015" mass="0.0219" diaginertia="2.97044e-06 2.9701e-06 2.65895e-06" />
+            <joint name="lamp_PrismaticJoint" type="slide" range="0 0.05" actuatorfrcrange="-100 100" axis="1 0 0" springref="0" stiffness="0" damping="1" armature="0.01" frictionloss="0.01" />
+            <geom quat="0.706516 -0.0544603 -0.70352 0.0541206" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="lamp_Corpo1_Mesh" material="hb_accent" />
+            <geom quat="0.706516 -0.0544603 -0.70352 0.0541206" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="lamp_tn__Corpo11_j7m1J_Mesh" material="hb_accent" />
+            <geom quat="0.706516 -0.0544603 -0.70352 0.0541206" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="lamp_tn__Corpo12_j7m1J_Mesh" material="hb_accent" />
+            <geom quat="0.706516 -0.0544603 -0.70352 0.0541206" type="mesh" mesh="lamp_Corpo1_Mesh" group="3" material="hb_accent" rgba="0 0 0 0" contype="2" conaffinity="1" />
+            <geom quat="0.706516 -0.0544603 -0.70352 0.0541206" type="mesh" mesh="lamp_tn__Corpo11_j7m1J_Mesh" group="3" material="hb_accent" rgba="0 0 0 0" contype="2" conaffinity="1" />
+            <geom quat="0.706516 -0.0544603 -0.70352 0.0541206" type="mesh" mesh="lamp_tn__Corpo12_j7m1J_Mesh" group="3" material="hb_accent" rgba="0 0 0 0" contype="2" conaffinity="1" />
+          </body>
+        </body>
+      </body>
+      <body name="breaker_World" pos="0.0350036 0.043301 -0.075" quat="0.950324 -0.311263 0 0">
+        <inertial pos="0 0 0.019608" quat="0 0.707107 0 0.707107" mass="0.2636" diaginertia="0.000298367 0.000204277 0.000161653" />
+        <geom pos="-0.0350036 0 0" quat="0.5 -0.5 0.5 -0.5" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="breaker_tn__corpo1_dC_Corpo1_Mesh" material="hb_shell" />
+        <geom pos="-0.0350036 0 0" quat="0.5 -0.5 0.5 -0.5" type="mesh" mesh="breaker_tn__corpo1_dC_Corpo1_Mesh" group="3" material="hb_shell" rgba="0 0 0 0" contype="0" conaffinity="0" />
+        <body name="breaker_lever_pivot" quat="1 0 0 -5e-08">
+          <inertial pos="0.02 0.01 -0.0015" quat="0.5 0.5 0.5 0.5" mass="0.0264" diaginertia="5.9158e-06 4.4e-06 3.2758e-06" />
+          <joint name="breaker_RevoluteJoint" range="-0.523599 0.523599" actuatorfrcrange="-100 100" axis="0 1 0" springref="0" stiffness="0" damping="0.06" armature="0.002" frictionloss="0.01" />
+          <geom pos="0.0081193 0.0200116 0.0099949" quat="0.5 -0.5 0.5 -0.5" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="breaker_tn__Alavanca1_zH_Corpo1_Mesh" material="hb_accent" />
+          <geom pos="0.0081193 0.0200116 0.0099949" quat="0.5 -0.5 0.5 -0.5" type="mesh" mesh="breaker_tn__Alavanca1_zH_Corpo1_Mesh" group="3" material="hb_accent" rgba="0 0 0 0" contype="2" conaffinity="1" />
+        </body>
+      </body>
+    </body>
+  </worldbody>
+  <actuator>
+    <position name="dynaarm_shoulder_rotation" joint="dynaarm_shoulder_rotation" kp="200" kv="20" ctrlrange="-4.31238858 4.31238858" forcerange="-40 40" />
+    <position name="dynaarm_shoulder_flexion" joint="dynaarm_shoulder_flexion" kp="200" kv="20" ctrlrange="-1.72079621 1.72079621" forcerange="-40 40" />
+    <position name="dynaarm_elbow_flexion" joint="dynaarm_elbow_flexion" kp="200" kv="20" ctrlrange="0 3.09159234" forcerange="-40 40" />
+    <position name="dynaarm_forearm_rotation" joint="dynaarm_forearm_rotation" kp="200" kv="20" ctrlrange="-4.71238898 4.71238898" forcerange="-40 40" />
+    <position name="dynaarm_wrist_flexion" joint="dynaarm_wrist_flexion" kp="200" kv="20" ctrlrange="-1.82079631 1.82079631" forcerange="-40 40" />
+    <position name="dynaarm_wrist_rotation" joint="dynaarm_wrist_rotation" kp="200" kv="20" ctrlrange="-1.57079633 4.71238898" forcerange="-40 40" />
+    <position name="finger_joint" joint="finger_joint" kp="200" kv="20" ctrlrange="0 0.7" forcerange="-40 40" />
+  </actuator>
+  <equality>
+    <connect name="left_inner_knuckle_joint" body1="robotiq_base_link" body2="left_inner_knuckle" anchor="-2.81444795e-17 -0.0126999998 0.0611780025" solref="0.005 1" />
+    <connect name="right_inner_knuckle_joint" body1="robotiq_base_link" body2="right_inner_knuckle" anchor="-3.72336989e-17 0.0126999998 0.0611780025" solref="0.005 1" />
+    <joint joint1="right_outer_knuckle_joint" joint2="finger_joint" polycoef="0 1 0 0 0" solref="0.005 1" />
+    <joint joint1="left_inner_finger_joint" joint2="finger_joint" polycoef="0 -1 0 0 0" solref="0.005 1" />
+    <joint joint1="right_inner_finger_joint" joint2="finger_joint" polycoef="0 -1 0 0 0" solref="0.005 1" />
+    <joint joint1="lamp_PrismaticJoint" joint2="lamp_RevoluteJoint" polycoef="0 0.0082 0 0 0" solref="0.01 1" solimp="0.95 0.999 0.001" />
+  </equality>
+  <keyframe>
+    <key name="home" qpos="0 -0.7 1.4 0 0 0 0 0.00133074 0.00369687 -0.00339493 -0.00353906 0.000290504 0.00369038 -0.00351663 0.000569965 0.0222804 0.000174798 0.0169247" />
+  </keyframe>
+</mujoco>
