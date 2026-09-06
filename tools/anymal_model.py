@@ -59,27 +59,43 @@ def fmt(values):
     return " ".join(f"{float(v):.9g}" for v in values)
 
 
-def material_color(prim, component):
-    """Keep authored solid colors; replace ANYmal texture maps with shell colors."""
-    from pxr import Usd
-    cursor = prim
-    while cursor:
-        targets = cursor.GetRelationship("material:binding").GetTargets()
-        if targets:
-            material = prim.GetStage().GetPrimAtPath(targets[0])
-            name = str(targets[0]).lower()
-            if component == "anymal":
-                if any(s in name for s in ("shell", "thigh", "hip")):
-                    return "0.72 0.74 0.76 1"
-                return "0.12 0.13 0.15 1"
-            for child in Usd.PrimRange(material):
-                for key in ("inputs:diffuse_color_constant", "inputs:diffuseColor"):
-                    color = child.GetAttribute(key).Get()
-                    if color is not None:
-                        return fmt((*color, 1))
-            break
-        cursor = cursor.GetParent()
-    return "0.18 0.19 0.21 1" if component == "gripper" else "0.7 0.72 0.75 1"
+# The USD ships ANYmal's livery as texture maps, which the web viewer does not
+# load, so a straight conversion arrives uniformly grey.  These stand in for it:
+# a light shell over a charcoal frame, red hip housings, black feet, and an
+# off-white arm.  The names matter as well as the colours -- hiveboard-sim.html
+# picks its PBR parameters out of the material name, keying on "shell", "dark"
+# and "metal".
+PALETTE = {
+    "anymal_shell":       "0.82 0.83 0.85 1",   # body and thigh outer shells
+    "anymal_dark":        "0.16 0.17 0.19 1",   # frame, covers, shanks
+    "anymal_red_shell":   "0.72 0.11 0.11 1",   # hip actuator housings
+    "anymal_foot_dark":   "0.07 0.07 0.08 1",   # rubber feet
+    "dynaarm_shell":      "0.87 0.88 0.90 1",   # arm links
+    "dynaarm_dark_metal": "0.20 0.21 0.23 1",   # arm joint bands
+    "robotiq_dark_metal": "0.11 0.11 0.12 1",   # gripper
+}
+
+
+def materials():
+    return [ET.Element("material", {"name": name, "rgba": rgba})
+            for name, rgba in PALETTE.items()]
+
+
+def material_name(prim, component):
+    """Which palette entry this geom belongs to, from its prim path."""
+    path = str(prim.GetPath()).lower()
+    if component == "gripper" or any(s in path for s in ("robotiq", "knuckle", "finger")):
+        return "robotiq_dark_metal"
+    if component == "arm" or "dynaarm" in path:
+        return "dynaarm_dark_metal" if "wrist_2" in path else "dynaarm_shell"
+    if "foot" in path:
+        return "anymal_foot_dark"
+    if "hip" in path:
+        return "anymal_red_shell"
+    if "shank" in path:
+        return "anymal_dark"
+    # Base and thighs keep the shell/frame split the USD binding implies.
+    return "anymal_shell" if "shell" in path or "thigh" in path else "anymal_dark"
 
 
 class Converter:
@@ -177,7 +193,7 @@ class Converter:
                 visible = imageable.ComputeVisibility() != "invisible" and imageable.ComputePurpose() != "guide"
                 if not collision and not visible:
                     continue
-                attrs = {"rgba": material_color(geom, component), "group": "2",
+                attrs = {"material": material_name(geom, component), "group": "2",
                          "contype": "0", "conaffinity": "0", "mass": "0"}
                 if geom.IsA(UsdGeom.Mesh):
                     mesh = UsdGeom.Mesh(geom)
@@ -265,4 +281,4 @@ def parts(output, source_root, usd_cache, simplify, write_obj):
         limits = joint.get("range") if name != "finger_joint" else "0 0.7"
         ET.SubElement(actuator, "position", name=name, joint=name, kp="200", kv="20",
                       ctrlrange=limits, forcerange="-40 40")
-    return body, converter.meshes, [], {"actuator": actuator, "equality": converter.equality}
+    return body, converter.meshes, materials(), {"actuator": actuator, "equality": converter.equality}
