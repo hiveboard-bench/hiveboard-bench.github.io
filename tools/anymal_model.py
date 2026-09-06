@@ -60,19 +60,20 @@ def fmt(values):
 
 
 # The USD ships ANYmal's livery as texture maps, which the web viewer does not
-# load, so a straight conversion arrives uniformly grey.  These stand in for it:
-# a light shell over a charcoal frame, red hip housings, black feet, and an
-# off-white arm.  The names matter as well as the colours -- hiveboard-sim.html
-# picks its PBR parameters out of the material name, keying on "shell", "dark"
-# and "metal".
+# load, so a straight conversion arrives uniformly grey. These colours are
+# sampled from the photographs of the real platform in assets-src/anymal.png
+# and public/assets/posters/: a red body shell, a black carbon DynaArm, light
+# grey hip actuators, and a near-black frame, feet and gripper. The names are
+# load-bearing too -- hiveboard-sim.html reads its PBR parameters out of the
+# material name, keying on "shell", "dark" and "metal".
 PALETTE = {
-    "anymal_shell":       "0.82 0.83 0.85 1",   # body and thigh outer shells
-    "anymal_dark":        "0.16 0.17 0.19 1",   # frame, covers, shanks
-    "anymal_red_shell":   "0.72 0.11 0.11 1",   # hip actuator housings
-    "anymal_foot_dark":   "0.07 0.07 0.08 1",   # rubber feet
-    "dynaarm_shell":      "0.87 0.88 0.90 1",   # arm links
-    "dynaarm_dark_metal": "0.20 0.21 0.23 1",   # arm joint bands
-    "robotiq_dark_metal": "0.11 0.11 0.12 1",   # gripper
+    "anymal_red_shell":    "0.76 0.13 0.14 1",   # body covers
+    "anymal_shell":        "0.78 0.78 0.80 1",   # hip actuators, thighs
+    "anymal_dark":         "0.13 0.13 0.13 1",   # frame, shanks
+    "anymal_foot_dark":    "0.06 0.06 0.06 1",   # rubber feet
+    "dynaarm_carbon_dark": "0.10 0.09 0.09 1",   # carbon arm links
+    "dynaarm_joint_metal": "0.17 0.17 0.18 1",   # arm joint housings
+    "robotiq_dark_metal":  "0.09 0.09 0.10 1",   # gripper
 }
 
 
@@ -87,15 +88,15 @@ def material_name(prim, component):
     if component == "gripper" or any(s in path for s in ("robotiq", "knuckle", "finger")):
         return "robotiq_dark_metal"
     if component == "arm" or "dynaarm" in path:
-        return "dynaarm_dark_metal" if "wrist_2" in path else "dynaarm_shell"
+        return "dynaarm_joint_metal" if "wrist_2" in path else "dynaarm_carbon_dark"
     if "foot" in path:
         return "anymal_foot_dark"
-    if "hip" in path or "thigh" in path and "shell" in path:
-        return "anymal_red_shell"
+    if "hip" in path or "thigh" in path:
+        return "anymal_shell"
     if "shank" in path:
         return "anymal_dark"
-    # The base keeps the shell/frame split the USD binding implies.
-    return "anymal_shell" if "shell" in path else "anymal_dark"
+    # The body: the outer covers are the red ones, everything else is frame.
+    return "anymal_red_shell" if "shell" in path or "cover" in path else "anymal_dark"
 
 
 class Converter:
