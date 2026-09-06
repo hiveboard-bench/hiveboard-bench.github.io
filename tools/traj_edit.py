@@ -3,6 +3,7 @@ import argparse
 import gzip
 import importlib.util
 import json
+import math
 import sys
 import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -86,6 +87,17 @@ def joint_info(ctx):
         names.append(name)
         ranges.append([float(model.jnt_range[jid, 0]), float(model.jnt_range[jid, 1])])
     return names, ranges
+
+
+def finite(value):
+    """The payload with any NaN or infinity replaced by null."""
+    if isinstance(value, float):
+        return value if math.isfinite(value) else None
+    if isinstance(value, dict):
+        return {k: finite(v) for k, v in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [finite(v) for v in value]
+    return value
 
 
 def grip_range(ctx):
@@ -277,7 +289,9 @@ def manual_solve(name, module, keys, spin=0.0):
     turn = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_JOINT, "board_spin")
     if turn >= 0:
         base_data.qpos[model.jnt_qposadr[turn]] = spin
-        mujoco.mj_forward(model, base_data)
+    # Unconditionally, not just when the board spins: the task factory below
+    # reads joint frames that only a forward pass fills in.
+    mujoco.mj_forward(model, base_data)
     base[:] = base_data.qpos
 
     def object_pose(key):
@@ -314,7 +328,11 @@ def manual_solve(name, module, keys, spin=0.0):
         for address, value in zip(object_addresses, obj):
             state[address] = value
         states.append(state)
-    task = factories(cfg)[module](model, mujoco.MjData(model), cfg)
+    # The factory reads joint frames off the data (xanchor/xaxis), which are
+    # only populated by a forward pass -- base_data has had one, a fresh MjData
+    # has not, and unit() on its zero axis returns NaN. That NaN reached the
+    # browser as the bare token `NaN`, which JSON.parse rejects.
+    task = factories(cfg)[module](model, base_data, cfg)
     fake = {"task": task, "samples": samples, "states": states,
             "spin": spin, "left": 0.0}
     out = st.package(model, ctx["site"], cfg, fake)
@@ -535,7 +553,14 @@ class Handler(BaseHTTPRequestHandler):
     def reply(self, payload, code=200):
 
         try:
-            body = json.dumps(payload).encode()
+            # json.dumps writes NaN and Infinity as bare tokens, which are legal
+            # Python but not JSON -- the browser rejects the whole body and the
+            # editor cannot say why. Send null instead, and name it in the log.
+            try:
+                body = json.dumps(payload, allow_nan=False).encode()
+            except ValueError:
+                print(f"  warning: {self.path} produced a non-finite value; sent as null")
+                body = json.dumps(finite(payload)).encode()
             self.send_response(code)
             self.send_header("Content-Type", "application/json")
             self.send_header("Content-Length", str(len(body)))

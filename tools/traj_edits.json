@@ -1,4 +1,574 @@
 {
+ "anymal": {
+  "lamp": {
+   "keys": {
+    "0": {},
+    "1": {},
+    "2": {},
+    "3": {
+     "grip": 0.512
+    },
+    "4": {},
+    "5": {},
+    "6": {},
+    "7": {},
+    "8": {},
+    "9": {}
+   },
+   "manualKeys": [
+    {
+     "added": false,
+     "angle": null,
+     "approach": [
+      0.64422,
+      0,
+      0.76484
+     ],
+     "authored": 0,
+     "draggable": true,
+     "finger": [
+      0,
+      1,
+      0
+     ],
+     "grip": 0,
+     "home": true,
+     "index": "0",
+     "kind": "pose",
+     "objectQpos": [
+      0,
+      0
+     ],
+     "off": false,
+     "originalGrip": 0,
+     "originalObjectQpos": [
+      0.022315,
+      0.000175
+     ],
+     "originalQpos": [
+      0,
+      -0.7,
+      1.4,
+      0,
+      0,
+      0
+     ],
+     "pos": [
+      0.16665,
+      0,
+      1.83066
+     ],
+     "qpos": [
+      0,
+      -0.7,
+      1.4,
+      0,
+      0,
+      0
+     ],
+     "rise": null,
+     "sample": 0,
+     "secs": 0,
+     "transit": true
+    },
+    {
+     "added": false,
+     "angle": null,
+     "approach": [
+      1,
+      0,
+      0
+     ],
+     "authored": 1,
+     "draggable": true,
+     "finger": [
+      0,
+      -0.93646,
+      -0.35078
+     ],
+     "grip": 0,
+     "home": false,
+     "index": "1",
+     "kind": "pose",
+     "objectQpos": [
+      0,
+      0
+     ],
+     "off": false,
+     "originalGrip": 0,
+     "originalObjectQpos": [
+      0.02747,
+      0.000217
+     ],
+     "originalQpos": [
+      0.340704,
+      0.01936,
+      2.740297,
+      0.363655,
+      -1.211551,
+      -1.550796
+     ],
+     "pos": [
+      0.56485,
+      0.0866,
+      0.9
+     ],
+     "qpos": [
+      0.340704,
+      0.01936,
+      2.740297,
+      0.363655,
+      -1.211551,
+      -1.550796
+     ],
+     "rise": null,
+     "sample": 90,
+     "secs": 1.8,
+     "transit": true
+    },
+    {
+     "added": false,
+     "angle": null,
+     "approach": [
+      1,
+      0,
+      0
+     ],
+     "authored": 2,
+     "draggable": true,
+     "finger": [
+      0,
+      -0.93646,
+      -0.35078
+     ],
+     "grip": 0,
+     "home": false,
+     "index": "2",
+     "kind": "pose",
+     "objectQpos": [
+      0,
+      0
+     ],
+     "off": false,
+     "originalGrip": 0,
+     "originalObjectQpos": [
+      0.030937,
+      0.000246
+     ],
+     "originalQpos": [
+      0.220866,
+      0.287105,
+      2.40421,
+      0.243289,
+      -1.131727,
+      -1.550796
+     ],
+     "pos": [
+      0.70485,
+      0.0866,
+      0.9
+     ],
+     "qpos": [
+      0.220866,
+      0.287105,
+      2.40421,
+      0.243289,
+      -1.131727,
+      -1.550796
+     ],
+     "rise": null,
+     "sample": 150,
+     "secs": 1.2,
+     "transit": false
+    },
+    {
+     "added": false,
+     "angle": null,
+     "approach": [
+      1,
+      0,
+      0
+     ],
+     "authored": 3,
+     "draggable": true,
+     "finger": [
+      0,
+      -0.93646,
+      -0.35078
+     ],
+     "grip": 0.512,
+     "home": false,
+     "index": "3",
+     "kind": "pose",
+     "objectQpos": [
+      0,
+      0
+     ],
+     "off": false,
+     "originalGrip": 0.65,
+     "originalObjectQpos": [
+      0.03297,
+      0.000262
+     ],
+     "originalQpos": [
+      0.220866,
+      0.287105,
+      2.40421,
+      0.243289,
+      -1.131727,
+      -1.550796
+     ],
+     "pos": [
+      0.70485,
+      0.0866,
+      0.9
+     ],
+     "qpos": [
+      0.220866,
+      0.287105,
+      2.40421,
+      0.243289,
+      -1.131727,
+      -1.550796
+     ],
+     "rise": null,
+     "sample": 185,
+     "secs": 0.7,
+     "transit": false
+    },
+    {
+     "added": false,
+     "angle": 5.2,
+     "approach": [
+      1,
+      0,
+      0
+     ],
+     "authored": 4,
+     "draggable": false,
+     "finger": [
+      0,
+      -0.12884,
+      -0.99166
+     ],
+     "grip": 0.65,
+     "home": false,
+     "index": "4",
+     "kind": "arc",
+     "objectQpos": [
+      5.2,
+      0.04264
+     ],
+     "off": false,
+     "originalGrip": 0.65,
+     "originalObjectQpos": [
+      0.04296,
+      0.000344
+     ],
+     "originalQpos": [
+      0.250984,
+      0.210039,
+      2.509478,
+      0.273736,
+      -1.162778,
+      -1.550796
+     ],
+     "pos": [
+      0.66221,
+      0.0866,
+      0.9
+     ],
+     "qpos": [
+      0.250984,
+      0.210039,
+      2.509478,
+      0.273736,
+      -1.162778,
+      -1.550796
+     ],
+     "rise": 0.04264,
+     "sample": 355,
+     "secs": 3.4,
+     "transit": false
+    },
+    {
+     "added": false,
+     "angle": 0,
+     "approach": [
+      1,
+      0,
+      0
+     ],
+     "authored": 5,
+     "draggable": false,
+     "finger": [
+      0,
+      -0.12884,
+      -0.99166
+     ],
+     "grip": 0.65,
+     "home": false,
+     "index": "5",
+     "kind": "arc",
+     "objectQpos": [
+      5.2,
+      0.04264
+     ],
+     "off": false,
+     "originalGrip": 0.65,
+     "originalObjectQpos": [
+      0.045934,
+      0.000368
+     ],
+     "originalQpos": [
+      0.250984,
+      0.210039,
+      2.509478,
+      0.273736,
+      -1.162778,
+      -1.550796
+     ],
+     "pos": [
+      0.66221,
+      0.0866,
+      0.9
+     ],
+     "qpos": [
+      0.250984,
+      0.210039,
+      2.509478,
+      0.273736,
+      -1.162778,
+      -1.550796
+     ],
+     "rise": 0,
+     "sample": 405,
+     "secs": 1,
+     "transit": false
+    },
+    {
+     "added": false,
+     "angle": -5.2,
+     "approach": [
+      1,
+      0,
+      0
+     ],
+     "authored": 6,
+     "draggable": false,
+     "finger": [
+      0,
+      -0.93646,
+      -0.35078
+     ],
+     "grip": 0.65,
+     "home": false,
+     "index": "6",
+     "kind": "arc",
+     "objectQpos": [
+      0,
+      0
+     ],
+     "off": false,
+     "originalGrip": 0.65,
+     "originalObjectQpos": [
+      0.064128,
+      0.000517
+     ],
+     "originalQpos": [
+      0.224628,
+      0.285964,
+      2.403272,
+      0.248761,
+      -1.130546,
+      3.391488
+     ],
+     "pos": [
+      0.70485,
+      0.0866,
+      0.9
+     ],
+     "qpos": [
+      0.224628,
+      0.285964,
+      2.403272,
+      0.248761,
+      -1.130546,
+      3.391488
+     ],
+     "rise": -0.04264,
+     "sample": 705,
+     "secs": 6,
+     "transit": false
+    },
+    {
+     "added": false,
+     "angle": null,
+     "approach": [
+      1,
+      0,
+      0
+     ],
+     "authored": 7,
+     "draggable": true,
+     "finger": [
+      0,
+      -0.93646,
+      -0.35078
+     ],
+     "grip": 0,
+     "home": false,
+     "index": "7",
+     "kind": "pose",
+     "objectQpos": [
+      0,
+      0
+     ],
+     "off": false,
+     "originalGrip": 0,
+     "originalObjectQpos": [
+      0.065981,
+      0.000532
+     ],
+     "originalQpos": [
+      0.224628,
+      0.285964,
+      2.403272,
+      0.248761,
+      -1.130546,
+      3.391488
+     ],
+     "pos": [
+      0.70485,
+      0.0866,
+      0.9
+     ],
+     "qpos": [
+      0.224628,
+      0.285964,
+      2.403272,
+      0.248761,
+      -1.130546,
+      3.391488
+     ],
+     "rise": null,
+     "sample": 735,
+     "secs": 0.6,
+     "transit": false
+    },
+    {
+     "added": false,
+     "angle": null,
+     "approach": [
+      1,
+      0,
+      0
+     ],
+     "authored": 8,
+     "draggable": true,
+     "finger": [
+      0,
+      -0.93646,
+      -0.35078
+     ],
+     "grip": 0,
+     "home": false,
+     "index": "8",
+     "kind": "pose",
+     "objectQpos": [
+      0,
+      0
+     ],
+     "off": false,
+     "originalGrip": 0,
+     "originalObjectQpos": [
+      0.069705,
+      0.000563
+     ],
+     "originalQpos": [
+      0.347448,
+      0.013866,
+      2.739354,
+      0.372938,
+      -1.206667,
+      3.361579
+     ],
+     "pos": [
+      0.56485,
+      0.0866,
+      0.9
+     ],
+     "qpos": [
+      0.347448,
+      0.013866,
+      2.739354,
+      0.372938,
+      -1.206667,
+      3.361579
+     ],
+     "rise": null,
+     "sample": 795,
+     "secs": 1.2,
+     "transit": true
+    },
+    {
+     "added": false,
+     "angle": null,
+     "approach": [
+      0.64422,
+      0,
+      0.76484
+     ],
+     "authored": 9,
+     "draggable": true,
+     "finger": [
+      0,
+      1,
+      0
+     ],
+     "grip": 0,
+     "home": true,
+     "index": "9",
+     "kind": "pose",
+     "objectQpos": [
+      0,
+      0
+     ],
+     "off": false,
+     "originalGrip": 0,
+     "originalObjectQpos": [
+      0.075336,
+      0.000609
+     ],
+     "originalQpos": [
+      0.001445,
+      -0.699995,
+      1.399982,
+      1.587993,
+      -0.000913,
+      4.692389
+     ],
+     "pos": [
+      0.16665,
+      0,
+      1.83066
+     ],
+     "qpos": [
+      0.001445,
+      -0.699995,
+      1.399982,
+      1.587993,
+      -0.000913,
+      4.692389
+     ],
+     "rise": null,
+     "sample": 885,
+     "secs": 1.8,
+     "transit": true
+    }
+   ]
+  }
+ },
  "fr3": {
   "breaker": {
    "keys": {

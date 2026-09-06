@@ -1477,4 +1477,11 @@ def draft_build(model, site, cfg, module, keys):
 
 def dump(trajectories, path):
 
-    path.write_text(json.dumps(trajectories, separators=(",", ":")) + "\n")
+    # allow_nan=False on purpose: json.dumps would otherwise write NaN and
+    # Infinity as bare tokens, which the browser's JSON.parse rejects -- one of
+    # them makes the whole robot unloadable, and the file looks fine to Python.
+    try:
+        body = json.dumps(trajectories, separators=(",", ":"), allow_nan=False)
+    except ValueError as err:
+        raise ValueError(f"{path.name}: refusing to publish a non-finite value ({err})") from None
+    path.write_text(body + "\n")
