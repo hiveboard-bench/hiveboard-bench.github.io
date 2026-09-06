@@ -254,6 +254,12 @@ ROBOTS = [
         "stand": {"top": 0.90, "half": 0.17},
         "framing": "side",
         "ground": True,
+        # As on the FR3: the toggle is thrown by the gripper against live
+        # collision, not replayed from an authored module motion. The 2F-140's
+        # closed fingertips sit well behind the tool point in this approach, so
+        # the sweep has to press 36 mm deeper to reach the lever at all.
+        "physical": ["breaker"],
+        "standoff": -0.036,
         "tcp": ("robotiq_base_link", (0.0, 0.0, 0.20)),
     },
     {
