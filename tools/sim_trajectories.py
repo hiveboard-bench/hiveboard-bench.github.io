@@ -429,9 +429,6 @@ def lamp_task(model, data, cfg):
             "demo": True,
             "tolerance": 0.0,
             "ik_tolerance": 1.0,
-            # This arm cannot take hold of the bulb, so the bulb rides the
-            # trajectory: out on the unscrewing arc and back down on the
-            # return, in step with the jaws it never actually closes on.
             "drive": {
                 "lamp_RevoluteJoint": [0.0, 0.0, 0.0, turn, 0.0, 0.0, 0.0],
                 "lamp_PrismaticJoint": [0.0, 0.0, 0.0, lift, 0.0, 0.0, 0.0],
@@ -1125,9 +1122,6 @@ def apply_object_edits(states, task, edits, addresses):
 
     if not edits or not states or not addresses:
         return states
-    # A key spliced in from the editor carries its object pose on the `added`
-    # entry, not under `keys`; without this the hand-authored pose on a new
-    # keyframe is silently dropped and the module never moves.
     overrides = dict((edits or {}).get("keys", {}))
     for add in (edits or {}).get("added", []):
         if "objectQpos" in add:
@@ -1249,10 +1243,6 @@ def attempt(model, data, site, cfg, factory, spin, spin_adr, edits=None):
     hands_on = (not cfg.get("scripted", True)
                 or task["module"] in cfg.get("physical", ()))
     if hands_on and not task.get("demo"):
-        # Worked for real rather than demonstrated: drop the authored motion
-        # and let the replay decide what the arm actually managed to move.
-        # A task already marked demo is one the arm cannot do physically, so
-        # it keeps its script either way.
         task.pop("drive", None)
     for key in task["keys"][1:]:
         key["secs"] = key["secs"] * cfg.get("pace", 1.0)
