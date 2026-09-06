@@ -1193,6 +1193,15 @@ def emit_robot(cfg, menagerie: Path, board, hiveboard: Path):
 
 
 def build(hiveboard: Path, robot=None, isaaclab_repo=None, usd_cache=None):
+    # A full build empties public/sim/models first, so anything that cannot be
+    # sourced has to be caught here rather than half way through: ANYmal needs
+    # USD assets this repo does not carry, and failing on it after the wipe
+    # leaves the checkout with no models at all.
+    import anymal_model
+    if (robot in (None, "anymal")
+            and anymal_model.arm_usd(isaaclab_repo or REPO.parent.parent) is None):
+        raise SystemExit(anymal_model.missing_usd_message(isaaclab_repo or REPO.parent.parent))
+
     menagerie = None if robot == "anymal" else ensure_menagerie()
     if robot is None:
         shutil.rmtree(OUT, ignore_errors=True)

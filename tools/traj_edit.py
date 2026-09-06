@@ -59,6 +59,24 @@ def factories(cfg):
     return out
 
 
+def in_scene(ctx, module):
+    """Is this module actually in the compiled scene?
+
+    A robot's scene is generated with whichever modules existed at the time, so
+    a model built before a module was added simply has no bodies for it.  The
+    editor used to offer them all and fail inside the solver on the missing
+    ones; ask the model instead.
+    """
+    model = ctx["model"]
+    prefix = f"{module}_"
+    return any((mujoco.mj_id2name(model, mujoco.mjtObj.mjOBJ_BODY, b) or "").startswith(prefix)
+               for b in range(model.nbody))
+
+
+def scene_modules(ctx):
+    return [m for m in factories(ctx["cfg"]) if in_scene(ctx, m)]
+
+
 def joint_info(ctx):
 
     model = ctx["model"]
@@ -209,6 +227,14 @@ def solve(name, module, edits, spin=0.0):
             "module": module,
             "ok": False,
             "why": f"{name} has no {module} task",
+            "keys": [],
+        }
+    if not in_scene(ctx, module):
+        return {
+            "module": module,
+            "ok": False,
+            "why": f"{name}.xml has no {module} bodies -- rebuild it with "
+                   f"tools/build-sim-assets.py --robot {name}",
             "keys": [],
         }
 
@@ -543,7 +569,7 @@ class Handler(BaseHTTPRequestHandler):
             joint_names, joint_ranges = joint_info(ctx)
             robot_edits = read_edits().get(name, {})
             return {"robot": name,
-                    "modules": list(factories(ctx["cfg"])) + list(st.DRAFT_MODULES),
+                    "modules": scene_modules(ctx) + list(st.DRAFT_MODULES),
                     "drafts": list(st.DRAFT_MODULES),
                     "joints": joint_names,
                     "jointRanges": joint_ranges,

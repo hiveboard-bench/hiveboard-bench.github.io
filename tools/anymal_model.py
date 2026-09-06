@@ -250,14 +250,27 @@ class Converter:
         return bodies[root_path]
 
 
+ARM_USD = "source/isaaclab_hiveboard/isaaclab_hiveboard/assets/anymal/usd/dynaarm.usd"
+
+
+def arm_usd(source_root):
+    """The DynaArm USD this conversion needs, or None when it is not there."""
+    path = Path(source_root) / ARM_USD
+    return path if path.exists() else None
+
+
+def missing_usd_message(source_root):
+    return (f"DynaArm USD not found: {Path(source_root) / ARM_USD}. Pass --isaaclab-repo "
+            "to your checkout and spawn ANYmal once in Isaac Lab to generate its arm USD "
+            "from the URDF, or build the other robots with --robot.")
+
+
 def parts(output, source_root, usd_cache, simplify, write_obj):
     source_root = Path(source_root)
     cache = Path(usd_cache)
-    arm_path = source_root / "source/isaaclab_hiveboard/isaaclab_hiveboard/assets/anymal/usd/dynaarm.usd"
-    if not arm_path.exists():
-        raise FileNotFoundError(
-            f"DynaArm USD not found: {arm_path}. Pass --isaaclab-repo to your checkout "
-            "and spawn ANYmal once in Isaac Lab to generate its arm USD from the URDF.")
+    arm_path = arm_usd(source_root)
+    if arm_path is None:
+        raise FileNotFoundError(missing_usd_message(source_root))
     converter = Converter(output / "assets/anymal", simplify, write_obj)
     stance = {f"{leg}_{joint}": value for leg in ("LF", "RF", "LH", "RH")
               for joint, value in (("HAA", 0), ("HFE", 0.4 if leg[1] == "F" else -0.4),
