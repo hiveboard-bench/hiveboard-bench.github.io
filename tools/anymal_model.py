@@ -237,11 +237,13 @@ class Converter:
                     ET.SubElement(body, "geom", attrs)
                 if collision:
                     attrs.pop("mass", None)
-                    # contype 1 is the robot mask. The modules are emitted with
-                    # contype 2, conaffinity 1, so a robot geom carrying 2 pairs
-                    # with nothing: (2 & 1) is 0 both ways and the arm passes
-                    # straight through the board.
-                    attrs.update(group="3", contype="1", conaffinity="1", friction="2 0.05 0.0002",
+                    # MuJoCo pairs geoms when (contype1 & conaffinity2) or
+                    # (contype2 & conaffinity1). contype 1 with conaffinity 2
+                    # pairs with the modules (contype 2, conaffinity 1) and the
+                    # board, but never with another ANYmal geom: this assembly
+                    # has no contact exclusions, so self-collision jams the arm
+                    # against its own shoulder instead of reaching the board.
+                    attrs.update(group="3", contype="1", conaffinity="2", friction="2 0.05 0.0002",
                                  solref="0.005 1", solimp="0.95 0.99 0.001")
                     ET.SubElement(body, "geom", attrs)
 
