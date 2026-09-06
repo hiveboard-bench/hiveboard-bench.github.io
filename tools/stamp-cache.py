@@ -21,6 +21,8 @@ DIST = Path(__file__).resolve().parent.parent / "dist"
 STAMP = [
     "./fonts/fonts.css",
     "./assets/favicon.svg",
+    "./favicon.ico",
+    "./assets/favicon.png",
     "./sim/hiveboard-sim.html",
 ]
 
