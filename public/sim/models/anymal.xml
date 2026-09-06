@@ -106,74 +106,74 @@
         <body name="dynaarm_base" gravcomp="1" pos="0 0 0" quat="1 0 0 0">
           <inertial mass="1.9421979188919067" pos="0.00243204995 0.00250861002 0.0529930592" quat="0.908156335 -0.266714633 0.0456583351 -0.319422603" diaginertia="0.00411015516 0.00483479537 0.00433035893" />
           <geom material="dynaarm_shell" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_038_dynaarm_base" />
-          <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="0 0 0.0500000007" quat="1 0 0 0" type="cylinder" size="0.0500000007 0.0500000007" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+          <geom rgba="0.7 0.72 0.75 1" group="3" contype="1" conaffinity="1" pos="0 0 0.0500000007" quat="1 0 0 0" type="cylinder" size="0.0500000007 0.0500000007" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
           <body name="dynaarm_shoulder" gravcomp="1" pos="0 0 0.1105" quat="1 0 0 0">
             <inertial mass="2.8254690170288086" pos="1.20000004e-05 0.000479999988 0.0395129994" quat="0.999992371 0.00308424747 0.00132642139 0.00199692324" diaginertia="0.0130691389 0.00479258411 0.012242279" />
             <joint name="dynaarm_shoulder_rotation" type="hinge" pos="0 0 0" axis="0 0 1" damping="0.1" armature="0.002" range="-4.31238858 4.31238858" />
             <geom material="dynaarm_shell" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_039_dynaarm_shoulder" />
-            <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="0 0 0.0500000007" quat="0.707106769 0.707106793 0 0" type="cylinder" size="0.0599999987 0.125" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+            <geom rgba="0.7 0.72 0.75 1" group="3" contype="1" conaffinity="1" pos="0 0 0.0500000007" quat="0.707106769 0.707106793 0 0" type="cylinder" size="0.0599999987 0.125" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
             <body name="dynaarm_upperarm" gravcomp="1" pos="0 0 0.0469999984" quat="0.500000045 0.499999985 -0.499999985 0.499999985">
               <inertial mass="2.1204047203063965" pos="0.203913003 -5.2800001e-06 -0.000152239998" quat="0.999777496 0.0210945085 0.000417531701 -1.87986479e-05" diaginertia="0.0015549555 0.0506792814 0.0507131927" />
               <joint name="dynaarm_shoulder_flexion" type="hinge" pos="0 0 0" axis="0 0 1" damping="0.1" armature="0.002" range="-1.72079621 1.72079621" />
               <geom material="dynaarm_shell" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_040_dynaarm_upperarm" />
-              <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="0.150000006 -8.27180613e-25 0" quat="0.707106769 3.03284118e-24 0.707106793 1.25817599e-23" type="cylinder" size="0.0500000007 0.200000003" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+              <geom rgba="0.7 0.72 0.75 1" group="3" contype="1" conaffinity="1" pos="0.150000006 -8.27180613e-25 0" quat="0.707106769 3.03284118e-24 0.707106793 1.25817599e-23" type="cylinder" size="0.0500000007 0.200000003" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
               <body name="dynaarm_elbow" gravcomp="1" pos="0.412699997 0 0" quat="1 0 0 0">
                 <inertial mass="0.82320237159729" pos="0.00383865996 -0.0780263767 -0.00026927999" quat="0.993778229 0.0248454195 -0.051740393 0.095448941" diaginertia="0.00108173594 0.000862561224 0.00113966293" />
                 <joint name="dynaarm_elbow_flexion" type="hinge" pos="0 0 0" axis="0 0 1" damping="0.1" armature="0.002" range="0 3.09159234" />
                 <geom material="dynaarm_shell" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_041_dynaarm_elbow" />
-                <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="-0.00999999978 -0.0500000007 0" quat="0.707106769 0.707106793 -2.33962004e-24 -8.00817829e-32" type="cylinder" size="0.0649999976 0.100000001" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+                <geom rgba="0.7 0.72 0.75 1" group="3" contype="1" conaffinity="1" pos="-0.00999999978 -0.0500000007 0" quat="0.707106769 0.707106793 -2.33962004e-24 -8.00817829e-32" type="cylinder" size="0.0649999976 0.100000001" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
                 <body name="dynaarm_elbow_camera_mount" gravcomp="1" pos="0.0344999991 -0.123499997 0" quat="1 0 0 0">
                   <inertial mass="0.0010000000474974513" pos="0 0 0" quat="1 0 0 0" diaginertia="1.00000001e-07 1.00000001e-07 1.00000001e-07" />
                   <geom rgba="0.7 0.72 0.75 1" group="2" contype="0" conaffinity="0" mass="0" pos="1.11022302e-16 0 6.6174449e-24" quat="1 0 0 0" type="box" size="0.00499999989 0.00499999989 0.00499999989" />
-                  <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="1.11022302e-16 0 6.6174449e-24" quat="1 0 0 0" type="box" size="0.00499999989 0.00499999989 0.00499999989" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+                  <geom rgba="0.7 0.72 0.75 1" group="3" contype="1" conaffinity="1" pos="1.11022302e-16 0 6.6174449e-24" quat="1 0 0 0" type="box" size="0.00499999989 0.00499999989 0.00499999989" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
                 </body>
                 <body name="dynaarm_forearm" gravcomp="1" pos="0.0262000002 -0.0855000019 0" quat="0.707106853 0 0.707106709 0">
                   <inertial mass="1.237246036529541" pos="-0.00156799995 4.6000001e-05 0.292163014" quat="0.991243303 0.000826710078 0.00412996719 0.131981537" diaginertia="0.0338748209 0.0338675044 0.00103867007" />
                   <joint name="dynaarm_forearm_rotation" type="hinge" pos="0 0 0" axis="0 0 1" damping="0.1" armature="0.002" range="-4.71238898 4.71238898" />
                   <geom material="dynaarm_shell" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_042_dynaarm_forearm" />
-                  <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="3.30872245e-24 0 0.200000003" quat="1 0 0 0" type="cylinder" size="0.0399999991 0.200000003" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+                  <geom rgba="0.7 0.72 0.75 1" group="3" contype="1" conaffinity="1" pos="3.30872245e-24 0 0.200000003" quat="1 0 0 0" type="cylinder" size="0.0399999991 0.200000003" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
                   <body name="dynaarm_wrist_1" gravcomp="1" pos="0.0295000002 0 0.420700014" quat="0.707106793 0 -0.707106769 0">
                     <inertial mass="1.15007483959198" pos="0.0797255337 -5.03800002e-05 0.0233474709" quat="0.96274358 -0.00498218462 0.270369947 -0.000465911085" diaginertia="0.000587608898 0.000882826513 0.000852974656" />
                     <joint name="dynaarm_wrist_flexion" type="hinge" pos="0 0 0" axis="0 0 1" damping="0.1" armature="0.002" range="-1.82079631 1.82079631" />
                     <geom material="dynaarm_shell" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_043_dynaarm_wrist_1" />
-                    <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="-2.22044605e-16 -1.38777878e-17 0.0250000004" quat="0.707106769 -1.30772898e-23 -1.76394476e-23 0.707106793" type="cylinder" size="0.0500000007 0.0625" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+                    <geom rgba="0.7 0.72 0.75 1" group="3" contype="1" conaffinity="1" pos="-2.22044605e-16 -1.38777878e-17 0.0250000004" quat="0.707106769 -1.30772898e-23 -1.76394476e-23 0.707106793" type="cylinder" size="0.0500000007 0.0625" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
                     <body name="dynaarm_wrist_1_camera_mount" gravcomp="1" pos="0.0320000015 0 -0.0170000009" quat="1 0 0 0">
                       <inertial mass="0.0010000000474974513" pos="0 0 0" quat="1 0 0 0" diaginertia="1.00000001e-07 1.00000001e-07 1.00000001e-07" />
                       <geom rgba="0.7 0.72 0.75 1" group="2" contype="0" conaffinity="0" mass="0" pos="-2.22044605e-16 0 0" quat="1 0 0 0" type="box" size="0.00499999989 0.00499999989 0.00499999989" />
-                      <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="-2.22044605e-16 0 0" quat="1 0 0 0" type="box" size="0.00499999989 0.00499999989 0.00499999989" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+                      <geom rgba="0.7 0.72 0.75 1" group="3" contype="1" conaffinity="1" pos="-2.22044605e-16 0 0" quat="1 0 0 0" type="box" size="0.00499999989 0.00499999989 0.00499999989" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
                     </body>
                     <body name="dynaarm_wrist_2" gravcomp="1" pos="0.116999999 0 0.0295000002" quat="0.707106853 0 0.707106709 0">
                       <inertial mass="0.04784059897065163" pos="0.00045711 5.57000021e-06 0.00344945001" quat="0.99999553 0 0.00299386494 0" diaginertia="1.36595208e-05 1.419e-05 2.70204764e-05" />
                       <joint name="dynaarm_wrist_rotation" type="hinge" pos="0 0 0" axis="0 0 1" damping="0.1" armature="0.002" range="-1.57079633 4.71238898" />
                       <geom material="dynaarm_dark_metal" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_044_dynaarm_wrist_2" />
-                      <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="0.00499999989 1.38777878e-17 -0.0350000001" quat="1 0 0 0" type="cylinder" size="0.0520000011 0.0450000018" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+                      <geom rgba="0.7 0.72 0.75 1" group="3" contype="1" conaffinity="1" pos="0.00499999989 1.38777878e-17 -0.0350000001" quat="1 0 0 0" type="cylinder" size="0.0520000011 0.0450000018" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
                       <body name="dynaarm_flange" gravcomp="1" pos="0 0 0.00899999961" quat="0.707106793 0 0 0.707106769">
                         <inertial mass="0.0010000000474974513" pos="0 0 0" quat="1 0 0 0" diaginertia="1.00000001e-07 1.00000001e-07 1.00000001e-07" />
                         <geom rgba="0.7 0.72 0.75 1" group="2" contype="0" conaffinity="0" mass="0" pos="0 0 0" quat="1 0 0 0" type="box" size="0.00499999989 0.00499999989 0.00499999989" />
-                        <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="0 0 0" quat="1 0 0 0" type="box" size="0.00499999989 0.00499999989 0.00499999989" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+                        <geom rgba="0.7 0.72 0.75 1" group="3" contype="1" conaffinity="1" pos="0 0 0" quat="1 0 0 0" type="box" size="0.00499999989 0.00499999989 0.00499999989" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
                         <body name="robotiq_base_link" gravcomp="1">
                           <body name="left_outer_knuckle" gravcomp="1" pos="-2.85001487e-17 -6.9388939e-18 -0.000241998583" quat="0.5 0.5 0.5 0.5">
                             <inertial mass="0.009163293056190014" pos="-0.052893769 0.0531833768 -2.19358807e-18" quat="1 0 0 0" diaginertia="2.13106688e-07 6.73438819e-07 7.51600794e-07" />
                             <joint name="finger_joint" type="hinge" pos="-0.0306011457 0.0549045168 -6.16297582e-32" axis="-1.22464685e-16 -1.22464685e-16 -1" damping="0.1" armature="0.002" range="0 0.785398163" />
                             <geom material="robotiq_dark_metal" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_045_left_outer_knuckle" />
-                            <geom material="robotiq_dark_metal" group="3" contype="2" conaffinity="1" type="mesh" mesh="anymal_045_left_outer_knuckle" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+                            <geom material="robotiq_dark_metal" group="3" contype="1" conaffinity="1" type="mesh" mesh="anymal_045_left_outer_knuckle" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
                             <body name="left_outer_finger" gravcomp="1" pos="0 0 -8.17210594e-30" quat="1 0 0 0">
                               <inertial mass="0.07706425338983536" pos="-0.0767080188 0.0845726952 3.06424522e-06" quat="0.610674679 0.610674679 -0.356477827 -0.356477827" diaginertia="6.81568963e-06 5.35424406e-05 5.75693994e-05" />
                               <joint name="left_outer_finger_joint" type="hinge" pos="-0.0620259978 0.0503722876 8.18443189e-30" axis="0 0 1" damping="0.1" armature="0.002" range="0 3.14159265" />
                               <geom material="robotiq_dark_metal" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_046_left_outer_finger" />
-                              <geom material="robotiq_dark_metal" group="3" contype="2" conaffinity="1" type="mesh" mesh="anymal_046_left_outer_finger" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+                              <geom material="robotiq_dark_metal" group="3" contype="1" conaffinity="1" type="mesh" mesh="anymal_046_left_outer_finger" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
                               <body name="left_inner_finger" gravcomp="1" pos="7.75226555e-09 0.000241987106 9.49485039e-17" quat="0.707106781 -3.8315474e-16 -6.22058978e-16 0.707106781">
                                 <inertial mass="0.04983438178896904" pos="0.160889998 0.0814799964 -1.47829735e-06" quat="0.994152308 -0.00084205647 0.000479106267 -0.107982397" diaginertia="3.05109756e-06 1.91144482e-05 1.7129656e-05" />
                                 <joint name="left_inner_finger_joint" type="hinge" pos="0.12902917 0.0974562317 0" axis="-1.62371128e-17 1.44550224e-15 -0.999999932" damping="0.1" armature="0.002" />
                                 <geom material="robotiq_dark_metal" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_047_left_inner_finger" />
-                                <geom material="robotiq_dark_metal" group="3" contype="2" conaffinity="1" type="mesh" mesh="anymal_047_left_inner_finger" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+                                <geom material="robotiq_dark_metal" group="3" contype="1" conaffinity="1" type="mesh" mesh="anymal_047_left_inner_finger" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
                                 <geom material="robotiq_dark_metal" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_048_left_inner_finger" />
-                                <geom material="robotiq_dark_metal" group="3" contype="2" conaffinity="1" type="mesh" mesh="anymal_048_left_inner_finger" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+                                <geom material="robotiq_dark_metal" group="3" contype="1" conaffinity="1" type="mesh" mesh="anymal_048_left_inner_finger" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
                                 <body name="left_inner_knuckle" gravcomp="1" pos="-0.00024200239 7.37425897e-09 9.97162101e-17" quat="-0.707106781 1.37667464e-17 -1.20120178e-15 0.707106781">
                                   <inertial mass="0.06811221688985825" pos="-0.0482579768 0.101011693 -4.59329508e-09" quat="0.638647258 -0.644041955 0.298778653 -0.296767384" diaginertia="7.31063301e-06 4.53842986e-05 5.10923091e-05" />
                                   <joint name="left_inner_finger_pad_joint" type="hinge" pos="-0.0795550868 0.135786653 0" axis="1.8568872e-16 1.65389218e-15 -1" damping="0.1" armature="0.002" range="-0.785398163 0.785398163" />
                                   <geom material="robotiq_dark_metal" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_049_left_inner_knuckle" />
-                                  <geom material="robotiq_dark_metal" group="3" contype="2" conaffinity="1" type="mesh" mesh="anymal_049_left_inner_knuckle" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+                                  <geom material="robotiq_dark_metal" group="3" contype="1" conaffinity="1" type="mesh" mesh="anymal_049_left_inner_knuckle" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
                                 </body>
                               </body>
                             </body>
@@ -182,30 +182,30 @@
                             <inertial mass="0.009163293056190014" pos="-0.052893769 0.0531833768 -2.19358807e-18" quat="1 0 0 0" diaginertia="2.13106688e-07 6.73438819e-07 7.51600794e-07" />
                             <joint name="right_outer_knuckle_joint" type="hinge" pos="-0.0306011457 0.0549045168 -2.56726525e-18" axis="-1.22464685e-16 -1.22464685e-16 -1" damping="0.1" armature="0.002" range="0 1.30899694" />
                             <geom material="robotiq_dark_metal" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_050_right_outer_knuckle" />
-                            <geom material="robotiq_dark_metal" group="3" contype="2" conaffinity="1" type="mesh" mesh="anymal_050_right_outer_knuckle" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+                            <geom material="robotiq_dark_metal" group="3" contype="1" conaffinity="1" type="mesh" mesh="anymal_050_right_outer_knuckle" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
                             <body name="right_outer_finger" gravcomp="1" pos="0 0 -2.55666638e-17" quat="1 0 0 0">
                               <inertial mass="0.07706425338983536" pos="-0.0767080188 0.0845726952 3.06424522e-06" quat="0.610674679 0.610674679 -0.356477827 -0.356477827" diaginertia="6.81568963e-06 5.35424406e-05 5.75693994e-05" />
                               <joint name="right_outer_finger_joint" type="hinge" pos="-0.0620259978 0.0503722876 2.55666638e-17" axis="0 0 1" damping="0.1" armature="0.002" range="0 3.14159265" />
                               <geom material="robotiq_dark_metal" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_051_right_outer_finger" />
-                              <geom material="robotiq_dark_metal" group="3" contype="2" conaffinity="1" type="mesh" mesh="anymal_051_right_outer_finger" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+                              <geom material="robotiq_dark_metal" group="3" contype="1" conaffinity="1" type="mesh" mesh="anymal_051_right_outer_finger" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
                               <body name="right_inner_finger" gravcomp="1" pos="-1.08069594e-09 0.000241987106 3.04538185e-16" quat="9.4941076e-16 0.707106793 0.707106769 1.93317663e-16">
                                 <inertial mass="0.04983438178896904" pos="0.16088824 -0.0814771429 -1.47829735e-06" quat="0.994152427 -0.000719804491 0.000645117951 0.107981525" diaginertia="3.05109756e-06 1.91144482e-05 1.7129656e-05" />
                                 <joint name="right_inner_finger_joint" type="hinge" pos="0.12902917 -0.0974562317 0" axis="1.43097011e-15 -1.68004595e-15 1" damping="0.1" armature="0.002" />
                                 <geom material="robotiq_dark_metal" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_052_right_inner_finger" />
-                                <geom material="robotiq_dark_metal" group="3" contype="2" conaffinity="1" type="mesh" mesh="anymal_052_right_inner_finger" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+                                <geom material="robotiq_dark_metal" group="3" contype="1" conaffinity="1" type="mesh" mesh="anymal_052_right_inner_finger" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
                                 <geom material="robotiq_dark_metal" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_053_right_inner_finger" />
-                                <geom material="robotiq_dark_metal" group="3" contype="2" conaffinity="1" type="mesh" mesh="anymal_053_right_inner_finger" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+                                <geom material="robotiq_dark_metal" group="3" contype="1" conaffinity="1" type="mesh" mesh="anymal_053_right_inner_finger" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
                                 <body name="right_inner_knuckle" gravcomp="1" pos="-0.00024200239 1.92130849e-09 4.07043509e-17" quat="-1.60812265e-16 0.707106793 0.707106769 -1.90000125e-16">
                                   <inertial mass="0.06811221688985825" pos="-0.0482579768 0.101011693 -4.59329508e-09" quat="0.638647258 -0.644041955 0.298778653 -0.296767384" diaginertia="7.31063301e-06 4.53842986e-05 5.10923091e-05" />
                                   <joint name="right_inner_finger_pad_joint" type="hinge" pos="-0.0795550868 0.135786653 0" axis="2.42842885e-15 7.65713761e-16 -1" damping="0.1" armature="0.002" range="-0.785398163 0.785398163" />
                                   <geom material="robotiq_dark_metal" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_054_right_inner_knuckle" />
-                                  <geom material="robotiq_dark_metal" group="3" contype="2" conaffinity="1" type="mesh" mesh="anymal_054_right_inner_knuckle" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+                                  <geom material="robotiq_dark_metal" group="3" contype="1" conaffinity="1" type="mesh" mesh="anymal_054_right_inner_knuckle" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
                                 </body>
                               </body>
                             </body>
                           </body>
                           <geom material="robotiq_dark_metal" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_055_robotiq_base_link" />
-                          <geom material="robotiq_dark_metal" group="3" contype="2" conaffinity="1" type="mesh" mesh="anymal_055_robotiq_base_link" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+                          <geom material="robotiq_dark_metal" group="3" contype="1" conaffinity="1" type="mesh" mesh="anymal_055_robotiq_base_link" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
                           <site name="tcp" pos="0 0 0.2" quat="1 0 0 0" size="0.005" group="4" />
                         </body>
                       </body>
@@ -232,25 +232,25 @@
       <geom material="anymal_dark" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_011_base" />
       <geom material="anymal_dark" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_012_base" />
       <geom material="anymal_shell" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_013_base" />
-      <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="0 0 0" quat="0.707106781 0 0.707106781 0" type="capsule" size="0.12 0.350000005" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+      <geom rgba="0.7 0.72 0.75 1" group="3" contype="1" conaffinity="1" pos="0 0 0" quat="0.707106781 0 0.707106781 0" type="capsule" size="0.12 0.350000005" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
       <body name="LF_HIP" gravcomp="1" pos="0.30399999 0.108999997 0" quat="1 0 0 0">
         <inertial mass="0.3658599853515625" pos="0.0350469984 -0.0012267672 0" quat="0.999987066 7.94789521e-05 3.00965658e-05 -0.00509019336" diaginertia="0.000238490378 0.000558278814 0.0004433211" />
         <geom material="anymal_red_shell" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_014_LF_HIP" />
         <body name="LF_THIGH" gravcomp="1" pos="0.0689999983 0.00600000005 0" quat="0.693011735 -0.140480431 0.140480431 -0.693011711">
           <inertial mass="5.132199764251709" pos="-0.0905113071 -8.79575382e-05 -0.140188009" quat="0.990359902 -0.0077139237 0.10339988 -0.0918496102" diaginertia="0.109149449 0.107918635 0.00970372185" />
-          <geom material="anymal_shell" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_015_LF_THIGH" />
-          <geom material="anymal_shell" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_016_LF_THIGH" />
-          <geom material="anymal_shell" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_017_LF_THIGH" />
-          <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="-0.0951299965 -5.67018965e-09 -0.142499968" quat="0.707106769 0 0 0.707106793" type="box" size="0.0465000011 0.0315000005 0.142499998" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
-          <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="-0.125064999 -7.45445483e-09 -0.284999937" quat="0.49999997 0.50000001 0.50000001 0.50000001" type="cylinder" size="0.0700000003 0.0815650001" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+          <geom material="anymal_red_shell" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_015_LF_THIGH" />
+          <geom material="anymal_red_shell" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_016_LF_THIGH" />
+          <geom material="anymal_red_shell" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_017_LF_THIGH" />
+          <geom rgba="0.7 0.72 0.75 1" group="3" contype="1" conaffinity="1" pos="-0.0951299965 -5.67018965e-09 -0.142499968" quat="0.707106769 0 0 0.707106793" type="box" size="0.0465000011 0.0315000005 0.142499998" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+          <geom rgba="0.7 0.72 0.75 1" group="3" contype="1" conaffinity="1" pos="-0.125064999 -7.45445483e-09 -0.284999937" quat="0.49999997 0.50000001 0.50000001 0.50000001" type="cylinder" size="0.0700000003 0.0815650001" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
           <body name="LF_SHANK" gravcomp="1" pos="-0.180499986 -1.07586384e-08 -0.284999937" quat="6.123234e-17 0 -0.389418342 0.921060994">
             <inertial mass="0.4995400011539459" pos="0.00893208291 -0.0218162388 0.000419159216" quat="0.999884248 0.0115914429 -0.00266802637 -0.00949545205" diaginertia="0.00167160423 0.000549681194 0.00127452367" />
             <geom material="anymal_dark" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_018_LF_SHANK" />
-            <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="0.00535884034 -0.100000001 -0.164216787" quat="-0.707106769 0 0 0.707106793" type="cylinder" size="0.0175000001 0.197860003" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+            <geom rgba="0.7 0.72 0.75 1" group="3" contype="1" conaffinity="1" pos="0.00535884034 -0.100000001 -0.164216787" quat="-0.707106769 0 0 0.707106793" type="cylinder" size="0.0175000001 0.197860003" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
             <body name="LF_FOOT" gravcomp="1" pos="0.0222499948 -0.100000001 -0.392459959" quat="0.707106793 0 0 -0.707106769">
               <inertial mass="0.2964400053024292" pos="0 -0.01559 0.150040001" quat="0.999867857 0.0162580702 -3.06376455e-06 0.000146843653" diaginertia="0.00514263101 0.0051369057 0.000113591734" />
               <geom material="anymal_foot_dark" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_019_LF_FOOT" />
-              <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="0 -0.00814115349 0.0303831976" quat="1 0 0 0" type="ellipsoid" size="0.031454999 0.031454999 0.031454999" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+              <geom rgba="0.7 0.72 0.75 1" group="3" contype="1" conaffinity="1" pos="0 -0.00814115349 0.0303831976" quat="1 0 0 0" type="ellipsoid" size="0.031454999 0.031454999 0.031454999" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
             </body>
           </body>
         </body>
@@ -260,19 +260,19 @@
         <geom material="anymal_red_shell" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_020_LH_HIP" />
         <body name="LH_THIGH" gravcomp="1" pos="0.0689999983 -0.00600000611 0" quat="0.693011794 0.140480443 0.140480419 0.693011653">
           <inertial mass="5.132199764251709" pos="-0.0905113071 8.7952154e-05 -0.140188009" quat="0.986364424 0.0124144442 0.102930084 0.127814844" diaginertia="0.109193645 0.107873425 0.00970475469" />
-          <geom material="anymal_shell" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_021_LH_THIGH" />
-          <geom material="anymal_shell" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_022_LH_THIGH" />
-          <geom material="anymal_shell" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_023_LH_THIGH" />
-          <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="-0.0951299965 -5.6701896e-09 -0.142499968" quat="0.707106769 0 0 0.707106793" type="box" size="0.0465000011 0.0315000005 0.142499998" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
-          <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="-0.125064999 -7.45445483e-09 -0.284999937" quat="0.49999997 0.50000001 0.50000001 0.50000001" type="cylinder" size="0.0700000003 0.0815650001" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+          <geom material="anymal_red_shell" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_021_LH_THIGH" />
+          <geom material="anymal_red_shell" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_022_LH_THIGH" />
+          <geom material="anymal_red_shell" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_023_LH_THIGH" />
+          <geom rgba="0.7 0.72 0.75 1" group="3" contype="1" conaffinity="1" pos="-0.0951299965 -5.6701896e-09 -0.142499968" quat="0.707106769 0 0 0.707106793" type="box" size="0.0465000011 0.0315000005 0.142499998" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+          <geom rgba="0.7 0.72 0.75 1" group="3" contype="1" conaffinity="1" pos="-0.125064999 -7.45445483e-09 -0.284999937" quat="0.49999997 0.50000001 0.50000001 0.50000001" type="cylinder" size="0.0700000003 0.0815650001" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
           <body name="LH_SHANK" gravcomp="1" pos="-0.180499986 -1.07586384e-08 -0.284999937" quat="6.123234e-17 0 0.389418342 0.921060994">
             <inertial mass="0.4995400011539459" pos="0.00893208478 0.0218162388 0.000419159216" quat="0.999884248 -0.0115914457 -0.00266802544 0.00949539244" diaginertia="0.00167160423 0.000549681194 0.00127452367" />
             <geom material="anymal_dark" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_024_LH_SHANK" />
-            <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="0.00535885245 0.100000001 -0.164216787" quat="-0.707106769 0 0 0.707106793" type="cylinder" size="0.0175000001 0.197860003" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+            <geom rgba="0.7 0.72 0.75 1" group="3" contype="1" conaffinity="1" pos="0.00535885245 0.100000001 -0.164216787" quat="-0.707106769 0 0 0.707106793" type="cylinder" size="0.0175000001 0.197860003" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
             <body name="LH_FOOT" gravcomp="1" pos="0.022250006 0.100000001 -0.392459959" quat="0.707106793 0 0 -0.707106769">
               <inertial mass="0.2964400053024292" pos="0 -0.01559 0.150040001" quat="0.999867857 0.0162580702 3.06376455e-06 -0.000146843653" diaginertia="0.00514263101 0.0051369057 0.000113591734" />
               <geom material="anymal_foot_dark" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_025_LH_FOOT" />
-              <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="0 -0.00814115349 0.0303831976" quat="1 0 0 0" type="ellipsoid" size="0.031454999 0.031454999 0.031454999" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+              <geom rgba="0.7 0.72 0.75 1" group="3" contype="1" conaffinity="1" pos="0 -0.00814115349 0.0303831976" quat="1 0 0 0" type="ellipsoid" size="0.031454999 0.031454999 0.031454999" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
             </body>
           </body>
         </body>
@@ -282,19 +282,19 @@
         <geom material="anymal_red_shell" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_026_RF_HIP" />
         <body name="RF_THIGH" gravcomp="1" pos="0.0689999983 -0.00600000005 0" quat="0.693011735 0.140480433 0.140480429 0.693011711">
           <inertial mass="5.132199764251709" pos="-0.0905113071 8.79575164e-05 -0.140188009" quat="0.986364365 0.0124144368 0.102930076 0.127814651" diaginertia="0.109193631 0.107873425 0.00970475469" />
-          <geom material="anymal_shell" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_027_RF_THIGH" />
-          <geom material="anymal_shell" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_028_RF_THIGH" />
-          <geom material="anymal_shell" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_029_RF_THIGH" />
-          <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="-0.0951299965 5.67018965e-09 -0.142499968" quat="-0.707106769 0 0 0.707106793" type="box" size="0.0465000011 0.0315000005 0.142499998" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
-          <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="-0.125064999 7.45445483e-09 -0.284999937" quat="-0.49999997 -0.50000001 0.50000001 0.50000001" type="cylinder" size="0.0700000003 0.0815650001" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+          <geom material="anymal_red_shell" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_027_RF_THIGH" />
+          <geom material="anymal_red_shell" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_028_RF_THIGH" />
+          <geom material="anymal_red_shell" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_029_RF_THIGH" />
+          <geom rgba="0.7 0.72 0.75 1" group="3" contype="1" conaffinity="1" pos="-0.0951299965 5.67018965e-09 -0.142499968" quat="-0.707106769 0 0 0.707106793" type="box" size="0.0465000011 0.0315000005 0.142499998" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+          <geom rgba="0.7 0.72 0.75 1" group="3" contype="1" conaffinity="1" pos="-0.125064999 7.45445483e-09 -0.284999937" quat="-0.49999997 -0.50000001 0.50000001 0.50000001" type="cylinder" size="0.0700000003 0.0815650001" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
           <body name="RF_SHANK" gravcomp="1" pos="-0.180499986 1.07586384e-08 -0.284999937" quat="3.40440321e-08 8.72532018e-16 0.389418342 0.921060994">
             <inertial mass="0.4995400011539459" pos="0.00893208291 0.0218162388 0.000419159216" quat="0.999884248 -0.0115914429 -0.00266802637 0.00949545205" diaginertia="0.00167160423 0.000549681194 0.00127452367" />
             <geom material="anymal_dark" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_030_RF_SHANK" />
-            <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="0.00535884034 0.100000001 -0.164216787" quat="0.707106769 0 0 0.707106793" type="cylinder" size="0.0175000001 0.197860003" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+            <geom rgba="0.7 0.72 0.75 1" group="3" contype="1" conaffinity="1" pos="0.00535884034 0.100000001 -0.164216787" quat="0.707106769 0 0 0.707106793" type="cylinder" size="0.0175000001 0.197860003" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
             <body name="RF_FOOT" gravcomp="1" pos="0.0222499948 0.100000001 -0.392459959" quat="0.707106793 0 0 0.707106769">
               <inertial mass="0.2964400053024292" pos="0 0.01559 0.150040001" quat="0.999867857 -0.0162580702 -3.06376455e-06 -0.000146843653" diaginertia="0.00514263101 0.0051369057 0.000113591734" />
               <geom material="anymal_foot_dark" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_031_RF_FOOT" />
-              <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="0 0.00814115349 0.0303831976" quat="1 0 0 0" type="ellipsoid" size="0.031454999 0.031454999 0.031454999" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+              <geom rgba="0.7 0.72 0.75 1" group="3" contype="1" conaffinity="1" pos="0 0.00814115349 0.0303831976" quat="1 0 0 0" type="ellipsoid" size="0.031454999 0.031454999 0.031454999" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
             </body>
           </body>
         </body>
@@ -304,19 +304,19 @@
         <geom material="anymal_red_shell" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_032_RH_HIP" />
         <body name="RH_THIGH" gravcomp="1" pos="0.0689999983 0.005999994 0" quat="-0.693011677 0.140480422 -0.14048044 0.69301177">
           <inertial mass="5.132199764251709" pos="-0.0905113071 -8.79521613e-05 -0.140188009" quat="0.990359783 -0.00771401869 0.10339988 -0.0918506235" diaginertia="0.109149449 0.107918642 0.00970372185" />
-          <geom material="anymal_shell" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_033_RH_THIGH" />
-          <geom material="anymal_shell" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_034_RH_THIGH" />
-          <geom material="anymal_shell" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_035_RH_THIGH" />
-          <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="-0.0951299965 5.6701896e-09 -0.142499968" quat="-0.707106769 0 0 0.707106793" type="box" size="0.0465000011 0.0315000005 0.142499998" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
-          <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="-0.125064999 7.45445483e-09 -0.284999937" quat="0.49999997 0.50000001 -0.50000001 -0.50000001" type="cylinder" size="0.0700000003 0.0815650001" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+          <geom material="anymal_red_shell" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_033_RH_THIGH" />
+          <geom material="anymal_red_shell" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_034_RH_THIGH" />
+          <geom material="anymal_red_shell" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_035_RH_THIGH" />
+          <geom rgba="0.7 0.72 0.75 1" group="3" contype="1" conaffinity="1" pos="-0.0951299965 5.6701896e-09 -0.142499968" quat="-0.707106769 0 0 0.707106793" type="box" size="0.0465000011 0.0315000005 0.142499998" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+          <geom rgba="0.7 0.72 0.75 1" group="3" contype="1" conaffinity="1" pos="-0.125064999 7.45445483e-09 -0.284999937" quat="0.49999997 0.50000001 -0.50000001 -0.50000001" type="cylinder" size="0.0700000003 0.0815650001" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
           <body name="RH_SHANK" gravcomp="1" pos="-0.180499986 1.07586384e-08 -0.284999937" quat="-3.40440324e-08 8.72532018e-16 -0.389418342 0.921060994">
             <inertial mass="0.4995400011539459" pos="0.00893208478 -0.0218162388 0.000419159216" quat="0.999884248 0.0115914457 -0.00266802544 -0.00949539244" diaginertia="0.00167160423 0.000549681194 0.00127452367" />
             <geom material="anymal_dark" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_036_RH_SHANK" />
-            <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="0.00535885245 -0.100000001 -0.164216787" quat="0.707106769 0 0 0.707106793" type="cylinder" size="0.0175000001 0.197860003" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+            <geom rgba="0.7 0.72 0.75 1" group="3" contype="1" conaffinity="1" pos="0.00535885245 -0.100000001 -0.164216787" quat="0.707106769 0 0 0.707106793" type="cylinder" size="0.0175000001 0.197860003" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
             <body name="RH_FOOT" gravcomp="1" pos="0.022250006 -0.100000001 -0.392459959" quat="0.707106793 0 0 0.707106769">
               <inertial mass="0.2964400053024292" pos="0 0.01559 0.150040001" quat="0.999867857 -0.0162580702 3.06376455e-06 0.000146843653" diaginertia="0.00514263101 0.0051369057 0.000113591734" />
               <geom material="anymal_foot_dark" group="2" contype="0" conaffinity="0" mass="0" type="mesh" mesh="anymal_037_RH_FOOT" />
-              <geom rgba="0.7 0.72 0.75 1" group="3" contype="2" conaffinity="1" pos="-5.55111512e-17 0.00814115349 0.0303831976" quat="1 0 0 0" type="ellipsoid" size="0.031454999 0.031454999 0.031454999" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
+              <geom rgba="0.7 0.72 0.75 1" group="3" contype="1" conaffinity="1" pos="-5.55111512e-17 0.00814115349 0.0303831976" quat="1 0 0 0" type="ellipsoid" size="0.031454999 0.031454999 0.031454999" friction="2 0.05 0.0002" solref="0.005 1" solimp="0.95 0.99 0.001" />
             </body>
           </body>
         </body>

@@ -90,12 +90,12 @@ def material_name(prim, component):
         return "dynaarm_dark_metal" if "wrist_2" in path else "dynaarm_shell"
     if "foot" in path:
         return "anymal_foot_dark"
-    if "hip" in path:
+    if "hip" in path or "thigh" in path and "shell" in path:
         return "anymal_red_shell"
     if "shank" in path:
         return "anymal_dark"
-    # Base and thighs keep the shell/frame split the USD binding implies.
-    return "anymal_shell" if "shell" in path or "thigh" in path else "anymal_dark"
+    # The base keeps the shell/frame split the USD binding implies.
+    return "anymal_shell" if "shell" in path else "anymal_dark"
 
 
 class Converter:
@@ -236,7 +236,11 @@ class Converter:
                     ET.SubElement(body, "geom", attrs)
                 if collision:
                     attrs.pop("mass", None)
-                    attrs.update(group="3", contype="2", conaffinity="1", friction="2 0.05 0.0002",
+                    # contype 1 is the robot mask. The modules are emitted with
+                    # contype 2, conaffinity 1, so a robot geom carrying 2 pairs
+                    # with nothing: (2 & 1) is 0 both ways and the arm passes
+                    # straight through the board.
+                    attrs.update(group="3", contype="1", conaffinity="1", friction="2 0.05 0.0002",
                                  solref="0.005 1", solimp="0.95 0.99 0.001")
                     ET.SubElement(body, "geom", attrs)
 
