@@ -1193,29 +1193,79 @@ def emit_robot(cfg, menagerie: Path, board, hiveboard: Path):
 
 
 def build(hiveboard: Path, robot=None, isaaclab_repo=None, usd_cache=None):
-    # A full build empties public/sim/models first, so anything that cannot be
-    # sourced has to be caught here rather than half way through: ANYmal needs
-    # USD assets this repo does not carry, and failing on it after the wipe
-    # leaves the checkout with no models at all.
+    # ANYmal is converted from USD assets this repo does not carry, so most
+    # checkouts cannot rebuild it -- but its generated scene and meshes are
+    # committed. Decide that before the wipe below: a full build keeps what is
+    # already on disk and rebuilds everything else, while asking for ANYmal
+    # specifically is an error, since there is nothing to build it from.
     import anymal_model
-    if (robot in (None, "anymal")
-            and anymal_model.arm_usd(isaaclab_repo or REPO.parent.parent) is None):
-        raise SystemExit(anymal_model.missing_usd_message(isaaclab_repo or REPO.parent.parent))
+    source_root = isaaclab_repo or REPO.parent.parent
+    keep_anymal = anymal_model.arm_usd(source_root) is None
+    if keep_anymal and robot == "anymal":
+        raise SystemExit(anymal_model.missing_usd_message(source_root))
 
     menagerie = None if robot == "anymal" else ensure_menagerie()
+
+    # A full build empties public/sim/models before it writes anything, so any
+    # failure past that point would otherwise leave the checkout with no models
+    # at all -- and most of them cannot be regenerated everywhere. Keep a copy
+    # until the build has finished.
+    backup = OUT.with_name(OUT.name + ".bak")
+    shutil.rmtree(backup, ignore_errors=True)
+    if OUT.exists():
+        shutil.copytree(OUT, backup)
+
+    try:
+        catalogue = emit_all(hiveboard, robot, keep_anymal, menagerie,
+                             isaaclab_repo, usd_cache, source_root)
+    except BaseException:
+        # Put back what the wipe removed, so a failed build costs nothing but
+        # the time it ran for.
+        if backup.exists():
+            shutil.rmtree(OUT, ignore_errors=True)
+            backup.rename(OUT)
+            print(f"build failed -- {OUT.name} restored from backup", file=sys.stderr)
+        raise
+
+    (OUT / "robots.json").write_text(json.dumps(catalogue, indent=1) + "\n")
+    manifest()
     if robot is None:
-        shutil.rmtree(OUT, ignore_errors=True)
+        vendor()
+    shutil.rmtree(backup, ignore_errors=True)
+
+
+def emit_all(hiveboard, robot, keep_anymal, menagerie, isaaclab_repo, usd_cache, source_root):
+    import anymal_model
+
+    # Whatever is not rebuilt this run has to survive the wipe, along with the
+    # catalogue entry describing it.
+    existing = {}
+    if (OUT / "robots.json").exists():
+        existing = {r["name"]: r for r in json.loads((OUT / "robots.json").read_text())}
+    if robot is None:
+        spared = {"anymal.xml", "anymal.traj.json", "assets/anymal"} if keep_anymal else set()
+        for child in sorted(OUT.glob("*")) if OUT.exists() else []:
+            if child.name in spared or child.name.removesuffix(".gz") in spared:
+                continue
+            if child.name == "assets":
+                for asset_dir in sorted(child.glob("*")):
+                    if f"assets/{asset_dir.name}" not in spared:
+                        shutil.rmtree(asset_dir, ignore_errors=True)
+                continue
+            child.unlink(missing_ok=True) if child.is_file() else shutil.rmtree(child, ignore_errors=True)
+        if keep_anymal:
+            if "anymal" not in existing:
+                raise SystemExit(anymal_model.missing_usd_message(source_root))
+            print("  anymal (kept: no DynaArm USD to rebuild it from)")
+
     (OUT / "assets/fr3").mkdir(parents=True, exist_ok=True)
     (OUT / "assets/hb").mkdir(parents=True, exist_ok=True)
 
     board = build_board(hiveboard)
 
-    existing = {}
-    if robot and (OUT / "robots.json").exists():
-        existing = {r["name"]: r for r in json.loads((OUT / "robots.json").read_text())}
     catalogue = []
     for cfg in ROBOTS:
-        if robot and cfg["name"] != robot:
+        if (robot and cfg["name"] != robot) or (keep_anymal and cfg["name"] == "anymal"):
             if cfg["name"] in existing:
                 catalogue.append(existing[cfg["name"]])
             continue
@@ -1227,11 +1277,7 @@ def build(hiveboard: Path, robot=None, isaaclab_repo=None, usd_cache=None):
             print(f"  {cfg['name']:6s} (soon)")
             continue
         catalogue.append(emit_robot(cfg, menagerie, board, hiveboard))
-
-    (OUT / "robots.json").write_text(json.dumps(catalogue, indent=1) + "\n")
-    manifest()
-    if robot is None:
-        vendor()
+    return catalogue
 
 
 def vendor():
@@ -1242,7 +1288,7 @@ def vendor():
     three = REPO / "node_modules/three"
 
     shutil.copyfile(mj / "mujoco.js", dst / "mujoco.js")
-    (dst / "mujoco.wasm.gz").write_bytes(gzip.compress((mj / "mujoco.wasm").read_bytes(), 9))
+    (dst / "mujoco.wasm.gz").write_bytes(gzip.compress((mj / "mujoco.wasm").read_bytes(), 9, mtime=0))
     for src in [three / "build/three.module.min.js",
                 three / "build/three.core.min.js",
                 three / "examples/jsm/controls/OrbitControls.js"]:
@@ -1299,9 +1345,12 @@ def settle(cfg, path: Path, key):
 
 def manifest():
 
+    # mtime=0 keeps the packing reproducible: gzip stamps the current time into
+    # its header otherwise, so an unchanged asset re-packs to different bytes
+    # and a rebuild shows every .gz as modified.
     def emit(path: Path) -> int:
         data = path.read_bytes()
-        packed = gzip.compress(data, 9)
+        packed = gzip.compress(data, 9, mtime=0)
         gz = path.with_suffix(path.suffix + ".gz")
         if not gz.exists() or gzip.decompress(gz.read_bytes()) != data:
             gz.write_bytes(packed)

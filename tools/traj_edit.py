@@ -422,7 +422,7 @@ def handle_draft_save(name, module, keys):
     path = MODELS / f"{name}.traj.json"
     st.dump(tasks, path)
     path.with_suffix(path.suffix + ".gz").write_bytes(
-        gzip.compress(path.read_bytes(), 9))
+        gzip.compress(path.read_bytes(), 9, mtime=0))
     print(f"  saved {module:12s} draft: {len(clean)} pose(s), {samples} samples")
     return {"saved": str(st.EDITS_FILE.relative_to(REPO)), "module": module,
             "ok": True, "poses": len(clean), "samples": samples}
@@ -453,7 +453,7 @@ def republish(name, edits, manual_keys=None):
     path = MODELS / f"{name}.traj.json"
     st.dump(tasks, path)
     gz = path.with_suffix(path.suffix + ".gz")
-    gz.write_bytes(gzip.compress(path.read_bytes(), 9))
+    gz.write_bytes(gzip.compress(path.read_bytes(), 9, mtime=0))
     return report
 
 

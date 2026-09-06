@@ -43,7 +43,7 @@ def main():
             text = json.dumps(trajectories, separators=(",", ":")) + "\n"
             path.write_text(text)
             (path.parent / f"{path.name}.gz").write_bytes(
-                gzip.compress(text.encode(), 9))
+                gzip.compress(text.encode(), 9, mtime=0))
             touched += 1
         print(f"  {robot:11s} {len(saved):2d} saved, {len(changed):2d} updated"
               + (f"   (no such task: {', '.join(missing)})" if missing else ""))

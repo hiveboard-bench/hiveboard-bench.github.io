@@ -12,7 +12,7 @@ def main():
     count = 0
     for path in sorted(glob.glob(f"{MODELS}/**/*.stl", recursive=True)):
         data = open(path, "rb").read()
-        packed = gzip.compress(data, 9)
+        packed = gzip.compress(data, 9, mtime=0)
         gz_path = path + ".gz"
         if not os.path.exists(gz_path) or gzip.decompress(open(gz_path, "rb").read()) != data:
             open(gz_path, "wb").write(packed)
