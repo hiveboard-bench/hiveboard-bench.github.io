@@ -50,7 +50,19 @@ export function attach(sim) {
       state.loaded = false;
       throw new Error(`no answer from ${API} — is \`python3 tools/traj_edit.py\` running?`);
     }
-    const data = await resp.json().catch(() => ({ error: `HTTP ${resp.status}` }));
+    // A body that will not parse used to surface as a bare `HTTP 200`, which
+    // says nothing about what actually came back.  Report the content type and
+    // the start of the body instead -- an HTML page here means the request
+    // reached something other than traj_edit.py.
+    const raw = await resp.text();
+    let data;
+    try {
+      data = JSON.parse(raw);
+    } catch (_) {
+      const type = resp.headers.get('content-type') || 'no content-type';
+      const snippet = raw.trim().slice(0, 160) || '(empty body)';
+      throw new Error(`${API + path} answered ${resp.status} with ${type}, not JSON: ${snippet}`);
+    }
     if (data.error) throw new Error(data.error);
     return data;
   }
