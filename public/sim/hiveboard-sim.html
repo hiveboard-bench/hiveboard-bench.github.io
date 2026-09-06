@@ -1620,6 +1620,20 @@
       previewItem = null;
       clearModulePreview();
       drawPath();
+      // A platform with nothing published would otherwise render as thirteen
+      // "— soon" rows, which says less than one honest line. Outside edit mode,
+      // where the whole list is needed to author against, say it once.
+      if (!PLACE_EDIT && !Object.keys(trajectories).length) {
+        const opt = document.createElement('option');
+        opt.textContent = `${robot.label} — model preview, no trajectory yet`;
+        opt.classList.add('pending');
+        opt.disabled = true;
+        select.appendChild(opt);
+        select.onchange = null;
+        setModuleVisibility(null);
+        updateReadout();
+        return;
+      }
       for (const item of TASK_CATALOGUE) {
         const entry = item.traj ? trajectories[item.traj] : null;
         const opt = document.createElement('option');
