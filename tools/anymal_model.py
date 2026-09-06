@@ -91,9 +91,9 @@ def material_name(prim, component):
         return "dynaarm_joint_metal" if "wrist_2" in path else "dynaarm_carbon_dark"
     if "foot" in path:
         return "anymal_foot_dark"
-    if "hip" in path or "thigh" in path:
+    if "hip" in path:
         return "anymal_shell"
-    if "shank" in path:
+    if "thigh" in path or "shank" in path:
         return "anymal_dark"
     # The body: the outer covers are the red ones, everything else is frame.
     return "anymal_red_shell" if "shell" in path or "cover" in path else "anymal_dark"
