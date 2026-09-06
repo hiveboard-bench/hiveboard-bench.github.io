@@ -5,8 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HiveBoard</title>
-  <link rel="icon" type="image/svg+xml" sizes="any" href="assets/favicon.svg">
-  <link rel="alternate icon" type="image/png" href="assets/favicon.png">
+  <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
     <link rel="preload" href="./fonts/poppins-400-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="./fonts/poppins-600-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="./fonts/fonts.css">
@@ -117,11 +116,13 @@
             <span class="author-block">Gianluca Capezzuto<sup>1</sup>,</span>
             <span class="author-block">Matheus P. Angarola<sup>1</sup>,</span>
             <span class="author-block">Felipe A. G. Tommaselli<sup>1</sup>,</span>
-            <span class="author-block">Rafael R. Baptista<sup>5</sup>,</span>
-            <span class="author-block">Meiko Adriana van Berge<sup>6</sup>,</span>
-            <span class="author-block">Ranulfo Bezerra<sup>7</sup>,</span>
-            <span class="author-block">Gustavo J. G. Lahr<sup>4</sup>,</span>
+            <span class="author-block">Giuseppe Milazzo<sup>4</sup>,</span>
+            <span class="author-block">Rafael R. Baptista<sup>6</sup>,</span>
+            <span class="author-block">Meiko Adriana van Berge<sup>7</sup>,</span>
+            <span class="author-block">Ranulfo Bezerra<sup>8</sup>,</span>
+            <span class="author-block">Gustavo J. G. Lahr<sup>5</sup>,</span>
             <span class="author-block">Lucas Ferrari Gerez<sup>2</sup>,</span>
+            <span class="author-block">Antonio Bicchi<sup>4</sup>,</span>
             <span class="author-block">Marcelo Becker<sup>1</sup></span>
           </div>
 
@@ -131,11 +132,12 @@
             <span class="author-block"><sup>2</sup>ARARA Lab, James Watt School of Engineering, University of Glasgow,
               Scotland, UK</span><br>
             <span class="author-block"><sup>3</sup>The Robotics Systems Lab ETH Zurich, Zurich, Switzerland</span><br>
-            <span class="author-block"><sup>4</sup>Instituto Israelita de Ensino e Pesquisa Albert Einstein, Hospital
+            <span class="author-block"><sup>4</sup>Soft Robotics for Human Cooperation and Rehabilitation, Istituto Italiano di Tecnologia, Genoa, Italy</span><br>
+            <span class="author-block"><sup>5</sup>Instituto Israelita de Ensino e Pesquisa Albert Einstein, Hospital
               Israelita Albert Einstein, São Paulo, Brazil</span><br>
-            <span class="author-block"><sup>5</sup>Biomedical Engineering Laboratory, University of São Paulo, Brazil</span><br>
-            <span class="author-block"><sup>6</sup>Independent researcher</span><br>
-            <span class="author-block"><sup>7</sup>Graduate School of Engineering, Tohoku University, Sendai, Japan</span>
+            <span class="author-block"><sup>6</sup>Biomedical Engineering Laboratory, University of São Paulo, Brazil</span><br>
+            <span class="author-block"><sup>7</sup>Independent researcher</span><br>
+            <span class="author-block"><sup>8</sup>Graduate School of Engineering, Tohoku University, Sendai, Japan</span>
           </div>
 
           <div class="mb-4" style="font-size: 0.9rem; color: #94a3b8;">
@@ -170,12 +172,20 @@
                   style="min-width: 50px; display: inline-block; text-align: center;">arXiv</span>
               </a>
 
-                            <a href="https://github.com/EESC-LabRoM/HiveBoard" class="button is-rounded is-outlined hero-link-btn"
+                            <a href="https://github.com/EESC-LabRoM/HiveBoard" target="_blank" rel="noopener noreferrer" class="button is-rounded is-outlined hero-link-btn"
                 style="border-color: #cbd5e1; color: #334155; font-weight: 500; padding: 0 1.2rem; transition: all 0.2s;">
                 <span class="icon" style="color: #475569;">
                   <i class="fab fa-github"></i>
                 </span>
                 <span>GitHub</span>
+              </a>
+
+              <a href="https://www.ricardovgodoy.com/hiveboard-docs/" target="_blank" rel="noopener noreferrer" class="button is-rounded is-outlined hero-link-btn"
+                style="border-color: #cbd5e1; color: #334155; font-weight: 500; padding: 0 1.2rem; transition: all 0.2s;">
+                <span class="icon" style="color: #475569;">
+                  <i class="fas fa-clipboard-check"></i>
+                </span>
+                <span>Protocol</span>
               </a>
             </div>
 
@@ -184,14 +194,53 @@
             </div>
           </div>
 
-                    <div class="mt-6" style="width: 100%; max-width: 960px; margin-left: auto; margin-right: auto;">
-            <figure class="image is-16by9"
-              style="border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid #e2e8f0;">
-              <iframe class="has-ratio" width="640" height="360" src="https://www.youtube.com/embed/kaYB_Oc64nA"
-                frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen></iframe>
-            </figure>
+                    <div class="hero-slider-container mt-6">
+            <div class="hero-slider-stage" id="heroSliderStage">
+              <!-- Card 0 -->
+              <div class="hero-slider-card is-center" data-index="0">
+                <video class="hero-video-player" playsinline preload="metadata" poster="./assets/posters/video_1.webp" src="./assets/videos/video_1.mp4"></video>
+                <div class="hero-video-overlay" role="button" aria-label="Play video 1" tabindex="0">
+                  <div class="hero-video-thumb">
+                    <img src="./assets/Hiveboard4.webp" alt="HiveBoard" class="hero-thumb-hiveboard" />
+                  </div>
+                  <div class="hero-play-button">
+                    <svg class="hero-play-icon" viewBox="0 0 24 24">
+                      <polygon points="6,4 20,12 6,20" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 1 -->
+              <div class="hero-slider-card is-right" data-index="1">
+                <video class="hero-video-player" playsinline preload="metadata" poster="./assets/posters/video_2.webp" src="./assets/videos/video_2.mp4"></video>
+                <div class="hero-video-overlay" role="button" aria-label="Play video 2" tabindex="0">
+                  <div class="hero-video-thumb">
+                    <img src="./assets/Hiveboard4.webp" alt="HiveBoard" class="hero-thumb-hiveboard" />
+                  </div>
+                  <div class="hero-play-button">
+                    <svg class="hero-play-icon" viewBox="0 0 24 24">
+                      <polygon points="6,4 20,12 6,20" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 2 -->
+              <div class="hero-slider-card is-left" data-index="2">
+                <video class="hero-video-player" playsinline preload="metadata" poster="./assets/posters/video_3.webp" src="./assets/videos/video_3.mp4"></video>
+                <div class="hero-video-overlay" role="button" aria-label="Play video 3" tabindex="0">
+                  <div class="hero-video-thumb">
+                    <img src="./assets/Hiveboard4.webp" alt="HiveBoard" class="hero-thumb-hiveboard" />
+                  </div>
+                  <div class="hero-play-button">
+                    <svg class="hero-play-icon" viewBox="0 0 24 24">
+                      <polygon points="6,4 20,12 6,20" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -636,10 +685,14 @@
           </div>
 
           <p class="mt-2" style="font-size: 0.75rem; color: #94a3b8;">
-            Pick a platform and a task, and the arm runs a fixed trajectory for it against a seven-cell board
-            carrying the ball valve, lamp and circuit breaker modules. Each trajectory is solved offline and then
-            replayed through this same physics before it ships, so a platform only offers the tasks it was actually
-            able to complete &mdash; which is why the lists differ. Robot models from
+            Pick a platform and a task, and the arm runs a fixed trajectory for it against a seven-cell board,
+            the swappable centre cell holding whichever module the task calls for.
+            <strong style="color: #64748b; font-weight: 600;">These are demonstrations, not benchmark runs &mdash;
+            they do not follow the evaluation protocol.</strong> They are here to show what each task looks like:
+            most replay an authored module motion alongside the arm rather than manipulating it through contact,
+            and only a few &mdash; the circuit breaker, and the ball valve on Spot and the SO-101 &mdash; are driven
+            by the arm for real. Every trajectory is solved offline against the actual scene, so a platform lists
+            only the tasks it could reach; the rest show as coming soon, which is why the lists differ. Robot models from
             <a href="https://github.com/google-deepmind/mujoco_menagerie" target="_blank" rel="noopener"
               style="color: #94a3b8; text-decoration: underline;">mujoco_menagerie</a> (Apache-2.0); interactive simulator interface based on <a href="https://younghyopark.me/tune-to-learn/" target="_blank" rel="noopener noreferrer"
               style="color: #94a3b8; text-decoration: underline;">Tune to Learn</a>; board and
@@ -979,7 +1032,7 @@
         </div>
         <p class="has-text-justified mb-5" style="color: #94a3b8; line-height: 1.6;">
           Recorded trials from the cross-laboratory validation. Each laboratory printed the board from the released
-          files and ran the same <a class="protocol-link" href="https://github.com/EESC-LabRoM/HiveBoard/blob/main/Documentation/PROTOCOL.md" target="_blank" rel="noopener noreferrer">protocol</a> on its own hardware, so a single attachment can be compared across a
+          files and ran the same <a class="protocol-link" href="https://www.ricardovgodoy.com/hiveboard-docs/" target="_blank" rel="noopener noreferrer">protocol</a> on its own hardware, so a single attachment can be compared across a
           quadruped-mounted gripper, a legged manipulator commanded through virtual reality, a tabletop arm, and a
           prosthetic hand worn on an operator&rsquo;s forearm.
         </p>
@@ -2141,7 +2194,7 @@
         </div>
 
         <p class="has-text-justified mb-5" style="color: #475569; line-height: 1.7;">
-          Each laboratory prints the board from the released files and runs the same <a class="protocol-link" href="https://github.com/EESC-LabRoM/HiveBoard/blob/main/Documentation/PROTOCOL.md" target="_blank" rel="noopener noreferrer">protocol</a> on its own hardware: five
+          Each laboratory prints the board from the released files and runs the same <a class="protocol-link" href="https://www.ricardovgodoy.com/hiveboard-docs/" target="_blank" rel="noopener noreferrer">protocol</a> on its own hardware: five
           recorded trials per attachment, a fixed neutral start pose, per-attachment timeouts, no scripted assistance.
           <strong style="color: #0f172a;">Select any cell, platform, or attachment</strong> to see what happened in
           those trials.
@@ -3026,9 +3079,9 @@
   author  = {Godoy, Ricardo V. and de Souza, Enzo F. and de Lange, Rudy De-Xin and
              Negri, Juliano and Marsicano, Jo\~{a}o A. and van Halst, Victor and
              Elanjimattathil Vijayan, Aravind and Capezzuto, Gianluca and
-             Angarola, Matheus P. and Tommaselli, Felipe A. G. and Baptista, Rafael R. and
-             van Berge, Meiko Adriana and Bezerra, Ranulfo and Lahr, Gustavo J. G. and Ferrari Gerez, Lucas and
-             Becker, Marcelo},
+             Angarola, Matheus P. and Tommaselli, Felipe A. G. and Milazzo, Giuseppe and Baptista, Rafael R. and
+              van Berge, Meiko Adriana and Bezerra, Ranulfo and Lahr, Gustavo J. G. and Ferrari Gerez, Lucas and
+              Bicchi, Antonio and Becker, Marcelo},
   journal = {Under review},
   year    = {2026},
   url     = {https://github.com/EESC-LabRoM/HiveBoard}
@@ -3066,6 +3119,7 @@
           <img src="./assets/logos/usp-seeklogo.png" alt="University of São Paulo" style="height: 48px; width: auto; max-width: 150px; object-fit: contain;">
           <img src="./assets/logos/eth_logo.jpg" alt="ETH Zürich" style="height: 68px; width: auto; max-width: 210px; object-fit: contain;">
           <img src="./assets/logos/univ_glasgow_logo.png" alt="University of Glasgow" style="height: 48px; width: auto; max-width: 150px; object-fit: contain;">
+          <img src="./assets/logos/iit_logo.png" alt="Istituto Italiano di Tecnologia" style="height: 48px; width: auto; max-width: 150px; object-fit: contain;">
           <img src="./assets/logos/albert-einstein-hospital-seeklogo.svg" alt="Albert Einstein Hospital" style="height: 48px; width: auto; max-width: 150px; object-fit: contain;">
           <img src="./assets/logos/tohoku_logo.svg" alt="Tohoku University" style="height: 85px; width: auto; max-width: 210px; object-fit: contain;">
         </div>

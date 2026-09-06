@@ -18,7 +18,7 @@ UA = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
 USED = {
     "solid": ["play-circle", "play", "chevron-right", "chevron-left", "cube",
               "network-wired", "microchip", "hand-pointer", "file-pdf",
-              "check", "angle-down"],
+              "check", "angle-down", "clipboard-check", "clipboard-list", "book-open"],
     "regular": ["copy"],
     "brands": ["python", "github"],
 }

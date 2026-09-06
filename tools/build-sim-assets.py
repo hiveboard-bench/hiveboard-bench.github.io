@@ -41,6 +41,15 @@ CELLS = [
     (0.043301, -0.075),
 ]
 
+
+LAY_FLAT = (0.0, math.pi / 2, 0.0)      # plate normal +Z -> +X
+LAY_SIDE = (0.0, 0.0, math.pi / 2)      # plate normal -Y -> +X
+
+SPIN = {"stiffness": "0", "damping": "0.02", "armature": "0.0008",
+        "limited": "true"}
+LOCKED = {"stiffness": "0", "damping": "5", "limited": "true",
+          "range": "-0.0005 0.0005"}
+
 MODULES = [
     {"name": "valve", "urdf": "Valves/Lever Valve/Ball Valve/Ball_Valve.urdf", "cell": 2,
      "joints": {"RevoluteJoint": {"stiffness": "0", "damping": "0.1",
@@ -53,7 +62,73 @@ MODULES = [
                                   "range": "0 6.1", "limited": "true"}}},
     {"name": "breaker", "urdf": "Circuit Breaker/Circuit_Breaker_Assembly.urdf", "cell": 6,
      "joints": {"RevoluteJoint": {"stiffness": "0"}}},
+
+    {"name": "high-valve",
+     "urdf": "Valves/Gate Valve/High Torque Valve/High_Torque_Valve.urdf",
+     "cell": 0, "align": LAY_FLAT,
+     "joints": {"RevoluteJoint": dict(SPIN, range="-6.4 6.4", frictionloss="0.05"),
+                "PrismaticJoint": LOCKED}},
+    {"name": "small-valve",
+     "urdf": "Valves/Gate Valve/Small Valve/Small_Valve.urdf",
+     "cell": 0, "align": LAY_SIDE,
+     "joints": {"RevoluteJoint": dict(SPIN, range="-6.4 6.4", frictionloss="0.02"),
+                "PrismaticJoint": LOCKED}},
+    {"name": "thread-m30", "urdf": "Threads/M30 Thread/M30.urdf",
+     "cell": 0, "align": LAY_FLAT,
+     "joints": {"RevoluteJoint": dict(SPIN, range="0 6.4", frictionloss="0.01"),
+                "PrismaticJoint": LOCKED},
+     "add": {"Nut": {"name": "RiseJoint", "type": "slide", "axis": "0 0 1",
+                     "range": "0 0.04", "damping": "1", "stiffness": "0"}},
+     "couple": ("RiseJoint", "RevoluteJoint", 0.0035)},
+    {"name": "thread-m8", "urdf": "Threads/M8 Thread/M8_Assy.urdf",
+     "cell": 0,
+     "joints": {"RevoluteJoint": dict(SPIN, range="0 6.4", frictionloss="0.002"),
+                "PrismaticJoint": {"stiffness": "0", "damping": "0.2",
+                                   "range": "0 0.02"}},
+     "couple": ("PrismaticJoint", "RevoluteJoint", 0.00125)},
+    {"name": "peg-insertion", "urdf": "Peg Insertion/Peg_insertion_1.urdf",
+     "cell": 0, "align": LAY_FLAT,
+     "split": {"child": "peg", "meshes": ["Al__a"],
+               "joint": {"name": "PrismaticJoint", "type": "slide",
+                         "axis": "0 0 1", "range": "0 0.04",
+                         "damping": "1", "stiffness": "0"}}},
+    {"name": "button-cover", "urdf": "Button/Button_Assembly.urdf", "cell": 0,
+     # the released cover hinges from the far edge; swung round it opens
+     # toward the arm instead, leaving the button clear
+     "turn": {"lid_pivot": 180, "World": 180},
+     "pose": {"RevoluteJoint": -1.5708},
+     "joints": {"PrismaticJoint": {"stiffness": "800", "damping": "2",
+                                   "range": "-0.01 0"},
+                "RevoluteJoint": {"stiffness": "0", "damping": "0.05",
+                                  "frictionloss": "0.03", "armature": "0.002"}}},
+    {"name": "key-lock", "urdf": "Key/Key_assembly.urdf", "cell": 0,
+     "split": {"child": "key",
+               "meshes": ["Key_pivot", "Cylinder", "Cube_05"],
+               "joints": [
+                   {"name": "PrismaticJoint", "type": "slide",
+                    "axis": "1 0 0", "range": "0 0.024",
+                    "damping": "0.5", "stiffness": "0",
+                    "frictionloss": "0.02"},
+                   {"name": "RevoluteJoint", "type": "hinge",
+                    "axis": "1 0 0", "range": "0 1.5708",
+                    "damping": "0.05", "stiffness": "0",
+                    "frictionloss": "0.005"}]}},
+    {"name": "drawer", "urdf": "Drawer/Drawer_Assembly.urdf", "cell": 0,
+     "split": {"child": "drawer",
+               "meshes": ["tn__Gaveta1", "Cylinder_02"],
+               "joint": {"name": "PrismaticJoint", "type": "slide",
+                         "axis": "1 0 0", "range": "0 0.05",
+                         "damping": "2", "stiffness": "0"}}},
+    {"name": "shock-absorber",
+     "urdf": "Shock Absorber/Shock_Absorber_Assembly.urdf",
+     "cell": 0, "align": LAY_FLAT,
+     "split": {"child": "rod", "meshes": ["Corpo3"],
+               "joint": {"name": "PrismaticJoint", "type": "slide",
+                         "axis": "1 0 0", "range": "0 0.03",
+                         "damping": "2", "stiffness": "120"}}},
 ]
+
+SWAP_CELL = [m["name"] for m in MODULES if m["cell"] == 0]
 
 PANEL_URDF = "Honeycomb/Honeycomb_Panel.urdf"
 
@@ -65,6 +140,12 @@ ROBOTS = [
         "arm": [f"fr3_joint{i}" for i in range(1, 8)],
         "grip": {"actuator": "gripper", "open": 0.034, "grasp": 0.002, "fist": 0.0},
         "home": [0.0, -0.0881, 0.0, -2.1491, 0.0, 2.0611, 0.79],
+        # held back for now; both show as coming soon
+        "skip": ["drawer", "button-cover"],
+        # the breaker is thrown for real, not demonstrated
+        "physical": ["breaker"],
+        # the bulb has to leave its socket, not clear it by a further tenth
+        "lamp_tolerance": 1.0,
         "board": (0.52, 0.0, 0.20),
         "bench": {"half": 0.19, "top": 0.20},
         "tcp": ("hand", (0.0, 0.0, 0.1034)),
@@ -84,6 +165,12 @@ ROBOTS = [
         "stand": {"top": 0.70, "half": 0.17},
         "grip_depth": 0.95,
         "framing": "side",
+        # Spot keeps the three original modules; the swappable centre cell
+        # stays coming soon.  It works them for real rather than
+        # demonstrating them, so its modules stay collidable and move only as
+        # far as the arm actually pushes them.
+        "skip": SWAP_CELL,
+        "scripted": False,
         "lamp_standoff": 0.01,
         "lamp_wind": 1.5,
         "lamp_approach": 0.25,
@@ -108,6 +195,12 @@ ROBOTS = [
         "rot_weight": 0.05,
         "grip_depth": 0.85,
         "spin_board": True,
+        # The SO-101 is a small 5-DOF arm: it leaves the swappable centre cell
+        # alone, and cannot reach the bulb, so the lamp stays coming soon too.
+        # What it does keep it works for real rather than demonstrating, so
+        # its modules stay collidable and move only as far as it pushes them.
+        "skip": SWAP_CELL + ["lamp"],
+        "scripted": False,
         "task_spins": {"valve": math.radians(-90), "lamp": math.radians(97)},
         "lamp_grasp_radius": 0.042,
         "lamp_tolerance": 1.0,
@@ -132,7 +225,7 @@ ROBOTS = [
         "mount": (0.0, 0.0, 0.0),
         "mount_quat": (1.0, 0.0, 0.0, 0.0),
         "framing": "side",
-        "skip": ["valve", "lamp", "breaker"],
+        "skip": [mod["name"] for mod in MODULES],
         # No solved trajectories yet -- a distinct arm rest pose per task so
         # each reads as addressing its own cell. 6 DynaArm joints, no gripper.
         "task_home": {
@@ -294,9 +387,6 @@ def prepare_platform_c(menagerie_dir: Path):
     root = tree.getroot()
     asset = root.find("asset")
 
-    # The ANYmal-C shell/leg materials carry colour only in textures we do not
-    # ship. Flatten each to a plain rgba matching the real robot: dark body,
-    # red actuator drives and top shell, near-black feet, light-grey thighs.
     ANYMAL_RGBA = {
         "base": "0.14 0.15 0.17 1", "top_shell": "0.72 0.055 0.065 1",
         "bottom_shell": "0.20 0.22 0.24 1", "hip_l": "0.14 0.15 0.17 1",
@@ -450,7 +540,18 @@ def ensure_menagerie() -> Path:
     return root
 
 
-def load_urdf(urdf: Path, workdir: Path):
+def flat_meshes(mesh_dir: Path):
+
+    out = set()
+    for obj in sorted(mesh_dir.glob("*.obj")):
+        verts = [[float(x) for x in line.split()[1:4]]
+                 for line in obj.read_text().splitlines() if line.startswith("v ")]
+        if not verts or np.ptp(np.array(verts), axis=0).min() < 1e-6:
+            out.add(obj.name)
+    return out
+
+
+def load_urdf(urdf: Path, workdir: Path, align=None):
 
     staged = workdir / urdf.parent.name
     if not staged.exists():
@@ -458,14 +559,29 @@ def load_urdf(urdf: Path, workdir: Path):
     path = staged / urdf.name
     text = path.read_text()
     if "<mujoco>" not in text:
+        for name in flat_meshes(staged / "meshes") if (staged / "meshes").is_dir() else ():
+            text = re.sub(r"\s*<(visual|collision)>(?:(?!</\1>).)*?"
+                          + re.escape(name) + r"(?:(?!</\1>).)*?</\1>",
+                          "", text, flags=re.S)
         text = re.sub(r"(<robot[^>]*>)", r"\1\n  " + URDF_HINT, text, count=1)
         path.write_text(text)
 
     model = mujoco.MjModel.from_xml_path(str(path))
     saved = workdir / (urdf.stem + ".mjcf.xml")
     mujoco.mj_saveLastXML(str(saved), model)
+    rot = rpy_matrix(align) if align else np.eye(3)
     return (ET.parse(saved).getroot(), urdf.parent / "meshes",
-            base_depth(model), reach_direction(model))
+            base_depth(model, rot), reach_direction(model, rot))
+
+
+def rpy_matrix(rpy):
+
+    r, p, y = rpy
+    cr, sr, cp, sp, cy, sy = (math.cos(r), math.sin(r), math.cos(p),
+                              math.sin(p), math.cos(y), math.sin(y))
+    return (np.array([[cy, -sy, 0], [sy, cy, 0], [0, 0, 1]])
+            @ np.array([[cp, 0, sp], [0, 1, 0], [-sp, 0, cp]])
+            @ np.array([[1, 0, 0], [0, cr, -sr], [0, sr, cr]]))
 
 
 def adopt_robot(cfg, menagerie: Path, workdir: Path, out_assets: Path):
@@ -554,9 +670,10 @@ def freeze_joints(body, keep, pose):
     return dropped
 
 
-def reach_direction(model) -> tuple:
+def reach_direction(model, rot=None) -> tuple:
     data = mujoco.MjData(model)
     mujoco.mj_forward(model, data)
+    rot = np.eye(3) if rot is None else rot
     total = np.zeros(2)
     weight = 0.0
     for g in range(model.ngeom):
@@ -566,7 +683,7 @@ def reach_direction(model) -> tuple:
         mesh = model.geom_dataid[g]
         adr, num = model.mesh_vertadr[mesh], model.mesh_vertnum[mesh]
         world = model.mesh_vert[adr:adr + num] @ data.geom_xmat[g].reshape(3, 3).T
-        world = world + data.geom_xpos[g]
+        world = (world + data.geom_xpos[g]) @ rot.T
         total += world[:, 1:].mean(axis=0) * num
         weight += num
 
@@ -577,9 +694,10 @@ def reach_direction(model) -> tuple:
     return tuple(vec / norm) if norm > 1e-6 else (0.0, 0.0)
 
 
-def base_depth(model) -> float:
+def base_depth(model, rot=None) -> float:
     data = mujoco.MjData(model)
     mujoco.mj_forward(model, data)
+    rot = np.eye(3) if rot is None else rot
     lo = 0.0
     for g in range(model.ngeom):
         if model.geom_bodyid[g] != 1 or model.geom_type[g] != mujoco.mjtGeom.mjGEOM_MESH:
@@ -587,8 +705,73 @@ def base_depth(model) -> float:
         mesh = model.geom_dataid[g]
         adr, num = model.mesh_vertadr[mesh], model.mesh_vertnum[mesh]
         world = model.mesh_vert[adr:adr + num] @ data.geom_xmat[g].reshape(3, 3).T
-        lo = min(lo, float((world + data.geom_xpos[g])[:, 0].min()))
+        lo = min(lo, float(((world + data.geom_xpos[g]) @ rot.T)[:, 0].min()))
     return -lo
+
+
+def split_body(root, prefix, spec):
+
+    base = root
+    wanted = tuple(f"{prefix}_{name}" for name in spec["meshes"])
+    moving = [g for g in base.findall("geom")
+              if (g.get("mesh") or "").startswith(wanted)]
+    if not moving:
+        raise SystemExit(f"split: no geom matched {wanted}")
+
+    child = ET.SubElement(base, "body",
+                          {"name": f"{prefix}_{spec['child']}", "pos": "0 0 0"})
+    for joint in spec.get("joints", [spec["joint"]] if "joint" in spec else []):
+        ET.SubElement(child, "joint", dict(
+            joint, name=f"{prefix}_{joint['name']}",
+            pos=spec.get("pos", "0 0 0")))
+    for geom in moving:
+        base.remove(geom)
+        child.append(geom)
+        geom.set("material", "hb_accent")
+        if geom.get("group") == "3":
+            geom.set("contype", "2")
+            geom.set("conaffinity", "1")
+            geom.set("solref", "0.004 1")
+            geom.set("solimp", "0.98 0.999 0.0005")
+    for body, mass, inertia in ((base, "0.4", "1e-3"), (child, "0.01", "1e-5")):
+        for old in body.findall("inertial"):
+            body.remove(old)
+        ET.SubElement(body, "inertial", {
+            "pos": "0 0 0", "mass": mass,
+            "diaginertia": " ".join([inertia] * 3)})
+
+
+def turn_child(root, prefix, spec):
+
+    # Rotate part of a module about its mounting normal (local +X).  Naming a
+    # child body carries its joint anchor and axis round with it -- enough to
+    # hinge a cover from the opposite edge.  Naming the module's own root
+    # spins just that body's geometry, leaving the parts hung off it where
+    # they are, so the housing can turn without moving the button or the lid.
+    for name, degrees in spec.items():
+        body = next((b for b in root.iter("body")
+                     if b.get("name") == f"{prefix}_{name}"), None)
+        if body is None:
+            raise SystemExit(f"turn: no body named {prefix}_{name}")
+        rot = rpy_matrix((math.radians(degrees), 0.0, 0.0))
+        targets = body.findall("geom") if body is root else [body]
+        for elem in targets:
+            pos = [float(v) for v in (elem.get("pos") or "0 0 0").split()]
+            quat = [float(v) for v in (elem.get("quat") or "1 0 0 0").split()]
+            elem.set("pos", fmt(rot @ np.array(pos)))
+            elem.set("quat", fmt(matrix_quat(rot @ quat_matrix(quat))))
+
+
+def add_joints(root, prefix, spec):
+
+    for body_name, joint in spec.items():
+        for body in root.iter("body"):
+            if body.get("name") == f"{prefix}_{body_name}":
+                body.insert(0, ET.Element("joint", dict(
+                    joint, name=f"{prefix}_{joint['name']}")))
+                break
+        else:
+            raise SystemExit(f"add: no body named {prefix}_{body_name}")
 
 
 def adopt(root, prefix, mesh_src: Path, meshes: dict, shell="hb_shell", pose=None, tune=None):
@@ -613,6 +796,7 @@ def adopt(root, prefix, mesh_src: Path, meshes: dict, shell="hb_shell", pose=Non
             geom.set("material", material)
             if not visual:
                 geom.set("rgba", "0 0 0 0")
+                geom.set("friction", "1.6 0.02 0.001")
                 if body is base:
                     geom.set("contype", "0")
                     geom.set("conaffinity", "0")
@@ -660,6 +844,25 @@ def fmt(vals):
     return " ".join("%.6g" % v for v in vals)
 
 
+def home_qpos(cfg, scene, path):
+
+    rest = {f"{mod['name']}_{joint}": value
+            for mod in MODULES for joint, value in mod.get("pose", {}).items()}
+    if not rest:
+        return cfg["home"]
+
+    ET.indent(scene, "  ")
+    path.write_text(ET.tostring(scene, encoding="unicode") + "\n")
+    model = mujoco.MjModel.from_xml_path(str(path))
+    qpos = model.qpos0.copy()
+    qpos[:len(cfg["home"])] = cfg["home"]
+    for name, value in rest.items():
+        jid = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_JOINT, name)
+        if jid >= 0:
+            qpos[model.jnt_qposadr[jid]] = value
+    return qpos
+
+
 def build_board(hiveboard: Path):
 
     meshes, elems, fragments = {}, [], []
@@ -673,10 +876,20 @@ def build_board(hiveboard: Path):
         elems += panel_elems
 
         for mod in MODULES:
-            root, mesh_dir, lift, reach = load_urdf(hiveboard / mod["urdf"], tmp)
+            align = mod.get("align")
+            root, mesh_dir, lift, reach = load_urdf(hiveboard / mod["urdf"], tmp,
+                                                    align)
             body, mod_elems = adopt(root, mod["name"], mesh_dir, meshes,
                                     pose=mod.get("pose"), tune=mod.get("joints"))
+            if "split" in mod:
+                split_body(body, mod["name"], mod["split"])
+            if "add" in mod:
+                add_joints(body, mod["name"], mod["add"])
+            if "turn" in mod:
+                turn_child(body, mod["name"], mod["turn"])
             pos, quat = cell_pose(mod["cell"], lift, reach)
+            if align:
+                quat = matrix_quat(quat_matrix(quat) @ rpy_matrix(align))
             body.set("pos", fmt(pos))
             body.set("quat", fmt(quat))
             fragments.append(body)
@@ -685,11 +898,15 @@ def build_board(hiveboard: Path):
     for name, (src, out_name) in meshes.items():
         emit_mesh(src, OUT / "assets/hb", out_name)
 
-    thread = ET.Element("joint", {
-        "joint1": "lamp_PrismaticJoint", "joint2": "lamp_RevoluteJoint",
-        "polycoef": "0 %.6g 0 0 0" % sim_trajectories.LAMP_PITCH,
+    threads = [("lamp", "PrismaticJoint", "RevoluteJoint",
+                sim_trajectories.LAMP_PITCH)]
+    threads += [(m["name"], *m["couple"]) for m in MODULES if "couple" in m]
+    equality = [ET.Element("joint", {
+        "joint1": f"{name}_{slide}", "joint2": f"{name}_{turn}",
+        "polycoef": "0 %.6g 0 0 0" % pitch,
         "solref": "0.01 1", "solimp": "0.95 0.999 0.001"})
-    return {"fragments": fragments, "meshes": elems, "equality": [thread]}
+        for name, slide, turn, pitch in threads]
+    return {"fragments": fragments, "meshes": elems, "equality": equality}
 
 
 def fr3_parts(menagerie: Path):
@@ -1084,11 +1301,12 @@ def emit_robot(cfg, menagerie: Path, board, hiveboard: Path):
             break
 
     key = ET.SubElement(ET.SubElement(scene, "keyframe"), "key",
-                        {"name": "home", "qpos": fmt(cfg["home"])})
+                        {"name": "home", "qpos": fmt(home_qpos(cfg, scene, path))})
     ET.indent(scene, "  ")
     path.write_text(ET.tostring(scene, encoding="unicode") + "\n")
 
     settle(cfg, path, key)
+    pin_modules(path, key)
     ET.indent(scene, "  ")
     path.write_text(ET.tostring(scene, encoding="unicode") + "\n")
 
@@ -1176,6 +1394,19 @@ def vendor():
     for name, pkg in versions.items():
         version = re.search(r'"version":\s*"([^"]+)"', pkg.read_text()).group(1)
         print(f"vendored {name} {version}")
+
+
+def pin_modules(path: Path, key):
+
+    rest = {f"{mod['name']}_{joint}": value
+            for mod in MODULES for joint, value in mod.get("pose", {}).items()}
+    model = mujoco.MjModel.from_xml_path(str(path))
+    qpos = np.array([float(v) for v in key.get("qpos").split()])
+    for j in range(model.njnt):
+        name = model.joint(j).name or ""
+        if name.split("_", 1)[0] in {mod["name"] for mod in MODULES}:
+            qpos[model.jnt_qposadr[j]] = rest.get(name, 0.0)
+    key.set("qpos", fmt(qpos))
 
 
 def settle(cfg, path: Path, key):
@@ -1293,7 +1524,7 @@ FR3_ACTUATORS = """<actuator>
   <position name="fr3_joint5" joint="fr3_joint5" kp="300" kv="14" forcerange="-12 12"/>
   <position name="fr3_joint6" joint="fr3_joint6" kp="250" kv="12" forcerange="-12 12"/>
   <position name="fr3_joint7" joint="fr3_joint7" kp="120" kv="6" forcerange="-12 12"/>
-  <position name="gripper" joint="finger_joint1" ctrlrange="0 0.04" kp="1600" kv="60"
+  <position name="gripper" joint="finger_joint1" ctrlrange="0 0.04" kp="5000" kv="90"
             forcerange="-150 150"/>
 </actuator>
 """

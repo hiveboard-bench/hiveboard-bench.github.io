@@ -130,7 +130,7 @@ If you find HiveBoard useful in your research, please cite:
 ```bibtex
 @article{godoy2024hiveboard,
   title     = {HiveBoard: An Open, Modular, 3D-Printed Benchmark of Industrial Mechanisms for Robotic and Prosthetic Manipulation},
-  author    = {Godoy, Ricardo V. and de Souza, Enzo F. and de Lange, Rudy De-Xin and Negri, Juliano and Marsicano, Jo{\~a}o A. and van Halst, Victor and Vijayan, Aravind Elanjimattathil and Capezzuto, Gianluca and Angarola, Matheus P. and Tommaselli, Felipe A. G. and Baptista, Rafael R. and van Berge, Meiko Adriana and Bezerra, Ranulfo and Lahr, Gustavo J. G. and Gerez, Lucas Ferrari and Becker, Marcelo},
+  author    = {Godoy, Ricardo V. and de Souza, Enzo F. and de Lange, Rudy De-Xin and Negri, Juliano and Marsicano, Jo{\~a}o A. and van Halst, Victor and Vijayan, Aravind Elanjimattathil and Capezzuto, Gianluca and Angarola, Matheus P. and Tommaselli, Felipe A. G. and Milazzo, Giuseppe and Baptista, Rafael R. and van Berge, Meiko Adriana and Bezerra, Ranulfo and Lahr, Gustavo J. G. and Gerez, Lucas Ferrari and Bicchi, Antonio and Becker, Marcelo},
   journal   = {arXiv preprint},
   year      = {2024}
 }

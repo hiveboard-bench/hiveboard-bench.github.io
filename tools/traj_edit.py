@@ -51,10 +51,9 @@ def scene(name):
 def factories(cfg):
 
     out = {}
-    for factory in st.TASKS:
+    for module, factory in st.TASKS.items():
         if factory.__name__.endswith("_for"):
             factory = factory(cfg)
-        module = factory.__name__.split("_")[0]
         if module not in cfg.get("skip", ()):
             out[module] = factory
     return out
@@ -442,6 +441,36 @@ def write_edits(all_edits):
     st.EDITS_FILE.write_text(json.dumps(all_edits, indent=1, sort_keys=True) + "\n")
 
 
+# Camera framing per robot and task.  It lives beside traj_edits.json rather
+# than under models/, because the asset build wipes that directory.
+VIEWS_FILE = Path(__file__).with_name("task_views.json")
+
+
+def read_views():
+
+    if VIEWS_FILE.exists():
+        return json.loads(VIEWS_FILE.read_text() or "{}")
+    return {}
+
+
+def handle_view_save(name, task, target, position):
+
+    data = read_views()
+    node = data.setdefault(name, {})
+    if target is None or position is None:
+        node.pop(task, None)
+        if not node:
+            data.pop(name, None)
+        entry = None
+    else:
+        entry = {"target": [round(float(v), 4) for v in target][:3],
+                 "position": [round(float(v), 4) for v in position][:3]}
+        node[task] = entry
+    VIEWS_FILE.write_text(json.dumps(data, indent=1, sort_keys=True) + "\n")
+    return {"saved": str(VIEWS_FILE), "view": entry,
+            "views": data.get(name, {})}
+
+
 PLACEMENT_FILE = MODELS / "module_placement.json"
 
 
@@ -521,6 +550,7 @@ class Handler(BaseHTTPRequestHandler):
                     "gripRange": grip_range(ctx),
                     "edits": robot_edits,
                     "placement": read_placement().get(name, {}),
+                    "views": read_views().get(name, {}),
                     "manualKeys": robot_edits.get("lamp", {}).get("manualKeys")}
 
         if path == "/solve":
@@ -537,6 +567,14 @@ class Handler(BaseHTTPRequestHandler):
         if path == "/draft-save":
             return handle_draft_save(name, payload["module"],
                                      payload.get("keys", []))
+
+        if path == "/views":
+            return {"views": read_views().get(name, {})}
+
+        if path == "/view-save":
+            return handle_view_save(name, payload["task"],
+                                    payload.get("target"),
+                                    payload.get("position"))
 
         if path == "/place-save":
             return handle_place_save(name, payload["module"],

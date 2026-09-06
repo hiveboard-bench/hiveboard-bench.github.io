@@ -46,7 +46,12 @@
    "valve",
    "lamp",
    "breaker",
-   "high-valve"
+   "high-valve",
+   "small-valve",
+   "thread-m30",
+   "thread-m8",
+   "peg-insertion",
+   "key-lock"
   ]
  },
  {
@@ -140,7 +145,6 @@
   ],
   "tasks": [
    "valve",
-   "lamp",
    "breaker"
   ]
  },
@@ -245,11 +249,11 @@
   ],
   "view": {
    "centre": [
-    0.6345,
-    0.0196,
+    0.6312,
+    0.0204,
     0.5777
    ],
-   "span": 0.6163
+   "span": 0.6124
   },
   "framing": "side",
   "boardNormal": [
@@ -260,7 +264,15 @@
   "tasks": [
    "valve",
    "lamp",
-   "breaker"
+   "breaker",
+   "high-valve",
+   "small-valve",
+   "thread-m30",
+   "thread-m8",
+   "peg-insertion",
+   "button-cover",
+   "key-lock",
+   "drawer"
   ]
  }
 ]
