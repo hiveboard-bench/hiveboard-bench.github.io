@@ -2497,6 +2497,37 @@
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
           }
 
+          /* Three long labels cannot sit on one line on a phone, and wrapping
+             them inside a pill leaves ragged, uneven segments.  Below the
+             tablet breakpoint the switch becomes a full-width segmented
+             control instead: equal columns, so every label gets the same box
+             however many lines it takes. */
+          @media (max-width: 768px) {
+            /* The heading row keeps title and switch side by side, which
+               leaves the switch too narrow to lay out; stack them instead. */
+            #xplatform > .xp-head {
+              flex-direction: column;
+              align-items: stretch;
+            }
+
+            .xp-switch {
+              display: grid;
+              grid-template-columns: repeat(3, 1fr);
+              width: 100%;
+              min-width: 0;
+              border-radius: 12px;
+              flex-wrap: nowrap;
+            }
+
+            .xp-switch .toggle-btn {
+              padding: 8px 4px;
+              border-radius: 9px;
+              font-size: 0.72rem;
+              line-height: 1.25;
+              hyphens: auto;
+            }
+          }
+
           .takeaway {
             cursor: pointer;
             border: 1px solid #f1f5f9;
@@ -2572,7 +2603,7 @@
 
         <div class="box mt-5" id="xplatform"
           style="border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-          <div
+          <div class="xp-head"
             style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem;">
             <h3 class="title is-5 mb-0" style="color: #0f172a;">Cross-platform analysis</h3>
             <div class="xp-switch">
