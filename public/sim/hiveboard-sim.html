@@ -650,12 +650,42 @@
       refreshViewPanel();
     }
 
+    // Swapping platforms replaces the model, the data, and every index derived
+    // from them.  The render loop must not see that half done: it steps physics
+    // and indexes task.qpos and robot.arm on every frame, so a frame landing
+    // between the trajectory fetch and the rebuild drives the outgoing model
+    // with the incoming robot's joint counts and pose -- the arm on screen
+    // flails or folds before the new one appears.  So park the loop, fetch
+    // before mutating anything, and drop the stale task with the model it
+    // belonged to.
     async function loadRobot(entry) {
-      robot = entry;
-      trajectories = await fetchJson(`${MODEL_BASE}${entry.traj}`);
+      const wasRunning = running;
+      stop();
+      try {
+        await loadRobotUnsafe(entry);
+      } finally {
+        if (wasRunning) start();
+      }
+    }
 
+    async function loadRobotUnsafe(entry) {
+      const nextTrajectories = await fetchJson(`${MODEL_BASE}${entry.traj}`);
+
+      robot = entry;
+      trajectories = nextTrajectories;
+      // Belongs to the outgoing model: its qpos layout does not survive here.
+      task = null;
+      demoStateQposAddrs = [];
+
+      const priorModel = mjModel;
+      const priorData = mjData;
       mjModel = mujoco.MjModel.from_xml_path(`/working/${entry.scene}`);
       mjData = new mujoco.MjData(mjModel);
+      // Emscripten owns these; without the explicit free every switch leaks a
+      // whole model and its data in the wasm heap.
+      for (const stale of [priorData, priorModel]) {
+        try { stale?.delete?.(); } catch (_) {  }
+      }
 
       demoCollisionState = null;
 
