@@ -243,7 +243,7 @@ ROBOTS = [
     {
         "name": "anymal",
         "label": "ANYmal-D + DynaArm + 2F-140",
-        "note": "Platform C · draft trajectories",
+        "note": "Platform C",
         "arm": ["dynaarm_" + name for name in (
             "shoulder_rotation", "shoulder_flexion", "elbow_flexion",
             "forearm_rotation", "wrist_flexion", "wrist_rotation")],

@@ -151,7 +151,7 @@
  {
   "name": "anymal",
   "label": "ANYmal-D + DynaArm + 2F-140",
-  "note": "Platform C \u00b7 draft trajectories",
+  "note": "Platform C",
   "scene": "anymal.xml",
   "traj": "anymal.traj.json",
   "arm": 6,
@@ -190,11 +190,7 @@
    0.0,
    0.0
   ],
-  "tasks": [
-   "valve",
-   "lamp",
-   "breaker"
-  ]
+  "tasks": []
  },
  {
   "name": "macao",

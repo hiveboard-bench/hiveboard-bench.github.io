@@ -1585,7 +1585,9 @@
         } else {
           readoutEl.textContent = previewItem
             ? `${previewItem.label}: no verified trajectory for this platform yet.`
-            : 'Pick a task. The arm runs a fixed trajectory for it.';
+            : Object.keys(trajectories).length
+            ? 'Pick a task. The arm runs a fixed trajectory for it.'
+            : `${robot.label} has no verified trajectory yet — the model is here to look at.`;
         }
         return;
       }
@@ -1651,10 +1653,10 @@
       const list = document.getElementById('robot-list');
       list.replaceChildren();
       for (const entry of catalogue) {
-        // anymal replaced the platform_c placeholder; its trajectories are
-        // still drafts that have not passed contact replay, so it stays
-        // behind the same gate the placeholder was.
-        const isSoon = !!entry.soon || (!PLACE_EDIT && (entry.name === 'anymal' || entry.name === 'macao'));
+        // A platform with no trajectory yet is still worth showing -- you can
+        // select it and look at the robot against the board -- so the gate is
+        // only for the ones deliberately held back.
+        const isSoon = !!entry.soon || (!PLACE_EDIT && entry.name === 'macao');
         const btn = document.createElement('button');
         btn.innerHTML = `${entry.label}<small>${isSoon ? 'coming soon' : entry.note}</small>`;
         btn.dataset.robot = entry.name;
