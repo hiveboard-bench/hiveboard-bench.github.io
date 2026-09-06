@@ -9,6 +9,8 @@ assembles one scene per robot in ROBOTS, each working the same board:
     first run and grafted in by compiling them and taking the flattened MJCF
     MuJoCo writes back -- rather than transcribing Spot's twenty-two bodies;
   * the HiveBoard modules come from the URDF release, converted the same way.
+  * ANYmal-D and its Robotiq 2F-140 are converted from NVIDIA USD assets, with
+    the local Isaac DynaArm USD mounted using the assembly's original frames.
 
 Each robot's trajectories are then solved and verified by sim_trajectories, and
 a robot only advertises the tasks it actually completed.
@@ -22,7 +24,7 @@ so GitHub Pages does not have to.
 Run after changing the scene layout or re-exporting any HiveBoard module, then
 `npm run build` to republish:
 
-    pip install mujoco numpy fast-simplification
+    pip install mujoco numpy fast-simplification usd-core
     npm install
     python3 tools/build-sim-assets.py
 
@@ -247,10 +249,20 @@ ROBOTS = [
         "lamp_demo": True,
     },
     {
-        "name": "platform_c",
-        "label": "ANYmal with DynaArm",
-        "note": "Platform C",
-        "soon": True,
+        "name": "anymal",
+        "label": "ANYmal-D + DynaArm + 2F-140",
+        "note": "Platform C · draft trajectories",
+        "arm": ["dynaarm_" + name for name in (
+            "shoulder_rotation", "shoulder_flexion", "elbow_flexion",
+            "forearm_rotation", "wrist_flexion", "wrist_rotation")],
+        "grip": {"actuator": "finger_joint", "open": 0.0, "grasp": 0.65, "fist": 0.7},
+        "home": [0.0, -0.7, 1.4, 0.0, 0.0, 0.0],
+        "board": (0.80, 0.0, 0.90),
+        "board_quat": BOARD_UPRIGHT,
+        "stand": {"top": 0.90, "half": 0.17},
+        "framing": "side",
+        "ground": True,
+        "tcp": ("robotiq_base_link", (0.0, 0.0, 0.20)),
     },
     {
         "name": "macao", "label": "Macao hand", "note": "Platform D",
@@ -371,260 +383,6 @@ def emit_mesh(src: Path, dst_dir: Path, name: str = None, simplify=True) -> str:
 # ═══════════════════════════════════════════════════════════════════════════
 #  Sources
 # ═══════════════════════════════════════════════════════════════════════════
-def prepare_anymal_arm(menagerie_dir: Path):
-    """Assemble ANYmal C + DynaArm model and a symmetric standing stance.
-
-    The arm meshes are published in each link's own frame.  The previous
-    reconstruction chained them along a guessed +X axis, even though DynaArm's
-    forearm is authored along +Z and two wrist frames are rotated.  That made
-    intact meshes look like disconnected or missing parts.  The transforms
-    below follow Duatic's DynaArm description (baracuda12/corydoras12).
-    """
-    import mujoco
-    anymal_dir = menagerie_dir / "anybotics_anymal_c"
-    assets_dir = anymal_dir / "assets"
-    assets_dir.mkdir(parents=True, exist_ok=True)
-
-    src_dyna = REPO / "tools/assets/dynaarm"
-    if src_dyna.exists():
-        for f in src_dyna.glob("*.obj"):
-            shutil.copy(f, assets_dir / f.name)
-
-    xml_path = anymal_dir / "anymal_c.xml"
-    arm_xml_path = anymal_dir / "anymal_c_arm.xml"
-    if not xml_path.exists():
-        return
-
-    tree = ET.parse(xml_path)
-    root = tree.getroot()
-
-    asset = root.find("asset")
-    mesh_names = [
-        "0_base_alma_mesh", "1000_dynaarm_interface_parts",
-        "100_shoulder_mesh", "200_upperarm_mesh",
-        "300_elbow_mesh", "400_forearm_mesh", "500_wrist1_mesh"
-    ]
-    for m in mesh_names:
-        if root.find(f'.//mesh[@name="{m}"]') is None:
-            attrs = {"name": m, "file": f"{m}.obj"}
-            # The ALMA adapter is the one legacy mesh exported in millimetres.
-            if m == "0_base_alma_mesh":
-                attrs["scale"] = "0.001 0.001 0.001"
-            ET.SubElement(asset, "mesh", attrs)
-
-    anymal_mats = {
-        # Match the requested Spot-style red/grey livery.  The four materials
-        # are deliberately repeated across the body and arm so the silhouette
-        # stays readable without the upstream texture files in MuJoCo WASM.
-        "base": "0.16 0.18 0.20 1",
-        "top_shell": "0.72 0.055 0.065 1",
-        "bottom_shell": "0.20 0.22 0.24 1",
-        "hip_l": "0.18 0.20 0.22 1",
-        "hip_r": "0.18 0.20 0.22 1",
-        "thigh": "0.52 0.55 0.58 1",
-        "shank_l": "0.25 0.27 0.29 1",
-        "shank": "0.25 0.27 0.29 1",
-        "foot": "0.10 0.11 0.12 1",
-        "hatch": "0.72 0.055 0.065 1",
-        "remote": "0.16 0.18 0.20 1",
-        "handle": "0.55 0.58 0.61 1",
-        "face": "0.12 0.13 0.14 1",
-        "depth_camera": "0.1 0.1 0.1 1",
-        "wide_angle_camera": "0.1 0.1 0.1 1",
-        "battery": "0.52 0.55 0.58 1",
-        "lidar_cage": "0.1 0.1 0.1 1",
-        "lidar": "0.1 0.1 0.1 1",
-        "drive": "0.72 0.055 0.065 1",
-        "black_plastic": "0.10 0.11 0.12 1",
-        "green": "0.72 0.055 0.065 1",
-        "red": "0.28 0.30 0.32 1",
-        "yellow": "0.58 0.61 0.64 1",
-        "lwl": "0.76 0.78 0.80 1",
-        "arm_dark": "0.12 0.14 0.16 1",
-        "arm_grey": "0.56 0.59 0.62 1",
-        "arm_light": "0.76 0.78 0.80 1",
-        "arm_accent": "0.72 0.055 0.065 1",
-    }
-    for mat in root.findall(".//material"):
-        mname = mat.get("name")
-        mat.attrib.pop("texture", None)
-        if mname in anymal_mats:
-            mat.set("rgba", anymal_mats[mname])
-    for tex in root.findall(".//texture"):
-        asset.remove(tex)
-    for mname, rgba in anymal_mats.items():
-        if root.find(f'.//material[@name="{mname}"]') is None:
-            ET.SubElement(asset, "material", {"name": mname, "rgba": rgba})
-
-    base = root.find('.//body[@name="base"]')
-    if root.find('.//body[@name="dynaarm_base"]') is None:
-        dyna_base = ET.SubElement(base, "body", {"name": "dynaarm_base", "pos": "0.05 0 0.12"})
-        ET.SubElement(dyna_base, "geom", {"type": "mesh", "mesh": "0_base_alma_mesh",
-                                          "material": "arm_grey", "class": "visual"})
-        # The legacy interface export is a partial ALMA adapter (it contains a
-        # tall sensor bracket, not the DynaArm pedestal) and made the arm look
-        # like it was growing out of a black tower.  Use a complete, legible
-        # three-stage pedestal instead: mounting plate, red housing, and dark
-        # shoulder collar.  The mesh remains in the asset set for compatibility
-        # with older cached scenes, but is intentionally not drawn here.
-        ET.SubElement(dyna_base, "geom", {"type": "cylinder", "size": "0.135 0.010",
-                                          "pos": "0 0 0.015", "material": "arm_grey", "class": "visual"})
-        ET.SubElement(dyna_base, "geom", {"type": "cylinder", "size": "0.105 0.045",
-                                          "pos": "0 0 0.065", "material": "top_shell", "class": "visual"})
-        ET.SubElement(dyna_base, "geom", {"type": "cylinder", "size": "0.080 0.014",
-                                          "pos": "0 0 0.112", "material": "arm_dark", "class": "visual"})
-        ET.SubElement(dyna_base, "geom", {"type": "cylinder", "size": "0.105 0.045",
-                                          "pos": "0 0 0.065", "class": "collision"})
-        ET.SubElement(dyna_base, "geom", {"type": "box", "size": "0.08 0.08 0.04",
-                                          "pos": "0 0 0.04", "class": "collision"})
-
-        sh = ET.SubElement(dyna_base, "body", {"name": "dynaarm_shoulder", "pos": "0 0 0.1105"})
-        ET.SubElement(sh, "joint", {"name": "arm_joint1", "axis": "0 0 1", "range": "-3.14 3.14", "damping": "2"})
-        ET.SubElement(sh, "geom", {"type": "mesh", "mesh": "100_shoulder_mesh",
-                                   "material": "arm_dark", "class": "visual"})
-        ET.SubElement(sh, "geom", {"type": "cylinder", "size": "0.045 0.05", "class": "collision"})
-
-        up = ET.SubElement(sh, "body", {"name": "dynaarm_upperarm", "pos": "0 0 0.047",
-                                         "euler": "1.570796 -1.570796 0"})
-        ET.SubElement(up, "joint", {"name": "arm_joint2", "axis": "0 0 1", "range": "-1.7208 1.7208", "damping": "2"})
-        ET.SubElement(up, "geom", {"type": "mesh", "mesh": "200_upperarm_mesh",
-                                   "material": "arm_grey", "class": "visual"})
-        ET.SubElement(up, "geom", {"type": "capsule", "size": "0.04 0.2", "pos": "0.2 0 0",
-                                   "quat": "0.707 0 0.707 0", "class": "collision"})
-
-        el = ET.SubElement(up, "body", {"name": "dynaarm_elbow", "pos": "0.4127 0 0"})
-        ET.SubElement(el, "joint", {"name": "arm_joint3", "axis": "0 0 1", "range": "0 3.09159", "damping": "2"})
-        ET.SubElement(el, "geom", {"type": "mesh", "mesh": "300_elbow_mesh",
-                                   "material": "arm_dark", "class": "visual"})
-        ET.SubElement(el, "geom", {"type": "cylinder", "size": "0.045 0.05", "quat": "0.707 0.707 0 0",
-                                   "class": "collision"})
-
-        fa = ET.SubElement(el, "body", {"name": "dynaarm_forearm", "pos": "0.0262 -0.0855 0",
-                                         "euler": "1.570796 1.570796 1.570796"})
-        ET.SubElement(fa, "joint", {"name": "arm_joint4", "axis": "0 0 1", "range": "-4.71239 4.71239", "damping": "1.5"})
-        ET.SubElement(fa, "geom", {"type": "mesh", "mesh": "400_forearm_mesh",
-                                   "material": "arm_grey", "class": "visual"})
-        ET.SubElement(fa, "geom", {"type": "capsule", "size": "0.035 0.19", "pos": "0 0 0.21",
-                                   "class": "collision"})
-
-        w1 = ET.SubElement(fa, "body", {"name": "dynaarm_wrist1", "pos": "0.0295 0 0.4207",
-                                         "euler": "0 -1.570796 0"})
-        ET.SubElement(w1, "joint", {"name": "arm_joint5", "axis": "0 0 1", "range": "-1.8208 1.8208", "damping": "1"})
-        ET.SubElement(w1, "geom", {"type": "mesh", "mesh": "500_wrist1_mesh",
-                                   "material": "arm_dark", "class": "visual"})
-        ET.SubElement(w1, "geom", {"type": "cylinder", "size": "0.035 0.04", "quat": "0.707 0.707 0 0",
-                                   "class": "collision"})
-
-        w2 = ET.SubElement(w1, "body", {"name": "dynaarm_wrist2", "pos": "0.117 0 0.0295",
-                                         "euler": "-1.570796 1.570796 -1.570796"})
-        ET.SubElement(w2, "joint", {"name": "arm_joint6", "axis": "0 0 1", "range": "-1.5708 4.71239", "damping": "1"})
-        # The old asset bundle predates DynaArm's separate wrist-2 and flange
-        # exports.  Build those small coaxial parts from primitives so the
-        # published kinematic chain is visually complete instead of ending in
-        # a floating cube.
-        ET.SubElement(w2, "geom", {"type": "cylinder", "size": "0.050 0.034",
-                                     "pos": "0 0 0.034", "material": "arm_grey", "class": "visual"})
-        ET.SubElement(w2, "geom", {"type": "cylinder", "size": "0.043 0.038",
-                                     "pos": "0 0 0.037", "material": "arm_dark", "class": "visual"})
-        ET.SubElement(w2, "geom", {"type": "cylinder", "size": "0.037 0.012",
-                                     "pos": "0 0 0.080", "material": "arm_accent", "class": "visual"})
-        ET.SubElement(w2, "geom", {"type": "cylinder", "size": "0.049 0.006",
-                                     "pos": "0 0 0.096", "material": "arm_light", "class": "visual"})
-        ET.SubElement(w2, "geom", {"type": "cylinder", "size": "0.047 0.048",
-                                     "pos": "0 0 0.048", "class": "collision"})
-
-        palm = ET.SubElement(w2, "body", {"name": "dynaarm_gripper", "pos": "0 0 0.108"})
-        ET.SubElement(palm, "geom", {"type": "box", "size": "0.045 0.038 0.018",
-                                      "pos": "0 0 0.018", "material": "arm_grey", "class": "visual"})
-        ET.SubElement(palm, "geom", {"type": "box", "size": "0.039 0.031 0.008",
-                                      "pos": "0 0 0.043", "material": "arm_dark", "class": "visual"})
-        ET.SubElement(palm, "geom", {"type": "box", "size": "0.045 0.038 0.018",
-                                      "pos": "0 0 0.018", "class": "collision"})
-
-        jaw1 = ET.SubElement(palm, "body", {"name": "dynaarm_jaw_left", "pos": "0 0.018 0.048"})
-        ET.SubElement(jaw1, "joint", {"name": "gripper", "axis": "0 1 0", "range": "0 0.04",
-                                      "type": "slide", "damping": "5"})
-        ET.SubElement(jaw1, "geom", {"type": "box", "size": "0.010 0.010 0.050", "pos": "0 0 0.050",
-                                     "material": "arm_dark", "class": "visual"})
-        ET.SubElement(jaw1, "geom", {"type": "box", "size": "0.012 0.012 0.020", "pos": "0 -0.003 0.098",
-                                     "material": "arm_accent", "class": "visual"})
-        ET.SubElement(jaw1, "geom", {"type": "box", "size": "0.010 0.010 0.050", "pos": "0 0 0.050",
-                                     "class": "collision"})
-
-        jaw2 = ET.SubElement(palm, "body", {"name": "dynaarm_jaw_right", "pos": "0 -0.018 0.048"})
-        ET.SubElement(jaw2, "geom", {"type": "box", "size": "0.010 0.010 0.050", "pos": "0 0 0.050",
-                                     "material": "arm_dark", "class": "visual"})
-        ET.SubElement(jaw2, "geom", {"type": "box", "size": "0.012 0.012 0.020", "pos": "0 0.003 0.098",
-                                     "material": "arm_accent", "class": "visual"})
-        ET.SubElement(jaw2, "geom", {"type": "box", "size": "0.010 0.010 0.050", "pos": "0 0 0.050",
-                                     "class": "collision"})
-
-        actuator = root.find("actuator")
-        for i in range(1, 7):
-            ET.SubElement(actuator, "position", {"name": f"arm_joint{i}", "joint": f"arm_joint{i}",
-                                                 "class": "affine", "kp": "200"})
-        ET.SubElement(actuator, "position", {"name": "gripper", "joint": "gripper",
-                                             "class": "affine", "kp": "300", "ctrlrange": "0 0.04"})
-
-        # Welding the quadruped base for this stationary demo removes MuJoCo's
-        # usual parent/child collision filtering.  Explicit exclusions keep the
-        # arm from pushing against its own mounting block while its position
-        # servos hold the parked pose.
-        contact = root.find("contact")
-        if contact is None:
-            contact = ET.SubElement(root, "contact")
-        for body1, body2 in (
-            ("dynaarm_base", "dynaarm_shoulder"),
-            ("dynaarm_base", "dynaarm_upperarm"),
-            ("dynaarm_shoulder", "dynaarm_upperarm"),
-            ("dynaarm_upperarm", "dynaarm_elbow"),
-            ("dynaarm_elbow", "dynaarm_forearm"),
-            ("dynaarm_forearm", "dynaarm_wrist1"),
-            ("dynaarm_wrist1", "dynaarm_wrist2"),
-            ("dynaarm_wrist2", "dynaarm_gripper"),
-            ("dynaarm_gripper", "dynaarm_jaw_left"),
-            ("dynaarm_gripper", "dynaarm_jaw_right"),
-        ):
-            ET.SubElement(contact, "exclude", {"body1": body1, "body2": body2})
-
-    kf = root.find("keyframe")
-    if kf is None:
-        kf = ET.SubElement(root, "keyframe")
-
-    tree.write(str(arm_xml_path))
-    m = mujoco.MjModel.from_xml_path(str(arm_xml_path))
-    jnames = [m.joint(i).name for i in range(m.njnt)]
-    stance_dict = {
-        # ANYmal C's front and rear feet have an 11.8 mm authored frame offset,
-        # so a numerically mirrored knee angle leaves the front pair hovering.
-        # This calibrated front angle puts all four contact spheres on one
-        # plane while retaining a left/right symmetric, level stance.
-        "LF_HAA": 0.03, "LF_HFE": 0.4, "LF_KFE": -0.513,
-        "RF_HAA": -0.03, "RF_HFE": 0.4, "RF_KFE": -0.513,
-        "LH_HAA": -0.03, "LH_HFE": -0.4, "LH_KFE": 0.6,
-        "RH_HAA": 0.03, "RH_HFE": -0.4, "RH_KFE": 0.6,
-        "arm_joint1": 0.0, "arm_joint2": -0.8, "arm_joint3": 1.8,
-        "arm_joint4": 0.0, "arm_joint5": -1.0, "arm_joint6": 0.0,
-        "gripper": 0.02
-    }
-    # qpos is not one scalar per joint: the floating base consumes seven slots
-    # (xyz + unit quaternion).  Building one value per joint shifted every leg
-    # command, producing the mangled stance seen in the browser after the leg
-    # joints were baked into fixed body transforms.
-    qpos_list = np.zeros(m.nq)
-    for j in range(m.njnt):
-        name = m.joint(j).name
-        adr = m.jnt_qposadr[j]
-        if m.jnt_type[j] == mujoco.mjtJoint.mjJNT_FREE:
-            qpos_list[adr:adr + 7] = (0.0, 0.0, 0.62, 1.0, 0.0, 0.0, 0.0)
-        else:
-            qpos_list[adr] = stance_dict.get(name, 0.0)
-    for k in kf.findall("key"):
-        kf.remove(k)
-    ET.SubElement(kf, "key", {"name": "standing", "qpos": fmt(qpos_list)})
-    tree.write(str(arm_xml_path))
-
-
 def ensure_menagerie() -> Path:
     """Sparse-clone the menagerie models we need, once."""
     root = CACHE / "mujoco_menagerie"
@@ -638,10 +396,9 @@ def ensure_menagerie() -> Path:
         )
         subprocess.run(
             ["git", "sparse-checkout", "set", "franka_fr3", "franka_emika_panda",
-             "boston_dynamics_spot", "robotstudio_so101", "anybotics_anymal_c"],
+             "boston_dynamics_spot", "robotstudio_so101"],
             cwd=root, check=True,
         )
-    prepare_anymal_arm(root)
     return root
 
 
@@ -1162,6 +919,11 @@ def macao_parts(cfg):
 
 def robot_parts(cfg, menagerie: Path, workdir: Path):
     """Whatever this robot contributes to a scene: a body, meshes, actuators."""
+    if cfg["name"] == "anymal":
+        import anymal_model
+        return anymal_model.parts(
+            OUT, cfg.get("isaaclab_repo") or REPO.parent.parent,
+            cfg.get("usd_cache") or CACHE / "anymal-usd", decimate, obj_write)
     if cfg["name"] == "macao":
         return macao_parts(cfg)
     if "source" not in cfg:
@@ -1483,7 +1245,7 @@ def emit_robot(cfg, menagerie: Path, board, hiveboard: Path):
     ET.indent(scene, "  ")
     path.write_text(ET.tostring(scene, encoding="unicode") + "\n")
 
-    if cfg.get("stow"):
+    if cfg.get("stow") or cfg.get("ground"):
         drop_to_floor(cfg, scene, path, body)
 
     # A tool frame between the fingertips, measured off the jaws.
@@ -1514,6 +1276,9 @@ def emit_robot(cfg, menagerie: Path, board, hiveboard: Path):
     cfg = dict(cfg, board_normal=board_normal(cfg))
     tasks = (macao_motions(model) if cfg["name"] == "macao"
              else sim_trajectories.build(path, cfg))
+    if cfg["name"] == "anymal":
+        for task in tasks.values():
+            task["caption"] = "Starter trajectory for editing; contact replay has not passed."
     sim_trajectories.dump(tasks, OUT / f"{cfg['name']}.traj.json")
 
     # These robots differ in size by a factor of five, so the widget is handed a
@@ -1555,16 +1320,26 @@ def emit_robot(cfg, menagerie: Path, board, hiveboard: Path):
     }
 
 
-def build(hiveboard: Path):
-    menagerie = ensure_menagerie()
-    shutil.rmtree(OUT, ignore_errors=True)
-    (OUT / "assets/fr3").mkdir(parents=True)
-    (OUT / "assets/hb").mkdir(parents=True)
+def build(hiveboard: Path, robot=None, isaaclab_repo=None, usd_cache=None):
+    menagerie = None if robot == "anymal" else ensure_menagerie()
+    if robot is None:
+        shutil.rmtree(OUT, ignore_errors=True)
+    (OUT / "assets/fr3").mkdir(parents=True, exist_ok=True)
+    (OUT / "assets/hb").mkdir(parents=True, exist_ok=True)
 
     board = build_board(hiveboard)
 
+    existing = {}
+    if robot and (OUT / "robots.json").exists():
+        existing = {r["name"]: r for r in json.loads((OUT / "robots.json").read_text())}
     catalogue = []
     for cfg in ROBOTS:
+        if robot and cfg["name"] != robot:
+            if cfg["name"] in existing:
+                catalogue.append(existing[cfg["name"]])
+            continue
+        if cfg["name"] == "anymal":
+            cfg = dict(cfg, isaaclab_repo=isaaclab_repo, usd_cache=usd_cache)
         if cfg.get("soon"):
             catalogue.append({"name": cfg["name"], "label": cfg["label"],
                               "note": cfg["note"], "soon": True})
@@ -1574,7 +1349,8 @@ def build(hiveboard: Path):
 
     (OUT / "robots.json").write_text(json.dumps(catalogue, indent=1) + "\n")
     manifest()
-    vendor()
+    if robot is None:
+        vendor()
 
 
 def vendor():
@@ -1873,12 +1649,15 @@ def main():
         default=os.environ.get("HIVEBOARD_SIM", str(Path.home() / "HiveBoard/Simulation")),
         help="directory holding the released HiveBoard URDFs",
     )
+    ap.add_argument("--robot", choices=[r["name"] for r in ROBOTS], help="rebuild only this robot")
+    ap.add_argument("--isaaclab-repo", type=Path, help="isaaclab-hiveboard checkout containing the DynaArm USD")
+    ap.add_argument("--usd-cache", type=Path, help="cache of the NVIDIA ANYmal-D and 2F-140 USD layers")
     args = ap.parse_args()
 
     hiveboard = Path(args.hiveboard).expanduser()
     if not (hiveboard / PANEL_URDF).exists():
         sys.exit(f"no HiveBoard URDFs under {hiveboard} (pass --hiveboard)")
-    build(hiveboard)
+    build(hiveboard, args.robot, args.isaaclab_repo, args.usd_cache)
 
 
 if __name__ == "__main__":

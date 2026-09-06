@@ -144,10 +144,52 @@
   ]
  },
  {
-  "name": "platform_c",
-  "label": "ANYmal with DynaArm",
-  "note": "Platform C",
-  "soon": true
+  "name": "anymal",
+  "label": "ANYmal-D + DynaArm + 2F-140",
+  "note": "Platform C \u00b7 draft trajectories",
+  "scene": "anymal.xml",
+  "traj": "anymal.traj.json",
+  "arm": 6,
+  "grip": {
+   "actuator": "finger_joint",
+   "open": 0.0,
+   "grasp": 0.65,
+   "fist": 0.7
+  },
+  "home": [
+   0.0,
+   -0.7,
+   1.4,
+   0.0,
+   0.0,
+   0.0
+  ],
+  "gripIndex": 6,
+  "spinIndex": -1,
+  "board": [
+   0.8,
+   0.0,
+   0.9
+  ],
+  "view": {
+   "centre": [
+    0.1356,
+    0.0,
+    0.9209
+   ],
+   "span": 2.3709
+  },
+  "framing": "side",
+  "boardNormal": [
+   -1.0,
+   0.0,
+   0.0
+  ],
+  "tasks": [
+   "valve",
+   "lamp",
+   "breaker"
+  ]
  },
  {
   "name": "macao",
