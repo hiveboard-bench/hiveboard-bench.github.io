@@ -152,7 +152,7 @@
               style="flex-grow: 1; max-width: 200px; height: 1px; background: linear-gradient(to left, #cbd5e1, transparent); margin-right: 20px;">
             </div>
 
-            <div class="buttons is-centered" style="gap: 12px; margin: 0;">
+            <div class="buttons is-centered hero-links" style="gap: 12px; margin: 0;">
                             <a class="button is-rounded is-outlined hero-link-btn no-bounce"
                 style="border-color: #cbd5e1; color: #334155; font-weight: 500; padding: 0 1.2rem; transition: all 0.2s; cursor: not-allowed;"
                 onmouseover="this.querySelector('.btn-text-content').innerText = 'Soon';"
@@ -2497,12 +2497,7 @@
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
           }
 
-          /* Three long labels cannot share a line on a phone.  Below the
-             tablet breakpoint the switch becomes a full-width stack, one
-             option per row, so no label wraps or is cut off. */
           @media (max-width: 768px) {
-            /* The heading row keeps title and switch side by side, which
-               leaves the switch too narrow to lay out; stack them instead. */
             #xplatform > .xp-head {
               flex-direction: column;
               align-items: stretch;

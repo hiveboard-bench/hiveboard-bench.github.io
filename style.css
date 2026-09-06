@@ -724,6 +724,21 @@ button:hover {
   .hero-link-btn .icon {
     margin-right: 0.2rem !important;
   }
+
+  /* Wrapped onto two ragged rows the links read as a broken grid, and each
+     one is a different width.  Stack them instead: one per row, all the same
+     size. */
+  .hero-links {
+    flex-direction: column !important;
+    align-items: center !important;
+    width: 100%;
+  }
+
+  .hero-links .hero-link-btn {
+    width: 100%;
+    max-width: 240px;
+    justify-content: center;
+  }
 }
 
 .hotspot {
@@ -1435,19 +1450,40 @@ video::-webkit-media-controls-picture-in-picture-button {
   }
 }
 
+/* On a phone the neighbouring cards have nowhere to sit: all that reaches the
+   screen is a faded sliver at each edge, which the container's edge mask then
+   cuts through, and their drop shadows pool against the centre card's own.
+   Below this width the carousel shows one card only -- neighbours moved clear
+   of the stage, no edge mask to fade, and a shadow scaled to the smaller card.
+   Swipe still moves between them. */
 @media (max-width: 550px) {
+  .hero-slider-container {
+    -webkit-mask-image: none;
+    mask-image: none;
+    padding: 12px 0 18px;
+  }
   .hero-slider-stage {
     aspect-ratio: 16 / 9;
     min-height: 200px;
   }
   .hero-slider-card {
-    width: 88%;
+    width: 92%;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
   }
-  .hero-slider-card.is-left {
-    transform: translate(calc(-50% - 76%), -50%) scale(0.88);
+  .hero-slider-card.is-center {
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.12);
   }
-  .hero-slider-card.is-right {
-    transform: translate(calc(-50% + 76%), -50%) scale(0.88);
+  .hero-slider-card.is-left,
+  .hero-slider-card.is-left:hover {
+    transform: translate(calc(-50% - 115%), -50%) scale(0.88);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .hero-slider-card.is-right,
+  .hero-slider-card.is-right:hover {
+    transform: translate(calc(-50% + 115%), -50%) scale(0.88);
+    opacity: 0;
+    pointer-events: none;
   }
   .hero-play-button {
     width: 52px;
