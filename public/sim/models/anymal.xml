@@ -322,7 +322,7 @@
         </body>
       </body>
     </body>
-    <body name="hiveboard" pos="0.8 0 0.9" quat="0 0 0 1">
+    <body name="hiveboard" pos="0.82 0 0.9" quat="0 0 0 1">
       <body name="panel_Honeycomb_Panel" pos="0 0 0">
         <inertial pos="0 0 1e-05" mass="0.005" diaginertia="1e-06 1e-06 1e-06" />
         <geom quat="0.707107 0 0.707107 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="panel_tn__Hexagono_Suporte1_bX0_Corpo1_Mesh" material="hb_panel" />

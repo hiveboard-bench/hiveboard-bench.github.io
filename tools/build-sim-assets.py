@@ -249,7 +249,7 @@ ROBOTS = [
             "forearm_rotation", "wrist_flexion", "wrist_rotation")],
         "grip": {"actuator": "finger_joint", "open": 0.0, "grasp": 0.65, "fist": 0.7},
         "home": [0.0, -0.7, 1.4, 0.0, 0.0, 0.0],
-        "board": (0.80, 0.0, 0.90),
+        "board": (0.82, 0.0, 0.90),
         "board_quat": BOARD_UPRIGHT,
         "stand": {"top": 0.90, "half": 0.17},
         "framing": "side",
