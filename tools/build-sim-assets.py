@@ -1,4 +1,37 @@
 #!/usr/bin/env python3
+"""Build the MuJoCo scenes the in-browser simulation widget loads.
+
+public/sim/hiveboard-sim.html compiles an MJCF at runtime inside MuJoCo WASM,
+so every mesh it names has to be fetched over the wire first. This script
+assembles one scene per robot in ROBOTS, each working the same board:
+
+  * the robots come from mujoco_menagerie (Apache-2.0), cloned into .cache/ on
+    first run and grafted in by compiling them and taking the flattened MJCF
+    MuJoCo writes back -- rather than transcribing Spot's twenty-two bodies;
+  * the HiveBoard modules come from the URDF release, converted the same way.
+  * ANYmal-D and its Robotiq 2F-140 are converted from NVIDIA USD assets, with
+    the local Isaac DynaArm USD mounted using the assembly's original frames.
+
+Each robot's trajectories are then solved and verified by sim_trajectories, and
+a robot only advertises the tasks it actually completed.
+
+Menagerie ships CAD-resolution visual meshes -- 33 MB of ASCII OBJ for the arm
+alone, which is more than the rest of the site put together. We drop the vertex
+normals (MuJoCo recomputes them at compile time, honouring sharp edges) and
+decimate anything dense, which lands the whole scene near 4 MB, then pre-gzip
+so GitHub Pages does not have to.
+
+Run after changing the scene layout or re-exporting any HiveBoard module, then
+`npm run build` to republish:
+
+    pip install mujoco numpy fast-simplification usd-core
+    npm install
+    python3 tools/build-sim-assets.py
+
+It also copies the MuJoCo WASM engine and three.js out of node_modules into
+public/sim/vendor/, so run `npm install` first and re-run this after bumping
+either package.
+"""
 import argparse
 import gzip
 import mujoco
@@ -208,31 +241,20 @@ ROBOTS = [
         "lamp_demo": True,
     },
     {
-        "name": "platform_c",
-        "label": "ANYmal + DynaArm",
-        "note": "Platform C",
-        "source": "anybotics_anymal_c/anymal_c_dynaarm.xml",
-        "arm": ["dynaarm_shoulder_rotation", "dynaarm_shoulder_flexion",
-                "dynaarm_elbow_flexion", "dynaarm_forearm_rotation",
-                "dynaarm_wrist_flexion", "dynaarm_wrist_rotation"],
-        "grip": {"actuator": "gripper", "open": 0.0, "grasp": 0.04, "fist": 0.04},
-        "tcp": ("dynaarm_palm", (0.0, 0.0, 0.09)),
-        "stow": True,
-        "home": [0.0, 0.8, 1.4, 0.0, 0.6, 0.0, 0.0],
-        "board": (0.95, 0.0, 0.85),
+        "name": "anymal",
+        "label": "ANYmal-D + DynaArm + 2F-140",
+        "note": "Platform C · draft trajectories",
+        "arm": ["dynaarm_" + name for name in (
+            "shoulder_rotation", "shoulder_flexion", "elbow_flexion",
+            "forearm_rotation", "wrist_flexion", "wrist_rotation")],
+        "grip": {"actuator": "finger_joint", "open": 0.0, "grasp": 0.65, "fist": 0.7},
+        "home": [0.0, -0.7, 1.4, 0.0, 0.0, 0.0],
+        "board": (0.80, 0.0, 0.90),
         "board_quat": BOARD_UPRIGHT,
-        "stand": {"top": 0.85, "half": 0.20},
-        "mount": (0.0, 0.0, 0.0),
-        "mount_quat": (1.0, 0.0, 0.0, 0.0),
+        "stand": {"top": 0.90, "half": 0.17},
         "framing": "side",
-        "skip": [mod["name"] for mod in MODULES],
-        # No solved trajectories yet -- a distinct arm rest pose per task so
-        # each reads as addressing its own cell. 6 DynaArm joints, no gripper.
-        "task_home": {
-            "valve":   [0.18, 0.74, 1.30, 0.0, 0.78, 0.0],
-            "lamp":    [-0.20, 0.92, 1.36, 0.0, 0.50, 0.0],
-            "breaker": [0.12, 0.99, 1.18, 0.0, 0.44, 0.0],
-        },
+        "ground": True,
+        "tcp": ("robotiq_base_link", (0.0, 0.0, 0.20)),
     },
     {
         "name": "macao", "label": "Macao hand", "note": "Platform D",
@@ -330,196 +352,9 @@ def emit_mesh(src: Path, dst_dir: Path, name: str = None, simplify=True) -> str:
     return out
 
 
-DYNAARM_LINKS = [
-
-    ("dynaarm_base", "base", None),
-    ("dynaarm_shoulder", "shoulder",
-     ("dynaarm_shoulder_rotation", (0, 0, 0.1105), (0, 0, 0), (-4.3124, 4.3124))),
-    ("dynaarm_upperarm", "upperarm",
-     ("dynaarm_shoulder_flexion", (0, 0, 0.047), (1.570796, -1.570796, 0),
-      (-1.7208, 1.7208))),
-    ("dynaarm_elbow", "elbow",
-     ("dynaarm_elbow_flexion", (0.4127, 0, 0), (0, 0, 0), (0.0, 3.09159))),
-    ("dynaarm_forearm", "forearm",
-     ("dynaarm_forearm_rotation", (0.0262, -0.0855, 0),
-      (1.570796, 1.570796, 1.570796), (-4.7124, 4.7124))),
-    ("dynaarm_wrist_1", "wrist1",
-     ("dynaarm_wrist_flexion", (0.0295, 0, 0.4207), (0, -1.570796, 0),
-      (-1.8208, 1.8208))),
-    ("dynaarm_wrist_2", "wrist2",
-     ("dynaarm_wrist_rotation", (0.117, 0.0, 0.0295),
-      (-1.570796, 1.570796, -1.570796), (-1.570796, 4.7124))),
-]
-
-DYNAARM_STAND = {
-    "dynaarm_shoulder_rotation": 0.0, "dynaarm_shoulder_flexion": -0.7,
-    "dynaarm_elbow_flexion": 1.4, "dynaarm_forearm_rotation": 0.0,
-    "dynaarm_wrist_flexion": 0.0, "dynaarm_wrist_rotation": 0.0,
-}
-
-
-ANYMAL_C_STAND = {
-    "LF_HAA": 0.03, "LF_HFE": 0.4, "LF_KFE": -0.8,
-    "RF_HAA": -0.03, "RF_HFE": 0.4, "RF_KFE": -0.8,
-    "LH_HAA": -0.03, "LH_HFE": -0.4, "LH_KFE": 0.8,
-    "RH_HAA": 0.03, "RH_HFE": -0.4, "RH_KFE": 0.8,
-}
-
-
-def _rpy_quat(rpy):
-
-    r, p, y = rpy
-    m = axis_matrix((0, 0, 1), y) @ axis_matrix((0, 1, 0), p) @ axis_matrix((1, 0, 0), r)
-    return matrix_quat(m)
-
-
-def prepare_platform_c(menagerie_dir: Path):
-
-    anymal_dir = menagerie_dir / "anybotics_anymal_c"
-    src = anymal_dir / "anymal_c.xml"
-    out_xml = anymal_dir / "anymal_c_dynaarm.xml"
-    if not src.exists():
-        return
-    for obj in (REPO / "tools/assets/anymal").glob("dynaarm_*.obj"):
-        shutil.copy(obj, anymal_dir / "assets" / obj.name)
-
-    tree = ET.parse(src)
-    root = tree.getroot()
-    asset = root.find("asset")
-
-    ANYMAL_RGBA = {
-        "base": "0.14 0.15 0.17 1", "top_shell": "0.72 0.055 0.065 1",
-        "bottom_shell": "0.20 0.22 0.24 1", "hip_l": "0.14 0.15 0.17 1",
-        "hip_r": "0.14 0.15 0.17 1", "thigh": "0.12 0.13 0.15 1",
-        "shank": "0.14 0.15 0.17 1", "shank_l": "0.14 0.15 0.17 1",
-        "foot": "0.08 0.09 0.10 1", "hatch": "0.72 0.055 0.065 1",
-        "remote": "0.14 0.15 0.17 1", "handle": "0.45 0.48 0.52 1",
-        "face": "0.12 0.13 0.14 1", "depth_camera": "0.08 0.08 0.08 1",
-        "wide_angle_camera": "0.08 0.08 0.08 1", "battery": "0.14 0.15 0.17 1",
-        "lidar_cage": "0.08 0.08 0.08 1", "lidar": "0.08 0.08 0.08 1",
-        "drive": "0.72 0.055 0.065 1",
-    }
-    for tex in asset.findall("texture"):
-        asset.remove(tex)
-    for mat in root.findall(".//material"):
-        mat.attrib.pop("texture", None)
-        if mat.get("name") in ANYMAL_RGBA:
-            mat.set("rgba", ANYMAL_RGBA[mat.get("name")])
-        mat.attrib.setdefault("rgba", "0.5 0.5 0.5 1")
-    DYNAARM_PARTS = {
-        "base": [("dynaarm_base_dark", "arm_dark"), ("dynaarm_base_metal", "arm_metal")],
-        "shoulder": [("dynaarm_shoulder_dark", "arm_dark"), ("dynaarm_shoulder_metal", "arm_metal")],
-        "upperarm": [("dynaarm_upperarm_dark", "arm_carbon"), ("dynaarm_upperarm_metal", "arm_metal")],
-        "elbow": [("dynaarm_elbow_dark", "arm_dark"), ("dynaarm_elbow_metal", "arm_metal")],
-        "forearm": [("dynaarm_forearm_dark", "arm_carbon"), ("dynaarm_forearm_metal", "arm_metal")],
-        "wrist1": [("dynaarm_wrist1_dark", "arm_dark"), ("dynaarm_wrist1_metal", "arm_metal")],
-        "wrist2": [("dynaarm_wrist2_metal", "arm_metal")],
-    }
-    for parts in DYNAARM_PARTS.values():
-        for mesh_name, _ in parts:
-            if root.find(f'.//mesh[@name="{mesh_name}"]') is None:
-                ET.SubElement(asset, "mesh",
-                              {"name": mesh_name, "file": f"{mesh_name}.obj"})
-    for name, rgba in (("arm_carbon", "0.14 0.15 0.17 1"),
-                       ("arm_metal", "0.78 0.80 0.84 1"),
-                       ("arm_dark", "0.15 0.16 0.18 1"),
-                       ("arm_accent", "0.93 0.69 0.10 1"),
-                       ("arm_red", "0.72 0.055 0.065 1")):
-        if root.find(f'.//material[@name="{name}"]') is None:
-            ET.SubElement(asset, "material", {"name": name, "rgba": rgba})
-
-    base = root.find('.//body[@name="base"]')
-    parent = ET.SubElement(base, "body",
-                           {"name": DYNAARM_LINKS[0][0], "pos": "0.12 0 0.08",
-                            "quat": "0 0 0 1"})
-    for mesh_name, mat in DYNAARM_PARTS["base"]:
-        ET.SubElement(parent, "geom", {"type": "mesh", "mesh": mesh_name,
-                                       "material": mat, "class": "visual"})
-    ET.SubElement(parent, "geom", {"type": "cylinder", "size": "0.06 0.05",
-                                   "pos": "0 0 0.05", "class": "collision"})
-    arm_bodies = [DYNAARM_LINKS[0][0]]
-    for link_name, stem, joint in DYNAARM_LINKS[1:]:
-        jn, xyz, rpy, jr = joint
-        child = ET.SubElement(parent, "body", {
-            "name": link_name, "pos": fmt(xyz), "quat": fmt(_rpy_quat(rpy))})
-        ET.SubElement(child, "joint", {
-            "name": jn, "axis": "0 0 1", "range": fmt(jr),
-            "damping": "3", "armature": "0.1"})
-        for mesh_name, mat in DYNAARM_PARTS.get(stem, []):
-            ET.SubElement(child, "geom", {"type": "mesh", "mesh": mesh_name,
-                                          "material": mat, "class": "visual"})
-        ET.SubElement(child, "geom", {"type": "capsule", "size": "0.045 0.06",
-                                      "class": "collision"})
-        parent = child
-        arm_bodies.append(link_name)
-
-    flange = ET.SubElement(parent, "body",
-                           {"name": "dynaarm_flange", "pos": "0 0 0.009",
-                            "quat": fmt(_rpy_quat((0, 0, 1.570796)))})
-    ET.SubElement(flange, "geom", {"type": "cylinder", "size": "0.042 0.004",
-                                   "material": "arm_metal", "class": "visual"})
-    palm = ET.SubElement(flange, "body", {"name": "dynaarm_palm", "pos": "0 0 0.02"})
-    ET.SubElement(palm, "geom", {"type": "box", "size": "0.038 0.042 0.016",
-                                 "material": "arm_dark", "class": "visual"})
-    ET.SubElement(palm, "geom", {"type": "box", "size": "0.032 0.035 0.006", "pos": "0 0 0.012",
-                                 "material": "arm_metal", "class": "visual"})
-    ET.SubElement(palm, "geom", {"type": "box", "size": "0.045 0.05 0.02",
-                                 "class": "collision"})
-    jaw_l = ET.SubElement(palm, "body", {"name": "dynaarm_jaw", "pos": "0 0.03 0.055"})
-    ET.SubElement(jaw_l, "joint", {"name": "gripper", "type": "slide", "axis": "0 -1 0",
-                                   "range": "0 0.04", "damping": "8"})
-    ET.SubElement(jaw_l, "geom", {"type": "box", "size": "0.012 0.008 0.042",
-                                  "material": "arm_dark", "class": "visual"})
-    ET.SubElement(jaw_l, "geom", {"type": "box", "size": "0.010 0.003 0.038", "pos": "0 -0.006 0",
-                                  "material": "arm_accent", "class": "visual"})
-    ET.SubElement(jaw_l, "geom", {"type": "box", "size": "0.008 0.01 0.045",
-                                  "class": "collision"})
-    jaw_r = ET.SubElement(palm, "body", {"name": "dynaarm_jaw_fixed", "pos": "0 -0.03 0.055"})
-    ET.SubElement(jaw_r, "geom", {"type": "box", "size": "0.012 0.008 0.042",
-                                  "material": "arm_dark", "class": "visual"})
-    ET.SubElement(jaw_r, "geom", {"type": "box", "size": "0.010 0.003 0.038", "pos": "0 0.006 0",
-                                  "material": "arm_accent", "class": "visual"})
-    ET.SubElement(jaw_r, "geom", {"type": "box", "size": "0.008 0.01 0.045",
-                                  "class": "collision"})
-
-    actuator = root.find("actuator")
-    if actuator is None:
-        actuator = ET.SubElement(root, "actuator")
-    for _, _, joint in DYNAARM_LINKS[1:]:
-        ET.SubElement(actuator, "position",
-                      {"name": joint[0], "joint": joint[0], "kp": "150"})
-    ET.SubElement(actuator, "position", {"name": "gripper", "joint": "gripper",
-                                         "kp": "200", "ctrlrange": "0 0.04"})
-
-    contact = root.find("contact")
-    if contact is None:
-        contact = ET.SubElement(root, "contact")
-    chain = ["base"] + arm_bodies + ["dynaarm_flange", "dynaarm_palm",
-                                     "dynaarm_jaw", "dynaarm_jaw_fixed"]
-    for a, b in zip(chain, chain[1:]):
-        ET.SubElement(contact, "exclude", {"body1": a, "body2": b})
-    ET.SubElement(contact, "exclude", {"body1": "base", "body2": "dynaarm_shoulder"})
-
-    for kf in root.findall("keyframe"):
-        root.remove(kf)
-    tree.write(str(out_xml))
-
-    m = mujoco.MjModel.from_xml_path(str(out_xml))
-    stance = {**ANYMAL_C_STAND, **DYNAARM_STAND, "gripper": 0.0}
-    qpos = np.zeros(m.nq)
-    for j in range(m.njnt):
-        name = m.joint(j).name
-        adr = m.jnt_qposadr[j]
-        if m.jnt_type[j] == mujoco.mjtJoint.mjJNT_FREE:
-            qpos[adr:adr + 7] = (0.0, 0.0, 0.62, 1.0, 0.0, 0.0, 0.0)
-        else:
-            qpos[adr] = stance.get(name, 0.0)
-    kf = ET.SubElement(root, "keyframe")
-    ET.SubElement(kf, "key", {"name": "home", "qpos": fmt(qpos)})
-    tree.write(str(out_xml))
-    print(f"  platform_c source: {out_xml.name} (nq={m.nq})")
-
-
+# ═══════════════════════════════════════════════════════════════════════════
+#  Sources
+# ═══════════════════════════════════════════════════════════════════════════
 def ensure_menagerie() -> Path:
 
     root = CACHE / "mujoco_menagerie"
@@ -533,10 +368,9 @@ def ensure_menagerie() -> Path:
         )
         subprocess.run(
             ["git", "sparse-checkout", "set", "franka_fr3", "franka_emika_panda",
-             "boston_dynamics_spot", "robotstudio_so101", "anybotics_anymal_c"],
+             "boston_dynamics_spot", "robotstudio_so101"],
             cwd=root, check=True,
         )
-    prepare_platform_c(root)
     return root
 
 
@@ -1068,7 +902,12 @@ def macao_parts(cfg):
 
 
 def robot_parts(cfg, menagerie: Path, workdir: Path):
-
+    """Whatever this robot contributes to a scene: a body, meshes, actuators."""
+    if cfg["name"] == "anymal":
+        import anymal_model
+        return anymal_model.parts(
+            OUT, cfg.get("isaaclab_repo") or REPO.parent.parent,
+            cfg.get("usd_cache") or CACHE / "anymal-usd", decimate, obj_write)
     if cfg["name"] == "macao":
         return macao_parts(cfg)
     if "source" not in cfg:
@@ -1286,7 +1125,7 @@ def emit_robot(cfg, menagerie: Path, board, hiveboard: Path):
     ET.indent(scene, "  ")
     path.write_text(ET.tostring(scene, encoding="unicode") + "\n")
 
-    if cfg.get("stow"):
+    if cfg.get("stow") or cfg.get("ground"):
         drop_to_floor(cfg, scene, path, body)
 
     if "tcp" in cfg:
@@ -1316,6 +1155,9 @@ def emit_robot(cfg, menagerie: Path, board, hiveboard: Path):
 
     cfg = dict(cfg, board_normal=board_normal(cfg))
     tasks = sim_trajectories.build(path, cfg)
+    if cfg["name"] == "anymal":
+        for task in tasks.values():
+            task["caption"] = "Starter trajectory for editing; contact replay has not passed."
     sim_trajectories.dump(tasks, OUT / f"{cfg['name']}.traj.json")
 
     data = mujoco.MjData(model)
@@ -1350,17 +1192,26 @@ def emit_robot(cfg, menagerie: Path, board, hiveboard: Path):
     }
 
 
-def build(hiveboard: Path):
-
-    menagerie = ensure_menagerie()
-    shutil.rmtree(OUT, ignore_errors=True)
-    (OUT / "assets/fr3").mkdir(parents=True)
-    (OUT / "assets/hb").mkdir(parents=True)
+def build(hiveboard: Path, robot=None, isaaclab_repo=None, usd_cache=None):
+    menagerie = None if robot == "anymal" else ensure_menagerie()
+    if robot is None:
+        shutil.rmtree(OUT, ignore_errors=True)
+    (OUT / "assets/fr3").mkdir(parents=True, exist_ok=True)
+    (OUT / "assets/hb").mkdir(parents=True, exist_ok=True)
 
     board = build_board(hiveboard)
 
+    existing = {}
+    if robot and (OUT / "robots.json").exists():
+        existing = {r["name"]: r for r in json.loads((OUT / "robots.json").read_text())}
     catalogue = []
     for cfg in ROBOTS:
+        if robot and cfg["name"] != robot:
+            if cfg["name"] in existing:
+                catalogue.append(existing[cfg["name"]])
+            continue
+        if cfg["name"] == "anymal":
+            cfg = dict(cfg, isaaclab_repo=isaaclab_repo, usd_cache=usd_cache)
         if cfg.get("soon"):
             catalogue.append({"name": cfg["name"], "label": cfg["label"],
                               "note": cfg["note"], "soon": True})
@@ -1370,7 +1221,8 @@ def build(hiveboard: Path):
 
     (OUT / "robots.json").write_text(json.dumps(catalogue, indent=1) + "\n")
     manifest()
-    vendor()
+    if robot is None:
+        vendor()
 
 
 def vendor():
@@ -1641,12 +1493,15 @@ def main():
         default=os.environ.get("HIVEBOARD_SIM", str(Path.home() / "HiveBoard/Simulation")),
         help="directory holding the released HiveBoard URDFs",
     )
+    ap.add_argument("--robot", choices=[r["name"] for r in ROBOTS], help="rebuild only this robot")
+    ap.add_argument("--isaaclab-repo", type=Path, help="isaaclab-hiveboard checkout containing the DynaArm USD")
+    ap.add_argument("--usd-cache", type=Path, help="cache of the NVIDIA ANYmal-D and 2F-140 USD layers")
     args = ap.parse_args()
 
     hiveboard = Path(args.hiveboard).expanduser()
     if not (hiveboard / PANEL_URDF).exists():
         sys.exit(f"no HiveBoard URDFs under {hiveboard} (pass --hiveboard)")
-    build(hiveboard)
+    build(hiveboard, args.robot, args.isaaclab_repo, args.usd_cache)
 
 
 if __name__ == "__main__":

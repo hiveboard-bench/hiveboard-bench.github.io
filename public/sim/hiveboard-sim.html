@@ -1651,7 +1651,10 @@
       const list = document.getElementById('robot-list');
       list.replaceChildren();
       for (const entry of catalogue) {
-        const isSoon = !!entry.soon || (!PLACE_EDIT && (entry.name === 'platform_c' || entry.name === 'macao'));
+        // anymal replaced the platform_c placeholder; its trajectories are
+        // still drafts that have not passed contact replay, so it stays
+        // behind the same gate the placeholder was.
+        const isSoon = !!entry.soon || (!PLACE_EDIT && (entry.name === 'anymal' || entry.name === 'macao'));
         const btn = document.createElement('button');
         btn.innerHTML = `${entry.label}<small>${isSoon ? 'coming soon' : entry.note}</small>`;
         btn.dataset.robot = entry.name;
@@ -1790,7 +1793,9 @@
         buildScene();
         buildRobotList();
 
-        const opening = catalogue.find((r) => !r.soon && r.tasks.length);
+        const requestedRobot = new URLSearchParams(location.search).get('robot');
+        const opening = catalogue.find((r) => r.name === requestedRobot && !r.soon && r.tasks.length)
+          || catalogue.find((r) => !r.soon && r.tasks.length);
         const strip = document.getElementById('platforms');
         document.querySelectorAll('#robot-list button').forEach((b) => {
           b.classList.toggle('active', b.dataset.robot === opening.name);

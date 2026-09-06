@@ -109,8 +109,59 @@ The repository includes a live visual editor to adjust waypoints directly in 3D:
   ```
   *(This compiles MuJoCo scenes, solves IK, and runs acceptance tests across all modules).*
 
-## Repository Structure
+### ANYmal-D + DynaArm + Robotiq 2F-140
 
+The `anymal` model is available in `public/sim/models/anymal.xml`, with editable
+starter trajectories for the valve, lamp and circuit breaker. To start editing:
+
+```bash
+pip install mujoco numpy
+python3 tools/traj_edit.py --robot anymal
+# In another terminal: npm run dev
+```
+
+Open `http://localhost:5173/sim/hiveboard-sim.html?edit=1&robot=anymal`.
+The initial paths are **drafts**: their contact replays do not pass task acceptance
+yet. They are starting points for waypoint/joint editing, not successful demos.
+
+To regenerate only this robot from the Isaac assets (run from this directory):
+
+```bash
+pip install mujoco numpy usd-core fast-simplification
+python3 tools/build-sim-assets.py --robot anymal \
+  --isaaclab-repo ../.. --hiveboard ../HiveBoard/Simulation
+python3 tools/check-anymal.py --isaaclab-repo ../..
+```
+
+`--isaaclab-repo` points to the `isaaclab-hiveboard` checkout. NVIDIA USD layers
+are downloaded into `.cache/anymal-usd` on the first build; `--usd-cache` can
+select an existing download. Viewing and editing the generated model needs no
+USD installation or NVIDIA connection. Full asset builds also include ANYmal.
+The local `assets/anymal/usd/dynaarm.usd` and its `configuration/` layers must
+exist before rebuilding. These are ignored generated files in the Isaac repo:
+spawning ANYmal there once creates them from the committed DynaArm URDF and
+the `duatic_dynaarm` submodule. Regenerate them after changing that URDF.
+
+The conversion uses the ANYmal-D USD, the local corydoras12 DynaArm USD/URDF,
+and the Isaac Robotiq 2F-140 USD. It preserves the six arm joint names and limits,
+the mount at `(0, 0, 0.12)` with 180° yaw, and the identity flange-to-palm weld.
+The TCP is 0.20 m along the palm's +Z, with the website's +Z approach convention
+(Isaac's canonical TCP uses a different orientation offset). Gripper commands
+are radians: 0 open, 0.7 closed, with the inner fingers following the drive at -1.
+
+The base and legs are fixed in the Isaac standing pose, as required by the
+existing arm trajectory editor. MuJoCo uses position servos, gravity compensation,
+convex mesh contacts and explicit four-bar loop/mimic constraints. Robot self
+collisions are disabled, matching the Isaac assembly. Visual meshes are simplified
+and texture maps replaced with solid colors. This is a manipulation-authoring
+model, not a locomotion model or a dynamics-equivalent PhysX conversion.
+
+See [the converter](tools/anymal_model.py) for asset URLs and
+[the validation script](tools/check-anymal.py) for URDF forward-kinematics,
+gripper linkage, editor and packaging checks. The generated model was also
+checked with the bundled MuJoCo WASM 3.11.0 runtime.
+
+## Repository Structure
 
 ```text
 ├── assets-src/      # Source assets and 3D models
@@ -135,4 +186,3 @@ If you find HiveBoard useful in your research, please cite:
   year      = {2024}
 }
 ```
-
