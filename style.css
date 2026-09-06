@@ -736,7 +736,7 @@ button:hover {
 
   .hero-links .hero-link-btn {
     width: 100%;
-    max-width: 240px;
+    max-width: 340px;
     justify-content: center;
   }
 }
@@ -1450,16 +1450,19 @@ video::-webkit-media-controls-picture-in-picture-button {
   }
 }
 
-/* On a phone the neighbouring cards have nowhere to sit: all that reaches the
-   screen is a faded sliver at each edge, which the container's edge mask then
-   cuts through, and their drop shadows pool against the centre card's own.
-   Below this width the carousel shows one card only -- neighbours moved clear
-   of the stage, no edge mask to fade, and a shadow scaled to the smaller card.
-   Swipe still moves between them. */
+/* On a phone the neighbours were wide enough to reach the edge of the stage,
+   where the container's edge mask cut through them and their drop shadows
+   pooled against the centre card's own -- a grey smear down each side.  Narrow
+   the centre card so each neighbour peeks in well inside the stage, widen the
+   edge fade so what does run off dissolves instead of being cut square, and
+   lighten the shadows so they no longer overlap. */
 @media (max-width: 550px) {
   .hero-slider-container {
-    -webkit-mask-image: none;
-    mask-image: none;
+    /* The neighbours run off the stage here, so the edges still need to fade
+       -- over a wider band than the desktop 4%, and stopping short of the
+       centre card, which spans 11% to 89%. */
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
     padding: 12px 0 18px;
   }
   .hero-slider-stage {
@@ -1467,23 +1470,19 @@ video::-webkit-media-controls-picture-in-picture-button {
     min-height: 200px;
   }
   .hero-slider-card {
-    width: 92%;
+    width: 78%;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
   }
   .hero-slider-card.is-center {
     box-shadow: 0 10px 26px rgba(0, 0, 0, 0.12);
   }
-  .hero-slider-card.is-left,
-  .hero-slider-card.is-left:hover {
-    transform: translate(calc(-50% - 115%), -50%) scale(0.88);
-    opacity: 0;
-    pointer-events: none;
+  .hero-slider-card.is-left {
+    transform: translate(calc(-50% - 75%), -50%) scale(0.86);
+    opacity: 0.5;
   }
-  .hero-slider-card.is-right,
-  .hero-slider-card.is-right:hover {
-    transform: translate(calc(-50% + 115%), -50%) scale(0.88);
-    opacity: 0;
-    pointer-events: none;
+  .hero-slider-card.is-right {
+    transform: translate(calc(-50% + 75%), -50%) scale(0.86);
+    opacity: 0.5;
   }
   .hero-play-button {
     width: 52px;
