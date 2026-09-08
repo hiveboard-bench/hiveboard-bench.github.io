@@ -18,7 +18,7 @@ The purpose of this website is to serve as the interactive companion and present
 - **Module & Task Catalog:** Details the 13 functional 3D-printed mechanism attachments across three manipulation skill categories: *Torque*, *Precision*, and *Composed Assembly*.
 - **Simulation Compatibility:** Provides information and direct access to digital assets for simulators including MuJoCo, Isaac Sim (USD), and standard URDFs.
 - **Experimental Results & Media:** Showcases evaluation results and video demonstrations across diverse robotic embodiments (fixed-base arms, quadruped manipulators, VR-teleoperated robots, and wearable prosthetic hands).
-- **Documentation & Evaluation Protocol:** Includes the full HiveBoard documentation, contribution guides, and browser-based 65-trial evaluation runner at [`/hiveboard-docs/`](https://hiveboard-bench.github.io/hiveboard-docs/).
+- **Documentation & Evaluation Protocol:** Includes the full HiveBoard documentation, contribution guides, and browser-based 65-trial evaluation runner at [`/hivedocs/`](https://hiveboard-bench.github.io/hivedocs/).
 
 
 ## Tech Stack

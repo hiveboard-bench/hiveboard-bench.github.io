@@ -4,14 +4,14 @@ export default defineConfig({
   title: 'HiveBoard Documentation',
   description: 'Documentation for the HiveBoard manipulation benchmark.',
   lang: 'en-US',
-  base: '/hiveboard-docs/',
-  outDir: '../dist/hiveboard-docs',
+  base: '/hivedocs/',
+  outDir: '../dist/hivedocs',
   cleanUrls: true,
   lastUpdated: true,
   appearance: false,
   head: [
     ['meta', { name: 'theme-color', content: '#23527c' }],
-    ['link', { rel: 'icon', href: '/hiveboard-docs/images/hiveboard-mark.svg' }]
+    ['link', { rel: 'icon', href: '/hivedocs/images/hiveboard-mark.svg' }]
   ],
   themeConfig: {
     logo: '/images/hiveboard-mark.svg',
@@ -78,10 +78,6 @@ export default defineConfig({
     socialLinks: [
       { icon: 'github', link: 'https://github.com/EESC-LabRoM/HiveBoard' }
     ],
-    editLink: {
-      pattern: 'https://github.com/hiveboard-bench/hiveboard-bench.github.io/edit/main/docs/:path',
-      text: 'Edit this page on GitHub'
-    },
     footer: {
       message: 'HiveBoard documentation',
       copyright: 'Copyright © 2026 HiveBoard contributors'
