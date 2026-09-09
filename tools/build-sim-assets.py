@@ -34,11 +34,14 @@ either package.
 """
 import argparse
 import gzip
+import mujoco
 import json
 import math
 import os
 import re
 import shutil
+import fast_simplification
+import sim_trajectories
 import subprocess
 import sys
 import tempfile
@@ -54,28 +57,13 @@ OUT = REPO / "public/sim/models"
 CACHE = REPO / ".cache"
 MENAGERIE_URL = "https://github.com/google-deepmind/mujoco_menagerie.git"
 
-# Faces above this get simplified; below it the mesh is already cheap.
 DECIMATE_ABOVE = 3000
-# Fraction of faces to keep for meshes that do get simplified.
 KEEP_RATIO = 0.35
-
-# ── Scene layout ────────────────────────────────────────────────────────────
-# The board lies flat on the floor in front of the arm. Its authoring frame has
-# the panel in the local YZ plane with modules protruding along +X, so the mount
-# rotation maps local +X to world +Z (up) and local +Z to world +X.
 BOARD_POS = (0.52, 0.0, 0.2)
-
-# Two ways the board gets presented, both taken from the photographs. Its
-# authoring frame has the panel in the local YZ plane with modules protruding
-# along local +X, so the mount rotation is really a choice of where +X points.
-#   FLAT     lies the panel on a bench, modules pointing up  -- local +X -> +Z
-#   UPRIGHT  stands it on a post, modules pointing at the robot -- local +X -> -X
-BOARD_FLAT = (0.0, math.sqrt(0.5), 0.0, math.sqrt(0.5))    # w x y z
+BOARD_FLAT = (0.0, math.sqrt(0.5), 0.0, math.sqrt(0.5))
 BOARD_UPRIGHT = (0.0, 0.0, 0.0, 1.0)
 BOARD_QUAT = BOARD_FLAT
 
-# Hexagonal cell centres in the panel's own frame, straight out of
-# Honeycomb_Panel.urdf. Index 0 is the middle cell.
 CELLS = [
     (0.0, 0.0),
     (0.086603, 0.0),
@@ -86,62 +74,97 @@ CELLS = [
     (0.043301, -0.075),
 ]
 
-# Which HiveBoard modules to seat, and in which cell. Each one is spun about
-# its own axis at build time so its lever or lid points out of the board
-# rather than across its neighbours -- see cell_pose().
+
+LAY_FLAT = (0.0, math.pi / 2, 0.0)      # plate normal +Z -> +X
+LAY_SIDE = (0.0, 0.0, math.pi / 2)      # plate normal -Y -> +X
+
+SPIN = {"stiffness": "0", "damping": "0.02", "armature": "0.0008",
+        "limited": "true"}
+LOCKED = {"stiffness": "0", "damping": "5", "limited": "true",
+          "range": "-0.0005 0.0005"}
+
 MODULES = [
-    # No return spring at all: a ball valve stays where it is put. Its hinge
-    # axis is vertical, so gravity gives it nothing to fall back to, and the
-    # friction holds it steady until the loop resets the scene.
     {"name": "valve", "urdf": "Valves/Lever Valve/Ball Valve/Ball_Valve.urdf", "cell": 2,
      "joints": {"RevoluteJoint": {"stiffness": "0", "damping": "0.1",
                                   "frictionloss": "0.02"}}},
-    # Turning the bulb has to lift it through the thread equality, so its
-    # travel must not also be fighting a return spring -- with one fitted, the
-    # bulb stayed pinned at the bottom of its stroke and the gripper just slid
-    # around it.
     {"name": "lamp", "urdf": "Lamp/Lamp_Assembly.urdf", "cell": 4,
      "joints": {"PrismaticJoint": {"stiffness": "0", "damping": "1",
-                                  # Enough travel to lift the bulb's base clear
-                                  # of the socket rim 30 mm above it, so the
-                                  # lamp visibly comes out rather than just
-                                  # loosening. The trajectory only commands as
-                                  # much of it as one wrist can turn.
                                   "range": "0 0.05"},
-                # A thread turns freely once it is off its seat. With the
-                # default hinge spring fitted, the gripper had to fight it and
-                # slipped: 2.7 rad of wrist bought 1.0 rad of bulb. Free, the
-                # same grasp carries it 2.1 rad. Gravity still screws it back
-                # down afterwards, through the thread equality.
-                # Bounded by the thread it rides: 50 mm of travel at
-                # LAMP_PITCH is 6.1 rad and no more. Left unlimited, a gripper
-                # that loses its grip spins the bulb freely and the equality
-                # drags the travel 110 mm past a 50 mm stop.
                 "RevoluteJoint": {"stiffness": "0", "damping": "0.02",
                                   "frictionloss": "0.002", "armature": "0.0005",
                                   "range": "0 6.1", "limited": "true"}}},
-    # No spring: a breaker toggle latches. The URDF's default was stiff enough
-    # to stall the arm at 0.33 of the toggle's 0.52 rad throw, and softening it
-    # to 0.10 only made the snap-back slower -- released at its stop the toggle
-    # still walked back to a third of the throw, so every run ended with the
-    # breaker in the position it started in and the task undone. Its own stop
-    # holds it now, the way the ball valve's does; the settled rest angle is
-    # unchanged at about a degree, on a bench and on an upright board alike.
     {"name": "breaker", "urdf": "Circuit Breaker/Circuit_Breaker_Assembly.urdf", "cell": 6,
      "joints": {"RevoluteJoint": {"stiffness": "0"}}},
+
+    {"name": "high-valve",
+     "urdf": "Valves/Gate Valve/High Torque Valve/High_Torque_Valve.urdf",
+     "cell": 0, "align": LAY_FLAT,
+     "joints": {"RevoluteJoint": dict(SPIN, range="-6.4 6.4", frictionloss="0.05"),
+                "PrismaticJoint": LOCKED}},
+    {"name": "small-valve",
+     "urdf": "Valves/Gate Valve/Small Valve/Small_Valve.urdf",
+     "cell": 0, "align": LAY_SIDE,
+     "joints": {"RevoluteJoint": dict(SPIN, range="-6.4 6.4", frictionloss="0.02"),
+                "PrismaticJoint": LOCKED}},
+    {"name": "thread-m30", "urdf": "Threads/M30 Thread/M30.urdf",
+     "cell": 0, "align": LAY_FLAT,
+     "joints": {"RevoluteJoint": dict(SPIN, range="0 6.4", frictionloss="0.01"),
+                "PrismaticJoint": LOCKED},
+     "add": {"Nut": {"name": "RiseJoint", "type": "slide", "axis": "0 0 1",
+                     "range": "0 0.04", "damping": "1", "stiffness": "0"}},
+     "couple": ("RiseJoint", "RevoluteJoint", 0.0035)},
+    {"name": "thread-m8", "urdf": "Threads/M8 Thread/M8_Assy.urdf",
+     "cell": 0,
+     "joints": {"RevoluteJoint": dict(SPIN, range="0 6.4", frictionloss="0.002"),
+                "PrismaticJoint": {"stiffness": "0", "damping": "0.2",
+                                   "range": "0 0.02"}},
+     "couple": ("PrismaticJoint", "RevoluteJoint", 0.00125)},
+    {"name": "peg-insertion", "urdf": "Peg Insertion/Peg_insertion_1.urdf",
+     "cell": 0, "align": LAY_FLAT,
+     "split": {"child": "peg", "meshes": ["Al__a"],
+               "joint": {"name": "PrismaticJoint", "type": "slide",
+                         "axis": "0 0 1", "range": "0 0.04",
+                         "damping": "1", "stiffness": "0"}}},
+    {"name": "button-cover", "urdf": "Button/Button_Assembly.urdf", "cell": 0,
+     # the released cover hinges from the far edge; swung round it opens
+     # toward the arm instead, leaving the button clear
+     "turn": {"lid_pivot": 180, "World": 180},
+     "pose": {"RevoluteJoint": -1.5708},
+     "joints": {"PrismaticJoint": {"stiffness": "800", "damping": "2",
+                                   "range": "-0.01 0"},
+                "RevoluteJoint": {"stiffness": "0", "damping": "0.05",
+                                  "frictionloss": "0.03", "armature": "0.002"}}},
+    {"name": "key-lock", "urdf": "Key/Key_assembly.urdf", "cell": 0,
+     "split": {"child": "key",
+               "meshes": ["Key_pivot", "Cylinder", "Cube_05"],
+               "joints": [
+                   {"name": "PrismaticJoint", "type": "slide",
+                    "axis": "1 0 0", "range": "0 0.024",
+                    "damping": "0.5", "stiffness": "0",
+                    "frictionloss": "0.02"},
+                   {"name": "RevoluteJoint", "type": "hinge",
+                    "axis": "1 0 0", "range": "0 1.5708",
+                    "damping": "0.05", "stiffness": "0",
+                    "frictionloss": "0.005"}]}},
+    {"name": "drawer", "urdf": "Drawer/Drawer_Assembly.urdf", "cell": 0,
+     "split": {"child": "drawer",
+               "meshes": ["tn__Gaveta1", "Cylinder_02"],
+               "joint": {"name": "PrismaticJoint", "type": "slide",
+                         "axis": "1 0 0", "range": "0 0.05",
+                         "damping": "2", "stiffness": "0"}}},
+    {"name": "shock-absorber",
+     "urdf": "Shock Absorber/Shock_Absorber_Assembly.urdf",
+     "cell": 0, "align": LAY_FLAT,
+     "split": {"child": "rod", "meshes": ["Corpo3"],
+               "joint": {"name": "PrismaticJoint", "type": "slide",
+                         "axis": "1 0 0", "range": "0 0.03",
+                         "damping": "2", "stiffness": "120"}}},
 ]
+
+SWAP_CELL = [m["name"] for m in MODULES if m["cell"] == 0]
 
 PANEL_URDF = "Honeycomb/Honeycomb_Panel.urdf"
 
-# ── Robots ──────────────────────────────────────────────────────────────────
-# One scene per robot, all working the same board. Everything upstream is
-# pulled from mujoco_menagerie and grafted by adopt_robot(); the FR3 is the
-# exception because its Panda hand is an assembly menagerie does not ship.
-#
-# `board` is where the board's centre sits in that robot's world, chosen for
-# its reach; `bench` is the height of the surface under it. `grip` gives the
-# gripper actuator's command in its own units -- metres of finger travel for
-# the FR3's parallel jaws, radians for the hinged jaws on Spot and the SO-101.
 ROBOTS = [
     {
         "name": "fr3",
@@ -150,6 +173,12 @@ ROBOTS = [
         "arm": [f"fr3_joint{i}" for i in range(1, 8)],
         "grip": {"actuator": "gripper", "open": 0.034, "grasp": 0.002, "fist": 0.0},
         "home": [0.0, -0.0881, 0.0, -2.1491, 0.0, 2.0611, 0.79],
+        # held back for now; both show as coming soon
+        "skip": ["drawer", "button-cover"],
+        # the breaker is thrown for real, not demonstrated
+        "physical": ["breaker"],
+        # the bulb has to leave its socket, not clear it by a further tenth
+        "lamp_tolerance": 1.0,
         "board": (0.52, 0.0, 0.20),
         "bench": {"half": 0.19, "top": 0.20},
         "tcp": ("hand", (0.0, 0.0, 0.1034)),
@@ -162,39 +191,23 @@ ROBOTS = [
         "arm": ["arm_sh0", "arm_sh1", "arm_el0", "arm_el1", "arm_wr0", "arm_wr1"],
         "grip": {"actuator": "arm_f1x", "open": -1.5, "grasp": 0.0, "fist": 0.0},
         "jaws": ("arm_link_fngr", "arm_link_wr1"),
-        "stow": True,          # weld the legs and the base, drive the arm only
+        "stow": True,
         "home": [0.0, -1.9, 2.0, 0.0, -0.6, 0.0],
-        # Spot works the board the way the lab rig presents it: stood upright
-        # on a slim post at chest height, panel facing the robot, modules
-        # sticking out towards it. Reaching horizontally into a vertical board
-        # is what its arm is shaped for -- laying the board flat on a bench had
-        # it stooping over the far side of its own workspace.
         "board": (1.08, 0.0, 0.70),
         "board_quat": BOARD_UPRIGHT,
         "stand": {"top": 0.70, "half": 0.17},
-        # Pinch with the very tip of the claw. Aimed at the closing point deep
-        # in its throat it swept past the lever entirely; aimed halfway down it
-        # swallowed the lever and parked the whole claw over the board.
         "grip_depth": 0.95,
-        # Watched from the flank at a distance scaled to the robot; the fixed
-        # over-the-board framing that suits an arm on a bench puts the camera
-        # between Spot's own legs.
         "framing": "side",
-        # The lamp, held 20 mm short of where the FR3 takes it: a claw that
-        # closes past its own fingertips hooks the glass on the way out if it
-        # reaches as far in. Its wrist also lands a different angle for the same
-        # hand orientation, so the unscrew starts wound further back to fit the
-        # whole turn inside one wrist.
+        # Spot keeps the three original modules; the swappable centre cell
+        # stays coming soon.  It works them for real rather than
+        # demonstrating them, so its modules stay collidable and move only as
+        # far as the arm actually pushes them.
+        "skip": SWAP_CELL,
+        "scripted": False,
         "lamp_standoff": 0.01,
         "lamp_wind": 1.5,
         "lamp_approach": 0.25,
         "lamp_demo": True,
-        # And the valve lever held 15 mm further down the bar, towards the hub:
-        # up at the middle of it the claw reads as hovering over the lever's tip
-        # rather than holding it. Lower down there is less to slip against, so
-        # the swing finishes on the stop rather than just shy of it -- which
-        # matters here, since on an upright board a lever released short of its
-        # stop simply falls back open.
         "valve_grasp": 0.015,
         "valve_shy": -0.04,
     },
@@ -206,62 +219,44 @@ ROBOTS = [
         "arm": ["shoulder_pan", "shoulder_lift", "elbow_flex", "wrist_flex", "wrist_roll"],
         "grip": {"actuator": "gripper", "open": 1.6, "grasp": -0.175, "fist": -0.175},
         "jaws": ("moving_jaw_so101_v1", "gripper"),
-        # Park folded clear of every board angle. The former home posture sat
-        # over the lamp at its task angle and pushed the bulb out during reset,
-        # before the trajectory had even begun.
         "home": [0.0, 0.0, 0.0, 0.0, 0.0],
-        # Keep the old, well-conditioned posture as the IK nullspace bias only;
-        # the authored path still starts and ends at the collision-free home.
         "ik_home": [0.0, -0.6, 0.9, 0.6, 0.0],
-        # Desk-sized: the board sits on the same surface as the arm's own base
-        # rather than up on a stand.
         "board": (0.29, 0.0, 0.01),
         "bench": {"half": 0.17, "top": 0.01},
         "tilt": 1.3,
-        # A desk-sized arm has no headroom to stand 100 mm off the board before
-        # descending, and hardly any orientation to spare either: five joints
-        # cannot hit a pose exactly, so the solver is told to spend what little
-        # it has on reaching the point rather than on the wrist angle.
         "clearance": 0.05,
         "rot_weight": 0.05,
-        # Grip near the fingertips: its jaws are long enough that the throat is
-        # nowhere anything actually sits.
         "grip_depth": 0.85,
-        # Turn the stand to bring each module round to the near side.
         "spin_board": True,
-        # Put each task directly in front of the short arm. The geometric
-        # facing angle is only a starting point: the valve works best one cell
-        # clockwise from it, while the bulb needs a small extra turn to keep
-        # the elbow clear of the panel through the whole orbiting grasp.
+        # The SO-101 is a small 5-DOF arm: it leaves the swappable centre cell
+        # alone, and cannot reach the bulb, so the lamp stays coming soon too.
+        # What it does keep it works for real rather than demonstrating, so
+        # its modules stay collidable and move only as far as it pushes them.
+        "skip": SWAP_CELL + ["lamp"],
+        "scripted": False,
         "task_spins": {"valve": math.radians(-90), "lamp": math.radians(97)},
-        # Five joints cannot keep an arbitrary gripper roll while tracking the
-        # bulb axis. Hold it off-axis instead: orbiting this 42 mm radius turns
-        # the bulb mechanically without asking for a sixth wrist DOF.
         "lamp_grasp_radius": 0.042,
-        # The clearance goal already includes 4 mm above the socket rim. The
-        # larger generic multiplier was added to mask Python/WASM differences;
-        # this path is accepted from its task-only motion instead of the old
-        # reset transient, so the measured clearance itself is the threshold.
         "lamp_tolerance": 1.0,
-        # The gripper stays securely in contact, but the under-actuated wrist
-        # trades 6-7 mm of TCP position for its approach direction on the arc.
         "lamp_ik_tolerance": 0.007,
         "lamp_demo": True,
     },
     {
         "name": "anymal",
         "label": "ANYmal-D + DynaArm + 2F-140",
-        "note": "Platform C · draft trajectories",
+        "note": "Platform C",
         "arm": ["dynaarm_" + name for name in (
             "shoulder_rotation", "shoulder_flexion", "elbow_flexion",
             "forearm_rotation", "wrist_flexion", "wrist_rotation")],
         "grip": {"actuator": "finger_joint", "open": 0.0, "grasp": 0.65, "fist": 0.7},
         "home": [0.0, -0.7, 1.4, 0.0, 0.0, 0.0],
-        "board": (0.80, 0.0, 0.90),
+        "board": (0.82, 0.0, 0.90),
         "board_quat": BOARD_UPRIGHT,
         "stand": {"top": 0.90, "half": 0.17},
         "framing": "side",
         "ground": True,
+        # As on the FR3: the toggle is thrown by the gripper against live
+        # collision, not replayed from an authored module motion.
+        "physical": ["breaker"],
         "tcp": ("robotiq_base_link", (0.0, 0.0, 0.20)),
     },
     {
@@ -273,14 +268,11 @@ ROBOTS = [
         "board_quat": BOARD_UPRIGHT,
         "stand": {"top": 0.55, "half": 0.17},
         "framing": "side",
-        "mount": (0.45, 0.0, 0.52),
+        "mount": (0.70, 0.0, 0.52),
         "tcp": ("macao_hand", (0.0, 0.0, 0.11)),
-        "skip": ["valve", "lamp", "breaker", "toggle", "button", "dial"],
+        "skip": ["toggle", "button", "dial"],
     },
 ]
-
-# MuJoCo needs a <mujoco> block inside the URDF to pick up mesh paths and to be
-# told to keep the visual geoms, which it discards by default on URDF import.
 URDF_HINT = (
     '<mujoco><compiler meshdir="." balanceinertia="true" '
     'discardvisual="false" strippath="false" fusestatic="false" '
@@ -288,42 +280,32 @@ URDF_HINT = (
 )
 
 
-# ═══════════════════════════════════════════════════════════════════════════
-#  OBJ handling
-# ═══════════════════════════════════════════════════════════════════════════
 def obj_read(path):
-    """Parse an OBJ into (Nx3 float verts, Mx3 int faces). Normals are dropped."""
+
     verts, faces = [], []
     for line in path.read_text().splitlines():
         if line.startswith("v "):
             verts.append([float(x) for x in line.split()[1:4]])
         elif line.startswith("f "):
             idx = [int(tok.split("/")[0]) for tok in line.split()[1:]]
-            # OBJ indices are 1-based and may be negative (relative to the end).
             idx = [i - 1 if i > 0 else len(verts) + i for i in idx]
-            for k in range(1, len(idx) - 1):  # fan-triangulate
+            for k in range(1, len(idx) - 1):
                 faces.append([idx[0], idx[k], idx[k + 1]])
     return np.asarray(verts, np.float64), np.asarray(faces, np.int64)
 
 
 def obj_write(path, verts, faces):
-    """Write a normal-free OBJ, trimming coordinates to micrometre precision."""
+
     out = ["v %.6g %.6g %.6g" % tuple(v) for v in verts]
     out += ["f %d %d %d" % tuple(f + 1) for f in faces]
     path.write_text("\n".join(out) + "\n")
 
 
 def weld(verts, faces, tol=1e-7):
-    """Merge coincident vertices and drop the faces that collapse as a result.
 
-    The menagerie OBJs are exported unwelded -- link1 alone carries 11516
-    vertices for 8028 faces, one per face corner. A simplifier cannot collapse
-    an edge whose endpoints are duplicated, so decimating the raw mesh shatters
-    it into confetti. Welding first restores the shared topology.
-    """
     keys = np.round(verts / tol).astype(np.int64)
     _, first, inverse = np.unique(keys, axis=0, return_index=True, return_inverse=True)
-    order = np.argsort(first)               # keep the original vertex order
+    order = np.argsort(first)
     remap = np.empty(len(first), np.int64)
     remap[order] = np.arange(len(first))
     faces = remap[inverse.ravel()][faces]
@@ -333,11 +315,11 @@ def weld(verts, faces, tol=1e-7):
 
 
 def decimate(verts, faces):
-    """Collapse a dense mesh down to KEEP_RATIO of its faces."""
+
     verts, faces = weld(verts, faces)
     if len(faces) <= DECIMATE_ABOVE:
         return verts, faces
-    import fast_simplification
+    
 
     v, f = fast_simplification.simplify(
         verts.astype(np.float32), faces.astype(np.int32), 1.0 - KEEP_RATIO
@@ -346,7 +328,7 @@ def decimate(verts, faces):
 
 
 def stl_read(path):
-    """Parse a binary or ASCII STL into (verts, faces). Every face is loose."""
+
     raw = path.read_bytes()
     if raw[:5].lower() == b"solid" and b"facet" in raw[:512]:
         verts = [[float(v) for v in line.split()[1:4]]
@@ -362,14 +344,7 @@ def stl_read(path):
 
 
 def emit_mesh(src: Path, dst_dir: Path, name: str = None, simplify=True) -> str:
-    """Copy one mesh into the output tree, decimating it on the way.
 
-    STLs used to be passed through untouched, on the grounds that the only ones
-    in the scene were the FR3's already-coarse collision hulls. The SO-101 ships
-    its *visual* meshes as STL, and 18 of them came to 17 MB -- more than every
-    other robot put together. Everything is decimated now, and STL comes out the
-    other side as OBJ.
-    """
     dst_dir.mkdir(parents=True, exist_ok=True)
     stl = src.suffix.lower() == ".stl"
     verts, faces = (stl_read(src) if stl else obj_read(src))
@@ -384,7 +359,7 @@ def emit_mesh(src: Path, dst_dir: Path, name: str = None, simplify=True) -> str:
 #  Sources
 # ═══════════════════════════════════════════════════════════════════════════
 def ensure_menagerie() -> Path:
-    """Sparse-clone the menagerie models we need, once."""
+
     root = CACHE / "mujoco_menagerie"
     if not (root / "franka_fr3/fr3.xml").exists():
         CACHE.mkdir(exist_ok=True)
@@ -402,9 +377,18 @@ def ensure_menagerie() -> Path:
     return root
 
 
-def load_urdf(urdf: Path, workdir: Path):
-    """Compile a HiveBoard URDF through MuJoCo and hand back the MJCF it emits."""
-    import mujoco
+def flat_meshes(mesh_dir: Path):
+
+    out = set()
+    for obj in sorted(mesh_dir.glob("*.obj")):
+        verts = [[float(x) for x in line.split()[1:4]]
+                 for line in obj.read_text().splitlines() if line.startswith("v ")]
+        if not verts or np.ptp(np.array(verts), axis=0).min() < 1e-6:
+            out.add(obj.name)
+    return out
+
+
+def load_urdf(urdf: Path, workdir: Path, align=None):
 
     staged = workdir / urdf.parent.name
     if not staged.exists():
@@ -412,26 +396,32 @@ def load_urdf(urdf: Path, workdir: Path):
     path = staged / urdf.name
     text = path.read_text()
     if "<mujoco>" not in text:
+        for name in flat_meshes(staged / "meshes") if (staged / "meshes").is_dir() else ():
+            text = re.sub(r"\s*<(visual|collision)>(?:(?!</\1>).)*?"
+                          + re.escape(name) + r"(?:(?!</\1>).)*?</\1>",
+                          "", text, flags=re.S)
         text = re.sub(r"(<robot[^>]*>)", r"\1\n  " + URDF_HINT, text, count=1)
         path.write_text(text)
 
     model = mujoco.MjModel.from_xml_path(str(path))
     saved = workdir / (urdf.stem + ".mjcf.xml")
     mujoco.mj_saveLastXML(str(saved), model)
+    rot = rpy_matrix(align) if align else np.eye(3)
     return (ET.parse(saved).getroot(), urdf.parent / "meshes",
-            base_depth(model), reach_direction(model))
+            base_depth(model, rot), reach_direction(model, rot))
+
+
+def rpy_matrix(rpy):
+
+    r, p, y = rpy
+    cr, sr, cp, sp, cy, sy = (math.cos(r), math.sin(r), math.cos(p),
+                              math.sin(p), math.cos(y), math.sin(y))
+    return (np.array([[cy, -sy, 0], [sy, cy, 0], [0, 0, 1]])
+            @ np.array([[cp, 0, sp], [0, 1, 0], [-sp, 0, cp]])
+            @ np.array([[1, 0, 0], [0, cr, -sr], [0, sr, cr]]))
 
 
 def adopt_robot(cfg, menagerie: Path, workdir: Path, out_assets: Path):
-    """Graft a menagerie robot into our scene, meshes and actuators and all.
-
-    Same trick as the HiveBoard URDFs: compile the upstream model, ask MuJoCo
-    to write it back out, and take the flattened MJCF. Defaults are baked in by
-    then, so what comes back is self-contained -- which beats transcribing
-    Spot's twenty-two bodies by hand and then maintaining them.
-    """
-    import mujoco
-
     src = menagerie / cfg["source"]
     model = mujoco.MjModel.from_xml_path(str(src))
     saved = workdir / f"{cfg['name']}.mjcf.xml"
@@ -451,14 +441,13 @@ def adopt_robot(cfg, menagerie: Path, workdir: Path, out_assets: Path):
     if cfg.get("mount_quat"):
         body.set("quat", fmt(cfg["mount_quat"]))
 
-    # Everything the robot needs that is not geometry.
     extras = {tag: root.find(tag) for tag in
               ("actuator", "contact", "equality", "tendon", "default")}
     return body, meshes, root.findall("./asset/material"), extras
 
 
 def quat_matrix(q):
-    """Rotation matrix from a MuJoCo (w, x, y, z) quaternion."""
+
     w, x, y, z = q
     return np.array([
         [1 - 2 * (y * y + z * z), 2 * (x * y - z * w), 2 * (x * z + y * w)],
@@ -468,7 +457,7 @@ def quat_matrix(q):
 
 
 def matrix_quat(m):
-    """MuJoCo (w, x, y, z) quaternion from a rotation matrix."""
+
     w = math.sqrt(max(1 + m[0, 0] + m[1, 1] + m[2, 2], 0)) / 2
     if w > 1e-6:
         return np.array([w, (m[2, 1] - m[1, 2]) / (4 * w),
@@ -484,6 +473,7 @@ def matrix_quat(m):
 
 
 def axis_matrix(axis, angle):
+
     k = np.asarray(axis, float)
     k = k / np.linalg.norm(k)
     K = np.array([[0, -k[2], k[1]], [k[2], 0, -k[0]], [-k[1], k[0], 0]])
@@ -491,15 +481,7 @@ def axis_matrix(axis, angle):
 
 
 def freeze_joints(body, keep, pose):
-    """Delete every joint the robot will not be driving, baking in its angle.
 
-    Spot arrives as a free-floating quadruped. Parked on a stand with only its
-    arm in play, twelve leg joints and a free base are twelve joints of drift
-    and a base that can tip over. Deleting them outright welds the legs at
-    whatever angle the body frames were authored with, which for Spot is bolt
-    upright -- a stance it never actually stands in. So each dropped joint's
-    standing angle is folded into its child body's transform first.
-    """
     dropped = []
     for parent in body.iter("body"):
         for joint in list(parent.findall("joint")) + list(parent.findall("freejoint")):
@@ -518,9 +500,6 @@ def freeze_joints(body, keep, pose):
             rot = quat_matrix(quat)
             anchor_local = np.array([float(v) for v in (joint.get("pos") or "0 0 0").split()])
             axis_local = np.array([float(v) for v in (joint.get("axis") or "0 0 1").split()])
-
-            # Rotate the body about the joint's axis through its anchor, both
-            # expressed in the parent's frame.
             spin = axis_matrix(rot @ axis_local, angle)
             offset = rot @ anchor_local
             parent.set("pos", fmt(pos + offset - spin @ offset))
@@ -528,28 +507,20 @@ def freeze_joints(body, keep, pose):
     return dropped
 
 
-def reach_direction(model) -> tuple:
-    """Which way a module's moving parts stick out, in its own (y, z) plane.
-
-    A ball valve's lever and a button's lid both swing well outside the hex
-    footprint. Seating them at whatever angle the CAD happened to use drops
-    them across the neighbouring cells, so the scene builder rotates each
-    module until this vector points away from the middle of the board.
-    """
-    import mujoco
-
+def reach_direction(model, rot=None) -> tuple:
     data = mujoco.MjData(model)
     mujoco.mj_forward(model, data)
+    rot = np.eye(3) if rot is None else rot
     total = np.zeros(2)
     weight = 0.0
     for g in range(model.ngeom):
         body = model.geom_bodyid[g]
         if body <= 1 or model.geom_type[g] != mujoco.mjtGeom.mjGEOM_MESH:
-            continue  # body 1 is the fixed base; only what hangs off a joint counts
+            continue
         mesh = model.geom_dataid[g]
         adr, num = model.mesh_vertadr[mesh], model.mesh_vertnum[mesh]
         world = model.mesh_vert[adr:adr + num] @ data.geom_xmat[g].reshape(3, 3).T
-        world = world + data.geom_xpos[g]
+        world = (world + data.geom_xpos[g]) @ rot.T
         total += world[:, 1:].mean(axis=0) * num
         weight += num
 
@@ -560,44 +531,88 @@ def reach_direction(model) -> tuple:
     return tuple(vec / norm) if norm > 1e-6 else (0.0, 0.0)
 
 
-def base_depth(model) -> float:
-    """How far a module's base plate sits below its own origin, along local +X.
-
-    The modules are authored with the mounting plate hanging into negative X --
-    Button_Assembly, for instance, spans x = -0.021..0.058 -- while a honeycomb
-    cell occupies x = 0..0.02. Seating a module by this offset drops its plate
-    into the cell instead of through the floor.
-    """
-    import mujoco
-
+def base_depth(model, rot=None) -> float:
     data = mujoco.MjData(model)
     mujoco.mj_forward(model, data)
+    rot = np.eye(3) if rot is None else rot
     lo = 0.0
     for g in range(model.ngeom):
         if model.geom_bodyid[g] != 1 or model.geom_type[g] != mujoco.mjtGeom.mjGEOM_MESH:
-            continue  # body 1 is the URDF root link, i.e. the mounting plate
+            continue
         mesh = model.geom_dataid[g]
         adr, num = model.mesh_vertadr[mesh], model.mesh_vertnum[mesh]
         world = model.mesh_vert[adr:adr + num] @ data.geom_xmat[g].reshape(3, 3).T
-        lo = min(lo, float((world + data.geom_xpos[g])[:, 0].min()))
+        lo = min(lo, float(((world + data.geom_xpos[g]) @ rot.T)[:, 0].min()))
     return -lo
 
 
-# ═══════════════════════════════════════════════════════════════════════════
-#  URDF → scene fragment
-# ═══════════════════════════════════════════════════════════════════════════
+def split_body(root, prefix, spec):
+
+    base = root
+    wanted = tuple(f"{prefix}_{name}" for name in spec["meshes"])
+    moving = [g for g in base.findall("geom")
+              if (g.get("mesh") or "").startswith(wanted)]
+    if not moving:
+        raise SystemExit(f"split: no geom matched {wanted}")
+
+    child = ET.SubElement(base, "body",
+                          {"name": f"{prefix}_{spec['child']}", "pos": "0 0 0"})
+    for joint in spec.get("joints", [spec["joint"]] if "joint" in spec else []):
+        ET.SubElement(child, "joint", dict(
+            joint, name=f"{prefix}_{joint['name']}",
+            pos=spec.get("pos", "0 0 0")))
+    for geom in moving:
+        base.remove(geom)
+        child.append(geom)
+        geom.set("material", "hb_accent")
+        if geom.get("group") == "3":
+            geom.set("contype", "2")
+            geom.set("conaffinity", "1")
+            geom.set("solref", "0.004 1")
+            geom.set("solimp", "0.98 0.999 0.0005")
+    for body, mass, inertia in ((base, "0.4", "1e-3"), (child, "0.01", "1e-5")):
+        for old in body.findall("inertial"):
+            body.remove(old)
+        ET.SubElement(body, "inertial", {
+            "pos": "0 0 0", "mass": mass,
+            "diaginertia": " ".join([inertia] * 3)})
+
+
+def turn_child(root, prefix, spec):
+
+    # Rotate part of a module about its mounting normal (local +X).  Naming a
+    # child body carries its joint anchor and axis round with it -- enough to
+    # hinge a cover from the opposite edge.  Naming the module's own root
+    # spins just that body's geometry, leaving the parts hung off it where
+    # they are, so the housing can turn without moving the button or the lid.
+    for name, degrees in spec.items():
+        body = next((b for b in root.iter("body")
+                     if b.get("name") == f"{prefix}_{name}"), None)
+        if body is None:
+            raise SystemExit(f"turn: no body named {prefix}_{name}")
+        rot = rpy_matrix((math.radians(degrees), 0.0, 0.0))
+        targets = body.findall("geom") if body is root else [body]
+        for elem in targets:
+            pos = [float(v) for v in (elem.get("pos") or "0 0 0").split()]
+            quat = [float(v) for v in (elem.get("quat") or "1 0 0 0").split()]
+            elem.set("pos", fmt(rot @ np.array(pos)))
+            elem.set("quat", fmt(matrix_quat(rot @ quat_matrix(quat))))
+
+
+def add_joints(root, prefix, spec):
+
+    for body_name, joint in spec.items():
+        for body in root.iter("body"):
+            if body.get("name") == f"{prefix}_{body_name}":
+                body.insert(0, ET.Element("joint", dict(
+                    joint, name=f"{prefix}_{joint['name']}")))
+                break
+        else:
+            raise SystemExit(f"add: no body named {prefix}_{body_name}")
+
+
 def adopt(root, prefix, mesh_src: Path, meshes: dict, shell="hb_shell", pose=None, tune=None):
-    """Namespace one converted module and normalise its geom groups.
 
-    MuJoCo's URDF importer emits visual geoms as group 1 and collision geoms as
-    group 0. The widget draws every geom below group 3, so visuals move to
-    group 2 and collisions to group 3 -- the menagerie convention, which keeps
-    the arm and the board on the same footing.
-
-    Returns the module's root body and its <mesh> elements; the elements are
-    carried over whole because several HiveBoard meshes are authored in
-    millimetres and only their `scale` attribute says so.
-    """
     mesh_elems = root.findall("./asset/mesh")
     for mesh in mesh_elems:
         fname = Path(mesh.get("file")).name
@@ -609,9 +624,6 @@ def adopt(root, prefix, mesh_src: Path, meshes: dict, shell="hb_shell", pose=Non
 
     base = root.find("./worldbody/body")
     for body in root.iter("body"):
-        # A geom on the module's own base is fixed hardware; anything deeper
-        # hangs off a joint, so it gets the accent colour and the widget's
-        # "what actually moves here" reading comes for free.
         material = shell if body is base else "hb_accent"
         for geom in body.findall("geom"):
             if geom.get("mesh"):
@@ -620,20 +632,8 @@ def adopt(root, prefix, mesh_src: Path, meshes: dict, shell="hb_shell", pose=Non
             geom.set("group", "2" if visual else "3")
             geom.set("material", material)
             if not visual:
-                # Collision geoms stay collidable but are never drawn.
                 geom.set("rgba", "0 0 0 0")
-                # MuJoCo collides the *convex hull* of a mesh, so a hollow
-                # housing swallows whatever presses into it: the lamp sat
-                # 11 mm inside its own socket, the lid 5 mm inside the panel.
-                # That standing penetration pumps energy into the board -- it
-                # spun the lamp's unlimited screw joint up to 154000 rad while
-                # settling.
-                #
-                # So the board's fixed shells carry no contact at all: their
-                # hulls are fiction, and a solid hull over a socket also walls
-                # the gripper out of the very features it is meant to reach.
-                # The moving parts stay collidable against the arm (contype 2
-                # meets the arm's conaffinity 1) but not against each other.
+                geom.set("friction", "1.6 0.02 0.001")
                 if body is base:
                     geom.set("contype", "0")
                     geom.set("conaffinity", "0")
@@ -647,11 +647,6 @@ def adopt(root, prefix, mesh_src: Path, meshes: dict, shell="hb_shell", pose=Non
         rest = (pose or {}).get(original, 0.0)
         if original:
             joint.set("name", f"{prefix}_{original}")
-        # URDF describes the kinematics but not the return springs and detents
-        # the printed modules actually have, so without these a lid or lever
-        # just falls to whichever joint limit gravity points at and lies across
-        # the board. Sprung to its rest pose, each one instead springs back
-        # after the arm -- or a visitor's cursor -- pushes it.
         slide = joint.get("type") == "slide"
         joint.set("springref", "%.6g" % rest)
         joint.set("stiffness", "400" if slide else "0.35")
@@ -665,21 +660,15 @@ def adopt(root, prefix, mesh_src: Path, meshes: dict, shell="hb_shell", pose=Non
 
 
 def cell_pose(cell, lift, reach):
-    """Pose of a module seated in `cell`, expressed in the board's own frame.
 
-    The module is spun about its own axis until `reach` -- the direction its
-    moving parts stick out -- points away from the middle of the board. The
-    centre cell has no outward direction, so it faces the arm instead.
-    """
     y, z = CELLS[cell]
-    want = (y, z) if (y or z) else (0.0, -1.0)   # centre cell faces -Z, i.e. the arm
+    want = (y, z) if (y or z) else (0.0, -1.0)
     norm = math.hypot(*want)
     want = (want[0] / norm, want[1] / norm)
 
     if reach == (0.0, 0.0):
         spin = 0.0
     else:
-        # Signed angle from `reach` to `want` about the module's local +X.
         spin = math.atan2(reach[0] * want[1] - reach[1] * want[0],
                           reach[0] * want[0] + reach[1] * want[1])
 
@@ -688,14 +677,31 @@ def cell_pose(cell, lift, reach):
 
 
 def fmt(vals):
+
     return " ".join("%.6g" % v for v in vals)
 
 
-# ═══════════════════════════════════════════════════════════════════════════
-#  Scene assembly
-# ═══════════════════════════════════════════════════════════════════════════
+def home_qpos(cfg, scene, path):
+
+    rest = {f"{mod['name']}_{joint}": value
+            for mod in MODULES for joint, value in mod.get("pose", {}).items()}
+    if not rest:
+        return cfg["home"]
+
+    ET.indent(scene, "  ")
+    path.write_text(ET.tostring(scene, encoding="unicode") + "\n")
+    model = mujoco.MjModel.from_xml_path(str(path))
+    qpos = model.qpos0.copy()
+    qpos[:len(cfg["home"])] = cfg["home"]
+    for name, value in rest.items():
+        jid = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_JOINT, name)
+        if jid >= 0:
+            qpos[model.jnt_qposadr[jid]] = value
+    return qpos
+
+
 def build_board(hiveboard: Path):
-    """Convert the board and its modules once; every robot scene reuses them."""
+
     meshes, elems, fragments = {}, [], []
     with tempfile.TemporaryDirectory() as tmp:
         tmp = Path(tmp)
@@ -707,10 +713,20 @@ def build_board(hiveboard: Path):
         elems += panel_elems
 
         for mod in MODULES:
-            root, mesh_dir, lift, reach = load_urdf(hiveboard / mod["urdf"], tmp)
+            align = mod.get("align")
+            root, mesh_dir, lift, reach = load_urdf(hiveboard / mod["urdf"], tmp,
+                                                    align)
             body, mod_elems = adopt(root, mod["name"], mesh_dir, meshes,
                                     pose=mod.get("pose"), tune=mod.get("joints"))
+            if "split" in mod:
+                split_body(body, mod["name"], mod["split"])
+            if "add" in mod:
+                add_joints(body, mod["name"], mod["add"])
+            if "turn" in mod:
+                turn_child(body, mod["name"], mod["turn"])
             pos, quat = cell_pose(mod["cell"], lift, reach)
+            if align:
+                quat = matrix_quat(quat_matrix(quat) @ rpy_matrix(align))
             body.set("pos", fmt(pos))
             body.set("quat", fmt(quat))
             fragments.append(body)
@@ -719,26 +735,19 @@ def build_board(hiveboard: Path):
     for name, (src, out_name) in meshes.items():
         emit_mesh(src, OUT / "assets/hb", out_name)
 
-    import sim_trajectories
-
-    # The lamp screws in. URDF gives its rotation and its travel as two
-    # independent joints, so the thread tying them together is added here, at
-    # the pitch the unscrew trajectory climbs at.
-    #
-    # Stiff, because a thread is: on MuJoCo's default equality softness a
-    # gripper that had hold of the glass could pull the bulb 30 mm straight out
-    # of a thread it had barely turned, which is not unscrewing it -- and the
-    # travel is what the task is scored on. At this stiffness the bulb comes out
-    # only as far as it is turned, which is what the constraint is there to say.
-    thread = ET.Element("joint", {
-        "joint1": "lamp_PrismaticJoint", "joint2": "lamp_RevoluteJoint",
-        "polycoef": "0 %.6g 0 0 0" % sim_trajectories.LAMP_PITCH,
+    threads = [("lamp", "PrismaticJoint", "RevoluteJoint",
+                sim_trajectories.LAMP_PITCH)]
+    threads += [(m["name"], *m["couple"]) for m in MODULES if "couple" in m]
+    equality = [ET.Element("joint", {
+        "joint1": f"{name}_{slide}", "joint2": f"{name}_{turn}",
+        "polycoef": "0 %.6g 0 0 0" % pitch,
         "solref": "0.01 1", "solimp": "0.95 0.999 0.001"})
-    return {"fragments": fragments, "meshes": elems, "equality": [thread]}
+        for name, slide, turn, pitch in threads]
+    return {"fragments": fragments, "meshes": elems, "equality": equality}
 
 
 def fr3_parts(menagerie: Path):
-    """The FR3 arm with a Panda hand -- an assembly menagerie does not ship."""
+
     fr3, panda = menagerie / "franka_fr3", menagerie / "franka_emika_panda"
     visual = (
         [f"link0_{i}.obj" for i in range(7)]
@@ -770,14 +779,7 @@ def fr3_parts(menagerie: Path):
 
 
 def macao_parts(cfg):
-    """Import the Macao STLs as an articulated hand and forearm.
 
-    The upstream project publishes individual parts rather than a robot
-    description. Their coordinates are already in millimetres in the assembly
-    frame, so preserve that layout and apply MuJoCo's metre scale once. The
-    published finger is instanced for four fingers and a separately posed,
-    opposed thumb.
-    """
     src = REPO / "tools/assets/macao"
     names = {
         "forearm": "Short Forearm.stl",
@@ -797,6 +799,7 @@ def macao_parts(cfg):
     meshes = []
 
     def add_mesh(name, filename):
+
         out = emit_mesh(src / filename, OUT / "assets/macao", name=f"{name}.obj")
         meshes.append(ET.Element("mesh", {
             "name": name, "file": f"macao/{out}", "scale": "0.001 0.001 0.001"}))
@@ -804,16 +807,16 @@ def macao_parts(cfg):
     for key, filename in names.items():
         add_mesh(key, filename)
 
-    def visual(parent, mesh, material="macao_shell", pos=None):
+    def visual(parent, mesh, material="macao_shell", pos=None, collision=False):
+
         attrs = {
             "type": "mesh", "mesh": mesh, "material": material,
-            "contype": "0", "conaffinity": "0", "group": "2"}
+            "contype": "1" if collision else "0",
+            "conaffinity": "2" if collision else "0", "group": "2"}
         if pos:
             attrs["pos"] = pos
         ET.SubElement(parent, "geom", attrs)
 
-    # The CAD assembly points its fingers along local +Z. Rotate it so they
-    # point along world +X, toward the upright board, with the forearm behind.
     body = ET.Element("body", {"name": "macao_hand", "pos": fmt(cfg.get("mount", (0.15, 0.0, 0.52))),
                                 "quat": "0.707107 0 0.707107 0", "gravcomp": "1"})
     for name, kind, axis, limits in (
@@ -827,9 +830,6 @@ def macao_parts(cfg):
         ET.SubElement(body, "joint", {"name": name, "type": kind, "axis": axis,
                                        "range": limits, "damping": "2"})
 
-    # Flip only the forearm/wrist/palm shell around the hand's longitudinal
-    # axis. Finger and thumb bodies remain siblings, so their corrected side,
-    # roots, hinge axes and trajectories are unchanged.
     shell = ET.SubElement(body, "body", {
         "name": "macao_arm_wrist", "quat": "0 0 0 1"})
 
@@ -841,37 +841,33 @@ def macao_parts(cfg):
     finger_joints = []
 
     def digit(parent, prefix, master=False):
-        """Build the printed finger around its three physical hinge axes."""
-        visual(parent, "finger_base")
+
+        visual(parent, "finger_base", collision=True)
 
         proximal = ET.SubElement(parent, "body", {"name": f"{prefix}_proximal", "pos": "0 0 0.016"})
         proximal_joint = "macao_grip" if master else f"{prefix}_prox_joint"
         ET.SubElement(proximal, "joint", {"name": proximal_joint, "type": "hinge",
                                            "axis": "-1 0 0", "range": "0 1.15", "damping": "0.35"})
         finger_joints.append((proximal_joint, 1.0))
-        visual(proximal, "finger_first", pos="0 0 -0.016")
-        visual(proximal, "finger_first_pad", "macao_pad", "0 0 -0.016")
+        visual(proximal, "finger_first", pos="0 0 -0.016", collision=True)
+        visual(proximal, "finger_first_pad", "macao_pad", "0 0 -0.016", collision=True)
 
         medial = ET.SubElement(proximal, "body", {"name": f"{prefix}_medial", "pos": "0 0 0.030"})
         medial_joint = f"{prefix}_medial_joint"
         ET.SubElement(medial, "joint", {"name": medial_joint, "type": "hinge",
                                          "axis": "-1 0 0", "range": "0 1.0", "damping": "0.3"})
         finger_joints.append((medial_joint, 0.78))
-        visual(medial, "finger_medial", pos="0 0 -0.046")
-        visual(medial, "finger_medial_pad", "macao_pad", "0 0 -0.046")
+        visual(medial, "finger_medial", pos="0 0 -0.046", collision=True)
+        visual(medial, "finger_medial_pad", "macao_pad", "0 0 -0.046", collision=True)
 
         distal = ET.SubElement(medial, "body", {"name": f"{prefix}_distal", "pos": "0 0 0.0245"})
         distal_joint = f"{prefix}_distal_joint"
         ET.SubElement(distal, "joint", {"name": distal_joint, "type": "hinge",
                                          "axis": "-1 0 0", "range": "0 0.9", "damping": "0.25"})
         finger_joints.append((distal_joint, 0.65))
-        visual(distal, "finger_distal", pos="0 0 -0.0705")
-        visual(distal, "finger_distal_pad", "macao_pad", "0 0 -0.0705")
+        visual(distal, "finger_distal", pos="0 0 -0.0705", collision=True)
+        visual(distal, "finger_distal_pad", "macao_pad", "0 0 -0.0705", collision=True)
 
-    # Four fingers across the palm. Lift their bases out to the shell edge.
-    # The hand rotation makes local X appear as vertical height in the viewer.
-    # Add one hardcoded correction per finger here, in metres. Positive values
-    # move that finger downward in world Z.
     finger_height_offsets = (-0.02, -0.005, 0.005, -0.015)
     for i, x in enumerate((-0.033, -0.011, 0.011, 0.033)):
         mount = ET.SubElement(body, "body", {
@@ -879,16 +875,10 @@ def macao_parts(cfg):
             "pos": f"{x} 0.01 {finger_height_offsets[i] + 0.04}"})
         digit(mount, f"macao_finger_{i}", master=(i == 0))
 
-
-    # The source has no separate thumb STL. Macao uses the same printed finger
-    # mechanism, mounted under the palm in an opposed orientation.
     thumb = ET.SubElement(body, "body", {
         "name": "macao_thumb_body", "pos": "0.018 0.063 -0.005",
-        # Keep the previous 180-degree local-X flip, then add a 180-degree
-        # local-Y turn. The composed quaternion leaves all thumb joints intact.
         "quat": "0 0 0.573576 0.819152"})
     digit(thumb, "macao_thumb")
-
 
     materials = [
         ET.Element("material", {"name": "macao_shell", "rgba": "0.08 0.09 0.11 1"}),
@@ -909,9 +899,6 @@ def macao_parts(cfg):
         ET.SubElement(equality, "joint", {"joint1": joint, "joint2": finger_joints[0][0],
                                            "polycoef": f"0 {ratio} 0 0 0", "solref": "0.005 1"})
 
-    # This custom platform returns before robot_parts()' shared gravity
-    # compensation pass, so apply it to the shell and every articulated digit
-    # here as well as the root body.
     for elem in body.iter("body"):
         elem.set("gravcomp", "1")
     return body, meshes, materials, {"actuator": actuators, "equality": equality}
@@ -934,25 +921,18 @@ def robot_parts(cfg, menagerie: Path, workdir: Path):
         cfg, menagerie, workdir, OUT / "assets" / cfg["name"])
 
     if cfg["name"] == "so101":
-        # Match the requested SO-101 body color while retaining the dark servo
-        # housings and fasteners.
         for material in materials:
             if material.get("name", "").endswith("_material") and "sts3215" not in material.get("name", ""):
                 material.set("rgba", "0.094118 0.611765 0.792157 1")
 
     if cfg.get("stow"):
-        import mujoco
+        
         src = mujoco.MjModel.from_xml_path(str(menagerie / cfg["source"]))
         stance = {mujoco.mj_id2name(src, mujoco.mjtObj.mjOBJ_JOINT, j):
                   float(src.key_qpos[0][src.jnt_qposadr[j]]) for j in range(src.njnt)}
         keep = set(cfg["arm"]) | {cfg["grip"]["actuator"]}
         freeze_joints(body, keep, stance)
 
-        # MuJoCo stops filtering parent-child contacts once the parent is welded
-        # to the world, which welding the base is exactly what does. Spot's
-        # shoulder then ground against its own chassis with 100 N.m of
-        # constraint force, and the servo lost: the arm sat 0.2 rad off every
-        # pose the solver gave it and touched nothing on the board all run.
         contact = extras.get("contact")
         if contact is None:
             contact = ET.Element("contact")
@@ -961,7 +941,6 @@ def robot_parts(cfg, menagerie: Path, workdir: Path):
             ET.SubElement(contact, "exclude",
                           {"body1": body.get("name"), "body2": child.get("name")})
 
-    # Only the joints we drive keep an actuator.
     driven = set(cfg["arm"]) | {cfg["grip"]["actuator"]}
     actuators = ET.Element("actuator")
     for act in (extras["actuator"] if extras.get("actuator") is not None else []):
@@ -969,14 +948,9 @@ def robot_parts(cfg, menagerie: Path, workdir: Path):
             actuators.append(act)
     extras["actuator"] = actuators
 
-    # Gravity compensation, as the FR3 block already carries. Without it a
-    # position servo holds a pose only as well as its gain allows, and Spot's
-    # arm sagged 21 cm below where the solver had put it -- the trajectory was
-    # right and the robot simply was not where it was told to be.
     for elem in body.iter("body"):
         elem.set("gravcomp", "1")
 
-    # A hinged jaw closing on a moulded lever needs grip, same as the FR3's pads.
     if cfg.get("jaws"):
         for parent in body.iter("body"):
             if parent.get("name") not in cfg["jaws"]:
@@ -991,8 +965,6 @@ def robot_parts(cfg, menagerie: Path, workdir: Path):
 
 
 def drop_to_floor(cfg, scene, path: Path, body):
-    """Sit the robot on the ground rather than trusting an authored mount height."""
-    import mujoco
 
     path.write_text(ET.tostring(scene, encoding="unicode"))
     model = mujoco.MjModel.from_xml_path(str(path))
@@ -1013,14 +985,6 @@ def drop_to_floor(cfg, scene, path: Path, body):
 
 
 def jaw_centre(cfg, path: Path):
-    """Where the fingertips meet, in the frame of whatever body carries them.
-
-    Trajectories are authored against this point, so it has to be measured off
-    the real jaws rather than guessed -- Spot's and the SO-101's are hinged and
-    curved, and neither has a tool frame sitting where the grip actually is.
-    """
-    import mujoco
-
     model = mujoco.MjModel.from_xml_path(str(path))
     data = mujoco.MjData(model)
     moving, fixed = cfg["jaws"]
@@ -1032,6 +996,7 @@ def jaw_centre(cfg, path: Path):
     pivot = data.xpos[mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_BODY, fixed)]
 
     def cloud(name):
+
         chunks = []
         bid = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_BODY, name)
         for g in range(model.ngeom):
@@ -1043,10 +1008,6 @@ def jaw_centre(cfg, path: Path):
                           + data.geom_xpos[g])
         return np.vstack(chunks)
 
-    # Where the jaws actually meet when shut, not the midpoint between their
-    # far ends. Spot's clamshell is lopsided enough that the two differ by
-    # centimetres, and aiming at the wrong one had it sweeping straight past
-    # every lever on the board without touching one.
     depth = cfg.get("grip_depth")
     near_m, near_f = cloud(moving), cloud(fixed)
     for _ in range(1):
@@ -1059,8 +1020,6 @@ def jaw_centre(cfg, path: Path):
     tip_m, tip_f = near_m[i], near_f[j]
     world = (tip_m + tip_f) / 2
 
-    # Orientation still comes from the far ends: the closing pair are almost on
-    # top of each other, so they say nothing about which way the jaws open.
     far_m = cloud(moving)
     far_f = cloud(fixed)
     reach_m = np.linalg.norm(far_m - pivot, axis=1)
@@ -1068,19 +1027,9 @@ def jaw_centre(cfg, path: Path):
     tip_m = far_m[reach_m >= np.quantile(reach_m, 0.8)].mean(axis=0)
     tip_f = far_f[reach_f >= np.quantile(reach_f, 0.8)].mean(axis=0)
 
-    # Where along the jaw the grip actually happens. The closest-approach point
-    # is right for a clamshell that shuts onto itself, but on a long hinged jaw
-    # it lands deep in the throat where nothing ever sits -- the SO-101 closed
-    # straight past a 23 mm lever without ever touching it. `grip_depth` slides
-    # the tool frame out toward the fingertips instead.
     if depth is not None:
         world = pivot + ((tip_m + tip_f) / 2 - pivot) * depth
 
-    # And which way the tool points. Trajectories are authored as "reach along
-    # the site's Z, open the jaws along its Y", so every robot needs a site
-    # oriented that way -- the bodies these hang off are aimed differently on
-    # every arm, and taking their raw axes had Spot trying to grasp the board
-    # edge-on and missing by 99 mm.
     axis_z = world - pivot
     axis_z = axis_z / np.linalg.norm(axis_z)
     axis_y = tip_m - tip_f
@@ -1095,81 +1044,23 @@ def jaw_centre(cfg, path: Path):
 
 
 def spin_address(model):
-    """qpos slot of the board's turntable joint, or -1 if this board is fixed."""
-    import mujoco
-
     jid = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_JOINT, "board_spin")
     return int(model.jnt_qposadr[jid]) if jid >= 0 else -1
 
 
 def board_normal(cfg):
-    """Which way the board faces: the world direction its modules stick out."""
+
+    if cfg.get("name") == "macao":
+        return (-1.0, 0.0, 0.0)
     return tuple(quat_matrix(np.array(cfg.get("board_quat", BOARD_FLAT))) @ [1.0, 0, 0])
 
 
-def macao_motions(model):
-    """Looping demonstrations for the hand pose and synchronized digits."""
-    import mujoco
-
-    rate = 50
-
-    def make(label, caption, seconds, pose, close):
-        count = rate * seconds + 1
-        data = mujoco.MjData(model)
-        site = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_SITE, "tcp")
-        qpos, grip, tcp = [], [], []
-        for i in range(count):
-            phase = 2 * math.pi * i / (count - 1)
-            q = pose(phase)
-            g = close(phase)
-            data.qpos[:6] = q
-            mujoco.mj_forward(model, data)
-            qpos.append([round(v, 6) for v in q])
-            grip.append(round(g, 6))
-            tcp.append([round(float(v), 6) for v in data.site_xpos[site]])
-        return {
-            "label": label, "caption": caption, "rate": rate,
-            "watch": "macao_yaw", "goal": 0.0, "left": 0.0, "spin": 0.0,
-            "qpos": qpos, "grip": grip, "tcp": tcp,
-        }
-
-    sweep = lambda p: [
-        0.055 * math.sin(p), 0.035 * math.sin(2 * p), 0.045 * math.sin(p),
-        0.22 * math.sin(2 * p), 0.30 * math.sin(p), 0.42 * math.sin(p),
-    ]
-    still = lambda _p: [0.0] * 6
-    open_hand = lambda _p: 0.0
-    one_close = lambda p: 0.55 * (1 - math.cos(p))
-    two_closes = lambda p: 0.55 * (1 - math.cos(2 * p))
-
-    return {
-        "finger_flex": make(
-            "Flex fingers",
-            "Close and reopen all four fingers and the opposed thumb twice.",
-            7, still, two_closes),
-        "hand_sweep": make(
-            "Move whole hand",
-            "Translate and rotate the complete Macao hand while the fingers remain open.",
-            8, sweep, open_hand),
-        "hand_motion": make(
-            "Move hand and fingers",
-            "Move the complete Macao hand through space while all four fingers and the opposed thumb close and reopen.",
-            10, sweep, one_close),
-    }
-
-
 def emit_robot(cfg, menagerie: Path, board, hiveboard: Path):
-    """Assemble, settle, verify and solve one robot's scene."""
-    import mujoco
-    import sim_trajectories
-
     scene = ET.fromstring(SCENE_HEAD.replace("__NAME__", cfg["name"]))
     asset = scene.find("asset")
     worldbody = scene.find("worldbody")
 
     if "stand" in cfg:
-        # A post and a foot, as in the lab: the panel is bolted to a column
-        # rather than laid on anything.
         stand = cfg["stand"]
         ET.SubElement(worldbody, "geom", {
             "name": "stand_post", "type": "box", "rgba": "0.34 0.38 0.45 1",
@@ -1202,7 +1093,6 @@ def emit_robot(cfg, menagerie: Path, board, hiveboard: Path):
         if elem is not None and (tag == "default" or len(elem)):
             scene.append(elem)
 
-    # The board's own constraints -- the lamp's thread -- belong to every scene.
     equality = ET.Element("equality")
     for elem in (list(extras["equality"]) if extras.get("equality") is not None else []) + board["equality"]:
         equality.append(elem)
@@ -1223,18 +1113,11 @@ def emit_robot(cfg, menagerie: Path, board, hiveboard: Path):
             if name:
                 existing_mat_names.add(name)
 
-    # The robot goes in first so its driven joints own the low qpos indices;
-    # the widget indexes them positionally.
     worldbody.append(body)
     holder = ET.SubElement(worldbody, "body", {
         "name": "hiveboard", "pos": fmt(cfg["board"]),
         "quat": fmt(cfg.get("board_quat", BOARD_FLAT))})
     if cfg.get("spin_board"):
-        # The stand turns. A short arm cannot reach across a 260 mm board, so
-        # each task rotates the board to bring its own module round to the near
-        # side first -- which is what you would do with the real thing rather
-        # than dragging the robot around it. Stiff enough that nothing the
-        # modules do can nudge it off the angle it was set to.
         ET.SubElement(holder, "joint", {
             "name": "board_spin", "type": "hinge", "axis": "1 0 0",
             "damping": "20", "frictionloss": "40", "armature": "0.5"})
@@ -1248,7 +1131,6 @@ def emit_robot(cfg, menagerie: Path, board, hiveboard: Path):
     if cfg.get("stow") or cfg.get("ground"):
         drop_to_floor(cfg, scene, path, body)
 
-    # A tool frame between the fingertips, measured off the jaws.
     if "tcp" in cfg:
         tcp_body, tcp_pos, tcp_quat = (*cfg["tcp"], (1, 0, 0, 0))
     else:
@@ -1261,11 +1143,12 @@ def emit_robot(cfg, menagerie: Path, board, hiveboard: Path):
             break
 
     key = ET.SubElement(ET.SubElement(scene, "keyframe"), "key",
-                        {"name": "home", "qpos": fmt(cfg["home"])})
+                        {"name": "home", "qpos": fmt(home_qpos(cfg, scene, path))})
     ET.indent(scene, "  ")
     path.write_text(ET.tostring(scene, encoding="unicode") + "\n")
 
     settle(cfg, path, key)
+    pin_modules(path, key)
     ET.indent(scene, "  ")
     path.write_text(ET.tostring(scene, encoding="unicode") + "\n")
 
@@ -1274,15 +1157,12 @@ def emit_robot(cfg, menagerie: Path, board, hiveboard: Path):
           f"nbody={model.nbody} nmesh={model.nmesh}")
 
     cfg = dict(cfg, board_normal=board_normal(cfg))
-    tasks = (macao_motions(model) if cfg["name"] == "macao"
-             else sim_trajectories.build(path, cfg))
+    tasks = sim_trajectories.build(path, cfg)
     if cfg["name"] == "anymal":
         for task in tasks.values():
             task["caption"] = "Starter trajectory for editing; contact replay has not passed."
     sim_trajectories.dump(tasks, OUT / f"{cfg['name']}.traj.json")
 
-    # These robots differ in size by a factor of five, so the widget is handed a
-    # framing measured off each scene rather than one camera for all of them.
     data = mujoco.MjData(model)
     mujoco.mj_resetDataKeyframe(model, data, 0)
     mujoco.mj_forward(model, data)
@@ -1303,38 +1183,92 @@ def emit_robot(cfg, menagerie: Path, board, hiveboard: Path):
         "name": cfg["name"], "label": cfg["label"], "note": cfg["note"],
         "scene": f"{cfg['name']}.xml", "traj": f"{cfg['name']}.traj.json",
         "arm": len(cfg["arm"]), "grip": cfg["grip"], "home": cfg["home"],
-        # The index, not the name: looking an actuator up by name in the widget
-        # needs mjtObj's numbering, and getting that constant wrong fails
-        # silently -- mj_name2id returns -1, ctrl[-1] writes nowhere, and the
-        # gripper simply never opens.
         "gripIndex": int(mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_ACTUATOR,
                                            cfg["grip"]["actuator"])),
         "spinIndex": spin_address(model),
         "board": list(cfg["board"]),
         "view": {"centre": [round(v, 4) for v in centre], "span": round(span, 4)},
         "framing": cfg.get("framing", "over"),
-        # Which way the board faces, so the widget can put the camera on the
-        # side the modules are on rather than behind the panel.
         "boardNormal": [round(v, 4) for v in board_normal(cfg)],
         "tasks": list(tasks),
+        **({"taskHome": cfg["task_home"]} if cfg.get("task_home") else {}),
     }
 
 
 def build(hiveboard: Path, robot=None, isaaclab_repo=None, usd_cache=None):
+    # ANYmal is converted from USD assets this repo does not carry, so most
+    # checkouts cannot rebuild it -- but its generated scene and meshes are
+    # committed. Decide that before the wipe below: a full build keeps what is
+    # already on disk and rebuilds everything else, while asking for ANYmal
+    # specifically is an error, since there is nothing to build it from.
+    import anymal_model
+    source_root = isaaclab_repo or REPO.parent.parent
+    keep_anymal = anymal_model.arm_usd(source_root) is None
+    if keep_anymal and robot == "anymal":
+        raise SystemExit(anymal_model.missing_usd_message(source_root))
+
     menagerie = None if robot == "anymal" else ensure_menagerie()
+
+    # A full build empties public/sim/models before it writes anything, so any
+    # failure past that point would otherwise leave the checkout with no models
+    # at all -- and most of them cannot be regenerated everywhere. Keep a copy
+    # until the build has finished.
+    backup = OUT.with_name(OUT.name + ".bak")
+    shutil.rmtree(backup, ignore_errors=True)
+    if OUT.exists():
+        shutil.copytree(OUT, backup)
+
+    try:
+        catalogue = emit_all(hiveboard, robot, keep_anymal, menagerie,
+                             isaaclab_repo, usd_cache, source_root)
+    except BaseException:
+        # Put back what the wipe removed, so a failed build costs nothing but
+        # the time it ran for.
+        if backup.exists():
+            shutil.rmtree(OUT, ignore_errors=True)
+            backup.rename(OUT)
+            print(f"build failed -- {OUT.name} restored from backup", file=sys.stderr)
+        raise
+
+    (OUT / "robots.json").write_text(json.dumps(catalogue, indent=1) + "\n")
+    manifest()
     if robot is None:
-        shutil.rmtree(OUT, ignore_errors=True)
+        vendor()
+    shutil.rmtree(backup, ignore_errors=True)
+
+
+def emit_all(hiveboard, robot, keep_anymal, menagerie, isaaclab_repo, usd_cache, source_root):
+    import anymal_model
+
+    # Whatever is not rebuilt this run has to survive the wipe, along with the
+    # catalogue entry describing it.
+    existing = {}
+    if (OUT / "robots.json").exists():
+        existing = {r["name"]: r for r in json.loads((OUT / "robots.json").read_text())}
+    if robot is None:
+        spared = {"anymal.xml", "anymal.traj.json", "assets/anymal"} if keep_anymal else set()
+        for child in sorted(OUT.glob("*")) if OUT.exists() else []:
+            if child.name in spared or child.name.removesuffix(".gz") in spared:
+                continue
+            if child.name == "assets":
+                for asset_dir in sorted(child.glob("*")):
+                    if f"assets/{asset_dir.name}" not in spared:
+                        shutil.rmtree(asset_dir, ignore_errors=True)
+                continue
+            child.unlink(missing_ok=True) if child.is_file() else shutil.rmtree(child, ignore_errors=True)
+        if keep_anymal:
+            if "anymal" not in existing:
+                raise SystemExit(anymal_model.missing_usd_message(source_root))
+            print("  anymal (kept: no DynaArm USD to rebuild it from)")
+
     (OUT / "assets/fr3").mkdir(parents=True, exist_ok=True)
     (OUT / "assets/hb").mkdir(parents=True, exist_ok=True)
 
     board = build_board(hiveboard)
 
-    existing = {}
-    if robot and (OUT / "robots.json").exists():
-        existing = {r["name"]: r for r in json.loads((OUT / "robots.json").read_text())}
     catalogue = []
     for cfg in ROBOTS:
-        if robot and cfg["name"] != robot:
+        if (robot and cfg["name"] != robot) or (keep_anymal and cfg["name"] == "anymal"):
             if cfg["name"] in existing:
                 catalogue.append(existing[cfg["name"]])
             continue
@@ -1346,29 +1280,18 @@ def build(hiveboard: Path, robot=None, isaaclab_repo=None, usd_cache=None):
             print(f"  {cfg['name']:6s} (soon)")
             continue
         catalogue.append(emit_robot(cfg, menagerie, board, hiveboard))
-
-    (OUT / "robots.json").write_text(json.dumps(catalogue, indent=1) + "\n")
-    manifest()
-    if robot is None:
-        vendor()
+    return catalogue
 
 
 def vendor():
-    """Copy the runtime libraries out of node_modules into public/.
 
-    Vite only publishes public/ verbatim, and the widget is a standalone page
-    outside the bundle, so it cannot resolve bare specifiers. MuJoCo's 10 MB
-    .wasm ships gzipped only: GitHub Pages compresses JavaScript but makes no
-    promise about application/wasm, and the widget hands the inflated bytes to
-    the module factory as `wasmBinary` anyway.
-    """
     dst = REPO / "public/sim/vendor"
     dst.mkdir(parents=True, exist_ok=True)
     mj = REPO / "node_modules/@mujoco/mujoco"
     three = REPO / "node_modules/three"
 
     shutil.copyfile(mj / "mujoco.js", dst / "mujoco.js")
-    (dst / "mujoco.wasm.gz").write_bytes(gzip.compress((mj / "mujoco.wasm").read_bytes(), 9))
+    (dst / "mujoco.wasm.gz").write_bytes(gzip.compress((mj / "mujoco.wasm").read_bytes(), 9, mtime=0))
     for src in [three / "build/three.module.min.js",
                 three / "build/three.core.min.js",
                 three / "examples/jsm/controls/OrbitControls.js"]:
@@ -1383,15 +1306,20 @@ def vendor():
         print(f"vendored {name} {version}")
 
 
-def settle(cfg, path: Path, key):
-    """Rewrite the home keyframe with the pose the modules actually rest in.
+def pin_modules(path: Path, key):
 
-    Lids and levers start at whatever angle the URDF happened to author, which
-    is rarely their resting angle. Dropping them under gravity once here means
-    the widget opens on a settled scene instead of on a board that twitches for
-    the first second.
-    """
-    import mujoco
+    rest = {f"{mod['name']}_{joint}": value
+            for mod in MODULES for joint, value in mod.get("pose", {}).items()}
+    model = mujoco.MjModel.from_xml_path(str(path))
+    qpos = np.array([float(v) for v in key.get("qpos").split()])
+    for j in range(model.njnt):
+        name = model.joint(j).name or ""
+        if name.split("_", 1)[0] in {mod["name"] for mod in MODULES}:
+            qpos[model.jnt_qposadr[j]] = rest.get(name, 0.0)
+    key.set("qpos", fmt(qpos))
+
+
+def settle(cfg, path: Path, key):
 
     model = mujoco.MjModel.from_xml_path(str(path))
     data = mujoco.MjData(model)
@@ -1405,12 +1333,9 @@ def settle(cfg, path: Path, key):
     grip_dof = int(model.jnt_dofadr[grip_joint]) if grip_joint >= 0 else -1
     grip_open = cfg["grip"]["open"]
     for _ in range(4000):
-        data.qpos[:held] = arm   # hold the robot; only the modules are settling
+        data.qpos[:held] = arm
         data.qvel[:held] = 0
         if grip_qpos >= 0:
-            # The hand is part of the robot, not one of the loose modules being
-            # settled.  Letting an uncommanded jaw drift against its stop wrote
-            # an out-of-range gripper value into the browser's home keyframe.
             data.qpos[grip_qpos] = grip_open
             data.qvel[grip_dof] = 0
             data.ctrl[grip_id] = grip_open
@@ -1422,16 +1347,13 @@ def settle(cfg, path: Path, key):
 
 
 def manifest():
-    """List every runtime file and pre-gzip it, the way tools/compress-models.py does.
 
-    The widget reads manifest.json first and copies each listed file into
-    MuJoCo's in-memory filesystem before compiling scene.xml, so the list has
-    to name everything the compiler will reach for -- and the manifest itself
-    is fetched the same gzipped way as the rest.
-    """
+    # mtime=0 keeps the packing reproducible: gzip stamps the current time into
+    # its header otherwise, so an unchanged asset re-packs to different bytes
+    # and a rebuild shows every .gz as modified.
     def emit(path: Path) -> int:
         data = path.read_bytes()
-        packed = gzip.compress(data, 9)
+        packed = gzip.compress(data, 9, mtime=0)
         gz = path.with_suffix(path.suffix + ".gz")
         if not gz.exists() or gzip.decompress(gz.read_bytes()) != data:
             gz.write_bytes(packed)
@@ -1457,21 +1379,11 @@ def manifest():
     print(f"{len(files)} files: {raw / 1048576:.2f} MB -> {comp / 1048576:.2f} MB gzipped")
 
 
-# ═══════════════════════════════════════════════════════════════════════════
-#  MJCF templates
-# ═══════════════════════════════════════════════════════════════════════════
-# Everything outside the generated asset/body lists. The arm block is lifted
-# from mujoco_menagerie's franka_fr3, with the Panda hand from
-# franka_emika_panda attached at the flange; both are Apache-2.0.
-# Everything every scene shares: solver settings, the shared palette, the
-# floor. Robot-specific defaults, actuators and bodies are grafted on top.
 SCENE_HEAD = """<mujoco model="hiveboard __NAME__">
   <compiler angle="radian" meshdir="assets" autolimits="true"/>
   <option integrator="implicitfast" timestep="0.002"/>
   <size memory="24M"/>
 
-  <!-- Only used when the scene is opened in a desktop MuJoCo viewer; the widget
-       renders through three.js and ignores this block. -->
   <visual>
     <global offwidth="1920" offheight="1080"/>
     <headlight diffuse="0.6 0.6 0.6" ambient="0.35 0.35 0.35" specular="0 0 0"/>
@@ -1489,8 +1401,6 @@ SCENE_HEAD = """<mujoco model="hiveboard __NAME__">
     <material name="hb_accent" rgba="0.929 0.686 0.098 1" specular="0.4" shininess="0.3"/>
   </asset>
 
-  <!-- The widget draws its own ground and grid in three.js and skips plane
-       geoms, so this floor only ever shows up in physics. -->
   <worldbody>
     <light pos="0 0 2.4" dir="0 0 -1" directional="true"/>
     <geom name="floor" type="plane" size="0 0 0.05" rgba="0.62 0.66 0.72 1"/>
@@ -1511,8 +1421,6 @@ FR3_DEFAULTS = """<default>
     <default class="finger">
       <joint axis="0 1 0" type="slide" range="0 0.04" armature="0.01" damping="12"/>
     </default>
-    <!-- Boxes, not the finger mesh: a hull grip on a 12 mm lever is all edge
-         contact and slides. Flat pads with high friction actually hold. -->
     <default class="pad">
       <geom type="box" group="3" rgba="0 0 0 0" friction="2 0.05 0.0002"
             solimp="0.95 0.99 0.001" solref="0.005 1"/>
@@ -1521,9 +1429,6 @@ FR3_DEFAULTS = """<default>
 </default>
 """
 
-# Position servos, matching the gains the trajectories were verified against.
-# Spot and the SO-101 arrive from menagerie already position-controlled, so
-# every robot in the widget takes joint angles as its command.
 FR3_ACTUATORS = """<actuator>
   <position name="fr3_joint1" joint="fr3_joint1" kp="900" kv="55" forcerange="-87 87"/>
   <position name="fr3_joint2" joint="fr3_joint2" kp="900" kv="55" forcerange="-87 87"/>
@@ -1532,8 +1437,7 @@ FR3_ACTUATORS = """<actuator>
   <position name="fr3_joint5" joint="fr3_joint5" kp="300" kv="14" forcerange="-12 12"/>
   <position name="fr3_joint6" joint="fr3_joint6" kp="250" kv="12" forcerange="-12 12"/>
   <position name="fr3_joint7" joint="fr3_joint7" kp="120" kv="6" forcerange="-12 12"/>
-  <!-- One command drives both fingers; ctrl is the half-opening in metres. -->
-  <position name="gripper" joint="finger_joint1" ctrlrange="0 0.04" kp="1600" kv="60"
+  <position name="gripper" joint="finger_joint1" ctrlrange="0 0.04" kp="5000" kv="90"
             forcerange="-150 150"/>
 </actuator>
 """
@@ -1643,7 +1547,8 @@ ARM_BODY = """<body name="fr3_link0" childclass="fr3">
 
 
 def main():
-    ap = argparse.ArgumentParser(description=__doc__)
+
+    ap = argparse.ArgumentParser()
     ap.add_argument(
         "--hiveboard",
         default=os.environ.get("HIVEBOARD_SIM", str(Path.home() / "HiveBoard/Simulation")),

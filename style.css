@@ -1,5 +1,4 @@
-/* Bulma is bundled through Vite instead of fetched from a CDN, so it ships
-   from this origin in the same request chain as the rest of the CSS. */
+
 @import 'bulma/css/bulma.min.css';
 
 :root {
@@ -63,7 +62,7 @@ textarea {
   height: 100%;
   z-index: 10;
   pointer-events: none;
-  /* Let clicks pass through to canvas */
+
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -317,7 +316,6 @@ button:hover {
   transform: translate(-50%, -20px);
 }
 
-/* Info Panel */
 .info-panel {
   position: absolute;
   top: 2rem;
@@ -441,7 +439,6 @@ button:hover {
   }
 }
 
-/* View Options Desktop */
 .mobile-only {
   display: none !important;
 }
@@ -451,7 +448,6 @@ button:hover {
   gap: 1rem;
 }
 
-/* Mobile View Options */
 @media (max-width: 768px) {
   .mobile-only {
     display: flex !important;
@@ -492,7 +488,6 @@ button:hover {
   }
 }
 
-/* Action Buttons Desktop/Mobile */
 .action-btn {
   padding: 1rem;
   border-radius: 50%;
@@ -575,7 +570,6 @@ button:hover {
   transform: translateX(-3px);
 }
 
-/* Presentation Site Animations */
 @keyframes subtlePulse {
   0% {
     transform: scale(1);
@@ -617,8 +611,7 @@ button:hover {
 .viewer-block {
   width: 100%;
   aspect-ratio: 21/9;
-  /* Absolute public path so this shares one cache entry with the same image
-     referenced from index.html, instead of Vite emitting a second hashed copy. */
+
   background: url('/assets/hiveboard_preview.webp') center/cover no-repeat;
   border: 1px solid #e2e8f0;
   border-radius: 12px;
@@ -694,8 +687,6 @@ button:hover {
   }
 }
 
-/* --- Hero Links & Email Styling --- */
-
 .hero-link-btn:hover {
   background-color: #f1f5f9 !important;
   border-color: #94a3b8 !important;
@@ -713,14 +704,14 @@ button:hover {
   text-decoration: underline;
 }
 
-/* --- Mobile Responsiveness --- */
 @media screen and (max-width: 768px) {
   .hero-divider-line {
     display: none !important;
   }
 
   .buttons.is-centered {
-    flex-wrap: nowrap !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
     gap: 6px !important;
   }
 
@@ -733,9 +724,23 @@ button:hover {
   .hero-link-btn .icon {
     margin-right: 0.2rem !important;
   }
+
+  /* Wrapped onto two ragged rows the links read as a broken grid, and each
+     one is a different width.  Stack them instead: one per row, all the same
+     size. */
+  .hero-links {
+    flex-direction: column !important;
+    align-items: center !important;
+    width: 100%;
+  }
+
+  .hero-links .hero-link-btn {
+    width: 100%;
+    max-width: 340px;
+    justify-content: center;
+  }
 }
 
-/* --- Interactive Image Hotspots --- */
 .hotspot {
   position: absolute;
   width: 24px;
@@ -752,7 +757,7 @@ button:hover {
   width: 12px;
   height: 12px;
   background-color: #edaf19ff;
-  /* Hive yellow */
+
   border-radius: 50%;
   transform: translate(-50%, -50%);
   z-index: 2;
@@ -824,7 +829,6 @@ button:hover {
   transform: translate(-50%, -20px);
 }
 
-/* --- Validation Hand Interactions --- */
 .validation-container:hover {
   z-index: 30 !important;
 }
@@ -839,7 +843,6 @@ button:hover {
   transform: translateY(15px) !important;
 }
 
-/* --- Slider Animation --- */
 @keyframes sliderWiggle {
 
   0%,
@@ -873,7 +876,6 @@ button:hover {
   animation-delay: 2s;
 }
 
-/* --- Video Carousels --- */
 .carousel-wrapper {
   margin-bottom: 3rem;
 }
@@ -957,7 +959,6 @@ button:hover {
   margin-bottom: 0 !important;
 }
 
-/* --- Custom Bulma Dropdown Enhancements --- */
 .custom-bulma-dropdown .dropdown-trigger button {
   background-color: rgba(255, 255, 255, 0.8) !important;
   backdrop-filter: blur(10px);
@@ -993,7 +994,6 @@ button:hover {
   font-weight: 500;
 }
 
-/* --- Video Filter Toggle --- */
 .video-toggle-buttons {
   display: flex;
   gap: 2px;
@@ -1045,8 +1045,6 @@ button:hover {
   }
 }
 
-
-/* --- Responsive Spacing for Abstract & Interactive Image --- */
 #Interactive-Image {
   padding-top: 4.5rem;
 }
@@ -1055,21 +1053,16 @@ button:hover {
   #Abstract {
     padding-bottom: 1rem;
   }
-  
+
   #Interactive-Image {
     padding-top: 1rem;
   }
 }
 
-/* --- Live MuJoCo simulation frame --- */
 #sim-frame-wrap {
   aspect-ratio: 16 / 9;
 }
 
-/* A 16:9 box on a phone is barely 190px tall, which leaves the widget's
-   controls sitting on top of the robot. Drive the height off the viewport
-   instead so the scene gets a usable share of the screen, and cap it so the
-   embed never grows taller than the page it sits in. */
 @media screen and (max-width: 768px) {
   #sim-frame-wrap {
     aspect-ratio: auto;
@@ -1077,8 +1070,6 @@ button:hover {
   }
 }
 
-/* Landscape phones: 68vh of a 380px-tall viewport is nothing, and the frame is
-   wide enough here to go back to a proportional box. */
 @media screen and (max-width: 768px) and (max-height: 500px) and (orientation: landscape) {
   #sim-frame-wrap {
     aspect-ratio: 16 / 9;
@@ -1086,7 +1077,6 @@ button:hover {
   }
 }
 
-/* --- Protocol link styling in Results --- */
 .protocol-link {
   color: #edaf19;
   text-decoration: none;
@@ -1102,7 +1092,6 @@ button:hover {
   text-underline-offset: 3px;
 }
 
-/* --- Disable & hide all video audio and download/overflow controls --- */
 video::-webkit-media-controls-volume-control-container,
 video::-webkit-media-controls-volume-slider,
 video::-webkit-media-controls-mute-button,
@@ -1120,7 +1109,6 @@ video::-webkit-media-controls-picture-in-picture-button {
   -webkit-user-drag: none;
 }
 
-/* --- Custom Video Player Controls (No Volume Control) --- */
 .video-placeholder {
   position: relative;
 }
@@ -1209,7 +1197,6 @@ video::-webkit-media-controls-picture-in-picture-button {
   text-align: center;
 }
 
-/* --- Development Tooltip on Try it in the browser --- */
 .dev-tooltip-wrap {
   position: relative;
   display: inline-flex;
@@ -1272,6 +1259,239 @@ video::-webkit-media-controls-picture-in-picture-button {
   transform: translateX(-50%) translateY(0);
 }
 
+/* --- Hero Tri-Video Showcase Slider --- */
+.hero-slider-container {
+  width: 100%;
+  max-width: 1120px;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  overflow: hidden;
+  padding: 16px 0 24px;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 4%, black 96%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0%, black 4%, black 96%, transparent 100%);
+}
 
+.hero-slider-stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 7.2;
+  min-height: 250px;
+  max-height: 480px;
+}
+
+.hero-slider-card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 66%;
+  aspect-ratio: 16 / 9;
+  border-radius: 14px;
+  overflow: hidden;
+  background-color: #ffffff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e2e8f0;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+              filter 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  user-select: none;
+  cursor: pointer;
+}
+
+/* Center card - Active, prominent, full opacity */
+.hero-slider-card.is-center {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.14);
+  border-color: #cbd5e1;
+  pointer-events: auto;
+}
+
+/* Left card - Tucked to the left with low opacity */
+.hero-slider-card.is-left {
+  transform: translate(calc(-50% - 57%), -50%) scale(0.84);
+  opacity: 0.38;
+  filter: brightness(0.97);
+}
+
+.hero-slider-card.is-left:hover {
+  opacity: 0.75;
+  transform: translate(calc(-50% - 57%), -50%) scale(0.86);
+  filter: brightness(1);
+}
+
+/* Right card - Tucked to the right with low opacity */
+.hero-slider-card.is-right {
+  transform: translate(calc(-50% + 57%), -50%) scale(0.84);
+  opacity: 0.38;
+  filter: brightness(0.97);
+}
+
+.hero-slider-card.is-right:hover {
+  opacity: 0.75;
+  transform: translate(calc(-50% + 57%), -50%) scale(0.86);
+  filter: brightness(1);
+}
+
+/* Video inside card */
+.hero-video-player {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  background: #000000;
+}
+
+/* Overlay covering the video */
+.hero-video-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.82);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1), visibility 1.5s;
+}
+
+/* When playing: fade out the white overlay and HiveBoard */
+.hero-slider-card.is-playing .hero-video-overlay {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.hero-video-thumb {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+}
+
+.hero-thumb-hiveboard {
+  height: 72%;
+  width: auto;
+  max-width: 80%;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.06));
+  transition: filter 0.35s ease, transform 0.35s ease;
+}
+
+/* Only blur the center card on hover when not playing */
+.hero-slider-card.is-center:not(.is-playing):hover .hero-thumb-hiveboard {
+  filter: blur(1.5px) brightness(0.98);
+  transform: scale(1.02);
+}
+
+.hero-play-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.85);
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #edaf19;
+  box-shadow: 0 6px 20px rgba(237, 175, 25, 0.4), 0 2px 8px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.2s;
+  z-index: 6;
+}
+
+.hero-play-icon {
+  width: 24px;
+  height: 24px;
+  margin-left: 3px;
+  fill: #ffffff;
+}
+
+/* Only show play button when hovering over the center card */
+.hero-slider-card.is-center:not(.is-playing):hover .hero-play-button {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* Responsive media queries */
+@media (max-width: 850px) {
+  .hero-slider-stage {
+    aspect-ratio: 16 / 8.2;
+    min-height: 240px;
+  }
+  .hero-slider-card {
+    width: 80%;
+  }
+  .hero-slider-card.is-left {
+    transform: translate(calc(-50% - 68%), -50%) scale(0.86);
+  }
+  .hero-slider-card.is-left:hover {
+    transform: translate(calc(-50% - 68%), -50%) scale(0.88);
+  }
+  .hero-slider-card.is-right {
+    transform: translate(calc(-50% + 68%), -50%) scale(0.86);
+  }
+  .hero-slider-card.is-right:hover {
+    transform: translate(calc(-50% + 68%), -50%) scale(0.88);
+  }
+}
+
+/* On a phone the neighbours were wide enough to reach the edge of the stage,
+   where the container's edge mask cut through them and their drop shadows
+   pooled against the centre card's own -- a grey smear down each side.  Narrow
+   the centre card so each neighbour peeks in well inside the stage, widen the
+   edge fade so what does run off dissolves instead of being cut square, and
+   lighten the shadows so they no longer overlap. */
+@media (max-width: 550px) {
+  .hero-slider-container {
+    /* The neighbours run off the stage here, so the edges still need to fade
+       -- over a wider band than the desktop 4%, and stopping short of the
+       centre card, which spans 11% to 89%. */
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+    padding: 12px 0 18px;
+  }
+  .hero-slider-stage {
+    aspect-ratio: 16 / 9;
+    min-height: 200px;
+  }
+  .hero-slider-card {
+    width: 78%;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  }
+  .hero-slider-card.is-center {
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.12);
+  }
+  .hero-slider-card.is-left {
+    transform: translate(calc(-50% - 75%), -50%) scale(0.86);
+    opacity: 0.5;
+  }
+  .hero-slider-card.is-right {
+    transform: translate(calc(-50% + 75%), -50%) scale(0.86);
+    opacity: 0.5;
+  }
+  .hero-play-button {
+    width: 52px;
+    height: 52px;
+  }
+  .hero-play-icon {
+    width: 20px;
+    height: 20px;
+  }
+}
 
 

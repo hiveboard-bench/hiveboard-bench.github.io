@@ -45,7 +45,13 @@
   "tasks": [
    "valve",
    "lamp",
-   "breaker"
+   "breaker",
+   "high-valve",
+   "small-valve",
+   "thread-m30",
+   "thread-m8",
+   "peg-insertion",
+   "key-lock"
   ]
  },
  {
@@ -139,14 +145,13 @@
   ],
   "tasks": [
    "valve",
-   "lamp",
    "breaker"
   ]
  },
  {
   "name": "anymal",
   "label": "ANYmal-D + DynaArm + 2F-140",
-  "note": "Platform C \u00b7 draft trajectories",
+  "note": "Platform C",
   "scene": "anymal.xml",
   "traj": "anymal.traj.json",
   "arm": 6,
@@ -167,7 +172,7 @@
   "gripIndex": 6,
   "spinIndex": -1,
   "board": [
-   0.8,
+   0.82,
    0.0,
    0.9
   ],
@@ -221,11 +226,11 @@
   ],
   "view": {
    "centre": [
-    0.5062,
-    0.0003,
+    0.6312,
+    0.0204,
     0.5777
    ],
-   "span": 0.7961
+   "span": 0.6124
   },
   "framing": "side",
   "boardNormal": [
@@ -234,9 +239,17 @@
    0.0
   ],
   "tasks": [
-   "finger_flex",
-   "hand_sweep",
-   "hand_motion"
+   "valve",
+   "lamp",
+   "breaker",
+   "high-valve",
+   "small-valve",
+   "thread-m30",
+   "thread-m8",
+   "peg-insertion",
+   "button-cover",
+   "key-lock",
+   "drawer"
   ]
  }
 ]
