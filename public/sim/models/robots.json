@@ -178,11 +178,11 @@
   ],
   "view": {
    "centre": [
-    0.1356,
+    0.1456,
     0.0,
     0.9209
    ],
-   "span": 2.3709
+   "span": 2.3822
   },
   "framing": "side",
   "boardNormal": [
@@ -193,7 +193,12 @@
   "tasks": [
    "valve",
    "lamp",
-   "breaker"
+   "breaker",
+   "high-valve",
+   "small-valve",
+   "thread-m30",
+   "thread-m8",
+   "key-lock"
   ]
  },
  {

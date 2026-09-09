@@ -42,7 +42,9 @@ def main():
     arm = anymal_model.ARM_JOINTS
     assert [model.joint(i).name for i in range(6)] == arm
     assert [model.actuator(i).name for i in range(7)] == arm + ["finger_joint"]
-    assert model.nu == 7 and model.nq == 18
+    # Board modules contribute their own joints to nq.  Keep the robot-side
+    # contract strict while allowing the scene to grow as modules are added.
+    assert model.nu == 7 and model.nq >= 18
     assert len(traj_edit.joint_info(ctx)[0]) == 6
     assert traj_edit.grip_range(ctx) == [0.0, 0.7]
 

@@ -254,6 +254,11 @@ ROBOTS = [
         "stand": {"top": 0.90, "half": 0.17},
         "framing": "side",
         "ground": True,
+        # Keep the two gate valves available as separate scene modules.  The
+        # remaining centre-cell mechanisms are still supported by the board
+        # catalogue, but are not yet solved by this platform.
+        "skip": ["peg-insertion", "button-cover",
+                 "drawer", "shock-absorber"],
         # As on the FR3: the toggle is thrown by the gripper against live
         # collision, not replayed from an authored module motion.
         "physical": ["breaker"],
@@ -700,7 +705,7 @@ def home_qpos(cfg, scene, path):
     return qpos
 
 
-def build_board(hiveboard: Path):
+def build_board(hiveboard: Path, cell_overrides=None):
 
     meshes, elems, fragments = {}, [], []
     with tempfile.TemporaryDirectory() as tmp:
@@ -724,7 +729,8 @@ def build_board(hiveboard: Path):
                 add_joints(body, mod["name"], mod["add"])
             if "turn" in mod:
                 turn_child(body, mod["name"], mod["turn"])
-            pos, quat = cell_pose(mod["cell"], lift, reach)
+            cell = (cell_overrides or {}).get(mod["name"], mod["cell"])
+            pos, quat = cell_pose(cell, lift, reach)
             if align:
                 quat = matrix_quat(quat_matrix(quat) @ rpy_matrix(align))
             body.set("pos", fmt(pos))
@@ -1196,45 +1202,46 @@ def emit_robot(cfg, menagerie: Path, board, hiveboard: Path):
 
 
 def build(hiveboard: Path, robot=None, isaaclab_repo=None, usd_cache=None):
+    global OUT
+
     # ANYmal is converted from USD assets this repo does not carry, so most
     # checkouts cannot rebuild it -- but its generated scene and meshes are
-    # committed. Decide that before the wipe below: a full build keeps what is
-    # already on disk and rebuilds everything else, while asking for ANYmal
-    # specifically is an error, since there is nothing to build it from.
+    # committed. Decide that before the build below.
     import anymal_model
     source_root = isaaclab_repo or REPO.parent.parent
     keep_anymal = anymal_model.arm_usd(source_root) is None
-    if keep_anymal and robot == "anymal":
-        raise SystemExit(anymal_model.missing_usd_message(source_root))
+    # The committed ANYmal robot can still be refreshed from the released
+    # board URDFs even when the optional generated DynaArm USD is unavailable.
 
     menagerie = None if robot == "anymal" else ensure_menagerie()
 
-    # A full build empties public/sim/models before it writes anything, so any
-    # failure past that point would otherwise leave the checkout with no models
-    # at all -- and most of them cannot be regenerated everywhere. Keep a copy
-    # until the build has finished.
-    backup = OUT.with_name(OUT.name + ".bak")
-    shutil.rmtree(backup, ignore_errors=True)
-    if OUT.exists():
-        shutil.copytree(OUT, backup)
+    # Build beside the live directory.  The browser can continue loading the
+    # last good model set, and a failed build cannot leave the site half-empty.
+    live_out = OUT
+    staging = live_out.with_name(live_out.name + ".building")
+    shutil.rmtree(staging, ignore_errors=True)
+    if live_out.exists():
+        shutil.copytree(live_out, staging)
+    else:
+        staging.mkdir(parents=True)
+    OUT = staging
 
     try:
         catalogue = emit_all(hiveboard, robot, keep_anymal, menagerie,
                              isaaclab_repo, usd_cache, source_root)
     except BaseException:
-        # Put back what the wipe removed, so a failed build costs nothing but
-        # the time it ran for.
-        if backup.exists():
-            shutil.rmtree(OUT, ignore_errors=True)
-            backup.rename(OUT)
-            print(f"build failed -- {OUT.name} restored from backup", file=sys.stderr)
+        OUT = live_out
+        shutil.rmtree(staging, ignore_errors=True)
+        print(f"build failed -- {live_out} left unchanged", file=sys.stderr)
         raise
 
     (OUT / "robots.json").write_text(json.dumps(catalogue, indent=1) + "\n")
     manifest()
     if robot is None:
         vendor()
-    shutil.rmtree(backup, ignore_errors=True)
+    OUT = live_out
+    shutil.rmtree(live_out, ignore_errors=True)
+    staging.rename(live_out)
 
 
 def emit_all(hiveboard, robot, keep_anymal, menagerie, isaaclab_repo, usd_cache, source_root):
@@ -1259,17 +1266,29 @@ def emit_all(hiveboard, robot, keep_anymal, menagerie, isaaclab_repo, usd_cache,
         if keep_anymal:
             if "anymal" not in existing:
                 raise SystemExit(anymal_model.missing_usd_message(source_root))
-            print("  anymal (kept: no DynaArm USD to rebuild it from)")
+            print("  anymal (kept robot conversion; refreshing board modules and trajectories)")
 
     (OUT / "assets/fr3").mkdir(parents=True, exist_ok=True)
     (OUT / "assets/hb").mkdir(parents=True, exist_ok=True)
 
     board = build_board(hiveboard)
 
+    anymal_cfg = next(r for r in ROBOTS if r["name"] == "anymal")
+    refreshed_anymal = (refresh_existing_anymal(
+                            build_board(hiveboard, anymal_cfg.get("module_cells")))
+                        if keep_anymal and (robot is None or robot == "anymal")
+                        else None)
     catalogue = []
+
     for cfg in ROBOTS:
         if (robot and cfg["name"] != robot) or (keep_anymal and cfg["name"] == "anymal"):
-            if cfg["name"] in existing:
+            if cfg["name"] == "anymal" and refreshed_anymal:
+                updated = refreshed_anymal[0]
+                if "view" in existing.get("anymal", {}):
+                    updated["view"] = existing["anymal"]["view"]
+                catalogue.append(updated)
+                continue
+            if cfg["name"] in existing and cfg["name"] != "anymal":
                 catalogue.append(existing[cfg["name"]])
             continue
         if cfg["name"] == "anymal":
@@ -1281,6 +1300,90 @@ def emit_all(hiveboard, robot, keep_anymal, menagerie, isaaclab_repo, usd_cache,
             continue
         catalogue.append(emit_robot(cfg, menagerie, board, hiveboard))
     return catalogue
+
+
+def refresh_existing_anymal(board):
+    """Install the current board fragments into the committed ANYmal scene.
+
+    The ANYmal/DynaArm conversion needs a generated USD layer which is not
+    shipped with this website checkout.  The robot scene is therefore kept,
+    while the board and its modules are regenerated from the released URDFs.
+    """
+    path = OUT / "anymal.xml"
+    scene = ET.parse(path).getroot()
+    asset = scene.find("asset")
+    holder = scene.find("./worldbody/body[@name='hiveboard']")
+    if asset is None or holder is None:
+        raise SystemExit("anymal.xml has no asset or hiveboard body to refresh")
+
+    existing_meshes = {e.get("name") for e in asset.findall("mesh")}
+    existing_materials = {e.get("name") for e in asset.findall("material")}
+    for elem in board["meshes"]:
+        if elem.get("name") not in existing_meshes:
+            asset.append(elem)
+    for elem in board["equality"]:
+        equality = scene.find("equality")
+        if equality is None:
+            equality = ET.SubElement(scene, "equality")
+        equality.append(elem)
+    for elem in board.get("materials", []):
+        if elem.get("name") not in existing_materials:
+            asset.append(elem)
+
+    # A generated scene may have old board fragments. Replace them as a unit,
+    # retaining a possible board_spin joint if a future platform adds one.
+    board_spin = next((e for e in holder if e.tag == "joint" and
+                       e.get("name") == "board_spin"), None)
+    for child in list(holder):
+        if child is not board_spin:
+            holder.remove(child)
+    for fragment in board["fragments"]:
+        holder.append(fragment)
+    if board_spin is not None:
+        holder.remove(board_spin)
+        holder.insert(0, board_spin)
+
+    ET.indent(scene, "  ")
+    path.write_text(ET.tostring(scene, encoding="unicode") + "\n")
+    cfg = next(r for r in ROBOTS if r["name"] == "anymal")
+    key = scene.find("./keyframe/key")
+    model = mujoco.MjModel.from_xml_path(str(path))
+    if key is None:
+        key = ET.SubElement(scene.find("keyframe"), "key", {"name": "home"})
+    key.set("qpos", fmt(model.qpos0))
+    settle(cfg, path, key)
+    pin_modules(path, key)
+    ET.indent(scene, "  ")
+    path.write_text(ET.tostring(scene, encoding="unicode") + "\n")
+
+    cfg = dict(cfg, board_normal=board_normal(cfg))
+    tasks = sim_trajectories.build(path, cfg)
+    for task in tasks.values():
+        task["caption"] = "Starter trajectory for editing; contact replay has not passed."
+    sim_trajectories.dump(tasks, OUT / "anymal.traj.json")
+    model = mujoco.MjModel.from_xml_path(str(path))
+    data = mujoco.MjData(model)
+    mujoco.mj_resetDataKeyframe(model, data, 0)
+    mujoco.mj_forward(model, data)
+    lo, hi = np.full(3, 1e9), np.full(3, -1e9)
+    for g in range(model.ngeom):
+        if model.geom_type[g] != mujoco.mjtGeom.mjGEOM_MESH:
+            continue
+        mesh = model.geom_dataid[g]
+        adr, num = model.mesh_vertadr[mesh], model.mesh_vertnum[mesh]
+        world = (model.mesh_vert[adr:adr + num] @ data.geom_xmat[g].reshape(3, 3).T
+                 + data.geom_xpos[g])
+        lo, hi = np.minimum(lo, world.min(axis=0)), np.maximum(hi, world.max(axis=0))
+    centre, span = (lo + hi) / 2, float(np.linalg.norm(hi - lo))
+    return [{"name": "anymal", "label": cfg["label"], "note": cfg["note"],
+             "scene": "anymal.xml", "traj": "anymal.traj.json",
+             "arm": len(cfg["arm"]), "grip": cfg["grip"],
+             "home": cfg["home"], "gripIndex": int(mujoco.mj_name2id(
+                 model, mujoco.mjtObj.mjOBJ_ACTUATOR, cfg["grip"]["actuator"])),
+             "spinIndex": spin_address(model), "board": list(cfg["board"]),
+             "view": {"centre": [round(v, 4) for v in centre], "span": round(span, 4)},
+             "framing": cfg.get("framing", "over"),
+             "boardNormal": list(board_normal(cfg)), "tasks": list(tasks)}]
 
 
 def vendor():
