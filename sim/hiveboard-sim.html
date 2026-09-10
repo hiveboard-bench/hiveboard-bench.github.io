@@ -577,7 +577,12 @@
         throw new Error('this browser cannot decompress the simulation assets');
       }
       const url = `${path}.gz` + (CACHE_TAG ? `?v=${CACHE_TAG}` : '');
-      const resp = await fetch(url);
+      // Model archives are generated together.  Revalidate each archive so a
+      // browser cannot combine a cached XML file with an older/partial mesh
+      // archive after a rebuild (which MuJoCo reports as "at least 4
+      // vertices required").  Production builds still receive content-hash
+      // query strings from tools/stamp-cache.py.
+      const resp = await fetch(url, { cache: 'no-store' });
       if (!resp.ok) throw new Error(`${path}.gz → HTTP ${resp.status}`);
       const buffer = await resp.arrayBuffer();
       const head = new Uint8Array(buffer, 0, Math.min(2, buffer.byteLength));
@@ -1906,4 +1911,3 @@
 </body>
 
 </html>
-
