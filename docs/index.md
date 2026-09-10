@@ -6,6 +6,8 @@ For the paper, demonstration videos, and reported results, see the [HiveBoard pr
 
 ## Documentation
 
+**Running an evaluation?** Start with [How to perform each task](/benchmark/tasks) for initial states, actions, success criteria, timeouts, and resets. For example, see the [shock absorber instructions](/benchmark/tasks#shock-absorber).
+
 - [Benchmark overview](/getting-started/overview)
 - [Getting started](/getting-started/quick-start)
 - [3D printing](/hardware/printing)
