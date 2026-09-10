@@ -7,7 +7,7 @@ Build and evaluate the printed board, or load the articulated models in a simula
 1. Review the [printing requirements](/hardware/printing).
 2. Print one base cell and one attachment to check the press fit.
 3. Print and [assemble the full benchmark](/hardware/assembly).
-4. Review all 13 conditions in the [module reference](/hardware/modules), including both ball-valve configurations.
+4. Read [How to perform each task](/benchmark/tasks) for all 13 conditions, including both ball-valve configurations.
 5. Follow the [evaluation protocol](/benchmark/protocol).
 6. Record five trials per condition with the [Evaluation Runner](/benchmark/evaluation-runner) or [CSV or XLSX template](/benchmark/logging).
 
@@ -15,7 +15,7 @@ Build and evaluate the printed board, or load the articulated models in a simula
 
 1. Check every attachment for damage, free motion, and secure seating.
 2. Fix the base to a rigid surface and document its orientation.
-3. Read the task-specific success criteria and timeouts.
+3. Open [How to perform each task](/benchmark/tasks) and check the initial state, required actions, success criterion, timeout, and reset for each mechanism.
 4. Complete familiarization before recording.
 5. Run five recorded trials for all 13 conditions. Record every trial with an external camera.
 6. Check the trial entries and include the setup photograph, platform description, and recordings with the results.
