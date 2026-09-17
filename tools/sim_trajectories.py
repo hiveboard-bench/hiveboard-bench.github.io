@@ -2,6 +2,8 @@
 import json
 import math
 from pathlib import Path
+from datetime import datetime
+import sys
 import mujoco
 import numpy as np
 
@@ -10,6 +12,9 @@ IK_ITERS = 200
 IK_DAMPING = 1e-3
 LAMP_PITCH = 0.0082
 DOWN = np.array([0.0, 0.0, -1.0])
+
+CUMOTION_ENABLED = True       # Enable cuMotion for IK and trajectory optimization. Set to False to use MuJoCo's built-in IK solver instead.
+
 
 
 def approach_for(cfg, point, base):
@@ -69,7 +74,10 @@ def robot_base(model, data):
 def unit(v):
 
     v = np.asarray(v, float)
-    return v / np.linalg.norm(v)
+    norm = np.linalg.norm(v)
+    if norm < 1e-9:
+        raise ValueError(f"Direction vector must be non-zero: {v}")
+    return v / norm
 
 
 def smoothstep(s):
@@ -846,6 +854,76 @@ def draw_task(model, data, cfg, spec):
         "keys": keys,
     }
 
+def plan_with_cumotion(samples, cfg, task):
+    """Suaviza a trajetória articular preservando os keyframes da tarefa.
+
+    O IK continua responsável por encontrar os objetivos cartesianos.
+    O cuMotion planeja cada segmento entre dois keyframes, em vez de
+    substituir a tarefa inteira por uma trajetória entre os extremos.
+
+    Os comandos de gripper e a quantidade de amostras permanecem alinhados
+    com a trajetória original.
+    """
+    if not CUMOTION_ENABLED:
+        return samples
+
+    if cfg.get("name") != "fr3":
+        return samples
+
+    if not samples or not task.get("keys"):
+        return samples
+
+    tools_dir = str(Path(__file__).resolve().parent)
+    if tools_dir not in sys.path:
+        sys.path.insert(0, tools_dir)
+
+    from cumotion_planner import CuMotionPlanner
+
+    planner = CuMotionPlanner()
+
+    # Os keyframes correspondem às amostras geradas por sample_path().
+    # O primeiro keyframe é a pose inicial; cada keyframe seguinte termina
+    # um segmento com duração key["secs"].
+    anchors = [0]
+    frame = 0
+
+    for key in task["keys"][1:]:
+        frame += max(int(round(key["secs"] * RATE)), 1)
+        anchors.append(min(frame, len(samples) - 1))
+
+    # Garante que o último keyframe seja exatamente a última amostra.
+    anchors[-1] = len(samples) - 1
+
+    out = []
+
+    for segment, (start, end) in enumerate(zip(anchors[:-1], anchors[1:])):
+        q_start = np.asarray(samples[start][0], dtype=float)
+        q_goal = np.asarray(samples[end][0], dtype=float)
+
+        # Um segmento de uma única amostra não precisa de planejamento.
+        if end <= start:
+            continue
+
+        result = planner.plan_joint_trajectory(
+            q_start=q_start,
+            q_goal=q_goal,
+            num_samples=end - start + 1,
+        )
+
+        qpos = result["qpos"]
+
+        # Evita duplicar a amostra inicial dos segmentos seguintes.
+        first = 0 if segment == 0 else 1
+
+        for i in range(first, len(qpos)):
+            sample_index = start + i
+            out.append((
+                np.asarray(qpos[i], dtype=float),
+                samples[sample_index][1],
+            ))
+
+    return out
+
 
 def button_task(model, data, cfg, spec):
 
@@ -1266,7 +1344,15 @@ def attempt(model, data, site, cfg, factory, spin, spin_adr, edits=None):
     path = sample_path(task["keys"])
     samples, worst = solve_ik(model, data, site, path, cfg)
     original_samples = [(np.asarray(q, float).copy(), grip) for q, grip in samples]
-    samples = apply_joint_edits(samples, task, edits)
+
+    # IK remains responsible for finding the task objectives.
+    # cuMotion generates a smooth joint trajectory between the waypoints.
+    if cfg.get("planner") == "cumotion":
+        timestamp = datetime.now().isoformat(timespec="milliseconds")
+        print(f"[{timestamp}] [cuMotion] Running for {cfg['name']}")
+        samples = plan_with_cumotion(samples, cfg, task)
+    else:
+        samples = apply_joint_edits(samples, task, edits)
     if task.get("wrist_only") and cfg["name"] == "anymal":
         # Apply this after saved trajectory edits: the final arm configuration
         # must stay fixed after grasping, including any edited grasp pose.
