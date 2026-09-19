@@ -71,7 +71,7 @@ Every unsuccessful trial must contain one dominant failure cause.
 | `control_precision` | Control resolution was too coarse for the task |
 | `other` | None of the listed causes fits; explain in `notes` |
 
-Choose one primary cause even when several factors contributed.
+Choose one dominant cause even when several factors contributed.
 
 ## Broken or displaced parts
 
@@ -92,10 +92,10 @@ Do not silently replace the affected row with a rerun.
 - [ ] All attachments are fully seated.
 - [ ] Familiarization is complete for every attachment.
 - [ ] Five recorded trials exist for all 13 conditions (65 trials total).
-- [ ] Timeouts and task criteria match the module reference.
+- [ ] Timeouts and task criteria match the attachment reference.
 - [ ] Every unsuccessful trial has one failure cause.
 - [ ] Attempts, regrasps, and strategy are present on every row.
-- [ ] Composed tasks include `stage_reached`.
+- [ ] Composed assembly tasks include `stage_reached`.
 - [ ] Broken or reseated parts are described.
 - [ ] `setup.jpg` and `platform.md` accompany the log.
 - [ ] One external-camera recording accompanies each trial, using the filenames in `recording-instructions.md`.

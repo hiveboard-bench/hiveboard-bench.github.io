@@ -12,7 +12,7 @@ For the paper, demonstration videos, and reported results, see the [HiveBoard pr
 - [Getting started](/getting-started/quick-start)
 - [3D printing](/hardware/printing)
 - [Assembly and mounting](/hardware/assembly)
-- [Module reference](/hardware/modules)
+- [Attachment reference](/hardware/modules)
 - [Evaluation Runner](/benchmark/evaluation-runner)
 - [Evaluation protocol](/benchmark/protocol)
 - [Simulation assets](/simulation/assets)
@@ -23,9 +23,9 @@ The printable parts, CAD models, articulated assets, protocol, and trial templat
 
 We invite laboratories and individual researchers to [contribute datasets for learning-based manipulation](/contribute/evaluations), including robot states, actions, camera observations, timestamps, calibration, and task outcomes. There is no fixed episode count; larger collections of demonstrations and rollouts are encouraged.
 
-We welcome functional assets for [activities of daily living](/contribute/adl) and [bimanual manipulation](/contribute/bimanual). Contact the authors before starting a design to check its suitability and avoid duplicating work.
+We welcome functional attachments for [activities of daily living](/contribute/adl) and [bimanual manipulation](/contribute/bimanual). Contact the authors before starting a design to check its suitability and avoid duplicating work.
 
-Contributors who deliver at least one accepted, functional asset with the complete files and validation evidence may be eligible for authorship on future papers that use the contribution. Smaller contributions may be acknowledged. See the [requirements and credit policy](/contribute/requirements).
+Contributors who deliver at least one accepted, functional attachment with the complete files and validation evidence may be eligible for authorship on future papers that use the contribution. Smaller contributions may be acknowledged. See the [requirements and credit policy](/contribute/requirements).
 
 ## Citation
 

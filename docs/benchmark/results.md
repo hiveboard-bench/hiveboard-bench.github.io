@@ -10,8 +10,8 @@ Report performance per attachment and preserve the trial-level data. Aggregate v
 | Completion time | Median and individual successful-trial times | Every attachment with successes |
 | Attempts | Median and individual counts | Every attachment |
 | Regrasps | Median and individual counts | Every attachment |
-| Stage completion | Fraction reaching each stage | Composed tasks |
-| Failure distribution | Count by primary failure cause | Unsuccessful trials |
+| Stage completion | Fraction reaching each stage | Composed assembly tasks |
+| Failure distribution | Count by dominant failure cause | Unsuccessful trials |
 | Strategy distribution | Count of prehensile and non-prehensile trials | Every attachment |
 
 With five trials per attachment, always show the numerator and denominator—for example, `4/5 (80%)`—rather than only a percentage.
@@ -42,7 +42,7 @@ result-package/
 └── videos/              # one recording per trial
 ```
 
-The platform description identifies the robot, end-effector, control method, board orientation, calibration notes, HiveBoard version, printing parameters, post-processing, and any protocol deviations.
+The platform description identifies the robot, end-effector, control interface, board orientation, calibration notes, HiveBoard version, printing parameters, post-processing, and any protocol deviations.
 
 The [Evaluation Runner](/benchmark/evaluation-runner) generates the ZIP after all 65 trial entries and required setup details pass validation. Attach a JPEG setup photograph to include it as `setup.jpg`, or add it after extracting the ZIP. Add the recordings to `videos/` using the filenames in `recording-instructions.md`.
 

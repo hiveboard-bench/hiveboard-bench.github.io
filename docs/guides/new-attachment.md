@@ -62,7 +62,7 @@ Keep identified parameters separate from nominal defaults when they depend on a 
 
 Propose a stable lowercase `attachment_id` and supply the task metadata for review. Once the attachment is accepted into a versioned benchmark extension, coordinate the following updates with the maintainers:
 
-- the module reference;
+- the attachment reference;
 - the success and timeout table;
 - stage numbering, if applicable;
 - `trials.csv` and `trials.xlsx`;
@@ -75,7 +75,7 @@ The current benchmark still requires all 13 conditions, with five trials each. A
 
 Include physical and simulation evidence in the pull request:
 
-- assembled-module image;
+- photograph of the assembled attachment;
 - manual actuation through the full range;
 - successful fit in the HiveBoard base;
 - simulation load test; and

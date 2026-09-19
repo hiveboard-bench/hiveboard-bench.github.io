@@ -8,9 +8,9 @@ Print one cell and one attachment base using the same material and profile. Chec
 
 Remove stringing and debris, then test the matching calibration piece. Keep the part aligned with the thread axis and do not force initial engagement. Record sanding or lubrication because either can change task resistance.
 
-## A module moves during a trial
+## An attachment moves during a trial {#a-module-moves-during-a-trial}
 
-Stop if continuation is unsafe. Preserve the trial result, describe the displacement in `notes`, and reseat the module before continuing. For repeated release, verify cell tolerances and mounting orientation.
+Stop if continuation is unsafe. Preserve the trial result, describe the displacement in `notes`, and reseat the attachment before continuing. For repeated release, verify cell tolerances and mounting orientation.
 
 ## A printed part breaks
 

@@ -36,7 +36,7 @@ export default defineConfig({
         items: [
           { text: '3D Printing', link: '/hardware/printing' },
           { text: 'Assembly and Mounting', link: '/hardware/assembly' },
-          { text: 'Module Reference', link: '/hardware/modules' }
+          { text: 'Attachment Reference', link: '/hardware/modules' }
         ]
       },
       {
@@ -70,6 +70,7 @@ export default defineConfig({
       {
         text: 'Reference',
         items: [
+          { text: 'Terminology', link: '/reference/terminology' },
           { text: 'Repository Structure', link: '/reference/repositories' },
           { text: 'Troubleshooting', link: '/reference/troubleshooting' },
           { text: 'Citation', link: '/reference/citation' }

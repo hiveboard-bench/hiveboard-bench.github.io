@@ -1,5 +1,5 @@
 ---
-description: Required files, validation evidence, and contributor credit for the HiveBoard asset calls.
+description: Required files, validation evidence, and contributor credit for the HiveBoard attachment calls.
 ---
 
 # Contribution requirements and credit
@@ -8,7 +8,7 @@ These requirements apply to the [ADL](/contribute/adl) and [bimanual manipulatio
 
 ## Required files and evidence
 
-A complete asset contribution must let another laboratory fabricate, assemble, simulate, and operate the mechanism.
+A complete attachment contribution must let another laboratory fabricate, assemble, simulate, and operate the mechanism.
 
 | Component | Required material |
 |---|---|
@@ -22,7 +22,7 @@ A complete asset contribution must let another laboratory fabricate, assemble, s
 | Trial example | At least one completed example trial record, identifying the mechanism version, performer or platform, and any known limitations |
 | Attribution and provenance | Contributor names and roles, sources of reused material, and the existing licenses or permissions for those materials |
 
-Identify measured physical parameters separately from nominal simulation values. A render alone does not demonstrate a functional asset. Label human demonstrations and robot trials accurately; discuss the available validation platform with the authors during the proposal stage.
+Identify measured physical parameters separately from nominal simulation values. A render alone does not demonstrate a functional attachment. Label human demonstrations and robot trials accurately; discuss the available validation platform with the authors during the proposal stage.
 
 ## Submission and review
 
@@ -36,8 +36,8 @@ The example record validates the proposed task description; it does not constitu
 
 ## Authorship and acknowledgments
 
-Anyone who contributes **at least one accepted, functional asset with all required files and validation evidence** may be eligible for authorship on future HiveBoard papers that use and report that contribution.
+Anyone who contributes **at least one accepted, functional attachment with all required files and validation evidence** may be eligible for authorship on future HiveBoard papers that use and report that contribution.
 
-Authorship is assessed for each paper. Eligible contributors should also participate in drafting or substantive revision of the paper, approve its final version, and take responsibility for their contribution. Asset acceptance does not guarantee authorship on every future HiveBoard paper or establish author order. The authors will discuss the expected role when planning the relevant paper.
+Authorship is assessed for each paper. Eligible contributors should also participate in drafting or substantive revision of the paper, approve its final version, and take responsibility for their contribution. Attachment acceptance does not guarantee authorship on every future HiveBoard paper or establish author order. The authors will discuss the expected role when planning the relevant paper.
 
 Smaller contributions, such as design suggestions, documentation corrections, or limited testing, may be credited in the acknowledgments with the contributor's consent. These contributions are also welcome. Keep a record of each person's work so credit reflects the contribution made.

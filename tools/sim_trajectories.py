@@ -317,7 +317,7 @@ def valve_task(model, data, cfg):
     lean = approach_for(cfg, anchor, robot_base(model, data))
     return {
         "module": "valve",
-        "label": "Ball Valve",
+        "label": "Ball valve",
         "caption": "Grasp the lever, swing it through its quarter turn, leave it shut.",
         "watch": "valve_RevoluteJoint",
         "goal": sweep,
@@ -366,7 +366,7 @@ def valve_push_task(model, data, cfg):
 
     return {
         "module": "valve",
-        "label": "Ball Valve",
+        "label": "Ball valve",
         "caption": "Sweep the lever through its quarter turn with the gripper shut.",
         "watch": "valve_RevoluteJoint",
         "goal": sweep,
@@ -422,7 +422,7 @@ def lamp_task(model, data, cfg):
     if cfg.get("lamp_demo"):
         return {
             "module": "lamp",
-            "label": "Light Bulb Socket",
+            "label": "Light bulb",
             "caption": "Leave the lamp, turn out and back without interaction.",
             "watch": "lamp_PrismaticJoint",
             "goal": 0.0,
@@ -456,7 +456,7 @@ def lamp_task(model, data, cfg):
 
     return {
         "module": "lamp",
-        "label": "Light Bulb Socket",
+        "label": "Light bulb",
         "caption": "Unscrew the bulb out of its socket, hold it clear, screw it back home.",
         "watch": "lamp_PrismaticJoint",
         "goal": clearance,
@@ -513,7 +513,7 @@ def breaker_task(model, data, cfg):
 
     return {
         "module": "breaker",
-        "label": "Circuit Breaker",
+        "label": "Circuit breaker",
         "caption": "Close the gripper and sweep the toggle across to its other stop.",
         "watch": "breaker_RevoluteJoint",
         "goal": throw,
@@ -937,14 +937,14 @@ TASKS = {
         rim_task, module="high-valve", body="high-valve_nut",
         turn="RevoluteJoint", watch="RevoluteJoint", sign=1.0, cap=3.0,
         rim=0.8, bite=0.006,
-        label="Gate Valve (Large)",
+        label="Gate valve (large)",
         caption="Pinch the handwheel rim and wind it round a full turn."),
 
     "small-valve": bind(
         rim_task, module="small-valve", body="small-valve_eixo_trans",
         turn="RevoluteJoint", watch="RevoluteJoint", sign=1.0, cap=5.2,
         rim=0.8, bite=0.005,
-        label="Gate Valve (Small)",
+        label="Gate valve (small)",
         pinch="fist",
         wrist_only=True,
         caption="Hold the little handwheel firmly and turn the wrist through one full turn."),
@@ -953,34 +953,34 @@ TASKS = {
         twist_task, module="thread-m30", body="thread-m30_Nut",
         turn="RevoluteJoint", watch="RiseJoint", sign=1.0, cap=5.2,
         pitch=0.0035, inset=0.002, symmetry=6,
-        label="Thread M30",
+        label="Thread (M30)",
         caption="Grip the hex across its flats and wind it up the stud."),
 
     "thread-m8": bind(
         twist_task, module="thread-m8", body="thread-m8_nut_pivot",
         turn="RevoluteJoint", watch="PrismaticJoint", sign=1.0, cap=1.05,
         pitch=0.00125, inset=-0.007, symmetry=6, pinch="fist",
-        label="Thread M8",
+        label="Thread (M8)",
         caption="Pinch the small hex nut and wind it up the screw."),
 
     "peg-insertion": bind(
         draw_task, module="peg-insertion", body="peg-insertion_peg",
         watch="PrismaticJoint", travel=0.028, inset=0.0025,
         finger=(0.0, 1.0, 0.0), returns=True, pinch="fist",
-        label="Peg Insertion Plate",
+        label="Peg insertion",
         caption="Pull the peg clear of its plate, then feed it back down the hole."),
 
     "button-cover": bind(
         button_task, module="button-cover", push=-0.009, bite=0.005,
         standoff=0.0, shy=0.12,
-        label="Hidden Push Button",
+        label="Button",
         caption="Swing the cover off the button, then press it home."),
 
     "key-lock": bind(
         key_task, module="key-lock", body="key-lock_key",
         sign=1.0, cap=1.55, draw=0.018, inset=0.011,
         symmetry=2, across="wide",
-        label="Lock and Key",
+        label="Lock and key",
         caption="Turn the key through the lock, draw it part way out and feed "
                 "it back, then turn it home again."),
 
@@ -988,7 +988,7 @@ TASKS = {
         draw_task, module="drawer", body="drawer_drawer",
         watch="PrismaticJoint", travel=0.03, inset=0.006,
         finger=(0.0, 1.0, 0.0),
-        label="Sliding Drawer",
+        label="Drawer",
         caption="Pinch the drawer front and draw it out of its case."),
 
 }
@@ -1519,7 +1519,7 @@ def draft_build(model, site, cfg, module, keys):
         key["sample"] = int(at)
     traj = {
         "label": f"{module} (draft)",
-        "caption": "Arm-only draft — no module or physics check yet.",
+        "caption": "Arm-only draft — no attachment or physics check yet.",
         "module": module,
         "rate": RATE,
         "watch": "",

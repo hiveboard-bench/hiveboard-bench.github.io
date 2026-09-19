@@ -6,8 +6,9 @@ HiveBoard currently separates presentation, physical assets, and the Isaac Lab i
 |---|---|---|
 | [`EESC-LabRoM/HiveBoard`](https://github.com/EESC-LabRoM/HiveBoard) | Benchmark assets | STL, CAD, URDF/USD, protocol, and trial templates |
 | [`EESC-LabRoM/isaaclab-hiveboard`](https://github.com/EESC-LabRoM/isaaclab-hiveboard) | Isaac Lab implementation | Environments, task configuration, training, and simulation evaluation |
-| [`hiveboard-bench/hiveboard-bench.github.io`](https://github.com/hiveboard-bench/hiveboard-bench.github.io) | Project website | Paper presentation, videos, results, and interactive viewer |
-| [`ricardovgodoy/hiveboard-docs`](https://github.com/ricardovgodoy/hiveboard-docs) | Documentation prototype | Review and refinement before migration to the official website |
+| [`hiveboard-bench/hiveboard-bench.github.io`](https://github.com/hiveboard-bench/hiveboard-bench.github.io) | Project website and documentation | Paper presentation, videos, results, interactive viewer, and `docs/` with the documentation and Evaluation Runner |
+
+The earlier [`ricardovgodoy/hiveboard-docs`](https://github.com/ricardovgodoy/hiveboard-docs) prototype has been superseded by `docs/` in the project website repository.
 
 ## Source files
 

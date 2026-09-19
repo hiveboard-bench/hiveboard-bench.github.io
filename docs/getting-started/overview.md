@@ -15,7 +15,7 @@ All structural and functional parts are designed for consumer-grade fused-deposi
 
 ### Modular tasks
 
-The seven-cell honeycomb base accepts interchangeable attachments. Modules can be swapped without changing the base, and new tasks can reuse the same mounting interface.
+The seven-cell honeycomb base accepts interchangeable attachments. Attachments can be swapped without changing the base, and new tasks can reuse the same mounting interface.
 
 ### Embodiment-independent evaluation
 
@@ -25,13 +25,13 @@ The protocol treats a platform as an end-effector plus the system that positions
 
 The repository includes articulated assets with visual and collision meshes, joint limits, and nominal physical properties. These assets support inspection and integration in common robotics simulators; a separate repository contains the Isaac Lab implementation.
 
-## Task families
+## Task categories {#task-families}
 
-| Family | What it tests | Attachments |
+| Category | What it tests | Attachments |
 |---|---|---|
-| Torque | Rotational manipulation and force transmission | Ball valve, ball valve with friction ring, small and large gate valves, circuit breaker |
-| Precision | Alignment, threading, insertion, and controlled rotation | Light bulb, M8 thread, M30 thread, threaded peg insertion |
-| Composed assembly | Ordered sequences with stage-wise progress | Covered button, lock and key, drawer, shock absorber |
+| Torque | Rotational manipulation and force transmission | Ball valve; Ball valve + ring; Gate valve (small); Gate valve (large); Circuit breaker |
+| Precision | Alignment, threading, insertion, and controlled rotation | Light bulb; Thread (M8); Thread (M30); Peg insertion |
+| Composed assembly | Ordered sequences with stage-wise progress | Button; Lock and key; Drawer; Shock absorber |
 
 ## What the benchmark reports
 
@@ -40,8 +40,8 @@ For each attachment, the protocol records:
 - task outcome and completion time;
 - attempts and regrasps;
 - prehensile or non-prehensile strategy;
-- last completed stage for composed tasks; and
-- one primary failure cause for unsuccessful trials.
+- last completed stage for composed assembly tasks; and
+- one dominant failure cause for unsuccessful trials.
 
 HiveBoard is intended to characterize task performance and failure modes. The validation protocol does not, by itself, define a universal ranking of platforms or control interfaces.
 
