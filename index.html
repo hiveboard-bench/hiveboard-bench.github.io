@@ -84,7 +84,7 @@
     <a href="#Home">Home</a>
     <a href="#Abstract">Abstract</a>
     <a href="#Interactive-Viewer">3D Viewer</a>
-    <a href="#Modules-Specs">Modules & Specs</a>
+    <a href="#Modules-Specs">Attachments & Specs</a>
     <a href="#Simulation-Compatibility">Simulators</a>
     <a href="#Videos">Videos</a>
     <a href="#Results">Results</a>
@@ -267,13 +267,13 @@
             scores, and the physical benchmarks that do cover mechanisms are built from purchased components, which
             makes them hard to reproduce or modify. We present HiveBoard, an open, modular, and accessible, fully
             3D-printed benchmark that lets any laboratory evaluate grippers, hands, and manipulation policies on
-            functional mechanisms. A hexagonal honeycomb base accepts 13 interchangeable attachments modeled on
+            functional mechanisms. A hexagonal honeycomb base accepts 12 interchangeable attachment designs modeled on
             industrial fittings and grouped into three skill categories &mdash; torque, precision, and composed assembly
             &mdash; all fully functional, printable on consumer-grade FDM printers, and released with articulated URDF
             and USD models for direct import into common simulators. A cross-laboratory validation across four
             manipulation systems, from quadruped &mdash; and fixed-base teleoperated arms and a legged manipulator driven
             through virtual-reality devices to a wearable anthropomorphic prosthetic hand, all scored on the
-            thirteen tasks, shows that six of the 13 attachments were completed by every platform and two by none, that
+            13 evaluation conditions, including the ball valve with and without its friction ring, shows that six conditions were completed by every platform and two by none, that
             the per-platform difficulty orderings correlate pairwise between 0.50 and 0.84, and that different
             embodiments fail on different attachments for interpretable, hardware-specific reasons.
           </p>
@@ -362,7 +362,7 @@
             <div class="hotspot-dot"></div>
             <div class="hotspot-pulse"></div>
             <div class="hotspot-tooltip">
-              <h4 class="is-size-6" style="font-weight: 700; color: #0f172a; margin-bottom: 0.5rem;">Torque Tasks</h4>
+              <h4 class="is-size-6" style="font-weight: 700; color: #0f172a; margin-bottom: 0.5rem;">Torque-based tasks</h4>
               <p style="font-size: 0.85rem; color: #475569; margin: 0; line-height: 1.4;">A ball valve, two gate valves,
                 and a circuit breaker. A four-piece snap-on friction ring set modulates the breakaway torque of the ball
                 valve without printing a second one.</p>
@@ -373,7 +373,7 @@
             <div class="hotspot-dot"></div>
             <div class="hotspot-pulse"></div>
             <div class="hotspot-tooltip">
-              <h4 class="is-size-6" style="font-weight: 700; color: #0f172a; margin-bottom: 0.5rem;">Precision Tasks
+              <h4 class="is-size-6" style="font-weight: 700; color: #0f172a; margin-bottom: 0.5rem;">Precision-based tasks
               </h4>
               <p style="font-size: 0.85rem; color: #475569; margin: 0; line-height: 1.4;">A light bulb socket, M8 and
                 M30 threaded fasteners, and a peg-insertion plate with 8&nbsp;mm threaded pins that demand
@@ -386,7 +386,7 @@
             <div class="hotspot-dot"></div>
             <div class="hotspot-pulse"></div>
             <div class="hotspot-tooltip">
-              <h4 class="is-size-6" style="font-weight: 700; color: #0f172a; margin-bottom: 0.5rem;">Composed Assembly
+              <h4 class="is-size-6" style="font-weight: 700; color: #0f172a; margin-bottom: 0.5rem;">Composed assembly
               </h4>
               <p style="font-size: 0.85rem; color: #475569; margin: 0; line-height: 1.4;">A covered push button, a
                 key-and-lock mechanism, a sliding drawer, and a two-cell shock absorber. Each requires several
@@ -435,11 +435,11 @@
       <div class="container is-max-desktop">
         <div class="is-flex is-align-items-center mb-5" style="width: 100%; justify-content: center;">
           <div style="flex-grow: 1; max-width: 200px; height: 1px; background: linear-gradient(to left, #edaf19, transparent); margin-right: 20px;"></div>
-          <h2 class="title is-3" style="letter-spacing: -0.5px; margin-bottom: 0; white-space: nowrap;">Modules & Specifications</h2>
+          <h2 class="title is-3" style="letter-spacing: -0.5px; margin-bottom: 0; white-space: nowrap;">Attachments & Specifications</h2>
           <div style="flex-grow: 1; max-width: 200px; height: 1px; background: linear-gradient(to right, #edaf19, transparent); margin-left: 20px;"></div>
         </div>
         <p class="has-text-justified mb-4" style="color: #94a3b8; line-height: 1.6;">
-          The library contains 13 functional attachments in three skill categories. Select a category below to compare
+          The library contains 12 attachment designs evaluated in 13 conditions across three task categories. Select a category below to compare
           each printed part with its digital twin and review the success criterion, timeout, and stage decomposition
           used by the evaluation protocol.
         </p>
@@ -691,17 +691,17 @@
 
           <p class="mt-2" style="font-size: 0.75rem; color: #94a3b8;">
             Pick a platform and a task, and the arm runs a fixed trajectory for it against a seven-cell board,
-            the swappable centre cell holding whichever module the task calls for.
+            the swappable centre cell holding whichever attachment the task calls for.
             <strong style="color: #64748b; font-weight: 600;">These are demonstrations, not benchmark runs &mdash;
             they do not follow the evaluation protocol.</strong> They are here to show what each task looks like:
-            most replay an authored module motion alongside the arm rather than manipulating it through contact,
+            most replay an authored attachment motion alongside the arm rather than manipulating it through contact,
             and only a few &mdash; the circuit breaker, and the ball valve on Spot and the SO-101 &mdash; are driven
             by the arm for real. Every trajectory is solved offline against the actual scene, so a platform lists
             only the tasks it could reach; the rest show as coming soon, which is why the lists differ. Robot models from
             <a href="https://github.com/google-deepmind/mujoco_menagerie" target="_blank" rel="noopener"
               style="color: #94a3b8; text-decoration: underline;">mujoco_menagerie</a> (Apache-2.0); interactive simulator interface based on <a href="https://younghyopark.me/tune-to-learn/" target="_blank" rel="noopener noreferrer"
               style="color: #94a3b8; text-decoration: underline;">Tune to Learn</a>; board and
-            modules built from the URDF release above.
+            attachments built from the URDF release above.
           </p>
         </div>
       </div>
@@ -710,7 +710,7 @@
     <script>
       const modulesData = [
         {
-          id: 'high-valve', pieceType: 'high_torque_valve', name: 'Gate Valve (Large)', category: 'Torque-Based', realImg: './assets/modules/big_valve_setup.webp',
+          id: 'high-valve', pieceType: 'high_torque_valve', name: 'Gate valve (large)', category: 'Torque', realImg: './assets/modules/big_valve_setup.webp',
           modelImg: './assets/modules/big_valve_3d.webp',
           scale: '2.35',
           top: '13.5%',
@@ -718,7 +718,7 @@
           params: [['Success criterion', 'Stem rotated one full turn from the closed position'], ['Timeout', '120 s'], ['Trials per platform', '5'], ['Material', 'PLA, printed handle up'], ['Infill', '30% (torque component)']]
         },
         {
-          id: 'small-valve', pieceType: 'small_valve', name: 'Gate Valve (Small)', category: 'Torque-Based', realImg: './assets/modules/small_valve_setup.webp',
+          id: 'small-valve', pieceType: 'small_valve', name: 'Gate valve (small)', category: 'Torque', realImg: './assets/modules/small_valve_setup.webp',
           modelImg: './assets/modules/small_valve_3d.webp',
           scale: '2.3',
           top: '4%',
@@ -726,19 +726,19 @@
           params: [['Success criterion', 'Stem rotated one full turn from the closed position'], ['Timeout', '90 s'], ['Trials per platform', '5'], ['Material', 'PLA, printed handle up'], ['Infill', '30% (torque component)']]
         },
         {
-          id: 'thread-m30', pieceType: 'm30', name: 'Thread M30', category: 'Precision-Based', realImg: './assets/modules/m30_setup.webp',
+          id: 'thread-m30', pieceType: 'm30', name: 'Thread (M30)', category: 'Precision', realImg: './assets/modules/m30_setup.webp',
           modelImg: './assets/modules/m30_3d.webp',
           desc: 'Larger threaded fastener. Success requires the bolt to be threaded along its full available length, which demands sustained axial rotation against thread friction.',
           params: [['Success criterion', 'Bolt fully threaded along the available length'], ['Timeout', '120 s'], ['Trials per platform', '5'], ['Material', 'PLA, printed vertically'], ['Infill', '25% (threads)']]
         },
         {
-          id: 'thread-m8', pieceType: 'm8', name: 'Thread M8', category: 'Precision-Based', realImg: './assets/modules/m8_setup.webp',
+          id: 'thread-m8', pieceType: 'm8', name: 'Thread (M8)', category: 'Precision', realImg: './assets/modules/m8_setup.webp',
           modelImg: './assets/modules/m8_3d.webp',
           desc: 'The smallest threaded fastener in the library. Its head has to be held against thread friction while turning, which makes it the hardest attachment for every platform reported so far.',
           params: [['Success criterion', 'Bolt fully threaded along the available length'], ['Timeout', '120 s'], ['Trials per platform', '5'], ['Material', 'PLA, printed vertically'], ['Infill', '25% (threads)']]
         },
         {
-          id: 'peg-insertion', pieceType: 'peg_insertion', name: 'Peg Insertion Plate', category: 'Precision-Based', realImg: './assets/modules/peg_and_hole_setup.webp',
+          id: 'peg-insertion', pieceType: 'peg_insertion', name: 'Peg insertion', category: 'Precision', realImg: './assets/modules/peg_and_hole_setup.webp',
           modelImg: './assets/modules/peg_and_hole_3d.webp',
           scale: 2.15,
           top: '-5%',
@@ -746,14 +746,14 @@
           params: [['Success criterion', 'Free peg threaded into the empty socket until it seats'], ['Timeout', '120 s'], ['Trials per platform', '5'], ['Material', 'PLA, pegs vertical']]
         },
         {
-          id: 'circuit-breaker', pieceType: 'circuit_breaker', name: 'Circuit Breaker', category: 'Torque-Based', realImg: './assets/modules/switch_setup.webp',
+          id: 'circuit-breaker', pieceType: 'circuit_breaker', name: 'Circuit breaker', category: 'Torque', realImg: './assets/modules/switch_setup.webp',
           modelImg: './assets/modules/switch_3d.webp',
           top: '-5%',
           desc: 'A single-pole circuit breaker. The toggle exposes a revolute joint with its physical angular range, and the task can be solved either by grasping the toggle or by driving it with a closed hand structure, which makes it the fastest attachment for several platforms.',
           params: [['Success criterion', 'Toggle moved from one state to the other and held'], ['Timeout', '60 s'], ['Trials per platform', '5'], ['Material', 'PLA'], ['Infill', '25% (mechanical part)']]
         },
         {
-          id: 'button-cover', pieceType: 'button_composed', name: 'Hidden Push Button', category: 'Composed Assembly', realImg: './assets/modules/button_setup.webp',
+          id: 'button-cover', pieceType: 'button_composed', name: 'Button', category: 'Composed assembly', realImg: './assets/modules/button_setup.webp',
           modelImg: './assets/modules/button_3d.webp',
           top: '-4%',
           scale: 2.13,
@@ -761,7 +761,7 @@
           params: [['Success criterion', 'All stages completed within the timeout'], ['Stages', '(1) Open the cover, (2) press the button until actuation'], ['Timeout', '60 s'], ['Trials per platform', '5'], ['Material', 'PLA, 15% infill on the cover']]
         },
         {
-          id: 'ball-valve', pieceType: 'ball_valve', name: 'Ball Valve', category: 'Torque-Based', realImg: './assets/modules/torque_valve_noFriction_setup.webp',
+          id: 'ball-valve', pieceType: 'ball_valve', name: 'Ball valve', category: 'Torque', realImg: './assets/modules/torque_valve_noFriction_setup.webp',
           modelImg: './assets/modules/torque_valve_noFriction_3d.webp',
           scale: 2.4,
           top: '-5%',
@@ -769,7 +769,7 @@
           params: [['Success criterion', 'Handle rotated 90° from closed to open'], ['Timeout', '60 s bare / 90 s with friction ring'], ['Trials per platform', '5 per configuration'], ['Accessory', 'Four-piece friction ring set'], ['Material', 'PLA, printed handle up']]
         },
         {
-          id: 'key-lock', pieceType: 'key', name: 'Lock and Key', category: 'Composed Assembly', realImg: './assets/modules/key_setup.webp',
+          id: 'key-lock', pieceType: 'key', name: 'Lock and key', category: 'Composed assembly', realImg: './assets/modules/key_setup.webp',
           modelImg: './assets/modules/key_3d.webp',
           scale: 2.15,
           top: '-5%',
@@ -777,7 +777,7 @@
           params: [['Success criterion', 'All stages completed within the timeout'], ['Stages', '(1) Grasp the key, (2) insert vertically, (3) rotate to unlock'], ['Timeout', '180 s'], ['Trials per platform', '5'], ['Material', 'PLA, 25% infill']]
         },
         {
-          id: 'lamp-bulb', pieceType: 'lamp', name: 'Light Bulb Socket', category: 'Precision-Based', realImg: './assets/modules/lamp_setup.webp',
+          id: 'lamp-bulb', pieceType: 'lamp', name: 'Light bulb', category: 'Precision', realImg: './assets/modules/lamp_setup.webp',
           modelImg: './assets/modules/lamp_3d.webp',
           scale: 2.4,
           top: '3%',
@@ -785,7 +785,7 @@
           params: [['Success criterion', 'Bulb fully threaded until seated'], ['Timeout', '120 s'], ['Trials per platform', '5'], ['Material', 'PLA, printed vertically'], ['Infill', '25% (threads)']]
         },
         {
-          id: 'drawer', pieceType: 'drawer', name: 'Sliding Drawer', category: 'Composed Assembly', realImg: './assets/modules/box_setup.webp',
+          id: 'drawer', pieceType: 'drawer', name: 'Drawer', category: 'Composed assembly', realImg: './assets/modules/box_setup.webp',
           modelImg: './assets/modules/box_3d.webp',
           scale: 2.36,
           top: '-4.4%',
@@ -793,7 +793,7 @@
           params: [['Success criterion', 'All stages completed within the timeout'], ['Stages', '(1) Grasp the handle, (2) pull open, (3) push closed'], ['Timeout', '120 s'], ['Trials per platform', '5'], ['Material', 'PLA, printed flat']]
         },
         {
-          id: 'shock-absorber', pieceType: 'shock_absorber', name: 'Shock Absorber', category: 'Composed Assembly', realImg: './assets/modules/spring_setup.webp',
+          id: 'shock-absorber', pieceType: 'shock_absorber', name: 'Shock absorber', category: 'Composed assembly', realImg: './assets/modules/spring_setup.webp',
           modelImg: './assets/modules/spring_3d.webp',
           top: '-5%',
           desc: 'A two-cell shock-absorber model in which two hexagonal end pieces are joined by a coil spring with a bolt running through the spring axis. It is the only attachment that occupies two adjacent cells of the honeycomb, and it combines axial grasping of a slender pin with alignment and insertion under spring load.',
@@ -860,7 +860,7 @@
         label.style.color = '#94a3b8';
         label.style.textTransform = 'uppercase';
         label.style.letterSpacing = '1px';
-        label.textContent = 'Select Benchmark Module';
+        label.textContent = 'Select attachment';
 
         const dropdownDiv = document.createElement('div');
         dropdownDiv.className = 'dropdown custom-bulma-dropdown';
@@ -880,7 +880,7 @@
         triggerBtn.setAttribute('aria-controls', 'dropdown-menu-modules');
 
         const btnText = document.createElement('span');
-        btnText.textContent = "Select module...";
+        btnText.textContent = "Select attachment...";
         btnText.style.fontWeight = '500';
 
         const btnIcon = document.createElement('span');
@@ -1065,7 +1065,7 @@
                   <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
                     onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
                     onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Gate Valve (Large)</p>
+                  <p class="has-text-weight-medium" style="margin: 0;">Gate valve (large)</p>
                 </div>
               </div>
             </div>
@@ -1103,7 +1103,7 @@
                   <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
                     onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
                     onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Circuit Breaker</p>
+                  <p class="has-text-weight-medium" style="margin: 0;">Circuit breaker</p>
                 </div>
               </div>
             </div>
@@ -1122,7 +1122,7 @@
                   <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
                     onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
                     onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Lock and Key</p>
+                  <p class="has-text-weight-medium" style="margin: 0;">Lock and key</p>
                 </div>
               </div>
             </div>
@@ -1141,7 +1141,7 @@
                   <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
                     onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
                     onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Light Bulb</p>
+                  <p class="has-text-weight-medium" style="margin: 0;">Light bulb</p>
                 </div>
               </div>
             </div>
@@ -1160,7 +1160,7 @@
                   <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
                     onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
                     onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Gate Valve (Small)</p>
+                  <p class="has-text-weight-medium" style="margin: 0;">Gate valve (small)</p>
                 </div>
               </div>
             </div>
@@ -1179,7 +1179,7 @@
                   <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
                     onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
                     onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Ball Valve</p>
+                  <p class="has-text-weight-medium" style="margin: 0;">Ball valve</p>
                 </div>
               </div>
             </div>
@@ -1229,7 +1229,7 @@
                   <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
                     onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
                     onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Circuit Breaker</p>
+                  <p class="has-text-weight-medium" style="margin: 0;">Circuit breaker</p>
                 </div>
               </div>
             </div>
@@ -1248,7 +1248,7 @@
                   <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
                     onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
                     onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Light Bulb</p>
+                  <p class="has-text-weight-medium" style="margin: 0;">Light bulb</p>
                 </div>
               </div>
             </div>
@@ -1267,7 +1267,7 @@
                   <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
                     onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
                     onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Lock and Key</p>
+                  <p class="has-text-weight-medium" style="margin: 0;">Lock and key</p>
                 </div>
               </div>
             </div>
@@ -1286,7 +1286,7 @@
                   <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
                     onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
                     onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Shock Absorber</p>
+                  <p class="has-text-weight-medium" style="margin: 0;">Shock absorber</p>
                 </div>
               </div>
             </div>
@@ -1305,7 +1305,7 @@
                   <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
                     onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
                     onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Thread</p>
+                  <p class="has-text-weight-medium" style="margin: 0;">Thread (M8)</p>
                 </div>
               </div>
             </div>
@@ -1324,7 +1324,7 @@
                   <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
                     onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
                     onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Ball Valve</p>
+                  <p class="has-text-weight-medium" style="margin: 0;">Ball valve</p>
                 </div>
               </div>
             </div>
@@ -1343,7 +1343,7 @@
                   <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
                     onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
                     onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Gate Valve (Small)</p>
+                  <p class="has-text-weight-medium" style="margin: 0;">Gate valve (small)</p>
                 </div>
               </div>
             </div>
@@ -1379,7 +1379,7 @@
                   <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
                     onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
                     onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Gate Valve (Large)</p>
+                  <p class="has-text-weight-medium" style="margin: 0;">Gate valve (large)</p>
                 </div>
               </div>
             </div>
@@ -1398,7 +1398,7 @@
                   <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
                     onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
                     onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Gate Valve (Large, VR)</p>
+                  <p class="has-text-weight-medium" style="margin: 0;">Gate valve (large) (VR)</p>
                 </div>
               </div>
             </div>
@@ -1436,7 +1436,7 @@
                   <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
                     onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
                     onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Circuit Breaker</p>
+                  <p class="has-text-weight-medium" style="margin: 0;">Circuit breaker</p>
                 </div>
               </div>
             </div>
@@ -1455,7 +1455,7 @@
                   <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
                     onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
                     onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Lock and Key</p>
+                  <p class="has-text-weight-medium" style="margin: 0;">Lock and key</p>
                 </div>
               </div>
             </div>
@@ -1474,7 +1474,7 @@
                   <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
                     onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
                     onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Lock and Key (VR)</p>
+                  <p class="has-text-weight-medium" style="margin: 0;">Lock and key (VR)</p>
                 </div>
               </div>
             </div>
@@ -1493,7 +1493,7 @@
                   <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
                     onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
                     onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Light Bulb</p>
+                  <p class="has-text-weight-medium" style="margin: 0;">Light bulb</p>
                 </div>
               </div>
             </div>
@@ -1512,7 +1512,7 @@
                   <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
                     onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
                     onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Light Bulb (VR)</p>
+                  <p class="has-text-weight-medium" style="margin: 0;">Light bulb (VR)</p>
                 </div>
               </div>
             </div>
@@ -1531,7 +1531,7 @@
                   <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
                     onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
                     onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Gate Valve (Small)</p>
+                  <p class="has-text-weight-medium" style="margin: 0;">Gate valve (small)</p>
                 </div>
               </div>
             </div>
@@ -1550,7 +1550,7 @@
                   <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
                     onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
                     onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Ball Valve</p>
+                  <p class="has-text-weight-medium" style="margin: 0;">Ball valve</p>
                 </div>
               </div>
             </div>
@@ -1569,7 +1569,7 @@
                   <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
                     onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
                     onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Ball Valve, Hard (VR)</p>
+                  <p class="has-text-weight-medium" style="margin: 0;">Ball valve + ring (VR)</p>
                 </div>
               </div>
             </div>
@@ -1588,7 +1588,7 @@
                   <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
                     onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
                     onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Ball Valve (VR)</p>
+                  <p class="has-text-weight-medium" style="margin: 0;">Ball valve (VR)</p>
                 </div>
               </div>
             </div>
@@ -1619,7 +1619,7 @@
                   <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
                     onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
                     onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Gate Valve (Large)</p>
+                  <p class="has-text-weight-medium" style="margin: 0;">Gate valve (large)</p>
                 </div>
               </div>
             </div>
@@ -1657,7 +1657,7 @@
                   <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
                     onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
                     onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Light Bulb</p>
+                  <p class="has-text-weight-medium" style="margin: 0;">Light bulb</p>
                 </div>
               </div>
             </div>
@@ -1695,7 +1695,7 @@
                   <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
                     onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
                     onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Circuit Breaker</p>
+                  <p class="has-text-weight-medium" style="margin: 0;">Circuit breaker</p>
                 </div>
               </div>
             </div>
@@ -1714,7 +1714,7 @@
                   <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
                     onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
                     onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Lock and Key</p>
+                  <p class="has-text-weight-medium" style="margin: 0;">Lock and key</p>
                 </div>
               </div>
             </div>
@@ -1733,7 +1733,7 @@
                   <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
                     onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
                     onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Peg Insertion</p>
+                  <p class="has-text-weight-medium" style="margin: 0;">Peg insertion</p>
                 </div>
               </div>
             </div>
@@ -1752,7 +1752,7 @@
                   <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
                     onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
                     onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Gate Valve (Small)</p>
+                  <p class="has-text-weight-medium" style="margin: 0;">Gate valve (small)</p>
                 </div>
               </div>
             </div>
@@ -1771,7 +1771,7 @@
                   <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
                     onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
                     onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Shock Absorber</p>
+                  <p class="has-text-weight-medium" style="margin: 0;">Shock absorber</p>
                 </div>
               </div>
             </div>
@@ -1790,7 +1790,7 @@
                   <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
                     onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
                     onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Ball Valve</p>
+                  <p class="has-text-weight-medium" style="margin: 0;">Ball valve</p>
                 </div>
               </div>
             </div>
@@ -1809,7 +1809,7 @@
                   <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
                     onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
                     onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Thread M30</p>
+                  <p class="has-text-weight-medium" style="margin: 0;">Thread (M30)</p>
                 </div>
               </div>
             </div>
@@ -1828,7 +1828,7 @@
                   <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
                     onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
                     onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Thread M8</p>
+                  <p class="has-text-weight-medium" style="margin: 0;">Thread (M8)</p>
                 </div>
               </div>
             </div>
@@ -1864,7 +1864,7 @@
                   <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
                     onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
                     onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Gate Valve (Large)</p>
+                  <p class="has-text-weight-medium" style="margin: 0;">Gate valve (large)</p>
                 </div>
               </div>
             </div>
@@ -1883,7 +1883,7 @@
                   <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
                     onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
                     onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Gate Valve (Large, Orbit)</p>
+                  <p class="has-text-weight-medium" style="margin: 0;">Gate valve (large) (orbit view)</p>
                 </div>
               </div>
             </div>
@@ -1902,7 +1902,7 @@
                   <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
                     onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
                     onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Circuit Breaker</p>
+                  <p class="has-text-weight-medium" style="margin: 0;">Circuit breaker</p>
                 </div>
               </div>
             </div>
@@ -1921,7 +1921,7 @@
                   <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
                     onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
                     onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Circuit Breaker (Orbit)</p>
+                  <p class="has-text-weight-medium" style="margin: 0;">Circuit breaker (Orbit)</p>
                 </div>
               </div>
             </div>
@@ -1940,7 +1940,7 @@
                   <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
                     onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
                     onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Ball Valve</p>
+                  <p class="has-text-weight-medium" style="margin: 0;">Ball valve</p>
                 </div>
               </div>
             </div>
@@ -1959,7 +1959,7 @@
                   <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
                     onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
                     onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Gate Valve (Small)</p>
+                  <p class="has-text-weight-medium" style="margin: 0;">Gate valve (small)</p>
                 </div>
               </div>
             </div>
@@ -1978,7 +1978,7 @@
                   <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
                     onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
                     onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Gate Valve (Small, Orbit)</p>
+                  <p class="has-text-weight-medium" style="margin: 0;">Gate valve (small) (orbit view)</p>
                 </div>
               </div>
             </div>
@@ -2200,8 +2200,8 @@
 
         <p class="has-text-justified mb-5" style="color: #475569; line-height: 1.7;">
           Each laboratory prints the board from the released files and runs the same <a class="protocol-link" href="https://hiveboard-bench.github.io/hivedocs/benchmark/protocol">protocol</a> on its own hardware: five
-          recorded trials per attachment, a fixed neutral start pose, per-attachment timeouts, no scripted assistance.
-          <strong style="color: #0f172a;">Select any cell, platform, or attachment</strong> to see what happened in
+          recorded trials per condition, a fixed neutral start pose, task-specific timeouts, no scripted assistance.
+          <strong style="color: #0f172a;">Select any cell, platform, or condition</strong> to see what happened in
           those trials.
         </p>
 
@@ -2568,7 +2568,7 @@
               <h4 class="title is-6" style="color: #0f172a; margin-bottom: 0.5rem;">Same eight, same five</h4>
               <p style="font-size: 0.85rem; color: #64748b; line-height: 1.5;">
                 A tablet-teleoperated quadruped arm and a VR-driven legged manipulator share no arm, gripper, or
-                interface, yet complete an identical set of eight attachments and fail on an identical five &mdash; for
+                interface, yet complete an identical set of eight conditions and fail on an identical five &mdash; for
                 entirely different logged reasons.
               </p>
             </div>
@@ -2591,7 +2591,7 @@
               <h4 class="title is-6" style="color: #0f172a; margin-bottom: 0.5rem;">The small threads stop everyone</h4>
               <p style="font-size: 0.85rem; color: #64748b; line-height: 1.5;">
                 The M8 fastener and the free peg &mdash; the two smallest threaded parts in the library &mdash; are the
-                only attachments no platform solved: 0/5 in all eight cells, for four different recorded causes.
+                only conditions no platform solved: 0/5 in all eight cells, for four different recorded causes.
               </p>
             </div>
           </div>
@@ -2605,13 +2605,13 @@
             <div class="xp-switch">
               <button class="toggle-btn active" data-panel="order">Difficulty ordering</button>
               <button class="toggle-btn" data-panel="strategy">Strategy</button>
-              <button class="toggle-btn" data-panel="time">Normalized time</button>
+              <button class="toggle-btn" data-panel="time">Normalized completion time</button>
             </div>
           </div>
 
           <div class="xp-panel" data-panel="order">
             <p class="mt-4" style="color: #475569; line-height: 1.7; font-size: 0.9rem;">
-              Each platform ranks the 13 attachments by unsuccessful trials first and normalized median time second, and
+              Each platform ranks the 13 conditions by unsuccessful trials first and normalized median time second, and
               the four orderings are then compared pairwise with a Spearman correlation. A high correlation means the
               board is measuring properties of the tasks rather than idiosyncrasies of one system.
             </p>
@@ -2650,10 +2650,10 @@
 
           <div class="xp-panel" data-panel="strategy" style="display: none;">
             <p class="mt-4" style="color: #475569; line-height: 1.7; font-size: 0.9rem;">
-              An attachment is <strong style="color: #0f172a;">prehensile</strong> when the end-effector closes around
+              A manipulation strategy is <strong style="color: #0f172a;">prehensile</strong> when the end-effector closes around
               the part and holds it, and <strong style="color: #0f172a;">non-prehensile</strong> when the part is driven
               by pushing or pressing, or by a finger or jaw entering an opening without an enclosing grip. The bars show
-              the non-prehensile share of the attachments each platform completed.
+              the non-prehensile share of the conditions each platform completed.
             </p>
             <div class="columns is-multiline mt-2">
               <div class="column is-3-tablet is-6-mobile rd-metric">
@@ -2682,17 +2682,16 @@
               </div>
             </div>
             <p style="color: #64748b; line-height: 1.6; font-size: 0.85rem;">
-              Four attachments are handled the same way by everyone: the ball valve in both configurations and the
+              All platforms used the same strategy for five conditions: the ball valve in both configurations and the
               button were driven non-prehensilely by all four platforms, since a lever and a momentary switch move under
-              a single push, while the light bulb and the lock were grasped by all four. Every precision attachment for
-              which a strategy was logged is prehensile &mdash; no platform in this study turned a threaded part without
+              a single push, while the light bulb and the lock were grasped by all four. Every recorded strategy for a precision task is prehensile &mdash; no platform in this study turned a threaded part without
               first closing around it.
             </p>
           </div>
 
           <div class="xp-panel" data-panel="time" style="display: none;">
             <p class="mt-4" style="color: #475569; line-height: 1.7; font-size: 0.9rem;">
-              Median completion time divided by the attachment timeout, averaged over the attachments each platform
+              Median completion time divided by the condition timeout, averaged over the conditions each platform
               completed in a category. The normalization puts tasks with 60 s and 180 s budgets on one scale, so a lower
               number means more headroom against the clock.
             </p>
@@ -2737,7 +2736,8 @@
               accumulate rotation by releasing and reacquiring the part &mdash; 13.6 grasps per trial on the bulb for
               the arm, 7.0 regrasps for the hand &mdash; and they are the two whose precision scores approach the
               timeout. For Platforms A, B, and C the precision figure comes from the light bulb alone, the only
-              precision attachment they completed.
+              precision condition they completed. The reported SO-101 grasp count and Macao regrasp count use different
+              labels and should not be compared directly until the original counting conventions are checked.
             </p>
           </div>
         </div>
@@ -2748,8 +2748,8 @@
         <div class="columns is-multiline">
                     <div class="column is-3-tablet is-12-mobile stat-divider">
             <h3 class="title is-3 mb-1" style="font-weight: 700; color: #0f172a; letter-spacing: -0.5px;">13</h3>
-            <p style="font-size: 0.85rem; color: #475569; line-height: 1.4;">Functional attachments in three skill
-              categories, on one shared hexagonal interface</p>
+            <p style="font-size: 0.85rem; color: #475569; line-height: 1.4;">Evaluation conditions across 12 attachment designs in three task
+              categories</p>
           </div>
                     <div class="column is-3-tablet is-12-mobile stat-divider">
             <h3 class="title is-3 mb-1" style="font-weight: 700; color: #0f172a; letter-spacing: -0.5px;">260</h3>
@@ -2788,7 +2788,7 @@
                 D: { s: 5, t: 2.1, a: 1.0, note: 'Driven with the closed hand structure: the lever needs no grasp actuation at all, which makes this the hand&rsquo;s fastest class of task.' }
               },
               {
-                n: 'Ball valve + friction ring', cat: 'Torque', timeout: 90, crit: 'Handle rotated 90° from closed to open with the ring fitted',
+                n: 'Ball valve + ring', cat: 'Torque', timeout: 90, crit: 'Handle rotated 90° from closed to open with the ring fitted',
                 A: { s: 5, t: 16.9, a: 1.0, note: 'The ring adds 6.4 s of median time over the bare valve, confirming that the snap-on accessories modulate difficulty as designed.' },
                 B: { s: 5, t: 9.0, a: 1.6, note: 'Identical median to the bare valve: the friction ring is the one accessory in the study that costs a platform nothing measurable.' },
                 C: { s: 5, t: 9.2, a: 1.0, note: 'The ring adds 1.4 s here, a smaller increment than the 6.4 s the same accessory costs Platform A.' },
@@ -2798,7 +2798,7 @@
                 n: 'Gate valve (small)', cat: 'Torque', timeout: 90, crit: 'Stem rotated one full turn from the closed position',
                 A: { s: 5, t: 19.9, a: 1.0 },
                 B: { s: 0, causes: { 'Kinematic limit': 5 }, note: 'The only attachment in the study that one platform failed and the other three completed. The operator notes record an initial grasp used to release the stem and a final grasp used to push the valve clear of its seat, so the stem moved without ever completing a full turn inside the 90 s timeout.' },
-                C: { s: 5, t: 23.1, a: 1.4, note: 'The longest completed attachment on this platform: the handwheel needs a full turn of the stem, held steady while the torso frame itself moves under the whole-body policy.' },
+                C: { s: 5, t: 23.1, a: 1.4, note: 'The longest completed task on this platform: the handwheel needs a full turn of the stem, held steady while the torso frame itself moves under the whole-body policy.' },
                 D: { s: 5, t: 2.7, a: 1.0, note: 'Operated with a tripod grasp on the handwheel &mdash; one of the few torque tasks where the hand actually closes on the part.' }
               },
               {
@@ -2819,7 +2819,7 @@
                 n: 'Light bulb', cat: 'Precision', timeout: 120, crit: 'Bulb fully threaded until seated',
                 A: { s: 5, t: 27.3, a: 1.0 },
                 B: { s: 5, t: 83.0, a: 13.8, note: '13.8 attempts and 13.6 grasps per trial, the highest counts recorded anywhere in the study: accumulating rotation on this arm means releasing the bulb and reacquiring it, over and over.' },
-                C: { s: 5, t: 19.3, a: 2.2, note: 'The highest attempt count this platform recorded &mdash; regrasping is impractical here, and the logs show a single grasp per trial on ten of the thirteen attachments.' },
+                C: { s: 5, t: 19.3, a: 2.2, note: 'The highest attempt count this platform recorded &mdash; regrasping is impractical here, and the logs show a single grasp per trial on ten of the thirteen conditions.' },
                 D: { s: 5, t: 52.1, a: 1.0, note: 'Completed on every trial with a power grasp, at a mean of 7.0 regrasps: limited wrist rotation on a worn device forces repeated grasp&ndash;rotate&ndash;release cycles.' }
               },
               {
@@ -2844,7 +2844,7 @@
                 D: { s: 0, a: 2.8, causes: { 'Control precision': 5 }, note: 'On three trials the hand never acquired the free peg; on the other two the peg started into the socket but could not be rotated further before the timeout. At 8 mm the pin is narrower than the M8 screw head, so it places the same demand on the hand.' }
               },
               {
-                n: 'Button', cat: 'Assembly', timeout: 60, crit: 'All stages completed within the timeout',
+                n: 'Button', cat: 'Composed assembly', timeout: 60, crit: 'All stages completed within the timeout',
                 stages: ['Open the cover', 'Press the button until actuation'],
                 A: { s: 5, t: 23.9, a: 1.0, st: [5, 5], note: 'Operated non-prehensilely, like the ball valve.' },
                 B: { s: 5, t: 10.0, a: 3.2, st: [5, 5], note: 'Pushed with the closed gripper rather than grasped.' },
@@ -2852,15 +2852,15 @@
                 D: { s: 5, t: 3.0, a: 1.0, st: [5, 5], note: 'Completed without grasp actuation.' }
               },
               {
-                n: 'Lock and key', cat: 'Assembly', timeout: 180, crit: 'All stages completed within the timeout',
+                n: 'Lock and key', cat: 'Composed assembly', timeout: 180, crit: 'All stages completed within the timeout',
                 stages: ['Grasp the key', 'Insert vertically', 'Rotate to unlock'],
-                A: { s: 5, t: 40.4, a: 1.0, st: [5, 5, 5], note: 'The slowest attachment this platform completed &mdash; completion times grow with task complexity, from ~10 s on the ball valve to 40 s here.' },
+                A: { s: 5, t: 40.4, a: 1.0, st: [5, 5, 5], note: 'The slowest task this platform completed &mdash; completion times grow with task complexity, from ~10 s on the ball valve to 40 s here.' },
                 B: { s: 5, t: 15.0, a: 4.2, st: [5, 5, 5] },
                 C: { s: 5, t: 21.4, a: 1.0, st: [5, 5, 5] },
                 D: { s: 5, t: 15.1, a: 1.0, st: [5, 5, 5] }
               },
               {
-                n: 'Drawer', cat: 'Assembly', timeout: 120, crit: 'All stages completed within the timeout',
+                n: 'Drawer', cat: 'Composed assembly', timeout: 120, crit: 'All stages completed within the timeout',
                 stages: ['Grasp the handle', 'Pull open', 'Push closed'],
                 A: { s: 0, a: 1.0, st: [0, 0, 0], causes: { 'Grasp geometry': 5 }, note: 'The parallel-jaw gripper could not engage the recessed handle in a stable grasp, so no trial reached even the first stage. The wide jaws also occlude the contact point from the operator.' },
                 B: { s: 5, t: 23.0, a: 5.4, st: [5, 5, 5], note: 'The narrow printed fingertips close around the recessed handle that the wider jaws of Platforms A and C cannot enter.' },
@@ -2868,12 +2868,12 @@
                 D: { s: 5, t: 39.9, a: 1.6, st: [5, 5, 5], note: 'The fingers enter the recess where a parallel jaw cannot, at a mean of 3.4 regrasps on the handle.' }
               },
               {
-                n: 'Shock absorber', cat: 'Assembly', timeout: 180, crit: 'All stages completed within the timeout',
+                n: 'Shock absorber', cat: 'Composed assembly', timeout: 180, crit: 'All stages completed within the timeout',
                 stages: ['Grasp the pin', 'Align with the hole', 'Insert fully'],
                 A: { s: 0, a: 1.0, st: [0, 0, 0], causes: { 'Grasp geometry': 5 }, note: 'The gripper could not grasp the pin axially.' },
                 B: { s: 5, t: 16.0, a: 4.8, st: [5, 5, 5], note: 'Acquired the free pin at stage 1 and carried every remaining stage, on the attachment that both legged platforms failed outright.' },
                 C: { s: 0, a: 1.0, st: [5, 0, 0], causes: { 'Control precision': 5 }, note: 'The pin was grasped in all five trials and the run stopped at stage 1; the notes give alignment of the pin with the hole as the reason.' },
-                D: { s: 4, t: 39.4, a: 1.2, st: [5, 5, 4], causes: { 'Force limit': 1 }, note: 'The failed trial reached stage 2, with the pin aligned but not threaded home. On the successful trials the wearer&rsquo;s contralateral hand placed the pin into the grasp, after which alignment and seating were performed with the device alone.' }
+                D: { s: 4, t: 39.4, a: 1.2, st: [5, 5, 4], causes: { 'Force limit': 1 }, note: 'The failed trial reached stage 2, with the pin aligned but not fully inserted. On the successful trials the wearer&rsquo;s contralateral hand placed the pin into the grasp, after which alignment and seating were performed with the device alone.' }
               }
             ];
 
@@ -2891,7 +2891,7 @@
             const cellClass = c => c.s === 5 ? 'full' : (c.s > 0 ? 'partial' : 'none');
             const fmt = t => t == null ? '&mdash;' : t + ' s';
 
-            grid.insertAdjacentHTML('beforeend', '<div class="mx-corner">Attachment</div>');
+            grid.insertAdjacentHTML('beforeend', '<div class="mx-corner">Condition</div>');
             platforms.forEach(p => {
               grid.insertAdjacentHTML('beforeend',
                 `<button class="mx-plat" data-plat="${p.id}">
@@ -2940,7 +2940,7 @@
                       <span class="k">${p.id} &middot; ${p.name}</span>
                       <span class="v">${platSummary[p.id].completed}<span style="font-size: 0.9rem; color: #94a3b8; font-weight: 500;"> / 13</span></span>
                       <div class="rd-bar"><i style="width: ${platSummary[p.id].completed / 13 * 100}%"></i></div>
-                      <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 6px;">attachments &middot; ${platSummary[p.id].wins}/65 trials</p>
+                      <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 6px;">conditions &middot; ${platSummary[p.id].wins}/65 trials</p>
                     </div>`).join('')}
                 </div>
                 <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 0.5rem;">
@@ -2993,7 +2993,7 @@
                 <h3 class="title is-4 mt-3 mb-2" style="color: #0f172a;">Platform ${p.id} &middot; ${p.full}</h3>
                 <p style="color: #64748b; font-size: 0.85rem;">${p.ee}</p>
                 <div class="columns is-multiline mt-3">
-                  ${metric('Attachments completed', `${s.completed}<span style="font-size: 0.9rem; color: #94a3b8; font-weight: 500;"> / 13</span>`,
+                  ${metric('Conditions completed', `${s.completed}<span style="font-size: 0.9rem; color: #94a3b8; font-weight: 500;"> / 13</span>`,
                 `<div class="rd-bar"><i style="width: ${s.completed / 13 * 100}%"></i></div>
                  <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 6px;">${s.wins} of 65 trials succeeded</p>`)}
                   ${metric('Fastest', `<span style="font-size: 0.95rem;">${s.fastest}</span>`)}
@@ -3280,33 +3280,33 @@
           style="flex: 1; min-height: 0; overflow-y: auto; padding-right: 0.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
           <h3
             style="margin-top: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.3rem; margin-bottom: 0.2rem; font-size: 0.9rem; opacity: 0.8;">
-            Torque-Based Tasks</h3>
+            Torque-based tasks</h3>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
-            <button class="add-piece" data-type="high_torque_valve">Valve Gate (Large)</button>
-            <button class="add-piece" data-type="small_valve">Valve Gate (Small)</button>
-            <button class="add-piece" data-type="ball_valve">Ball Valve</button>
-            <button class="add-piece" data-type="circuit_breaker">Circuit Breaker</button>
+            <button class="add-piece" data-type="high_torque_valve">Gate valve (large)</button>
+            <button class="add-piece" data-type="small_valve">Gate valve (small)</button>
+            <button class="add-piece" data-type="ball_valve">Ball valve</button>
+            <button class="add-piece" data-type="circuit_breaker">Circuit breaker</button>
           </div>
 
           <h3
             style="margin-top: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.3rem; margin-bottom: 0.2rem; font-size: 0.9rem; opacity: 0.8;">
-            Precision-Based Tasks</h3>
+            Precision-based tasks</h3>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
-            <button class="add-piece" data-type="peg_insertion">Peg Insertion Plate</button>
-            <button class="add-piece" data-type="lamp">Light Bulb Socket</button>
-            <button class="add-piece" data-type="m30">Thread M30</button>
-            <button class="add-piece" data-type="m14">Thread M14</button>
-            <button class="add-piece" data-type="m8">Thread M8</button>
+            <button class="add-piece" data-type="peg_insertion">Peg insertion</button>
+            <button class="add-piece" data-type="lamp">Light bulb</button>
+            <button class="add-piece" data-type="m30">Thread (M30)</button>
+            <button class="add-piece" data-type="m14">Thread (M14)</button>
+            <button class="add-piece" data-type="m8">Thread (M8)</button>
           </div>
 
           <h3
             style="margin-top: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.3rem; margin-bottom: 0.2rem; font-size: 0.9rem; opacity: 0.8;">
-            Composed Assembly Tasks</h3>
+            Composed assembly tasks</h3>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
-            <button class="add-piece" data-type="button_composed">Hidden Push Button</button>
-            <button class="add-piece" data-type="key">Lock and Key</button>
-            <button class="add-piece" data-type="drawer">Sliding Drawer</button>
-            <button class="add-piece" data-type="shock_absorber">Shock Absorber</button>
+            <button class="add-piece" data-type="button_composed">Button</button>
+            <button class="add-piece" data-type="key">Lock and key</button>
+            <button class="add-piece" data-type="drawer">Drawer</button>
+            <button class="add-piece" data-type="shock_absorber">Shock absorber</button>
           </div>
         </div>
       </div>

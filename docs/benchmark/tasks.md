@@ -10,18 +10,20 @@ Select a task below for its starting state, required actions, success criterion,
 | Task | What to do | Timeout |
 |---|---|---:|
 | [Ball valve](#ball-valve) | Rotate the handle 90° from closed to open | 60 s |
-| [Ball valve with friction ring](#ball-valve-with-friction-ring) | Perform the same rotation with the ring fitted | 90 s |
-| [Small gate valve](#small-gate-valve) | Rotate the stem one full turn from closed | 90 s |
-| [Large gate valve](#large-gate-valve) | Rotate the stem one full turn from closed | 120 s |
+| [Ball valve + ring](#ball-valve-with-friction-ring) | Perform the same rotation with the ring fitted | 90 s |
+| [Gate valve (small)](#small-gate-valve) | Rotate the stem one full turn from closed | 90 s |
+| [Gate valve (large)](#large-gate-valve) | Rotate the stem one full turn from closed | 120 s |
 | [Circuit breaker](#circuit-breaker) | Move the toggle to the opposite state and hold it | 60 s |
-| [Light bulb and socket](#light-bulb-and-socket) | Thread the bulb into the socket until seated | 120 s |
-| [M8 threaded fastener](#m8-threaded-fastener) | Thread the bolt along the available length | 120 s |
-| [M30 threaded fastener](#m30-threaded-fastener) | Thread the bolt along the available length | 120 s |
-| [Threaded peg insertion](#threaded-peg-insertion) | Align and thread the free peg into the socket until seated | 120 s |
-| [Covered button](#covered-button) | Open the cover, then press the button until actuation | 60 s |
+| [Light bulb](#light-bulb-and-socket) | Thread the bulb into the socket until seated | 120 s |
+| [Thread (M8)](#m8-threaded-fastener) | Thread the bolt along the available length | 120 s |
+| [Thread (M30)](#m30-threaded-fastener) | Thread the bolt along the available length | 120 s |
+| [Peg insertion](#threaded-peg-insertion) | Align and thread the free peg into the socket until seated | 120 s |
+| [Button](#covered-button) | Open the cover, then press the button until actuation | 60 s |
 | [Lock and key](#lock-and-key) | Grasp the key, insert it vertically, and rotate to unlock | 180 s |
-| [Sliding drawer](#sliding-drawer) | Grasp the handle, pull open, then push closed | 120 s |
+| [Drawer](#sliding-drawer) | Grasp the handle, pull open, then push closed | 120 s |
 | [Shock absorber](#shock-absorber) | Grasp the pin, align it with the hole, and insert it fully | 180 s |
+
+Task names follow Table 2 of the paper. See [Terminology](/reference/terminology) to match them to trial IDs and older file names.
 
 ## Before every trial
 
@@ -43,7 +45,7 @@ Task ID: `valve_ball`
 | Timeout | 60 s. |
 | Reset | Return the handle to closed and check attachment seating. |
 
-## Ball valve with friction ring
+## Ball valve + ring {#ball-valve-with-friction-ring}
 
 Task ID: `valve_ball_ring`
 
@@ -55,7 +57,7 @@ Task ID: `valve_ball_ring`
 | Timeout | 90 s. |
 | Reset | Keep the same ring fitted, return the handle to closed, and check attachment seating. |
 
-## Small gate valve
+## Gate valve (small) {#small-gate-valve}
 
 Task ID: `valve_gate_small`
 
@@ -67,7 +69,7 @@ Task ID: `valve_gate_small`
 | Timeout | 90 s. |
 | Reset | Reverse the motion to restore the closed starting position and initial orientation. Keep the board position unchanged. |
 
-## Large gate valve
+## Gate valve (large) {#large-gate-valve}
 
 Task ID: `valve_gate_large`
 
@@ -91,7 +93,7 @@ Task ID: `circuit_breaker`
 | Timeout | 60 s. |
 | Reset | Return the toggle to the initial state and check that it moves freely. |
 
-## Light bulb and socket
+## Light bulb {#light-bulb-and-socket}
 
 Task ID: `light_bulb`
 
@@ -103,7 +105,7 @@ Task ID: `light_bulb`
 | Timeout | 120 s. |
 | Reset | Unscrew and remove the bulb, restore its starting pose, and inspect the thread. |
 
-## M8 threaded fastener
+## Thread (M8) {#m8-threaded-fastener}
 
 Task ID: `thread_m8`
 
@@ -115,7 +117,7 @@ Task ID: `thread_m8`
 | Timeout | 120 s. |
 | Reset | Return the bolt to its initial engagement and inspect the thread. |
 
-## M30 threaded fastener
+## Thread (M30) {#m30-threaded-fastener}
 
 Task ID: `thread_m30`
 
@@ -127,7 +129,7 @@ Task ID: `thread_m30`
 | Timeout | 120 s. |
 | Reset | Return the bolt to its initial engagement and inspect the thread. |
 
-## Threaded peg insertion
+## Peg insertion {#threaded-peg-insertion}
 
 Task ID: `peg_insertion`
 
@@ -139,7 +141,7 @@ Task ID: `peg_insertion`
 | Timeout | 120 s. |
 | Reset | Unscrew and remove the peg, leave the socket empty, and restore the peg's starting pose. |
 
-## Covered button
+## Button {#covered-button}
 
 Task ID: `button`
 
@@ -170,7 +172,7 @@ Task ID: `lock`
 
 Record the last completed stage: `0`, `1`, `2`, or `3`. Inserting the key without unlocking is stage `2`, not full success.
 
-## Sliding drawer
+## Drawer {#sliding-drawer}
 
 Task ID: `drawer`
 
@@ -211,6 +213,6 @@ Record the last **completed** stage:
 | `2` | The pin was aligned with the hole, but full insertion was not completed. This includes a partially inserted pin. |
 | `3` | The pin was fully inserted. |
 
-For example, if the pin is aligned but only partly inserted when 180 s expires, record `outcome = timeout`, `stage_reached = 2`, and leave `completion_time_s` blank. Also record attempts, regrasps, strategy, and the primary failure cause. See [trial logging](/benchmark/logging) for the field definitions.
+For example, if the pin is aligned but only partly inserted when 180 s expires, record `outcome = timeout`, `stage_reached = 2`, and leave `completion_time_s` blank. Also record attempts, regrasps, strategy, and the dominant failure cause. See [trial logging](/benchmark/logging) for the field definitions.
 
 The task definitions and timeouts follow the [source protocol](https://github.com/EESC-LabRoM/HiveBoard/blob/main/Documentation/PROTOCOL.md#5-per-attachment-success-criteria-and-timeouts); reset instructions follow the Evaluation Runner. The protocol does not specify a numeric insertion depth, holding duration, or loose-part pose. Document the physical setup rather than introducing a different threshold for each trial.
