@@ -421,6 +421,7 @@
     let gripQposIndex = -1;
     let spinIndex = -1;
     let homeView = null;
+    const WITHHELD = { anymal: ['lamp'] };
     let trajectories = {};
     let task = null;
     let demoStateQposAddrs = [];
@@ -440,18 +441,18 @@
     let previewItem = null;
 
     const TASK_CATALOGUE = [
-      { key: 'high-valve',     label: 'Gate Valve (Large)' },
-      { key: 'small-valve',    label: 'Gate Valve (Small)' },
-      { key: 'thread-m30',     label: 'Thread M30' },
-      { key: 'thread-m8',      label: 'Thread M8' },
-      { key: 'peg-insertion',  label: 'Peg Insertion Plate' },
-      { key: 'breaker',        label: 'Circuit Breaker' },
-      { key: 'button-cover',   label: 'Hidden Push Button' },
-      { key: 'valve',          label: 'Ball Valve' },
-      { key: 'key-lock',       label: 'Lock and Key' },
-      { key: 'lamp',           label: 'Light Bulb Socket' },
-      { key: 'drawer',         label: 'Sliding Drawer' },
-      { key: 'shock-absorber', label: 'Shock Absorber' },
+      { key: 'high-valve',     label: 'Gate valve (large)' },
+      { key: 'small-valve',    label: 'Gate valve (small)' },
+      { key: 'thread-m30',     label: 'Thread (M30)' },
+      { key: 'thread-m8',      label: 'Thread (M8)' },
+      { key: 'peg-insertion',  label: 'Peg insertion' },
+      { key: 'breaker',        label: 'Circuit breaker' },
+      { key: 'button-cover',   label: 'Button' },
+      { key: 'valve',          label: 'Ball valve' },
+      { key: 'key-lock',       label: 'Lock and key' },
+      { key: 'lamp',           label: 'Light bulb' },
+      { key: 'drawer',         label: 'Drawer' },
+      { key: 'shock-absorber', label: 'Shock absorber' },
     ];
 
     // Every task now has its module in the scene, keyed by its own name, and
@@ -675,6 +676,9 @@
 
     async function loadRobotUnsafe(entry) {
       const nextTrajectories = await fetchJson(`${MODEL_BASE}${entry.traj}`);
+      // Held back until re-authored: listed as "soon" rather than played.
+      // Edit mode keeps them so the trajectory can still be worked on.
+      if (!PLACE_EDIT) for (const key of WITHHELD[entry.name] || []) delete nextTrajectories[key];
 
       robot = entry;
       trajectories = nextTrajectories;
@@ -1453,7 +1457,7 @@
       el.id = 'place-panel';
       el.hidden = true;
       el.innerHTML = `
-        <div class="panel-title">Module placement</div>
+        <div class="panel-title">Attachment placement</div>
         <div id="place-grid"></div>
         <div id="place-row">
           <button id="place-save">Save forever</button>
@@ -1599,8 +1603,8 @@
       if (task.armOnly || !task.watch) {
         const seconds = (task.qpos.length / task.rate).toFixed(1);
         readoutEl.innerHTML =
-          `${previewItem ? previewItem.label : task.label} — arm-only draft`
-          + `<br><b>${seconds}s</b> path · no module or physics check`;
+          `${previewItem?.label || TASK_CATALOGUE.find((item) => trajectories[item.traj] === task)?.label || task.label} — arm-only draft`
+          + `<br><b>${seconds}s</b> path · no attachment or physics check`;
         return;
       }
       const jid = mujoco.mj_name2id(mjModel, MJ_OBJ_JOINT, task.watch);
@@ -1643,7 +1647,7 @@
         const entry = item.traj ? trajectories[item.traj] : null;
         const opt = document.createElement('option');
         opt.value = item.key;
-        opt.textContent = entry ? entry.label : `${item.label} — soon`;
+        opt.textContent = entry ? item.label : `${item.label} — soon`;
         if (!entry) {
           opt.classList.add('pending');
           if (!PLACE_EDIT) opt.disabled = true;
