@@ -58,14 +58,6 @@ def pose_attrs(matrix):
 def fmt(values):
     return " ".join(f"{float(v):.9g}" for v in values)
 
-
-# The USD ships ANYmal's livery as texture maps, which the web viewer does not
-# load, so a straight conversion arrives uniformly grey. These colours are
-# sampled from the photographs of the real platform in assets-src/anymal.png
-# and public/assets/posters/: a red body shell, a black carbon DynaArm, light
-# grey hip actuators, and a near-black frame, feet and gripper. The names are
-# load-bearing too -- hiveboard-sim.html reads its PBR parameters out of the
-# material name, keying on "shell", "dark" and "metal".
 PALETTE = {
     "anymal_red_shell":    "0.76 0.13 0.14 1",   # body covers
     "anymal_shell":        "0.78 0.78 0.80 1",   # hip actuators, thighs
@@ -95,7 +87,6 @@ def material_name(prim, component):
         return "anymal_shell"
     if "thigh" in path or "shank" in path:
         return "anymal_dark"
-    # The body: the outer covers are the red ones, everything else is frame.
     return "anymal_red_shell" if "shell" in path or "cover" in path else "anymal_dark"
 
 
@@ -121,7 +112,7 @@ class Converter:
             if not joint.GetJointEnabledAttr().Get():
                 continue
             parents, children = joint.GetBody0Rel().GetTargets(), joint.GetBody1Rel().GetTargets()
-            if not parents or not children:  # standalone world weld is replaced by our mount
+            if not parents or not children:
                 continue
             if joint.GetExcludeFromArticulationAttr().Get():
                 loops.append(joint)
@@ -139,7 +130,7 @@ class Converter:
             inertia = mass.GetDiagonalInertiaAttr().Get()
             if mass.GetMassAttr().Get() and inertia is not None and min(inertia) > 0:
                 q = mass.GetPrincipalAxesAttr().Get()
-                if q.GetLength() < 1e-8:  # USD's unauthored principal-axis sentinel
+                if q.GetLength() < 1e-8:
                     q = Gf.Quatf(1)
                 ET.SubElement(body, "inertial", mass=str(mass.GetMassAttr().Get()),
                               pos=fmt(mass.GetCenterOfMassAttr().Get()),
@@ -167,7 +158,6 @@ class Converter:
                         ET.SubElement(body, "joint", attrs)
                 elif not joint.GetPrim().IsA(UsdPhysics.FixedJoint):
                     raise ValueError(f"Unsupported joint: {joint.GetPath()}")
-                # USD uses row vectors: child->joint, joint motion, joint->parent.
                 body.attrib.update(pose_attrs(m1.GetInverse() * rotation * m0))
                 bodies[parent].append(body)
             elif p != root_path:
@@ -237,19 +227,11 @@ class Converter:
                     ET.SubElement(body, "geom", attrs)
                 if collision:
                     attrs.pop("mass", None)
-                    # MuJoCo pairs geoms when (contype1 & conaffinity2) or
-                    # (contype2 & conaffinity1). contype 1 with conaffinity 2
-                    # pairs with the modules (contype 2, conaffinity 1) and the
-                    # board, but never with another ANYmal geom: this assembly
-                    # has no contact exclusions, so self-collision jams the arm
-                    # against its own shoulder instead of reaching the board.
                     attrs.update(group="3", contype="1", conaffinity="2", friction="2 0.05 0.0002",
                                  solref="0.005 1", solimp="0.95 0.99 0.001")
                     ET.SubElement(body, "geom", attrs)
 
         for joint in loops:
-            # Tree hinges already constrain each linkage to a plane. Closing its
-            # pivot with a connect constraint restores the four-bar mechanism.
             ET.SubElement(self.equality, "connect", name=joint.GetPrim().GetName(),
                           body1=joint.GetBody0Rel().GetTargets()[0].name,
                           body2=joint.GetBody1Rel().GetTargets()[0].name,
@@ -287,7 +269,7 @@ def parts(output, source_root, usd_cache, simplify, write_obj):
     arm = converter.component(arm_path, "arm_mount", "arm")
     arm.set("pos", "0 0 0.12")
     arm.set("quat", "0 0 0 1")
-    body.insert(0, arm)  # first six qpos and actuators belong to the arm
+    body.insert(0, arm)
     gripper = converter.component(fetch_layers(ASSET_ROOT + GRIPPER_USD, cache / GRIPPER_USD),
                                   "robotiq_base_link", "gripper")
     arm.find('.//body[@name="dynaarm_flange"]').append(gripper)

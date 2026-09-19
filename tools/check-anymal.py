@@ -42,8 +42,6 @@ def main():
     arm = anymal_model.ARM_JOINTS
     assert [model.joint(i).name for i in range(6)] == arm
     assert [model.actuator(i).name for i in range(7)] == arm + ["finger_joint"]
-    # Board modules contribute their own joints to nq.  Keep the robot-side
-    # contract strict while allowing the scene to grow as modules are added.
     assert model.nu == 7 and model.nq >= 18
     assert len(traj_edit.joint_info(ctx)[0]) == 6
     assert traj_edit.grip_range(ctx) == [0.0, 0.7]
@@ -88,7 +86,6 @@ def main():
         tcp = data.xpos[palm] + data.xmat[palm].reshape(3, 3) @ [0, 0, 0.2]
         np.testing.assert_allclose(data.site_xpos[ctx["site"]], tcp, atol=1e-8)
 
-    # Exercise the actual constraints, including the two closed four-bar loops.
     mujoco.mj_resetDataKeyframe(model, data, 0)
     data.ctrl[:6] = ctx["cfg"]["home"]
     for target in (0.0, 0.35, 0.7, 0.0):

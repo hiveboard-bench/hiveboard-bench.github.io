@@ -17,7 +17,6 @@ from pathlib import Path
 
 DIST = Path(__file__).resolve().parent.parent / "dist"
 
-# Referenced from the page with no hash of their own.
 STAMP = [
     "./fonts/fonts.css",
     "./assets/favicon.svg",
@@ -26,10 +25,6 @@ STAMP = [
     "./sim/hiveboard-sim.html",
 ]
 
-
-# The simulator pulls its models and wasm itself, with URLs the page never
-# sees, so its stamp has to cover those too or a model change would not reach
-# a browser holding the old ones.
 ALSO = {"./sim/hiveboard-sim.html": ["sim/models", "sim/vendor"]}
 
 
@@ -46,11 +41,6 @@ def digest(path: Path, extra=()) -> str:
 
 def stamp_fonts():
 
-    # The @font-face urls live inside fonts.css, so stamping the stylesheet
-    # alone is not enough: the browser takes the fresh css and then reuses the
-    # font it already has.  Version the woff2 urls too, and the preload links
-    # in the page with the same hashes, or the preloads point at a different
-    # url than the css asks for and are wasted.
     css = DIST / "fonts/fonts.css"
     if not css.exists():
         return {}
@@ -85,7 +75,7 @@ def main():
         if not target.exists():
             print(f"  skip {ref} (not built)")
             continue
-        # Replace the reference whether or not it already carries a stamp.
+
         pattern = re.escape(ref) + r'(\?v=[0-9a-f]+)?'
         new = f"{ref}?v={digest(target, ALSO.get(ref, ()))}"
         html, n = re.subn(f'"{pattern}"', f'"{new}"', html)
