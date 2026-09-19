@@ -267,13 +267,13 @@
             scores, and the physical benchmarks that do cover mechanisms are built from purchased components, which
             makes them hard to reproduce or modify. We present HiveBoard, an open, modular, and accessible, fully
             3D-printed benchmark that lets any laboratory evaluate grippers, hands, and manipulation policies on
-            functional mechanisms. A hexagonal honeycomb base accepts 13 interchangeable attachments modeled on
+            functional mechanisms. A hexagonal honeycomb base accepts 12 interchangeable attachment designs modeled on
             industrial fittings and grouped into three skill categories &mdash; torque, precision, and composed assembly
             &mdash; all fully functional, printable on consumer-grade FDM printers, and released with articulated URDF
             and USD models for direct import into common simulators. A cross-laboratory validation across four
             manipulation systems, from quadruped &mdash; and fixed-base teleoperated arms and a legged manipulator driven
             through virtual-reality devices to a wearable anthropomorphic prosthetic hand, all scored on the
-            thirteen tasks, shows that six of the 13 attachments were completed by every platform and two by none, that
+            13 evaluation conditions, including the ball valve with and without its friction ring, shows that six conditions were completed by every platform and two by none, that
             the per-platform difficulty orderings correlate pairwise between 0.50 and 0.84, and that different
             embodiments fail on different attachments for interpretable, hardware-specific reasons.
           </p>
@@ -439,7 +439,7 @@
           <div style="flex-grow: 1; max-width: 200px; height: 1px; background: linear-gradient(to right, #edaf19, transparent); margin-left: 20px;"></div>
         </div>
         <p class="has-text-justified mb-4" style="color: #94a3b8; line-height: 1.6;">
-          The library contains 13 functional attachments in three skill categories. Select a category below to compare
+          The library contains 12 attachment designs evaluated in 13 conditions across three task categories. Select a category below to compare
           each printed part with its digital twin and review the success criterion, timeout, and stage decomposition
           used by the evaluation protocol.
         </p>
@@ -1305,7 +1305,7 @@
                   <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
                     onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
                     onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Thread</p>
+                  <p class="has-text-weight-medium" style="margin: 0;">Thread (M8)</p>
                 </div>
               </div>
             </div>
@@ -2200,8 +2200,8 @@
 
         <p class="has-text-justified mb-5" style="color: #475569; line-height: 1.7;">
           Each laboratory prints the board from the released files and runs the same <a class="protocol-link" href="https://hiveboard-bench.github.io/hivedocs/benchmark/protocol">protocol</a> on its own hardware: five
-          recorded trials per attachment, a fixed neutral start pose, per-attachment timeouts, no scripted assistance.
-          <strong style="color: #0f172a;">Select any cell, platform, or attachment</strong> to see what happened in
+          recorded trials per condition, a fixed neutral start pose, task-specific timeouts, no scripted assistance.
+          <strong style="color: #0f172a;">Select any cell, platform, or condition</strong> to see what happened in
           those trials.
         </p>
 
@@ -2568,7 +2568,7 @@
               <h4 class="title is-6" style="color: #0f172a; margin-bottom: 0.5rem;">Same eight, same five</h4>
               <p style="font-size: 0.85rem; color: #64748b; line-height: 1.5;">
                 A tablet-teleoperated quadruped arm and a VR-driven legged manipulator share no arm, gripper, or
-                interface, yet complete an identical set of eight attachments and fail on an identical five &mdash; for
+                interface, yet complete an identical set of eight conditions and fail on an identical five &mdash; for
                 entirely different logged reasons.
               </p>
             </div>
@@ -2591,7 +2591,7 @@
               <h4 class="title is-6" style="color: #0f172a; margin-bottom: 0.5rem;">The small threads stop everyone</h4>
               <p style="font-size: 0.85rem; color: #64748b; line-height: 1.5;">
                 The M8 fastener and the free peg &mdash; the two smallest threaded parts in the library &mdash; are the
-                only attachments no platform solved: 0/5 in all eight cells, for four different recorded causes.
+                only conditions no platform solved: 0/5 in all eight cells, for four different recorded causes.
               </p>
             </div>
           </div>
@@ -2611,7 +2611,7 @@
 
           <div class="xp-panel" data-panel="order">
             <p class="mt-4" style="color: #475569; line-height: 1.7; font-size: 0.9rem;">
-              Each platform ranks the 13 attachments by unsuccessful trials first and normalized median time second, and
+              Each platform ranks the 13 conditions by unsuccessful trials first and normalized median time second, and
               the four orderings are then compared pairwise with a Spearman correlation. A high correlation means the
               board is measuring properties of the tasks rather than idiosyncrasies of one system.
             </p>
@@ -2650,10 +2650,10 @@
 
           <div class="xp-panel" data-panel="strategy" style="display: none;">
             <p class="mt-4" style="color: #475569; line-height: 1.7; font-size: 0.9rem;">
-              An attachment is <strong style="color: #0f172a;">prehensile</strong> when the end-effector closes around
+              A manipulation strategy is <strong style="color: #0f172a;">prehensile</strong> when the end-effector closes around
               the part and holds it, and <strong style="color: #0f172a;">non-prehensile</strong> when the part is driven
               by pushing or pressing, or by a finger or jaw entering an opening without an enclosing grip. The bars show
-              the non-prehensile share of the attachments each platform completed.
+              the non-prehensile share of the conditions each platform completed.
             </p>
             <div class="columns is-multiline mt-2">
               <div class="column is-3-tablet is-6-mobile rd-metric">
@@ -2682,17 +2682,16 @@
               </div>
             </div>
             <p style="color: #64748b; line-height: 1.6; font-size: 0.85rem;">
-              Four attachments are handled the same way by everyone: the ball valve in both configurations and the
+              All platforms used the same strategy for five conditions: the ball valve in both configurations and the
               button were driven non-prehensilely by all four platforms, since a lever and a momentary switch move under
-              a single push, while the light bulb and the lock were grasped by all four. Every precision attachment for
-              which a strategy was logged is prehensile &mdash; no platform in this study turned a threaded part without
+              a single push, while the light bulb and the lock were grasped by all four. Every recorded strategy for a precision task is prehensile &mdash; no platform in this study turned a threaded part without
               first closing around it.
             </p>
           </div>
 
           <div class="xp-panel" data-panel="time" style="display: none;">
             <p class="mt-4" style="color: #475569; line-height: 1.7; font-size: 0.9rem;">
-              Median completion time divided by the attachment timeout, averaged over the attachments each platform
+              Median completion time divided by the condition timeout, averaged over the conditions each platform
               completed in a category. The normalization puts tasks with 60 s and 180 s budgets on one scale, so a lower
               number means more headroom against the clock.
             </p>
@@ -2737,7 +2736,8 @@
               accumulate rotation by releasing and reacquiring the part &mdash; 13.6 grasps per trial on the bulb for
               the arm, 7.0 regrasps for the hand &mdash; and they are the two whose precision scores approach the
               timeout. For Platforms A, B, and C the precision figure comes from the light bulb alone, the only
-              precision attachment they completed.
+              precision condition they completed. The reported SO-101 grasp count and Macao regrasp count use different
+              labels and should not be compared directly until the original counting conventions are checked.
             </p>
           </div>
         </div>
@@ -2748,8 +2748,8 @@
         <div class="columns is-multiline">
                     <div class="column is-3-tablet is-12-mobile stat-divider">
             <h3 class="title is-3 mb-1" style="font-weight: 700; color: #0f172a; letter-spacing: -0.5px;">13</h3>
-            <p style="font-size: 0.85rem; color: #475569; line-height: 1.4;">Functional attachments in three skill
-              categories, on one shared hexagonal interface</p>
+            <p style="font-size: 0.85rem; color: #475569; line-height: 1.4;">Evaluation conditions across 12 attachment designs in three task
+              categories</p>
           </div>
                     <div class="column is-3-tablet is-12-mobile stat-divider">
             <h3 class="title is-3 mb-1" style="font-weight: 700; color: #0f172a; letter-spacing: -0.5px;">260</h3>
@@ -2798,7 +2798,7 @@
                 n: 'Gate valve (small)', cat: 'Torque', timeout: 90, crit: 'Stem rotated one full turn from the closed position',
                 A: { s: 5, t: 19.9, a: 1.0 },
                 B: { s: 0, causes: { 'Kinematic limit': 5 }, note: 'The only attachment in the study that one platform failed and the other three completed. The operator notes record an initial grasp used to release the stem and a final grasp used to push the valve clear of its seat, so the stem moved without ever completing a full turn inside the 90 s timeout.' },
-                C: { s: 5, t: 23.1, a: 1.4, note: 'The longest completed attachment on this platform: the handwheel needs a full turn of the stem, held steady while the torso frame itself moves under the whole-body policy.' },
+                C: { s: 5, t: 23.1, a: 1.4, note: 'The longest completed task on this platform: the handwheel needs a full turn of the stem, held steady while the torso frame itself moves under the whole-body policy.' },
                 D: { s: 5, t: 2.7, a: 1.0, note: 'Operated with a tripod grasp on the handwheel &mdash; one of the few torque tasks where the hand actually closes on the part.' }
               },
               {
@@ -2819,7 +2819,7 @@
                 n: 'Light bulb', cat: 'Precision', timeout: 120, crit: 'Bulb fully threaded until seated',
                 A: { s: 5, t: 27.3, a: 1.0 },
                 B: { s: 5, t: 83.0, a: 13.8, note: '13.8 attempts and 13.6 grasps per trial, the highest counts recorded anywhere in the study: accumulating rotation on this arm means releasing the bulb and reacquiring it, over and over.' },
-                C: { s: 5, t: 19.3, a: 2.2, note: 'The highest attempt count this platform recorded &mdash; regrasping is impractical here, and the logs show a single grasp per trial on ten of the thirteen attachments.' },
+                C: { s: 5, t: 19.3, a: 2.2, note: 'The highest attempt count this platform recorded &mdash; regrasping is impractical here, and the logs show a single grasp per trial on ten of the thirteen conditions.' },
                 D: { s: 5, t: 52.1, a: 1.0, note: 'Completed on every trial with a power grasp, at a mean of 7.0 regrasps: limited wrist rotation on a worn device forces repeated grasp&ndash;rotate&ndash;release cycles.' }
               },
               {
@@ -2854,7 +2854,7 @@
               {
                 n: 'Lock and key', cat: 'Composed assembly', timeout: 180, crit: 'All stages completed within the timeout',
                 stages: ['Grasp the key', 'Insert vertically', 'Rotate to unlock'],
-                A: { s: 5, t: 40.4, a: 1.0, st: [5, 5, 5], note: 'The slowest attachment this platform completed &mdash; completion times grow with task complexity, from ~10 s on the ball valve to 40 s here.' },
+                A: { s: 5, t: 40.4, a: 1.0, st: [5, 5, 5], note: 'The slowest task this platform completed &mdash; completion times grow with task complexity, from ~10 s on the ball valve to 40 s here.' },
                 B: { s: 5, t: 15.0, a: 4.2, st: [5, 5, 5] },
                 C: { s: 5, t: 21.4, a: 1.0, st: [5, 5, 5] },
                 D: { s: 5, t: 15.1, a: 1.0, st: [5, 5, 5] }
@@ -2873,7 +2873,7 @@
                 A: { s: 0, a: 1.0, st: [0, 0, 0], causes: { 'Grasp geometry': 5 }, note: 'The gripper could not grasp the pin axially.' },
                 B: { s: 5, t: 16.0, a: 4.8, st: [5, 5, 5], note: 'Acquired the free pin at stage 1 and carried every remaining stage, on the attachment that both legged platforms failed outright.' },
                 C: { s: 0, a: 1.0, st: [5, 0, 0], causes: { 'Control precision': 5 }, note: 'The pin was grasped in all five trials and the run stopped at stage 1; the notes give alignment of the pin with the hole as the reason.' },
-                D: { s: 4, t: 39.4, a: 1.2, st: [5, 5, 4], causes: { 'Force limit': 1 }, note: 'The failed trial reached stage 2, with the pin aligned but not threaded home. On the successful trials the wearer&rsquo;s contralateral hand placed the pin into the grasp, after which alignment and seating were performed with the device alone.' }
+                D: { s: 4, t: 39.4, a: 1.2, st: [5, 5, 4], causes: { 'Force limit': 1 }, note: 'The failed trial reached stage 2, with the pin aligned but not fully inserted. On the successful trials the wearer&rsquo;s contralateral hand placed the pin into the grasp, after which alignment and seating were performed with the device alone.' }
               }
             ];
 
@@ -2891,7 +2891,7 @@
             const cellClass = c => c.s === 5 ? 'full' : (c.s > 0 ? 'partial' : 'none');
             const fmt = t => t == null ? '&mdash;' : t + ' s';
 
-            grid.insertAdjacentHTML('beforeend', '<div class="mx-corner">Attachment</div>');
+            grid.insertAdjacentHTML('beforeend', '<div class="mx-corner">Condition</div>');
             platforms.forEach(p => {
               grid.insertAdjacentHTML('beforeend',
                 `<button class="mx-plat" data-plat="${p.id}">
@@ -2940,7 +2940,7 @@
                       <span class="k">${p.id} &middot; ${p.name}</span>
                       <span class="v">${platSummary[p.id].completed}<span style="font-size: 0.9rem; color: #94a3b8; font-weight: 500;"> / 13</span></span>
                       <div class="rd-bar"><i style="width: ${platSummary[p.id].completed / 13 * 100}%"></i></div>
-                      <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 6px;">attachments &middot; ${platSummary[p.id].wins}/65 trials</p>
+                      <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 6px;">conditions &middot; ${platSummary[p.id].wins}/65 trials</p>
                     </div>`).join('')}
                 </div>
                 <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 0.5rem;">
@@ -2993,7 +2993,7 @@
                 <h3 class="title is-4 mt-3 mb-2" style="color: #0f172a;">Platform ${p.id} &middot; ${p.full}</h3>
                 <p style="color: #64748b; font-size: 0.85rem;">${p.ee}</p>
                 <div class="columns is-multiline mt-3">
-                  ${metric('Attachments completed', `${s.completed}<span style="font-size: 0.9rem; color: #94a3b8; font-weight: 500;"> / 13</span>`,
+                  ${metric('Conditions completed', `${s.completed}<span style="font-size: 0.9rem; color: #94a3b8; font-weight: 500;"> / 13</span>`,
                 `<div class="rd-bar"><i style="width: ${s.completed / 13 * 100}%"></i></div>
                  <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 6px;">${s.wins} of 65 trials succeeded</p>`)}
                   ${metric('Fastest', `<span style="font-size: 0.95rem;">${s.fastest}</span>`)}

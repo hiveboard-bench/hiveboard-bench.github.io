@@ -15,6 +15,8 @@ All structural and functional parts are designed for consumer-grade fused-deposi
 
 ### Modular tasks
 
+HiveBoard has 12 attachment designs evaluated in 13 conditions. The ball valve is evaluated without and with a friction ring, giving two conditions for the same attachment design.
+
 The seven-cell honeycomb base accepts interchangeable attachments. Attachments can be swapped without changing the base, and new tasks can reuse the same mounting interface.
 
 ### Embodiment-independent evaluation

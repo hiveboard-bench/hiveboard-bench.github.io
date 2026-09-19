@@ -32,7 +32,7 @@ Practice trials are not included in the submitted result.
 
 ## Recorded trials
 
-For each platform and attachment pair:
+For each platform and evaluation condition:
 
 1. Run **five recorded trials**.
 2. Start the end-effector from the same neutral pose.
@@ -42,7 +42,7 @@ For each platform and attachment pair:
 
 Run the ball valve as two separate blocks: five trials without a friction ring and five with the ring fitted.
 
-Do not tune parameters or change the control mode between recorded trials in the same condition. A restarted approach inside a trial is counted as another attempt or regrasp; it is not a new trial.
+Do not tune parameters or change the control mode between recorded trials in the same condition. A restarted approach within a trial counts as another attempt. Count a regrasp only when the end-effector releases the part and grasps it again. The initial grasp is not a regrasp. Attempts and regrasps are separate counts; neither starts a new trial.
 
 ## Outcomes
 

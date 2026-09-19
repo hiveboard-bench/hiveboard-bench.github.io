@@ -20,7 +20,7 @@ Use the task names from Table 2 of the HiveBoard paper in instructions, figures,
 | Drawer | `drawer` | Composed assembly |
 | Shock absorber | `shock_absorber` | Composed assembly |
 
-Ball valve + ring is the ball-valve condition with the friction ring fitted. Record five trials for each of the 13 conditions, including separate blocks for Ball valve and Ball valve + ring.
+HiveBoard has 12 attachment designs evaluated in 13 conditions. The ball valve is evaluated without and with a friction ring, giving two conditions for the same attachment design. Ball valve + ring is the condition with the ring fitted. Record five trials for each of the 13 conditions, including separate blocks for Ball valve and Ball valve + ring.
 
 The category headings are **Torque-based tasks**, **Precision-based tasks**, and **Composed assembly tasks**. In tables, use **Torque**, **Precision**, and **Composed assembly**. The abbreviation “Assembly” in existing templates and the paper's Table 2 refers to Composed assembly.
 
@@ -37,7 +37,7 @@ The category headings are **Torque-based tasks**, **Precision-based tasks**, and
 | End-effector | The gripper, hand, or other terminal device that interacts with the attachment. |
 | Control interface | The interface used to command the platform. Record the control mode or policy separately where relevant. |
 | Asset | A digital file or model, such as CAD geometry, a mesh, URDF, or USD. Use “attachment” for the physical mechanism. |
-| Attempt | A discrete approach to the task within a trial; count from 1. |
+| Attempt | A discrete approach to the task within a trial; count from 1. Abandoning an approach and starting another adds one attempt. |
 | Regrasp | A release followed by grasping the part again; count from 0. An initial grasp is not a regrasp. |
 | Last completed stage | The highest completed stage of a composed assembly task, recorded as `stage_reached`; 0 means no stage was completed. |
 | Dominant failure cause | The single cause recorded in `failure_cause` for an unsuccessful trial. |

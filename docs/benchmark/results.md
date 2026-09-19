@@ -1,20 +1,22 @@
 # Report results
 
-Report performance per attachment and preserve the trial-level data. Aggregate values alone hide the failure modes and stage progression that make the benchmark informative.
+Report performance per condition and preserve the trial-level data. Aggregate values alone hide the failure modes and stage progression that make the benchmark informative.
 
 ## Recommended metrics
 
 | Metric | Calculation | Report for |
 |---|---|---|
-| Success rate | Successful trials ÷ recorded trials | Every attachment |
-| Completion time | Median and individual successful-trial times | Every attachment with successes |
-| Attempts | Median and individual counts | Every attachment |
-| Regrasps | Median and individual counts | Every attachment |
+| Success rate | Successful trials ÷ recorded trials | Every condition |
+| Completion time | Median and individual successful-trial times | Every condition with successes |
+| Attempts | Median and individual counts | Every condition |
+| Regrasps | Median and individual counts | Every condition |
 | Stage completion | Fraction reaching each stage | Composed assembly tasks |
 | Failure distribution | Count by dominant failure cause | Unsuccessful trials |
-| Strategy distribution | Count of prehensile and non-prehensile trials | Every attachment |
+| Strategy distribution | Count of prehensile and non-prehensile trials | Every condition |
 
-With five trials per attachment, always show the numerator and denominator—for example, `4/5 (80%)`—rather than only a percentage.
+With five trials per condition, always show the numerator and denominator—for example, `4/5 (80%)`—rather than only a percentage.
+
+Use the [counting conventions](/benchmark/logging#counting-conventions) for attempts and regrasps. If an existing dataset reports total grasps, retain that label until its counting convention has been checked. Do not relabel grasp counts as regrasp counts.
 
 ## Keep conditions separate
 

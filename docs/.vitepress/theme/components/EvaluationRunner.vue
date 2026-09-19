@@ -260,7 +260,7 @@ function recordErrors(trial, setup = session) {
   if (!trial || typeof trial !== 'object') return ['Invalid trial record.']
   const issues = []
   const task = tasks.find(candidate => candidate.id === trial.attachment_id)
-  if (!task) return ['Unknown attachment.']
+  if (!task) return ['Unknown condition.']
   if (!isCount(trial.trial_id, 1)) issues.push('Trial ID must be a positive integer.')
   if (!['success', 'fail', 'timeout', 'safety_stop'].includes(trial.outcome)) issues.push('Select a trial outcome.')
   if (!isCount(trial.n_attempts, 1)) issues.push('Attempts must be an integer of at least 1.')
@@ -563,7 +563,7 @@ Submission ID: \`${ensureSubmissionId()}\`
 4. Save one MP4 file for each row in \`trials.csv\`.
 5. Rename each file exactly as listed below and place it in the package's \`videos/\` directory before submission.
 
-| Trial | Attachment | Required filename |
+| Trial | Condition | Required filename |
 | ---: | --- | --- |
 ${rows}
 `
@@ -952,7 +952,7 @@ onUnmounted(() => {
 
     <section v-else-if="step === 'task'" class="runner-section">
       <div class="section-heading">
-        <div><p class="eyebrow">Task selection</p><h2>Select an attachment</h2></div>
+        <div><p class="eyebrow">Task selection</p><h2>Select a condition</h2></div>
         <p>Each condition requires five recorded trials.</p>
       </div>
       <div class="task-grid">
@@ -1053,9 +1053,11 @@ onUnmounted(() => {
           </label>
           <label>Attempts *
             <input v-model.number="trialForm.n_attempts" type="number" min="1" step="1">
+            <span>Start at 1. Add 1 when you abandon an approach and start another.</span>
           </label>
           <label>Regrasps *
             <input v-model.number="trialForm.n_regrasps" type="number" min="0" step="1">
+            <span>Start at 0. Count each release followed by grasping the part again.</span>
           </label>
           <label>Strategy *
             <select v-model="trialForm.strategy">
@@ -1109,7 +1111,7 @@ onUnmounted(() => {
         </div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Trial</th><th>Attachment</th><th>Outcome</th><th>Time (s)</th><th>Attempts</th><th>Regrasps</th><th></th></tr></thead>
+            <thead><tr><th>Trial</th><th>Condition</th><th>Outcome</th><th>Time (s)</th><th>Attempts</th><th>Regrasps</th><th></th></tr></thead>
             <tbody>
               <tr v-for="trial in trials" :key="trial.trial_id">
                 <td>{{ trial.trial_id }}</td><td><code>{{ trial.attachment_id }}</code></td><td>{{ trial.outcome }}</td>

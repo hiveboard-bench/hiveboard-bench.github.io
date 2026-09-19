@@ -37,7 +37,7 @@ An attempt ends when the current approach is abandoned and a new approach begins
 
 ### Regrasps
 
-Count each time the end-effector releases a part and closes on it again. A trial with one grasp and no release records `0`.
+Count each time the end-effector releases a part and closes on it again. A trial with one grasp and no release records `0`. A restarted approach adds an attempt; it adds a regrasp only if the part is released and grasped again.
 
 ### Strategy
 

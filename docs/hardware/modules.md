@@ -1,13 +1,13 @@
 # Attachment reference {#module-reference}
 
-HiveBoard contains 13 scored attachment configurations across three task categories. The ball valve is evaluated both without and with a friction ring, producing two separate trial sets.
+HiveBoard has 12 attachment designs evaluated in 13 conditions. The ball valve is evaluated without and with a friction ring, giving two conditions for the same attachment design. The conditions belong to three task categories.
 
 See [Terminology](/reference/terminology) for the task names, trial IDs, and names used in older files.
 
 For operating instructions, use [How to perform each task](/benchmark/tasks). It includes the starting state and reset for each mechanism, with a [step-by-step shock absorber task](/benchmark/tasks#shock-absorber).
 
 <figure class="doc-image">
-  <img src="/images/attachments-overview.png" alt="Overview of the thirteen HiveBoard attachment configurations">
+  <img src="/images/attachments-overview.png" alt="Overview of the twelve HiveBoard attachment designs">
   <figcaption>Attachment overview. Each mechanism uses the shared honeycomb mounting interface.</figcaption>
 </figure>
 

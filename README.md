@@ -15,7 +15,7 @@ This repository hosts the official project website for **HiveBoard: An Open, Mod
 The purpose of this website is to serve as the interactive companion and presentation portal for the HiveBoard benchmark:
 
 - **Interactive 3D & Physics Viewer:** Allows visitors to view and interactively simulate the attachments directly in the browser using [Three.js](https://threejs.org/) and WebAssembly-powered [MuJoCo](https://mujoco.org/).
-- **Attachment & Task Catalog:** Details the 13 functional 3D-printed mechanism attachments across three manipulation skill categories: *Torque*, *Precision*, and *Composed assembly*.
+- **Attachment & Task Catalog:** Details 12 functional 3D-printed attachment designs evaluated in 13 conditions across three manipulation skill categories: *Torque*, *Precision*, and *Composed assembly*.
 - **Simulation Compatibility:** Provides information and direct access to digital assets for simulators including MuJoCo, Isaac Sim (USD), and standard URDFs.
 - **Experimental Results & Media:** Showcases evaluation results and video demonstrations across diverse robotic embodiments (fixed-base arms, quadruped manipulators, VR-teleoperated robots, and wearable prosthetic hands).
 - **Documentation & Evaluation Protocol:** Includes the full HiveBoard documentation, contribution guides, and browser-based 65-trial evaluation runner at [`/hivedocs/`](https://hiveboard-bench.github.io/hivedocs/).
