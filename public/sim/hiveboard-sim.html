@@ -421,6 +421,7 @@
     let gripQposIndex = -1;
     let spinIndex = -1;
     let homeView = null;
+    const WITHHELD = { anymal: ['lamp'] };
     let trajectories = {};
     let task = null;
     let demoStateQposAddrs = [];
@@ -675,6 +676,9 @@
 
     async function loadRobotUnsafe(entry) {
       const nextTrajectories = await fetchJson(`${MODEL_BASE}${entry.traj}`);
+      // Held back until re-authored: listed as "soon" rather than played.
+      // Edit mode keeps them so the trajectory can still be worked on.
+      if (!PLACE_EDIT) for (const key of WITHHELD[entry.name] || []) delete nextTrajectories[key];
 
       robot = entry;
       trajectories = nextTrajectories;
