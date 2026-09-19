@@ -38,7 +38,7 @@ The baseline is camera observations, robot states, and timestamped actions. Addi
 ## Collect the episodes
 
 1. Document the platform configuration, HiveBoard version, board orientation, printing settings, and any post-processing or protocol deviations.
-2. Define the tasks, initial states, reset procedures, and episode boundaries. Identify changes in platform configuration, control method, or task difficulty in the metadata.
+2. Define the tasks, initial states, reset procedures, and episode boundaries. Identify changes in platform configuration, control interface, or task difficulty in the metadata.
 3. Collect demonstrations or robot rollouts with synchronized observations, states, and commands. Larger datasets and variation in starting states, viewpoints, operators, and strategies are welcome; document the variation used.
 4. Preserve successes, failures, timeouts, interventions, and aborted episodes, and label them accurately. Distinguish the ball-valve configurations and other task variants.
 5. Record task outcomes and failure causes for each episode. Where applicable, use the stage, attempt, and regrasp definitions in the [logging instructions](/benchmark/logging).

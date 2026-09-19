@@ -32,9 +32,9 @@ Engage the part by hand without axial forcing. It should advance smoothly while 
 
 ### Ball valve and friction rings
 
-Assemble the ball valve without a ring first. The ring configuration is evaluated as a separate attachment and should only be fitted for the corresponding trial block.
+Assemble the ball valve without a ring first. The ring configuration is evaluated as a separate condition and should only be fitted for the corresponding trial block.
 
-### Covered button
+### Button {#covered-button}
 
 Confirm that the cover opens freely and that the button returns after it is pressed. Both stages must remain visually distinguishable.
 
@@ -57,13 +57,13 @@ Fix the base to a rigid surface within the platform's working volume. Horizontal
 Before recorded trials:
 
 1. fully seat every attachment;
-2. confirm that all modules are reachable without moving the base during a trial;
+2. confirm that all attachments are reachable without moving the base during a trial;
 3. check for collision risks around the fixture;
 4. photograph the setup as `setup.jpg`; and
 5. describe the mounting orientation in `platform.md`.
 
 ::: warning Dynamic loading
-High-gain or jittering commands can damage printed mechanisms or loosen press-fit attachments. Inspect the board before every session and after any contact that visibly displaces a module.
+High-gain or jittering commands can damage printed mechanisms or loosen press-fit attachments. Inspect the board before every session and after any contact that visibly displaces an attachment.
 :::
 
 Continue with the [evaluation protocol](/benchmark/protocol).
