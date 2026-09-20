@@ -15,6 +15,8 @@ Record HiveBoard trials using the timer and trial form below. Select a condition
 
 Records are saved in this browser. Export the session to continue on another computer, or download the trial log as CSV. A complete submission requires **five trials for each of the 13 conditions (65 trials)**. The results ZIP becomes available once all trial entries and required setup details are complete. Attach the setup photograph here or add it to the extracted folder, then add the 65 recordings before submission. Files are not uploaded to the organizers by this page.
 
+**Collecting a learning dataset too?** Use [DataHive](/guides/datahive) to record and annotate states, commands, and camera streams from the same trials. This website runner records timing and outcomes only. Dataset collection is encouraged but optional; see [how to combine collection and evaluation](/guides/datahive#collect-during-a-benchmark-evaluation).
+
 <ClientOnly>
   <EvaluationRunner />
 </ClientOnly>

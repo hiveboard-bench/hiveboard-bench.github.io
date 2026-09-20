@@ -50,6 +50,12 @@ export default defineConfig({
         ]
       },
       {
+        text: 'Data Collection',
+        items: [
+          { text: 'DataHive', link: '/guides/datahive' }
+        ]
+      },
+      {
         text: 'Simulation',
         items: [
           { text: 'Simulation Assets', link: '/simulation/assets' },

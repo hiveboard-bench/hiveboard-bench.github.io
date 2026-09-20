@@ -15,6 +15,7 @@ For the paper, demonstration videos, and reported results, see the [HiveBoard pr
 - [Attachment reference](/hardware/modules)
 - [Evaluation Runner](/benchmark/evaluation-runner)
 - [Evaluation protocol](/benchmark/protocol)
+- [Data collection with DataHive](/guides/datahive)
 - [Simulation assets](/simulation/assets)
 
 The printable parts, CAD models, articulated assets, protocol, and trial templates are maintained in the [HiveBoard repository](https://github.com/EESC-LabRoM/HiveBoard). The Isaac Lab environments are maintained in a [separate repository](https://github.com/EESC-LabRoM/isaaclab-hiveboard).
@@ -22,6 +23,8 @@ The printable parts, CAD models, articulated assets, protocol, and trial templat
 ## Open calls for contributions
 
 We invite laboratories and individual researchers to [contribute datasets for learning-based manipulation](/contribute/evaluations), including robot states, actions, camera observations, timestamps, calibration, and task outcomes. There is no fixed episode count; larger collections of demonstrations and rollouts are encouraged.
+
+Use [DataHive](/guides/datahive) to collect, annotate, validate, and upload episodes. We encourage labs running a benchmark evaluation to record learning data during the same trials when their system supports it.
 
 We welcome functional attachments for [activities of daily living](/contribute/adl) and [bimanual manipulation](/contribute/bimanual). Contact the authors before starting a design to check its suitability and avoid duplicating work.
 

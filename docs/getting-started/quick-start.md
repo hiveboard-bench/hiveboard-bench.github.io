@@ -22,6 +22,12 @@ Build and evaluate the printed board, or load the articulated models in a simula
 
 Go directly to the [evaluation protocol](/benchmark/protocol).
 
+## Collect learning data
+
+Use [DataHive](/guides/datahive) to collect robot states, commands, camera recordings, and task annotations. Configure and validate the recording setup before collection. We encourage labs to record these data during benchmark evaluations; follow the [combined workflow](/guides/datahive#collect-during-a-benchmark-evaluation) to link episodes to the scored trials.
+
+For a dataset contribution, there is no fixed episode count or requirement to cover all conditions. Read the [learning-dataset call](/contribute/evaluations) and contact the organizers before collection.
+
 ## Work in simulation
 
 - **Articulated assets:** use the URDF or USD files from the main repository in your own simulator or robotics stack.
