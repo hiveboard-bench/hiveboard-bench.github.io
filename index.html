@@ -89,6 +89,7 @@
     <a href="#Simulation-Compatibility">Simulators</a>
     <a href="#Videos">Videos</a>
     <a href="#Results">Results</a>
+    <a href="#Data-Collection">Data Collection</a>
   </nav>
 
   <div id="presentation-site">
@@ -194,6 +195,14 @@
                   <i class="fas fa-clipboard-check"></i>
                 </span>
                 <span>Documentation</span>
+              </a>
+
+              <a href="https://github.com/hiveboard-bench/DataHive" target="_blank" rel="noopener noreferrer" class="button is-rounded is-outlined hero-link-btn"
+                style="border-color: #cbd5e1; color: #334155; font-weight: 500; padding: 0 1.2rem; transition: all 0.2s;">
+                <span class="icon" style="color: #475569;">
+                  <i class="fab fa-github"></i>
+                </span>
+                <span>DataHive</span>
               </a>
             </div>
 
@@ -688,7 +697,7 @@
           </div>
           <div id="sim-frame-wrap"
             style="position: relative; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; background: #f8fafc; box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
-            <iframe id="sim-frame" src="./sim/hiveboard-sim.html?v=a16ee26d" title="Live HiveBoard simulation"
+            <iframe id="sim-frame" src="./sim/hiveboard-sim.html?v=ea5e10e1" title="Live HiveBoard simulation"
               loading="lazy" style="display: block; width: 100%; height: 100%; border: 0;"></iframe>
           </div>
 
@@ -1838,6 +1847,132 @@
           </div>
         </div>
 
+        <div class="carousel-wrapper">
+          <div class="carousel-header">
+            <h3 class="carousel-title">Platform E &middot; Franka Robotics 3</h3>
+            <div class="carousel-nav">
+              <button class="nav-btn prev-btn"><i class="fas fa-chevron-left"></i></button>
+              <button class="nav-btn next-btn"><i class="fas fa-chevron-right"></i></button>
+            </div>
+          </div>
+          <div class="video-carousel">
+            <div class="video-item">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video
+                  src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/fr3_ball_valve.mov" data-poster="./assets/posters/fr3_ball_valve.webp"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Ball valve</p>
+                </div>
+              </div>
+            </div>
+            <div class="video-item">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video
+                  src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/fr3_button.mov" data-poster="./assets/posters/fr3_button.webp"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Button</p>
+                </div>
+              </div>
+            </div>
+            <div class="video-item">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video
+                  src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/fr3_circuit_breaker.mov" data-poster="./assets/posters/fr3_circuit_breaker.webp"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Circuit breaker</p>
+                </div>
+              </div>
+            </div>
+            <div class="video-item">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video
+                  src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/fr3_large_gate_valve.mov" data-poster="./assets/posters/fr3_large_gate_valve.webp"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Gate valve (large)</p>
+                </div>
+              </div>
+            </div>
+            <div class="video-item">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video
+                  src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/fr3_lock_and_key.mov" data-poster="./assets/posters/fr3_lock_and_key.webp"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Lock and key</p>
+                </div>
+              </div>
+            </div>
+            <div class="video-item">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video
+                  src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/fr3_small_gate_valve.mov" data-poster="./assets/posters/fr3_small_gate_valve.webp"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Gate valve (small)</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="carousel-wrapper" style="margin-bottom: 2rem;">
           <div class="carousel-header">
             <h3 class="carousel-title">Simulations</h3>
@@ -2223,11 +2358,18 @@
             }
           }
 
+          @media (min-width: 769px) {
+            .column.is-plat-col {
+              flex: 0 0 20%;
+              max-width: 20%;
+            }
+          }
+
           .results-matrix {
             display: grid;
-            grid-template-columns: 190px repeat(4, minmax(92px, 1fr));
+            grid-template-columns: 190px repeat(5, minmax(92px, 1fr));
             gap: 6px;
-            min-width: 700px;
+            min-width: 780px;
           }
 
           .mx-scroll {
@@ -2360,6 +2502,17 @@
           .mx-cell.none {
             background: #f1f5f9;
             color: #94a3b8;
+          }
+
+          .mx-cell.soon {
+            background: #f8fafc;
+            border: 1px dashed #cbd5e1;
+            color: #94a3b8;
+          }
+
+          .mx-cell.soon:hover {
+            border-color: #edaf19;
+            background: rgba(237, 175, 25, 0.04);
           }
 
           .mx-cell:hover {
@@ -2550,6 +2703,7 @@
             <span><span class="swatch" style="background: #edaf19;"></span>5/5 completed</span>
             <span><span class="swatch" style="background: rgba(237,175,25,0.45);"></span>partial (4/5)</span>
             <span><span class="swatch" style="background: #f1f5f9;"></span>0/5 &mdash; no success</span>
+            <span><span class="swatch" style="background: #f8fafc; border: 1px dashed #cbd5e1;"></span>Soon &mdash; in progress</span>
           </div>
         </div>
 
@@ -2779,7 +2933,8 @@
               { id: 'A', name: 'Spot Arm', full: 'Boston Dynamics Spot, Spot Arm', ee: 'Parallel-jaw gripper', ctrl: 'Tablet teleoperation (Spot Tablet Joysticks)' },
               { id: 'B', name: 'SO-101', full: 'LeRobot SO-101 (fixed base)', ee: 'Printed parallel-jaw gripper', ctrl: 'Leader-follower teleoperation' },
               { id: 'C', name: 'ANYmal', full: 'ANYbotics ANYmal, DynaArm', ee: 'Robotiq 2F-140 parallel-jaw gripper', ctrl: 'Virtual-reality devices (Meta Quest 3)' },
-              { id: 'D', name: 'Macao hand', full: 'Macao anthropomorphic hand', ee: 'Worn five-finger hand, operator&rsquo;s own arm positions it', ctrl: 'Analog button grasp selection, worn on forearm' }
+              { id: 'D', name: 'Macao hand', full: 'Macao anthropomorphic hand', ee: 'Worn five-finger hand, operator&rsquo;s own arm positions it', ctrl: 'Analog button grasp selection, worn on forearm' },
+              { id: 'E', name: 'FR3', full: 'Franka Robotics 3 (FR3)', ee: 'Franka Hand (parallel-jaw gripper)', ctrl: 'Teleoperation / policy execution' }
             ];
 
             const attachments = [
@@ -2884,14 +3039,15 @@
               A: { completed: 8, wins: 40, fastest: 'Ball valve, 10.5 s', slowest: 'Lock and key, 40.4 s', cause: 'All 25 failed trials split between 15 kinematic limits on the two threaded fasteners and the peg, and 10 grasp-geometry failures on the drawer and the shock absorber: a wrist that cannot sustain rotation about a fixed axis, and a jaw too wide for a recessed handle. The printed parts came through all 65 trials with no observable wear and no loss of press-fit tolerance.' },
               B: { completed: 9, wins: 44, fastest: 'Circuit breaker, 8.5 s', slowest: 'Light bulb, 83.0 s', cause: 'Twenty of the 21 failed trials reached their timeout under a kinematic limit, on the small gate valve, the two threaded fasteners, and the peg: accumulating rotation on this arm requires releasing the part and reacquiring it. The remaining failure is the breaker toggle snapping at the end of one motion. This is the only platform whose difficulty ordering diverges from the rest, and the three attachments responsible are exactly the drawer, the shock absorber, and the small gate valve.' },
               C: { completed: 8, wins: 40, fastest: 'Circuit breaker, 6.7 s', slowest: 'Gate valve (small), 23.1 s', cause: 'All 25 failed trials are recorded as control precision, attributed to an interface that commands end-effector twist relative to a torso frame the whole-body policy is itself moving. No kinematic limit, force limit, or grasp-geometry failure appears at all. The VR interface moves the end-effector faster than a tablet over gross motion, at the cost of rotation stability.' },
-              D: { completed: 11, wins: 53, fastest: 'Circuit breaker, 1.6 s', slowest: 'Thread (M30), 102.6 s', cause: 'Since the operator&rsquo;s arm supplies positioning, the difficulty lies in grasp acquisition and grip force rather than gross motion. Eleven of the twelve failed trials are force limits or control precision, and every one occurs on a part that must be held while it is turned. Grasp geometry &mdash; the cause behind every Platform A assembly failure &mdash; never appears once.' }
+              D: { completed: 11, wins: 53, fastest: 'Circuit breaker, 1.6 s', slowest: 'Thread (M30), 102.6 s', cause: 'Since the operator&rsquo;s arm supplies positioning, the difficulty lies in grasp acquisition and grip force rather than gross motion. Eleven of the twelve failed trials are force limits or control precision, and every one occurs on a part that must be held while it is turned. Grasp geometry &mdash; the cause behind every Platform A assembly failure &mdash; never appears once.' },
+              E: { soon: true, cause: 'Quantitative benchmark evaluation on the Franka Robotics 3 (FR3) is currently underway under the standardized HiveBoard protocol. Video demonstrations are available in the Videos section.' }
             };
 
             const grid = document.getElementById('results-matrix');
             const detail = document.getElementById('result-detail');
             if (!grid || !detail) return;
 
-            const cellClass = c => c.s === 5 ? 'full' : (c.s > 0 ? 'partial' : 'none');
+            const cellClass = c => (!c || c.soon) ? 'soon' : (c.s === 5 ? 'full' : (c.s > 0 ? 'partial' : 'none'));
             const fmt = t => t == null ? '&mdash;' : t + ' s';
 
             grid.insertAdjacentHTML('beforeend', '<div class="mx-corner">Condition</div>');
@@ -2910,10 +3066,15 @@
               }
               grid.insertAdjacentHTML('beforeend', `<button class="mx-label" data-att="${i}">${att.n}</button>`);
               platforms.forEach(p => {
-                const c = att[p.id];
-                const body = `<span class="rate">${c.s}/5</span>${c.t != null ? `<span class="time">${fmt(c.t)}</span>` : ''}`;
-                grid.insertAdjacentHTML('beforeend',
-                  `<button class="mx-cell ${cellClass(c)}" data-cell="${i}:${p.id}">${body}</button>`);
+                const c = att[p.id] || { soon: true };
+                if (c.soon) {
+                  grid.insertAdjacentHTML('beforeend',
+                    `<button class="mx-cell soon" data-cell="${i}:${p.id}"><span class="rate" style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Soon</span></button>`);
+                } else {
+                  const body = `<span class="rate">${c.s}/5</span>${c.t != null ? `<span class="time">${fmt(c.t)}</span>` : ''}`;
+                  grid.insertAdjacentHTML('beforeend',
+                    `<button class="mx-cell ${cellClass(c)}" data-cell="${i}:${p.id}">${body}</button>`);
+                }
               });
             });
 
@@ -2930,31 +3091,58 @@
 
             function showIntro() {
               detail.innerHTML = `
-                <h3 class="title is-5" style="color: #0f172a;">Four platforms, one protocol, 260 trials</h3>
+                <h3 class="title is-5" style="color: #0f172a;">Evaluation platforms</h3>
                 <p style="color: #64748b; line-height: 1.6; font-size: 0.9rem;">
                   A quadruped-mounted arm under tablet teleoperation, a printed tabletop arm under leader&ndash;follower
-                  control, a legged manipulator commanded through virtual reality, and an anthropomorphic hand worn on
-                  an operator&rsquo;s forearm. No platform saturates the library, none fails uniformly, and no two fail
-                  the same way.
+                  control, a legged manipulator commanded through virtual reality, an anthropomorphic hand worn on
+                  an operator&rsquo;s forearm, and the Franka Robotics 3 (FR3).
                 </p>
                 <div class="columns is-multiline mt-2">
-                  ${platforms.map(p => `
-                    <div class="column is-3-tablet is-6-mobile rd-metric">
-                      <span class="k">${p.id} &middot; ${p.name}</span>
-                      <span class="v">${platSummary[p.id].completed}<span style="font-size: 0.9rem; color: #94a3b8; font-weight: 500;"> / 13</span></span>
-                      <div class="rd-bar"><i style="width: ${platSummary[p.id].completed / 13 * 100}%"></i></div>
-                      <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 6px;">conditions &middot; ${platSummary[p.id].wins}/65 trials</p>
-                    </div>`).join('')}
+                  ${platforms.map(p => {
+                    const s = platSummary[p.id];
+                    if (!s || s.soon) {
+                      return `
+                        <div class="column is-plat-col is-6-mobile rd-metric">
+                          <span class="k">${p.id} &middot; ${p.name}</span>
+                          <span class="v" style="font-size: 1.15rem; color: #94a3b8;">Soon</span>
+                          <div class="rd-bar"><i style="width: 0%"></i></div>
+                          <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 6px;">in evaluation</p>
+                        </div>`;
+                    }
+                    return `
+                      <div class="column is-plat-col is-6-mobile rd-metric">
+                        <span class="k">${p.id} &middot; ${p.name}</span>
+                        <span class="v">${s.completed}<span style="font-size: 0.9rem; color: #94a3b8; font-weight: 500;"> / 13</span></span>
+                        <div class="rd-bar"><i style="width: ${s.completed / 13 * 100}%"></i></div>
+                        <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 6px;">conditions &middot; ${s.wins}/65 trials</p>
+                      </div>`;
+                  }).join('')}
                 </div>
                 <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 0.5rem;">
                   <i class="fas fa-hand-pointer" style="color: #edaf19; margin-right: 6px;"></i>
-                  Pick a cell for the five trials behind it, a column header for a platform, or a row label for the
+                  Pick a cell for the trials behind it, a column header for a platform, or a row label for the
                   attachment specification.
                 </p>`;
             }
 
             function showCell(i, pid) {
-              const att = attachments[i], p = platforms.find(x => x.id === pid), c = att[pid];
+              const att = attachments[i], p = platforms.find(x => x.id === pid), c = att[pid] || { soon: true };
+              if (c.soon) {
+                const hasDemo = ['Ball valve', 'Button', 'Circuit breaker', 'Gate valve (large)', 'Gate valve (small)', 'Lock and key'].includes(att.n);
+                detail.innerHTML = `
+                  <span class="rd-chip">${att.cat}</span>
+                  <span class="rd-chip">Platform ${p.id} &middot; ${p.full}</span>
+                  <h3 class="title is-4 mt-3 mb-2" style="color: #0f172a;">${att.n}</h3>
+                  <p style="color: #64748b; font-size: 0.85rem;">${att.crit} &middot; ${att.timeout} s timeout &middot; ${p.ee}</p>
+                  <div class="box mt-4" style="background-color: #f8fafc; border: 1px dashed #cbd5e1; box-shadow: none; border-radius: 8px; padding: 1.5rem; text-align: center;">
+                    <p style="font-weight: 600; color: #475569; font-size: 1rem; margin-bottom: 0.25rem;">Results Coming Soon</p>
+                    <p style="color: #64748b; font-size: 0.85rem; margin: 0;">
+                      Formal trial scoring for Platform ${p.id} (${p.name}) is currently in progress.
+                      ${hasDemo ? 'A demonstration video for this task is available in the <a href="#Videos" style="color: #edaf19; text-decoration: underline; font-weight: 500;">Videos section</a>.' : ''}
+                    </p>
+                  </div>`;
+                return;
+              }
               const causes = c.causes
                 ? Object.entries(c.causes).map(([k, v]) => `<span class="rd-chip is-cause">${k} &middot; ${v} trial${v > 1 ? 's' : ''}</span>`).join('')
                 : '';
@@ -2990,6 +3178,20 @@
             function showPlatform(pid) {
               const p = platforms.find(x => x.id === pid);
               const s = platSummary[pid];
+              if (!s || s.soon) {
+                detail.innerHTML = `
+                  <span class="rd-chip">In Evaluation</span>
+                  <span class="rd-chip">${p.ctrl}</span>
+                  <h3 class="title is-4 mt-3 mb-2" style="color: #0f172a;">Platform ${p.id} &middot; ${p.full}</h3>
+                  <p style="color: #64748b; font-size: 0.85rem;">${p.ee}</p>
+                  <div class="box mt-4" style="background-color: #f8fafc; border: 1px dashed #cbd5e1; box-shadow: none; border-radius: 8px; padding: 1.5rem; text-align: center;">
+                    <p style="font-weight: 600; color: #475569; font-size: 1rem; margin-bottom: 0.25rem;">Results Coming Soon</p>
+                    <p style="color: #64748b; font-size: 0.85rem; margin: 0;">
+                      Quantitative benchmark evaluation on the Franka Robotics 3 (FR3) is currently underway under the HiveBoard protocol. Video demonstrations can be viewed in the <a href="#Videos" style="color: #edaf19; text-decoration: underline; font-weight: 500;">Videos section</a>.
+                    </p>
+                  </div>`;
+                return;
+              }
               detail.innerHTML = `
                 <span class="rd-chip">65 recorded trials</span>
                 <span class="rd-chip">${p.ctrl}</span>
@@ -3008,7 +3210,14 @@
             function showAttachment(i) {
               const att = attachments[i];
               const rows = platforms.map(p => {
-                const c = att[p.id];
+                const c = att[p.id] || { soon: true };
+                if (c.soon) {
+                  return `<div class="rd-stage">
+                            <span class="dot" style="background-color: #cbd5e1;"></span>
+                            <span>Platform ${p.id} &middot; ${p.name}</span>
+                            <strong style="margin-left: auto; color: #94a3b8; font-size: 0.8rem; text-transform: uppercase;">Soon</strong>
+                          </div>`;
+                }
                 const val = `${c.s}/5${c.t != null ? ` &middot; ${c.t} s` : ''}`;
                 return `<div class="rd-stage">
                           <span class="dot ${c.s > 0 ? 'done' : ''}"></span>
@@ -3087,6 +3296,66 @@
 </script>
       </div>
 
+    </section>
+
+    <section class="section" id="Data-Collection">
+      <div class="container is-max-desktop">
+        <div class="is-flex is-align-items-center mb-5" style="width: 100%; justify-content: center;">
+          <div style="flex-grow: 1; max-width: 200px; height: 1px; background: linear-gradient(to left, #edaf19, transparent); margin-right: 20px;"></div>
+          <h2 class="title is-3" style="letter-spacing: -0.5px; margin-bottom: 0; white-space: nowrap;">Data Collection API</h2>
+          <div style="flex-grow: 1; max-width: 200px; height: 1px; background: linear-gradient(to right, #edaf19, transparent); margin-left: 20px;"></div>
+        </div>
+
+        <p class="has-text-justified mb-5" style="color: #64748b; line-height: 1.6;">
+          To standardize manipulation data collection across laboratories and robotic platforms, we created
+          <strong>DataHive</strong> &mdash; a dedicated API and client toolkit designed to collect, validate,
+          annotate, and record HiveBoard manipulation episodes.
+        </p>
+
+        <div class="box mb-0"
+          style="background-color: #fafafa; border: 1px solid #cbd5e1; box-shadow: none; border-radius: 8px; padding: 2rem;">
+          <div class="columns is-vcentered">
+            <div class="column is-7">
+              <h3 class="title is-4 mb-3" style="color: #0f172a;">
+                DataHive &amp; <code style="color: #edaf19; background-color: rgba(237, 175, 25, 0.1); padding: 0.2rem 0.4rem; border-radius: 4px; font-size: 0.9em;">datahive-tools</code>
+              </h3>
+              <p class="mb-4" style="color: #475569; line-height: 1.6; font-size: 0.95rem;">
+                <strong>What it's for:</strong> Provides a streamlined pipeline to record robot trials, validate episode integrity (verifying timestamps, frequencies, and synchronized multi-camera MP4 streams), annotate outcomes in a local web interface, and upload structured datasets to the Hugging Face Hub.
+              </p>
+              <div class="buttons" style="gap: 10px;">
+                <a href="https://github.com/hiveboard-bench/DataHive" target="_blank" rel="noopener noreferrer"
+                  class="button is-rounded is-outlined hero-link-btn"
+                  style="border-color: #cbd5e1; color: #334155; font-weight: 500; padding: 0 1.2rem; transition: all 0.2s;">
+                  <span class="icon" style="color: #475569;">
+                    <i class="fab fa-github"></i>
+                  </span>
+                  <span>GitHub Repository</span>
+                </a>
+                <a href="https://pypi.org/project/datahive-tools/" target="_blank" rel="noopener noreferrer"
+                  class="button is-rounded is-outlined hero-link-btn"
+                  style="border-color: #cbd5e1; color: #334155; font-weight: 500; padding: 0 1.2rem; transition: all 0.2s;">
+                  <span class="icon" style="color: #475569;">
+                    <i class="fab fa-python"></i>
+                  </span>
+                  <span>PyPI Package</span>
+                </a>
+              </div>
+            </div>
+            <div class="column is-5">
+              <div style="background-color: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 1.25rem;">
+                <p style="font-size: 0.75rem; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem;">
+                  Installation
+                </p>
+                <pre style="background: #0f172a; color: #f8fafc; border-radius: 6px; padding: 0.75rem 1rem; font-size: 0.85rem; overflow-x: auto; margin-bottom: 0.75rem;"><code style="color: inherit; background: transparent; padding: 0;">pip install datahive-tools</code></pre>
+                <p style="font-size: 0.8rem; color: #64748b; line-height: 1.5; margin: 0;">
+                  Installs the <code>datahive</code> CLI and Python <code>CollectClient</code> for recording, validating, and managing datasets.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
     </section>
 
     <section class="section" id="Citation">
