@@ -24,6 +24,10 @@ Before recording, open [How to perform each task](/benchmark/tasks). It lists th
 6. Create `platform.md` with the end-effector, control interface or policy, mounting orientation, control mode, and relevant calibration notes.
 7. Record the printer, material, print settings, and post-processing. The runner includes these fields in `platform.md`.
 
+## Optional dataset collection
+
+We encourage labs to record robot states, executed commands, and camera streams during evaluation using [DataHive](/guides/datahive). Test the recording setup before the scored trials and link each episode to its benchmark trial record. Dataset collection is optional and does not change the task criteria, timing, or requirement for 65 trials. The [DataHive guide](/guides/datahive#collect-during-a-benchmark-evaluation) explains how to prepare both submissions; the [learning-dataset call](/contribute/evaluations) also accepts larger collections and task subsets outside a formal evaluation.
+
 ## Familiarization
 
 Run unrecorded practice trials for each attachment until completion times stabilize. Begin recording after three consecutive practice trials finish within 20% of each other or within the timeout, whichever comes first.

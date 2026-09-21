@@ -16,6 +16,8 @@ We invite laboratories, individual researchers, and teams to contribute manipula
 
 Record robot states, executed commands, and camera streams while performing HiveBoard tasks. Include timestamps, calibration, an episode index, and a loading example. There is no fixed episode count or requirement to cover all conditions; larger collections are encouraged. Contact the organizers before collection to agree on tasks, signals, and formats. See the [dataset call](/contribute/evaluations) for requirements and direct email submission.
 
+We recommend [DataHive](/guides/datahive) for collection, annotation, validation, and upload. Labs performing a benchmark evaluation are encouraged to record learning data during those trials; collecting a dataset remains optional.
+
 Substantial accepted datasets may establish eligibility for authorship on future dataset papers that use the contribution. Smaller contributions may be acknowledged. See the [dataset credit policy](/contribute/evaluations#authorship-and-acknowledgments).
 
 ## Propose a new attachment {#propose-a-new-asset}

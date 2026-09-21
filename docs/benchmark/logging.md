@@ -13,6 +13,10 @@ Use the [task-name and identifier table](/reference/terminology#task-names-and-i
 
 Do not change `trial_id` or `attachment_id`. Fill the remaining columns while running the trials.
 
+## Logging with DataHive
+
+[DataHive](/guides/datahive) links learning episodes to trial annotations. Its session `trials.csv` has additional fields and is not the benchmark template described here. When collecting data during evaluation, prepare the benchmark CSV with the columns below and keep an index mapping each scored trial to its DataHive session and episode. Session trial numbers may differ from the template's fixed condition assignments. See the [combined workflow](/guides/datahive#collect-during-a-benchmark-evaluation) before transferring results.
+
 ## Column reference
 
 | Column | Required entry |

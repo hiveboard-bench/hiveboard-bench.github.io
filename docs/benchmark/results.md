@@ -50,6 +50,10 @@ The [Evaluation Runner](/benchmark/evaluation-runner) generates the ZIP after al
 
 “Trial records complete” refers to the log and setup fields. It does not confirm that all supporting files are present or that an organizer has reviewed the outcomes. The manifest lists the expected recordings and whether the setup photograph was included when the ZIP was generated.
 
+### Learning data collected during evaluation
+
+If you recorded the trials with [DataHive](/guides/datahive), keep an index linking the benchmark trial IDs to the learning episodes and submit the dataset through the [dataset call](/contribute/evaluations#send-the-data-for-review). DataHive's extended annotation CSV does not replace the benchmark `trials.csv` in this package. Enter the scored results in the website Evaluation Runner to generate the submission ZIP; see the [combined workflow](/guides/datahive#collect-during-a-benchmark-evaluation).
+
 ## Submit for organizer review
 
 Submissions are reviewed by email. There is no upload server or automatic approval.

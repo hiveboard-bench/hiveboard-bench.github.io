@@ -12,11 +12,21 @@ Robot grippers, dexterous hands, teleoperated and autonomous manipulators, and p
 
 We seek learning data with the robot and sensor streams described below. A formal benchmark evaluation is optional and can accompany the dataset as a separate submission.
 
+We recommend [DataHive](/guides/datahive) to collect, annotate, validate, and upload episodes. Labs already running a benchmark evaluation are encouraged to record the corresponding states, commands, and camera streams for a dataset contribution.
+
 ## Before starting
 
 Read the [evaluation protocol](/benchmark/protocol) and [task definitions](/hardware/modules). If you need to print the board, start with the [printing](/hardware/printing) and [assembly](/hardware/assembly) guides.
 
 **Contact [ricardo.godoy@usp.br](mailto:ricardo.godoy@usp.br?subject=HiveBoard%20learning%20dataset%20contribution) before collection** to agree on the tasks, recorded signals, synchronization, file formats, and intended data reuse. Include your robot, end-effector, control interface, cameras and other sensors, board orientation, and whether the data are physical or simulated. Discuss unavailable signals or modified mechanisms at this stage.
+
+## Collect with DataHive
+
+Follow the [DataHive guide](/guides/datahive) to install the toolkit, define the robot and camera profile, and prepare a recording integration. Its local Runner supports manual collection with attached episode files or automatic collection through the lab's robot script. The Annotate page and command-line tools support episode review and validation.
+
+DataHive stores states and commands in HDF5, camera recordings in MP4, and task annotations in a session CSV. Check the [current acquisition requirements](/guides/datahive#check-the-recording-setup-first) and validate a pilot episode before collecting the full dataset. Depth, force/torque, tactile, and other additional streams remain welcome; agree on supplemental formats for signals outside the toolkit's current episode format.
+
+DataHive is the recommended collection workflow, not a requirement for acceptance. Existing datasets and other documented recording formats can be discussed with the organizers.
 
 ## Data to record
 
@@ -60,7 +70,7 @@ Identify the demonstration source or policy used for each episode and any data u
 | Episode index and reader | An index mapping learning-data episodes to trial IDs, task conditions, outcomes, and files; a script or notebook that loads an episode and aligns observations, states, and actions |
 | Contact and permission | Contact name, email, institution or Independent, package link, and proposed data reuse and publication terms, supplied by email |
 
-**Record the learning data through your experimental system.** The Evaluation Runner does not acquire robot telemetry, camera streams, or control commands, and is not required for this dataset call.
+**Connect DataHive to your experimental system or use an agreed recording format.** The website Evaluation Runner records benchmark outcomes and timing; it does not acquire robot telemetry, camera streams, or control commands. DataHive's local Runner is a separate tool for collecting and annotating learning episodes.
 
 ROS bags, HDF5, Zarr, or an existing documented learning-dataset format can be discussed with the organizers. Include a small loading example with dependency versions. Video plus a trial CSV alone is insufficient for the learning-data call.
 
@@ -68,7 +78,7 @@ Organize the learning data, calibration, episode index, reader, setup descriptio
 
 ## Send the data for review
 
-Upload the completed package to storage you control and give **ricardo.godoy@usp.br** download access. Keep the package private during review.
+Upload the completed package to a private Hugging Face dataset repository configured in DataHive, or other agreed storage, and arrange download access with **ricardo.godoy@usp.br**. Keep the package private during review. Include the dataset documentation, calibration, reader, and any supplemental files alongside the uploaded episodes. A DataHive upload does not notify the organizers or submit the dataset for review.
 
 Email [ricardo.godoy@usp.br](mailto:ricardo.godoy@usp.br?subject=HiveBoard%20learning%20dataset%20submission) directly with your name, institution or Independent, dataset link, platform description, tasks covered, episode counts, and recorded modalities. Include known limitations and proposed data reuse terms. **Dataset submissions do not go through the runner's 65-trial submission form.**
 
@@ -86,7 +96,9 @@ Smaller contributions may be acknowledged with the contributor's consent. Record
 
 ## Optional benchmark evaluation
 
-If you also want to report a formal benchmark evaluation, use the [Evaluation Runner](/benchmark/evaluation-runner) and submit **all 13 conditions with five trials each, for 65 trials total**, following the [evaluation submission process](/benchmark/results#submit-for-organizer-review). That requirement applies to benchmark evaluations only, not to this learning-dataset call.
+We encourage labs to record learning data during a formal benchmark evaluation when their system supports it. Follow the [combined collection and evaluation workflow](/guides/datahive#collect-during-a-benchmark-evaluation) to link episodes to scored trials and keep the benchmark protocol unchanged.
+
+Submit **all 13 conditions with five trials each, for 65 trials total**, using the [Evaluation Runner](/benchmark/evaluation-runner) or [benchmark template](/benchmark/logging) and following the [evaluation submission process](/benchmark/results#submit-for-organizer-review). DataHive's extended annotation CSV must be converted to the benchmark format for that submission. The 65-trial requirement applies to benchmark evaluations only, not to this learning-dataset call.
 
 ## Data reuse
 
