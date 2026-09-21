@@ -3319,10 +3319,24 @@
               <h3 class="title is-4 mb-3" style="color: #0f172a;">
                 DataHive &amp; <code style="color: #edaf19; background-color: rgba(237, 175, 25, 0.1); padding: 0.2rem 0.4rem; border-radius: 4px; font-size: 0.9em;">datahive-tools</code>
               </h3>
-              <p class="mb-4" style="color: #475569; line-height: 1.6; font-size: 0.95rem;">
+              <p class="mb-3" style="color: #475569; line-height: 1.6; font-size: 0.95rem;">
                 <strong>What it's for:</strong> Provides a streamlined pipeline to record robot trials, validate episode integrity (verifying timestamps, frequencies, and synchronized multi-camera MP4 streams), annotate outcomes in a local web interface, and upload structured datasets to the Hugging Face Hub.
               </p>
+              <p class="mb-4" style="color: #475569; line-height: 1.6; font-size: 0.95rem;">
+                <strong>Contributing data:</strong> To contribute manipulation episodes from your laboratory, you must first register your lab using the registration form. Upon registration, you will receive your designated <code>lab_id</code> and authentication <code>token</code> required to record and submit datasets.
+              </p>
               <div class="buttons" style="gap: 10px;">
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLScfDJvfcweYjv8bLDEALWOJk1q4mW3xOeB52aUey1VWWp_pxQ/viewform?usp=dialog"
+                  target="_blank" rel="noopener noreferrer"
+                  class="button is-rounded hero-link-btn"
+                  style="background-color: #edaf19; border-color: #edaf19; color: #0f172a; font-weight: 600; padding: 0 1.2rem; transition: all 0.2s;"
+                  onmouseover="this.style.backgroundColor='#d99e14'; this.style.borderColor='#d99e14';"
+                  onmouseout="this.style.backgroundColor='#edaf19'; this.style.borderColor='#edaf19';">
+                  <span class="icon" style="color: #0f172a;">
+                    <i class="fas fa-clipboard-list"></i>
+                  </span>
+                  <span>Register Lab</span>
+                </a>
                 <a href="https://github.com/hiveboard-bench/DataHive" target="_blank" rel="noopener noreferrer"
                   class="button is-rounded is-outlined hero-link-btn"
                   style="border-color: #cbd5e1; color: #334155; font-weight: 500; padding: 0 1.2rem; transition: all 0.2s;">
@@ -3342,13 +3356,22 @@
               </div>
             </div>
             <div class="column is-5">
-              <div style="background-color: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 1.25rem;">
+              <div style="background-color: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 1.25rem; margin-bottom: 0.85rem;">
                 <p style="font-size: 0.75rem; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem;">
                   Installation
                 </p>
                 <pre style="background: #0f172a; color: #f8fafc; border-radius: 6px; padding: 0.75rem 1rem; font-size: 0.85rem; overflow-x: auto; margin-bottom: 0.75rem;"><code style="color: inherit; background: transparent; padding: 0;">pip install datahive-tools</code></pre>
                 <p style="font-size: 0.8rem; color: #64748b; line-height: 1.5; margin: 0;">
                   Installs the <code>datahive</code> CLI and Python <code>CollectClient</code> for recording, validating, and managing datasets.
+                </p>
+              </div>
+
+              <div style="background-color: #ffffff; border: 1px solid #cbd5e1; border-left: 4px solid #edaf19; border-radius: 8px; padding: 1rem 1.25rem;">
+                <p style="font-size: 0.75rem; font-weight: 700; color: #0f172a; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.35rem; display: flex; align-items: center; gap: 6px;">
+                  <i class="fas fa-id-badge" style="color: #edaf19;"></i> Lab Credentials Required
+                </p>
+                <p style="font-size: 0.82rem; color: #475569; line-height: 1.5; margin: 0;">
+                  Submit the <a href="https://docs.google.com/forms/d/e/1FAIpQLScfDJvfcweYjv8bLDEALWOJk1q4mW3xOeB52aUey1VWWp_pxQ/viewform?usp=dialog" target="_blank" rel="noopener noreferrer" style="color: #b45309; font-weight: 600; text-decoration: underline;">registration form</a> to receive your unique <strong>Lab ID</strong> and <strong>Token</strong> before collecting and contributing episodes.
                 </p>
               </div>
             </div>
