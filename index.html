@@ -3320,10 +3320,10 @@
                 DataHive &amp; <code style="color: #edaf19; background-color: rgba(237, 175, 25, 0.1); padding: 0.2rem 0.4rem; border-radius: 4px; font-size: 0.9em;">datahive-tools</code>
               </h3>
               <p class="mb-3" style="color: #475569; line-height: 1.6; font-size: 0.95rem;">
-                <strong>What it's for:</strong> Provides a streamlined pipeline to record robot trials, validate episode integrity (verifying timestamps, frequencies, and synchronized multi-camera MP4 streams), annotate outcomes in a local web interface, and upload structured datasets to the Hugging Face Hub.
+                <strong>What it's for:</strong> Provides a streamlined pipeline to record robot trials, validate episode integrity (verifying timestamps, frequencies, and synchronized multi-camera MP4 streams), annotate outcomes in a local web interface, and upload structured datasets directly to our official repository on the Hugging Face Hub (<code>HiveBoard/&lt;lab_id&gt;</code>).
               </p>
               <p class="mb-4" style="color: #475569; line-height: 1.6; font-size: 0.95rem;">
-                <strong>Contributing data:</strong> To contribute manipulation episodes from your laboratory, you must first register your lab using the registration form. Upon registration, you will receive your designated <code>lab_id</code> and authentication <code>token</code> required to record and submit datasets.
+                <strong>Contributing data:</strong> All contributions go directly into our central repository. Register your laboratory using the registration form to receive your designated <strong>Lab ID</strong> and <strong>Hugging Face Token</strong>, allowing DataHive to authenticate and upload directly to <code>HiveBoard/&lt;lab_id&gt;</code>.
               </p>
               <div class="buttons" style="gap: 10px;">
                 <a href="https://docs.google.com/forms/d/e/1FAIpQLScfDJvfcweYjv8bLDEALWOJk1q4mW3xOeB52aUey1VWWp_pxQ/viewform?usp=dialog"
@@ -3336,6 +3336,14 @@
                     <i class="fas fa-clipboard-list"></i>
                   </span>
                   <span>Register Lab</span>
+                </a>
+                <a href="./hivedocs/guides/datahive.html"
+                  class="button is-rounded is-outlined hero-link-btn"
+                  style="border-color: #cbd5e1; color: #334155; font-weight: 500; padding: 0 1.2rem; transition: all 0.2s;">
+                  <span class="icon" style="color: #475569;">
+                    <i class="fas fa-book"></i>
+                  </span>
+                  <span>Guide &amp; Hugging Face</span>
                 </a>
                 <a href="https://github.com/hiveboard-bench/DataHive" target="_blank" rel="noopener noreferrer"
                   class="button is-rounded is-outlined hero-link-btn"
@@ -3368,10 +3376,10 @@
 
               <div style="background-color: #ffffff; border: 1px solid #cbd5e1; border-left: 4px solid #edaf19; border-radius: 8px; padding: 1rem 1.25rem;">
                 <p style="font-size: 0.75rem; font-weight: 700; color: #0f172a; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.35rem; display: flex; align-items: center; gap: 6px;">
-                  <i class="fas fa-id-badge" style="color: #edaf19;"></i> Lab Credentials Required
+                  <i class="fas fa-id-badge" style="color: #edaf19;"></i> Official HiveBoard Repository
                 </p>
                 <p style="font-size: 0.82rem; color: #475569; line-height: 1.5; margin: 0;">
-                  Submit the <a href="https://docs.google.com/forms/d/e/1FAIpQLScfDJvfcweYjv8bLDEALWOJk1q4mW3xOeB52aUey1VWWp_pxQ/viewform?usp=dialog" target="_blank" rel="noopener noreferrer" style="color: #b45309; font-weight: 600; text-decoration: underline;">registration form</a> to receive your unique <strong>Lab ID</strong> and <strong>Token</strong> before collecting and contributing episodes.
+                  Submit the <a href="https://docs.google.com/forms/d/e/1FAIpQLScfDJvfcweYjv8bLDEALWOJk1q4mW3xOeB52aUey1VWWp_pxQ/viewform?usp=dialog" target="_blank" rel="noopener noreferrer" style="color: #b45309; font-weight: 600; text-decoration: underline;">registration form</a> to receive your unique <strong>Lab ID</strong> and <strong>Hugging Face Token</strong>. All uploads go directly to our official repository on the Hub (<code>HiveBoard/&lt;lab_id&gt;</code>).
                 </p>
               </div>
             </div>
