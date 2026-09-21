@@ -24,6 +24,8 @@ Read the [evaluation protocol](/benchmark/protocol) and [task definitions](/hard
 
 Follow the [DataHive guide](/guides/datahive) to install the toolkit, define the robot and camera profile, and prepare a recording integration. Its local Runner supports manual collection with attached episode files or automatic collection through the lab's robot script. The Annotate page and command-line tools support episode review and validation.
 
+To contribute episodes with DataHive, register your laboratory through the [DataHive Lab Registration Form](https://docs.google.com/forms/d/e/1FAIpQLScfDJvfcweYjv8bLDEALWOJk1q4mW3xOeB52aUey1VWWp_pxQ/viewform?usp=dialog) to receive your assigned `lab_id` and authentication token.
+
 DataHive stores states and commands in HDF5, camera recordings in MP4, and task annotations in a session CSV. Check the [current acquisition requirements](/guides/datahive#check-the-recording-setup-first) and validate a pilot episode before collecting the full dataset. Depth, force/torque, tactile, and other additional streams remain welcome; agree on supplemental formats for signals outside the toolkit's current episode format.
 
 DataHive is the recommended collection workflow, not a requirement for acceptance. Existing datasets and other documented recording formats can be discussed with the organizers.

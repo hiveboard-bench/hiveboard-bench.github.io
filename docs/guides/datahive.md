@@ -27,7 +27,7 @@ datahive init --repo-id YOUR_HF_NAMESPACE/YOUR_DATASET
 datahive new-profile
 ```
 
-Replace the repository placeholder with an existing **private Hugging Face dataset repository** that your lab can write to. `init` prompts for a lab identifier and Hugging Face token; it saves the configuration locally and does not create the remote repository or set its visibility. If the organizers have arranged a repository for your lab, use that destination. Without `--repo-id`, DataHive defaults to `HiveBoard/<lab_id>`.
+Replace the repository placeholder with an existing **private Hugging Face dataset repository** that your lab can write to. `init` prompts for a lab identifier and Hugging Face token; it saves the configuration locally and does not create the remote repository or set its visibility. Register your laboratory using the [DataHive Lab Registration Form](https://docs.google.com/forms/d/e/1FAIpQLScfDJvfcweYjv8bLDEALWOJk1q4mW3xOeB52aUey1VWWp_pxQ/viewform?usp=dialog) to receive your designated `lab_id` and token. If the organizers have arranged a repository for your lab, use that destination. Without `--repo-id`, DataHive defaults to `HiveBoard/<lab_id>`.
 
 Fill in `samples/robot_profile.yaml` before recording. Describe the robot, end-effector, control mode, state and command conventions, joint order, recording rate, and cameras. See the upstream [robot-profile reference](https://github.com/hiveboard-bench/DataHive/blob/main/src/datahive/skills/datahive-data-prep/reference/robot-profile.md) for field definitions.
 
