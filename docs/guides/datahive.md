@@ -17,17 +17,44 @@ description: Collect, annotate, validate, and share HiveBoard learning episodes 
 
 The website Evaluation Runner does not acquire robot or camera streams. DataHive requires a recording integration with your experimental system; installing the toolkit alone does not connect it to a robot.
 
+## Lab registration and credentials
+
+All manipulation data contributed across laboratories is centralized directly in the official **HiveBoard** repository on Hugging Face (`HiveBoard/<lab_id>`). Labs do not need to create or host separate repositories; all contributions always go directly to our official benchmark Hub storage.
+
+To receive authorization and write access to your designated repository:
+
+1. **Submit the registration form**: Fill out the [DataHive Lab Registration Form](https://docs.google.com/forms/d/e/1FAIpQLScfDJvfcweYjv8bLDEALWOJk1q4mW3xOeB52aUey1VWWp_pxQ/viewform?usp=dialog) with your lab name, institution, robotic platform, and contact email.
+2. **Receive credentials**: The HiveBoard team will register your laboratory and provide:
+   - Your unique **Lab ID** (`lab_id`, e.g. `labrom`, `cmu_bimanual`);
+   - An authentication **Hugging Face write token** allowing DataHive to upload directly to `HiveBoard/<lab_id>`.
+3. **Direct upload destination**: All episodes uploaded through DataHive go straight to `HiveBoard/<lab_id>`. This ensures standardized tracking, dataset indexing, and automated aggregation for future benchmark releases.
+
 ## Install and configure
 
-Use Python 3.10 or later in a dedicated environment. Install the video extra so validation can inspect the recordings:
+Use Python 3.10 or later in a dedicated environment. Install `datahive-tools`:
 
 ```bash
-pip install "datahive-tools[video]"
-datahive init --repo-id YOUR_HF_NAMESPACE/YOUR_DATASET
-datahive new-profile
+pip install datahive-tools
+pip install "datahive-tools[video]"   # includes OpenCV for video integrity checks
 ```
 
-Replace the repository placeholder with an existing **private Hugging Face dataset repository** that your lab can write to. `init` prompts for a lab identifier and Hugging Face token; it saves the configuration locally and does not create the remote repository or set its visibility. Register your laboratory using the [DataHive Lab Registration Form](https://docs.google.com/forms/d/e/1FAIpQLScfDJvfcweYjv8bLDEALWOJk1q4mW3xOeB52aUey1VWWp_pxQ/viewform?usp=dialog) to receive your designated `lab_id` and token. If the organizers have arranged a repository for your lab, use that destination. Without `--repo-id`, DataHive defaults to `HiveBoard/<lab_id>`.
+Initialize your lab configuration:
+
+```bash
+datahive init
+```
+
+The CLI prompts for:
+- `Lab ID`: your assigned lab identifier from the registration form;
+- `Hugging Face token`: your write token issued by the HiveBoard team.
+
+`init` verifies your token against the Hugging Face Hub (via `whoami()`), writes your configuration to `~/.datahive/config.yaml` with secure `0600` file permissions, and automatically sets the remote repository destination to our official repository `HiveBoard/<lab_id>`.
+
+Next, create the robot profile skeleton:
+
+```bash
+datahive new-profile
+```
 
 Fill in `samples/robot_profile.yaml` before recording. Describe the robot, end-effector, control mode, state and command conventions, joint order, recording rate, and cameras. See the upstream [robot-profile reference](https://github.com/hiveboard-bench/DataHive/blob/main/src/datahive/skills/datahive-data-prep/reference/robot-profile.md) for field definitions.
 
@@ -49,6 +76,10 @@ Select the task conditions and collection mode. The Runner defaults to five tria
 | Automatic | Connect your recording/control script through `CollectClient`. The script receives the queued task, writes states and commands through `EpisodeWriter`, attaches camera recordings, and returns the episode for annotation. The evaluator still determines the outcome. |
 
 Follow the upstream [data format](https://github.com/hiveboard-bench/DataHive/blob/main/src/datahive/skills/datahive-data-prep/reference/layout-and-format.md) when preparing files. For automatic collection, use the [robot integration guide](https://github.com/hiveboard-bench/DataHive/blob/main/src/datahive/skills/datahive-auto-collect/reference/adapting.md). Robot drivers, command generation, and camera acquisition remain part of the lab's integration.
+
+::: tip Reference integration: Franka Research 3
+For a complete example to use as a base, see [`fr3_datahive`](https://github.com/hiveboard-bench/fr3_datahive) for a Dockerized setup with ROS 1 Noetic, teleoperation, and DataHive recording on a Franka Research 3 (FR3).
+:::
 
 **Record physical trials with an external camera**, with the board, end-effector, and task state visible throughout. Include that camera in the profile when storing its recording with the DataHive episode. For simulation, record rendered camera observations and identify the simulator and configuration.
 
@@ -86,14 +117,70 @@ To generate the benchmark submission ZIP, enter the scored results and platform 
 
 Passing DataHive validation checks an episode's format and annotations; it does not establish that all 65 benchmark trials or the full evaluation protocol have been completed. Data collected during evaluation can be contributed for future training, but must remain excluded from training or tuning the policy whose performance those trials report.
 
-## Upload and submit for review
+## Upload to Hugging Face Hub
 
-After validation, upload an episode to the configured dataset repository:
+DataHive synchronizes local manipulation sessions directly with our official Hugging Face dataset repository (`HiveBoard/<lab_id>`). Labs do not create external repositories; all data contributes directly to the central HiveBoard repository.
+
+### Upload a single episode
+
+After reviewing and validating an episode, upload it using the CLI:
 
 ```bash
 datahive upload EPISODE_ID
 ```
 
-Uploading stores the data at that destination; it does not send an organizer-review request. Keep the repository private during review, provide the setup description, calibration, episode index, and loading example, and follow the [dataset submission instructions](/contribute/evaluations#send-the-data-for-review). Arrange access with the organizers and include any supplemental sensor files in the shared package.
+Before uploading, DataHive runs a preflight check to confirm that the episode status is `validated` and directory structure constraints are satisfied. When confirmed, DataHive:
+- uploads the trajectory array to `{session_id}/episodes/{episode_id}.h5`;
+- uploads each camera recording to `{session_id}/episodes/{camera_name}.mp4`;
+- uploads `{session_id}/setup.jpg` if present;
+- automatically downloads and merges `{session_id}/trials.csv` directly in the HiveBoard repository, keeping remote records synchronized with local additions;
+- marks the episode status as `uploaded` in the local index (`samples/.datahive/index.sqlite`).
+
+Use `--yes` (`-y`) to skip the confirmation prompt, or `--force` to re-upload an already uploaded episode.
+
+### Synchronize all sessions (`datahive sync`)
+
+To reconcile your entire local `samples/` directory with our Hugging Face repository in one command:
+
+```bash
+datahive sync
+```
+
+`sync` scans all sessions under `samples/`, detects any validated episodes that have not yet been uploaded, pushes them directly to `HiveBoard/<lab_id>`, and merges all corresponding `trials.csv` files on the Hub.
+
+Use `--dry-run` to preview what would be uploaded without transferring files:
+
+```bash
+datahive sync --dry-run
+```
+
+### Uploading from the web interface
+
+Both operations are also accessible in the local web interface (`datahive interface`):
+- In the **Annotate** view, click the **Upload** button on any validated episode card to upload it immediately to `HiveBoard/<lab_id>`.
+- In the header, click **Sync** to reconcile all sessions with the Hub.
+
+### Remote repository layout
+
+All contributed episodes are organized inside our official dataset repository:
+
+```text
+HiveBoard/<lab_id>/                  # Official HiveBoard dataset repository
+├── 2026-09-20_session_01/
+│   ├── episodes/
+│   │   ├── episode_0001.h5          # States, commands, and joint telemetry
+│   │   ├── camera_wrist.mp4         # Synchronized camera video
+│   │   ├── camera_external.mp4      # External view video
+│   │   └── ...
+│   ├── trials.csv                   # Session trials and outcome annotations
+│   └── setup.jpg                    # Platform setup photo
+└── ...
+```
+
+### Submitting for organizer review
+
+Because all uploads go directly to our official HiveBoard repository:
+- You do not need to configure external storage, manage third-party repositories, or transfer archives manually.
+- When you finish collecting a session or dataset, simply email **ricardo.godoy@usp.br** with your `lab_id`, platform description, and covered tasks, as detailed in the [dataset submission instructions](/contribute/evaluations#send-the-data-for-review). The HiveBoard team will review the uploaded episodes directly in `HiveBoard/<lab_id>`.
 
 Record the DataHive package version or commit with the dataset. DataHive builds on the architecture and workflows of [Oopsie Data](https://github.com/oopsie-data); see its [README](https://github.com/hiveboard-bench/DataHive#readme) for project credits and current usage.

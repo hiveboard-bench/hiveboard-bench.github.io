@@ -159,17 +159,7 @@
             </div>
 
             <div class="buttons is-centered hero-links" style="gap: 12px; margin: 0;">
-                            <a class="button is-rounded is-outlined hero-link-btn no-bounce"
-                style="border-color: #cbd5e1; color: #334155; font-weight: 500; padding: 0 1.2rem; transition: all 0.2s; cursor: not-allowed;"
-                onmouseover="this.querySelector('.btn-text-content').innerText = 'Soon';"
-                onmouseout="this.querySelector('.btn-text-content').innerText = 'PDF';">
-                <span class="icon" style="color: #475569;">
-                  <i class="fas fa-file-pdf"></i>
-                </span>
-                <span class="btn-text-content"
-                  style="min-width: 50px; display: inline-block; text-align: center;">PDF</span>
-              </a>
-                            <a class="button is-rounded is-outlined hero-link-btn no-bounce"
+              <a class="button is-rounded is-outlined hero-link-btn no-bounce"
                 style="border-color: #cbd5e1; color: #334155; font-weight: 500; padding: 0 1.2rem; transition: all 0.2s; cursor: not-allowed;"
                 onmouseover="this.querySelector('.btn-text-content').innerText = 'Soon';"
                 onmouseout="this.querySelector('.btn-text-content').innerText = 'arXiv';">
@@ -180,7 +170,7 @@
                   style="min-width: 50px; display: inline-block; text-align: center;">arXiv</span>
               </a>
 
-                            <a href="https://github.com/EESC-LabRoM/HiveBoard" target="_blank" rel="noopener noreferrer" class="button is-rounded is-outlined hero-link-btn"
+              <a href="https://github.com/EESC-LabRoM/HiveBoard" target="_blank" rel="noopener noreferrer" class="button is-rounded is-outlined hero-link-btn"
                 style="border-color: #cbd5e1; color: #334155; font-weight: 500; padding: 0 1.2rem; transition: all 0.2s;">
                 <span class="icon" style="color: #475569;">
                   <i class="fab fa-github"></i>
@@ -194,14 +184,6 @@
                   <i class="fas fa-clipboard-check"></i>
                 </span>
                 <span>Documentation</span>
-              </a>
-
-              <a href="https://github.com/hiveboard-bench/DataHive" target="_blank" rel="noopener noreferrer" class="button is-rounded is-outlined hero-link-btn"
-                style="border-color: #cbd5e1; color: #334155; font-weight: 500; padding: 0 1.2rem; transition: all 0.2s;">
-                <span class="icon" style="color: #475569;">
-                  <i class="fab fa-github"></i>
-                </span>
-                <span>DataHive</span>
               </a>
             </div>
 
@@ -1969,6 +1951,63 @@
                 </div>
               </div>
             </div>
+            <div class="video-item">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video
+                  src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/fr3_shock_absorver.MOV" data-poster="./assets/posters/fr3_shock_absorver.webp"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Shock absorber</p>
+                </div>
+              </div>
+            </div>
+            <div class="video-item">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video
+                  src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/fr3_thread_m30.MOV" data-poster="./assets/posters/fr3_thread_m30.webp"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Thread (M8)</p>
+                </div>
+              </div>
+            </div>
+            <div class="video-item">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video
+                  src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/fr3_thread_m8.MOV" data-poster="./assets/posters/fr3_thread_m8.webp"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Thread (M30)</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -3319,10 +3358,13 @@
                 DataHive &amp; <code style="color: #edaf19; background-color: rgba(237, 175, 25, 0.1); padding: 0.2rem 0.4rem; border-radius: 4px; font-size: 0.9em;">datahive-tools</code>
               </h3>
               <p class="mb-3" style="color: #475569; line-height: 1.6; font-size: 0.95rem;">
-                <strong>What it's for:</strong> Provides a streamlined pipeline to record robot trials, validate episode integrity (verifying timestamps, frequencies, and synchronized multi-camera MP4 streams), annotate outcomes in a local web interface, and upload structured datasets to the Hugging Face Hub.
+                <strong>What it's for:</strong> Provides a streamlined pipeline to record robot trials, validate episode integrity (verifying timestamps, frequencies, and synchronized multi-camera MP4 streams), annotate outcomes in a local web interface, and upload structured datasets directly to our official repository on the Hugging Face Hub (<code>HiveBoard/&lt;lab_id&gt;</code>).
               </p>
               <p class="mb-4" style="color: #475569; line-height: 1.6; font-size: 0.95rem;">
-                <strong>Contributing data:</strong> To contribute manipulation episodes from your laboratory, you must first register your lab using the registration form. Upon registration, you will receive your designated <code>lab_id</code> and authentication <code>token</code> required to record and submit datasets.
+                <strong>Contributing data:</strong> All contributions go directly into our central repository. Register your laboratory using the registration form to receive your designated <strong>Lab ID</strong> and <strong>Hugging Face Token</strong>, allowing DataHive to authenticate and upload directly to <code>HiveBoard/&lt;lab_id&gt;</code>.
+              </p>
+              <p class="mb-4" style="color: #475569; line-height: 1.6; font-size: 0.95rem;">
+                <strong>Reference integration:</strong> Looking for a starting point? See the <a href="https://github.com/hiveboard-bench/fr3_datahive" target="_blank" rel="noopener noreferrer" style="color: #b45309; font-weight: 600; text-decoration: underline;"><code>fr3_datahive</code></a> repository for a Dockerized Franka Research 3 (FR3) setup with ROS and joystick teleoperation.
               </p>
               <div class="buttons" style="gap: 10px;">
                 <a href="https://docs.google.com/forms/d/e/1FAIpQLScfDJvfcweYjv8bLDEALWOJk1q4mW3xOeB52aUey1VWWp_pxQ/viewform?usp=dialog"
@@ -3336,21 +3378,22 @@
                   </span>
                   <span>Register Lab</span>
                 </a>
+                <a href="./hivedocs/guides/datahive.html"
+                  class="button is-rounded is-outlined hero-link-btn"
+                  style="border-color: #cbd5e1; color: #334155; font-weight: 500; padding: 0 1.2rem; transition: all 0.2s;">
+                  <span class="icon" style="color: #475569;">
+                    <i class="fas fa-book-open"></i>
+                  </span>
+                  <span>Guide &amp; Hugging Face</span>
+                </a>
                 <a href="https://github.com/hiveboard-bench/DataHive" target="_blank" rel="noopener noreferrer"
                   class="button is-rounded is-outlined hero-link-btn"
-                  style="border-color: #cbd5e1; color: #334155; font-weight: 500; padding: 0 1.2rem; transition: all 0.2s;">
-                  <span class="icon" style="color: #475569;">
-                    <i class="fab fa-github"></i>
+                  title="DataHive GitHub"
+                  aria-label="DataHive GitHub"
+                  style="border-color: #cbd5e1; color: #334155; width: 40px; min-width: 40px; max-width: 40px; height: 40px; padding: 0 !important; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s;">
+                  <span class="icon" style="color: #475569; margin: 0;">
+                    <i class="fab fa-github" style="font-size: 1.15rem;"></i>
                   </span>
-                  <span>GitHub Repository</span>
-                </a>
-                <a href="https://pypi.org/project/datahive-tools/" target="_blank" rel="noopener noreferrer"
-                  class="button is-rounded is-outlined hero-link-btn"
-                  style="border-color: #cbd5e1; color: #334155; font-weight: 500; padding: 0 1.2rem; transition: all 0.2s;">
-                  <span class="icon" style="color: #475569;">
-                    <i class="fab fa-python"></i>
-                  </span>
-                  <span>PyPI Package</span>
                 </a>
               </div>
             </div>
@@ -3367,10 +3410,10 @@
 
               <div style="background-color: #ffffff; border: 1px solid #cbd5e1; border-left: 4px solid #edaf19; border-radius: 8px; padding: 1rem 1.25rem;">
                 <p style="font-size: 0.75rem; font-weight: 700; color: #0f172a; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.35rem; display: flex; align-items: center; gap: 6px;">
-                  <i class="fas fa-id-badge" style="color: #edaf19;"></i> Lab Credentials Required
+                  <i class="fas fa-id-badge" style="color: #edaf19;"></i> Official HiveBoard Repository
                 </p>
                 <p style="font-size: 0.82rem; color: #475569; line-height: 1.5; margin: 0;">
-                  Submit the <a href="https://docs.google.com/forms/d/e/1FAIpQLScfDJvfcweYjv8bLDEALWOJk1q4mW3xOeB52aUey1VWWp_pxQ/viewform?usp=dialog" target="_blank" rel="noopener noreferrer" style="color: #b45309; font-weight: 600; text-decoration: underline;">registration form</a> to receive your unique <strong>Lab ID</strong> and <strong>Token</strong> before collecting and contributing episodes.
+                  Submit the <a href="https://docs.google.com/forms/d/e/1FAIpQLScfDJvfcweYjv8bLDEALWOJk1q4mW3xOeB52aUey1VWWp_pxQ/viewform?usp=dialog" target="_blank" rel="noopener noreferrer" style="color: #b45309; font-weight: 600; text-decoration: underline;">registration form</a> to receive your unique <strong>Lab ID</strong> and <strong>Hugging Face Token</strong>. All uploads go directly to our official repository on the Hub (<code>HiveBoard/&lt;lab_id&gt;</code>).
                 </p>
               </div>
             </div>

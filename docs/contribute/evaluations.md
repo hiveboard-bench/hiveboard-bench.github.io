@@ -22,11 +22,11 @@ Read the [evaluation protocol](/benchmark/protocol) and [task definitions](/hard
 
 ## Collect with DataHive
 
-Follow the [DataHive guide](/guides/datahive) to install the toolkit, define the robot and camera profile, and prepare a recording integration. Its local Runner supports manual collection with attached episode files or automatic collection through the lab's robot script. The Annotate page and command-line tools support episode review and validation.
+Follow the [DataHive guide](/guides/datahive) to install the toolkit, define the robot and camera profile, and prepare a recording integration (see [`fr3_datahive`](https://github.com/hiveboard-bench/fr3_datahive) for a Franka Research 3 reference setup). Its local Runner supports manual collection with attached episode files or automatic collection through the lab's robot script. The Annotate page and command-line tools support episode review and validation.
 
-To contribute episodes with DataHive, register your laboratory through the [DataHive Lab Registration Form](https://docs.google.com/forms/d/e/1FAIpQLScfDJvfcweYjv8bLDEALWOJk1q4mW3xOeB52aUey1VWWp_pxQ/viewform?usp=dialog) to receive your assigned `lab_id` and authentication token.
+To contribute episodes with DataHive, register your laboratory through the [DataHive Lab Registration Form](https://docs.google.com/forms/d/e/1FAIpQLScfDJvfcweYjv8bLDEALWOJk1q4mW3xOeB52aUey1VWWp_pxQ/viewform?usp=dialog) to receive your assigned `lab_id` and Hugging Face authentication token.
 
-DataHive stores states and commands in HDF5, camera recordings in MP4, and task annotations in a session CSV. Check the [current acquisition requirements](/guides/datahive#check-the-recording-setup-first) and validate a pilot episode before collecting the full dataset. Depth, force/torque, tactile, and other additional streams remain welcome; agree on supplemental formats for signals outside the toolkit's current episode format.
+DataHive stores states and commands in HDF5, camera recordings in MP4, and task annotations in a session CSV. Validated episodes are uploaded directly to your private Hugging Face dataset repository (`HiveBoard/<lab_id>`) via `datahive upload` or `datahive sync`. See the [DataHive guide](/guides/datahive#upload-to-hugging-face-hub) for the complete workflow. Check the [current acquisition requirements](/guides/datahive#check-the-recording-setup-first) and validate a pilot episode before collecting the full dataset. Depth, force/torque, tactile, and other additional streams remain welcome; agree on supplemental formats for signals outside the toolkit's current episode format.
 
 DataHive is the recommended collection workflow, not a requirement for acceptance. Existing datasets and other documented recording formats can be discussed with the organizers.
 
@@ -80,11 +80,11 @@ Organize the learning data, calibration, episode index, reader, setup descriptio
 
 ## Send the data for review
 
-Upload the completed package to a private Hugging Face dataset repository configured in DataHive, or other agreed storage, and arrange download access with **ricardo.godoy@usp.br**. Keep the package private during review. Include the dataset documentation, calibration, reader, and any supplemental files alongside the uploaded episodes. A DataHive upload does not notify the organizers or submit the dataset for review.
+When using DataHive, episodes are uploaded directly to our official Hugging Face repository (`HiveBoard/<lab_id>`). If contributing outside DataHive (e.g. ROS bags or custom HDF5/Zarr archives), upload the package to storage you control and arrange download access with **ricardo.godoy@usp.br**. A DataHive upload does not automatically notify the organizers, so send an email to confirm when a batch is ready for review.
 
-Email [ricardo.godoy@usp.br](mailto:ricardo.godoy@usp.br?subject=HiveBoard%20learning%20dataset%20submission) directly with your name, institution or Independent, dataset link, platform description, tasks covered, episode counts, and recorded modalities. Include known limitations and proposed data reuse terms. **Dataset submissions do not go through the runner's 65-trial submission form.**
+Email [ricardo.godoy@usp.br](mailto:ricardo.godoy@usp.br?subject=HiveBoard%20learning%20dataset%20submission) directly with your name, institution or Independent, `lab_id` (or dataset link), platform description, tasks covered, episode counts, and recorded modalities. Include known limitations and proposed data reuse terms. **Dataset submissions do not go through the runner's 65-trial submission form.**
 
-The organizers will review the dataset structure, signal definitions, alignment, loading example, and recordings, and request corrections if needed. Public release follows review and agreement on publication and reuse permissions. Contact details and private download links will remain private.
+The organizers will review the dataset structure, signal definitions, alignment, loading example, and recordings, and request corrections if needed. Public release follows review and agreement on publication and reuse permissions. Contact details and private links will remain private.
 
 ## Authorship and acknowledgments
 
