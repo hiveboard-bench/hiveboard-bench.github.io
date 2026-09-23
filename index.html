@@ -114,17 +114,18 @@
             style="font-size: 1.15rem; font-weight: 500; color: #475569; max-width: 1100px; margin: 0 auto;">
             <span class="author-block">Ricardo V. Godoy<sup>1</sup>,</span>
             <span class="author-block">Enzo F. de Souza<sup>1</sup>,</span>
+            <span class="author-block">Matheus P. Angarola<sup>1</sup>,</span>
             <span class="author-block">Rudy De-Xin de Lange<sup>2</sup>,</span>
             <span class="author-block">Juliano Negri<sup>1</sup>,</span>
             <span class="author-block">João A. Marsicano<sup>1</sup>,</span>
+            <span class="author-block">João H. Aléssio<sup>1</sup>,</span>
             <span class="author-block">Victor van Halst<sup>1</sup>,</span>
             <span class="author-block">Aravind Elanjimattathil Vijayan<sup>3</sup>,</span>
             <span class="author-block">Gianluca Capezzuto<sup>1</sup>,</span>
-            <span class="author-block">Matheus P. Angarola<sup>1</sup>,</span>
             <span class="author-block">Felipe A. G. Tommaselli<sup>1</sup>,</span>
             <span class="author-block">Giuseppe Milazzo<sup>4</sup>,</span>
-            <span class="author-block">João H. Aléssio<sup>1</sup>,</span>
             <span class="author-block">Amy M. Ramírez Sánchez<sup>9</sup>,</span>
+            <span class="author-block">Francisco Affonso<sup>10</sup>,</span>
             <span class="author-block">Rafael R. Baptista<sup>6</sup>,</span>
             <span class="author-block">Meiko Adriana van Berge<sup>7</sup>,</span>
             <span class="author-block">Ranulfo Bezerra<sup>8</sup>,</span>
@@ -146,7 +147,8 @@
             <span class="author-block"><sup>6</sup>Biomedical Engineering Laboratory, University of São Paulo, Brazil</span><br>
             <span class="author-block"><sup>7</sup>Independent researcher</span><br>
             <span class="author-block"><sup>8</sup>Graduate School of Engineering, Tohoku University, Sendai, Japan</span><br>
-            <span class="author-block"><sup>9</sup>Directorate of Technological Innovation, Universidad de las Américas Puebla, Mexico</span>
+            <span class="author-block"><sup>9</sup>Directorate of Technological Innovation, Universidad de las Américas Puebla, Mexico</span><br>
+            <span class="author-block"><sup>10</sup>University of Illinois Urbana-Champaign, USA</span>
           </div>
 
           <div class="mb-4" style="font-size: 0.9rem; color: #94a3b8;">
@@ -2009,6 +2011,25 @@
                 </div>
               </div>
             </div>
+            <div class="video-item">
+              <div class="box video-placeholder"
+                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
+                <video
+                  src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/fr3_drawer.mp4" data-poster="./assets/posters/fr3_drawer.webp"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; object-position: center bottom;"
+                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
+                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
+                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
+                <div class="video-overlay"
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
+                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
+                  <p class="has-text-weight-medium" style="margin: 0;">Drawer</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -3443,13 +3464,14 @@
             style="background-color: transparent; padding: 0; margin: 0; overflow-x: auto; font-family: 'Courier New', Courier, monospace; color: #334155; font-size: 0.9rem;"><code id="citation-text">@article{hiveboard2026,
   title   = {HiveBoard: An Open, Modular, 3D-Printed Benchmark of Industrial Mechanisms
              for Robotic and Prosthetic Manipulation},
-  author  = {Godoy, Ricardo V. and de Souza, Enzo F. and de Lange, Rudy De-Xin and
-             Negri, Juliano and Marsicano, Jo\~{a}o A. and van Halst, Victor and
+  author  = {Godoy, Ricardo V. and de Souza, Enzo F. and Angarola, Matheus P. and
+             de Lange, Rudy De-Xin and Negri, Juliano and Marsicano, Jo\~{a}o A. and
+             Aléssio, João H. and van Halst, Victor and
              Elanjimattathil Vijayan, Aravind and Capezzuto, Gianluca and
-             Angarola, Matheus P. and Tommaselli, Felipe A. G. and Milazzo, Giuseppe and
-             Aléssio, João H. and Ramírez Sánchez, Amy M. and Baptista, Rafael R. and
-              van Berge, Meiko Adriana and Bezerra, Ranulfo and Lahr, Gustavo J. G. and Ferrari Gerez, Lucas and
-              Bicchi, Antonio and Becker, Marcelo},
+             Tommaselli, Felipe A. G. and Milazzo, Giuseppe and
+             Ramírez Sánchez, Amy M. and Affonso, Francisco and Baptista, Rafael R. and
+             van Berge, Meiko Adriana and Bezerra, Ranulfo and Lahr, Gustavo J. G. and Ferrari Gerez, Lucas and
+             Bicchi, Antonio and Becker, Marcelo},
   journal = {Under review},
   year    = {2026},
   url     = {https://github.com/EESC-LabRoM/HiveBoard}
@@ -3499,6 +3521,7 @@
           <img src="./assets/logos/rsl_logo.webp" alt="Robotic Systems Lab" style="height: 48px; width: auto; max-width: 150px; object-fit: contain;">
           <img src="./assets/logos/arara_logo.png" alt="Arara" style="height: 48px; width: auto; max-width: 150px; object-fit: contain;">
           <img src="./assets/logos/stem_udlap_logo.png" alt="STEM UDLAP" style="height: 80px; width: auto; max-width: 180px; object-fit: contain;">
+          <img src="./assets/logos/uiuc_logo.png" alt="University of Illinois Urbana-Champaign" style="height: 52px; width: auto; max-width: 150px; object-fit: contain;">
         </div>
       </div>
     </section>
