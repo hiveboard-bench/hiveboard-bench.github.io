@@ -57,7 +57,7 @@ const tasks = [
   {
     id: 'light_bulb', name: 'Light bulb', family: 'Precision', timeout: 120,
     image: '/images/tasks/lamp_3d.png',
-    video: `${VIDEO_BASE}/spot_light_bulb.mp4`, videoPlatform: 'Platform A · Spot with Spot Arm',
+    video: `${VIDEO_BASE}/anymal_light_bulb.mp4`, videoPlatform: 'Platform C · ANYmal with DynaArm (VR)',
     success: 'Thread the bulb into the socket until it is seated.',
     reset: 'Remove the bulb, restore the documented starting pose, and inspect the thread.'
   },
@@ -109,7 +109,7 @@ const tasks = [
   {
     id: 'shock_absorber', name: 'Shock absorber', family: 'Composed assembly', timeout: 180,
     image: '/images/tasks/spring_3d.png',
-    video: `${VIDEO_BASE}/macao_spring.mp4`, videoPlatform: 'Platform D · Macao prosthetic hand',
+    video: `${VIDEO_BASE}/fr3_shock_absorver.MOV`, videoPlatform: 'Platform E · Franka Research 3',
     success: 'Grasp the pin, align it with the hole, and insert it fully.',
     reset: 'Remove the pin, restore its starting pose, and check both occupied board cells.',
     stages: ['Grasp pin', 'Align with hole', 'Insert fully']
@@ -1214,7 +1214,7 @@ onUnmounted(() => {
           <button class="video-close" type="button" aria-label="Close example video" @click="closeExampleVideo">Close</button>
         </header>
         <video :key="exampleVideoTask.video" controls autoplay muted playsinline preload="metadata" controlslist="nodownload">
-          <source :src="exampleVideoTask.video" type="video/mp4">
+          <source :src="exampleVideoTask.video" :type="/\.mp4$/i.test(exampleVideoTask.video) ? 'video/mp4' : undefined">
           Your browser does not support HTML video.
         </video>
       </section>
