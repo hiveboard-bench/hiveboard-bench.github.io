@@ -64,6 +64,11 @@
       scroll-behavior: smooth;
     }
 
+    .hero-authors .author-block {
+      white-space: nowrap;
+      display: inline-block;
+    }
+
     .author-block sup {
       font-size: 0.65em;
       margin-left: 2px;
@@ -110,8 +115,8 @@
             <span style="display: block;">Industrial Mechanisms for Robotic and Prosthetic Manipulation</span>
           </h1>
 
-          <div class="mb-3"
-            style="font-size: 1.15rem; font-weight: 500; color: #475569; max-width: 1100px; margin: 0 auto;">
+          <div class="hero-authors mb-3"
+            style="font-size: 1.15rem; font-weight: 500; color: #475569; max-width: 1200px; margin: 0 auto;">
             <span class="author-block">Ricardo V. Godoy<sup>1</sup>,</span>
             <span class="author-block">Enzo F. de Souza<sup>1</sup>,</span>
             <span class="author-block">Matheus P. Angarola<sup>1</sup>,</span>
@@ -127,7 +132,8 @@
             <span class="author-block">Amy M. Ramírez Sánchez<sup>9</sup>,</span>
             <span class="author-block">Francisco Affonso<sup>10</sup>,</span>
             <span class="author-block">Rafael R. Baptista<sup>6</sup>,</span>
-            <span class="author-block">Meiko Adriana van Berge<sup>7</sup>,</span>
+            <span class="author-block">Meiko A. van Berge<sup>7</sup>,</span>
+            <span class="author-block">Girish Chowdhary<sup>10</sup>,</span>
             <span class="author-block">Ranulfo Bezerra<sup>8</sup>,</span>
             <span class="author-block">Gustavo J. G. Lahr<sup>5</sup>,</span>
             <span class="author-block">Lucas Ferrari Gerez<sup>2</sup>,</span>
@@ -266,7 +272,7 @@
             functional mechanisms. A hexagonal honeycomb base accepts 12 interchangeable attachment designs modeled on
             industrial fittings and grouped into three skill categories &mdash; torque, precision, and composed assembly
             &mdash; all fully functional, printable on consumer-grade FDM printers, and released with articulated URDF
-            and USD models for direct import into common simulators. A cross-laboratory validation across four
+            and USD models for direct import into common simulators. A cross-laboratory validation across five
             manipulation systems, from quadruped &mdash; and fixed-base teleoperated arms and a legged manipulator driven
             through virtual-reality devices to a wearable anthropomorphic prosthetic hand, all scored on the
             13 evaluation conditions, including the ball valve with and without its friction ring, shows that six conditions were completed by every platform and two by none, that
@@ -2763,7 +2769,6 @@
             <span><span class="swatch" style="background: #edaf19;"></span>5/5 completed</span>
             <span><span class="swatch" style="background: rgba(237,175,25,0.45);"></span>partial (4/5)</span>
             <span><span class="swatch" style="background: #f1f5f9;"></span>0/5 &mdash; no success</span>
-            <span><span class="swatch" style="background: #f8fafc; border: 1px dashed #cbd5e1;"></span>Soon &mdash; in progress</span>
           </div>
         </div>
 
@@ -2921,6 +2926,7 @@
                     <th>B &middot; SO-101</th>
                     <th>C &middot; ANYmal</th>
                     <th>D &middot; Macao hand</th>
+                    <th>E &middot; FR3</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -2930,6 +2936,7 @@
                     <td>0.12</td>
                     <td>0.15</td>
                     <td>0.03</td>
+                    <td>0.24</td>
                   </tr>
                   <tr>
                     <td><strong>Precision</strong></td>
@@ -2937,6 +2944,7 @@
                     <td>0.69</td>
                     <td>0.16</td>
                     <td>0.64</td>
+                    <td>&mdash;</td>
                   </tr>
                   <tr>
                     <td><strong>Composed assembly</strong></td>
@@ -2944,6 +2952,7 @@
                     <td>0.13</td>
                     <td>0.17</td>
                     <td>0.17</td>
+                    <td>0.34</td>
                   </tr>
                 </tbody>
               </table>
@@ -2959,6 +2968,29 @@
           </div>
         </div>
 
+        <div class="box mt-5" id="hivescore"
+          style="border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+          <div class="is-flex is-align-items-center is-justify-content-space-between mb-3" style="flex-wrap: wrap; gap: 0.75rem;">
+            <div>
+              <h3 class="title is-5 mb-1" style="color: #0f172a;">HiveScore</h3>
+              <p style="color: #64748b; font-size: 0.85rem; margin: 0;">Success weighted by completion speed relative to the unimpaired human reference.</p>
+            </div>
+            <span class="rd-chip">Human reference: 85.8&ndash;97.8</span>
+          </div>
+          <div style="overflow-x: auto;">
+            <table class="table academic-table">
+              <thead><tr><th>Platform</th><th>Successes</th><th>Conditions</th><th>Median slowdown</th><th>HiveScore</th></tr></thead>
+              <tbody>
+                <tr><td><strong>A &middot; Spot Arm</strong></td><td>40/65</td><td>8</td><td>9.3&times; <span style="color:#94a3b8;">(6.4&ndash;12.8)</span></td><td><strong>7.0</strong> <span style="color:#94a3b8;">(6.6&ndash;7.3)</span></td></tr>
+                <tr><td><strong>B &middot; SO-101</strong></td><td>44/65</td><td>9</td><td>5.8&times; <span style="color:#94a3b8;">(3.8&ndash;19.3)</span></td><td><strong>12.0</strong> <span style="color:#94a3b8;">(11.3&ndash;12.6)</span></td></tr>
+                <tr><td><strong>C &middot; ANYmal</strong></td><td>40/65</td><td>8</td><td>6.0&times; <span style="color:#94a3b8;">(4.5&ndash;10.1)</span></td><td><strong>10.4</strong> <span style="color:#94a3b8;">(9.9&ndash;10.9)</span></td></tr>
+                <tr><td><strong>D &middot; Macao hand</strong></td><td>53/65</td><td>11</td><td>1.6&times; <span style="color:#94a3b8;">(0.9&ndash;14.7)</span></td><td><strong>41.6</strong> <span style="color:#94a3b8;">(40.0&ndash;43.2)</span></td></tr>
+                <tr><td><strong>E &middot; FR3</strong></td><td>40/65</td><td>9</td><td>10.9&times; <span style="color:#94a3b8;">(8.3&ndash;19.1)</span></td><td><strong>5.7</strong> <span style="color:#94a3b8;">(5.4&ndash;6.0)</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
                 <div
           style="height: 1px; width: 100%; background: linear-gradient(90deg, transparent, #cbd5e1, transparent); margin: 2.5rem 0;">
         </div>
@@ -2969,8 +3001,8 @@
               categories</p>
           </div>
                     <div class="column is-3-tablet is-12-mobile stat-divider">
-            <h3 class="title is-3 mb-1" style="font-weight: 700; color: #0f172a; letter-spacing: -0.5px;">260</h3>
-            <p style="font-size: 0.85rem; color: #475569; line-height: 1.4;">Recorded trials, 65 on each of the four
+                    <h3 class="title is-3 mb-1" style="font-weight: 700; color: #0f172a; letter-spacing: -0.5px;">325</h3>
+          <p style="font-size: 0.85rem; color: #475569; line-height: 1.4;">Recorded trials, 65 on each of the five
               platforms, under one fixed protocol</p>
           </div>
                     <div class="column is-3-tablet is-12-mobile stat-divider">
@@ -3003,63 +3035,72 @@
                 A: { s: 5, t: 10.5, a: 1.0, note: 'The lever was pushed with the end-effector as non-prehensile manipulation, converting the task into a planar push the wrist can execute.' },
                 B: { s: 5, t: 9.0, a: 2.2, note: 'Driven by pushing with the closed gripper rather than grasping, the same strategy Platform A adopted.' },
                 C: { s: 5, t: 7.8, a: 1.0, note: 'Completed with a different arm, gripper, and control interface than Platform A, in comparable time.' },
-                D: { s: 5, t: 2.1, a: 1.0, note: 'Driven with the closed hand structure: the lever needs no grasp actuation at all, which makes this the hand&rsquo;s fastest class of task.' }
+                D: { s: 5, t: 2.1, a: 1.0, note: 'Driven with the closed hand structure: the lever needs no grasp actuation at all, which makes this the hand&rsquo;s fastest class of task.' },
+                E: { s: 5, t: 14.1, a: 1.0 }
               },
               {
                 n: 'Ball valve + ring', cat: 'Torque', timeout: 90, crit: 'Handle rotated 90° from closed to open with the ring fitted',
                 A: { s: 5, t: 16.9, a: 1.0, note: 'The ring adds 6.4 s of median time over the bare valve, confirming that the snap-on accessories modulate difficulty as designed.' },
                 B: { s: 5, t: 9.0, a: 1.6, note: 'Identical median to the bare valve: the friction ring is the one accessory in the study that costs a platform nothing measurable.' },
                 C: { s: 5, t: 9.2, a: 1.0, note: 'The ring adds 1.4 s here, a smaller increment than the 6.4 s the same accessory costs Platform A.' },
-                D: { s: 5, t: 2.2, a: 1.0, note: 'Essentially unaffected by the friction ring: the added breakaway torque is absorbed by the operator&rsquo;s own arm.' }
+                D: { s: 5, t: 2.2, a: 1.0, note: 'Essentially unaffected by the friction ring: the added breakaway torque is absorbed by the operator&rsquo;s own arm.' },
+                E: { s: 5, t: 14.7, a: 1.0 }
               },
               {
                 n: 'Gate valve (small)', cat: 'Torque', timeout: 90, crit: 'Stem rotated one full turn from the closed position',
                 A: { s: 5, t: 19.9, a: 1.0 },
                 B: { s: 0, causes: { 'Kinematic limit': 5 }, note: 'The only attachment in the study that one platform failed and the other three completed. The operator notes record an initial grasp used to release the stem and a final grasp used to push the valve clear of its seat, so the stem moved without ever completing a full turn inside the 90 s timeout.' },
                 C: { s: 5, t: 23.1, a: 1.4, note: 'The longest completed task on this platform: the handwheel needs a full turn of the stem, held steady while the torso frame itself moves under the whole-body policy.' },
-                D: { s: 5, t: 2.7, a: 1.0, note: 'Operated with a tripod grasp on the handwheel &mdash; one of the few torque tasks where the hand actually closes on the part.' }
+                D: { s: 5, t: 2.7, a: 1.0, note: 'Operated with a tripod grasp on the handwheel &mdash; one of the few torque tasks where the hand actually closes on the part.' },
+                E: { s: 5, t: 34.2, a: 1.0 }
               },
               {
                 n: 'Gate valve (large)', cat: 'Torque', timeout: 120, crit: 'Stem rotated one full turn from the closed position',
                 A: { s: 5, t: 17.4, a: 1.0 },
                 B: { s: 5, t: 10.0, a: 4.4, note: 'The wider rim is exactly what the small valve lacks: completed on all five trials at a mean of 4.4 attempts, where the small gate valve failed on all five.' },
                 C: { s: 5, t: 16.8, a: 1.0, note: 'Completed by driving one jaw between the spokes of the handwheel instead of grasping around its rim as on Platform A.' },
-                D: { s: 5, t: 2.3, a: 1.0, note: 'Again required no grasp actuation: the larger handwheel can be turned by the closed hand structure.' }
+                D: { s: 5, t: 2.3, a: 1.0, note: 'Again required no grasp actuation: the larger handwheel can be turned by the closed hand structure.' },
+                E: { s: 5, t: 21.8, a: 1.0 }
               },
               {
                 n: 'Circuit breaker', cat: 'Torque', timeout: 60, crit: 'Toggle moved from one state to the other and held',
                 A: { s: 5, t: 15.6, a: 1.0, note: 'The toggle was grasped and thrown rather than pushed.' },
                 B: { s: 4, t: 8.5, a: 2.8, causes: { 'Other': 1 }, note: 'The single failure came when the movable part of the breaker broke at the end of the motion &mdash; the only failure on this platform not attributed to a kinematic limit.' },
                 C: { s: 5, t: 6.7, a: 1.0, note: 'The fastest attachment on this platform.' },
-                D: { s: 5, t: 1.6, a: 1.0, note: 'The fastest cell in the entire study: the toggle is driven by the closed hand.' }
+                D: { s: 5, t: 1.6, a: 1.0, note: 'The fastest cell in the entire study: the toggle is driven by the closed hand.' },
+                E: { s: 5, t: 13.8, a: 1.0 }
               },
               {
                 n: 'Light bulb', cat: 'Precision', timeout: 120, crit: 'Bulb fully threaded until seated',
                 A: { s: 5, t: 27.3, a: 1.0 },
                 B: { s: 5, t: 83.0, a: 13.8, note: '13.8 attempts and 13.6 grasps per trial, the highest counts recorded anywhere in the study: accumulating rotation on this arm means releasing the bulb and reacquiring it, over and over.' },
                 C: { s: 5, t: 19.3, a: 2.2, note: 'The highest attempt count this platform recorded &mdash; regrasping is impractical here, and the logs show a single grasp per trial on ten of the thirteen conditions.' },
-                D: { s: 5, t: 52.1, a: 1.0, note: 'Completed on every trial with a power grasp, at a mean of 7.0 regrasps: limited wrist rotation on a worn device forces repeated grasp&ndash;rotate&ndash;release cycles.' }
+                D: { s: 5, t: 52.1, a: 1.0, note: 'Completed on every trial with a power grasp, at a mean of 7.0 regrasps: limited wrist rotation on a worn device forces repeated grasp&ndash;rotate&ndash;release cycles.' },
+                E: { s: 0, a: 1.0, causes: { 'Kinematic limit': 5 }, note: 'The gripper did not bring the bulb into alignment with the socket before timeout.' }
               },
               {
                 n: 'Thread (M8)', cat: 'Precision', timeout: 120, crit: 'Bolt fully threaded along the available length',
                 A: { s: 0, a: 1.0, causes: { 'Kinematic limit': 5 }, note: 'Turning the bolt requires sustained axial rotation, which this wrist cannot produce; it sweeps along an arc instead of rotating in place.' },
                 B: { s: 0, causes: { 'Kinematic limit': 5 }, note: 'Reached the timeout on all five trials. Attempt counts were not logged for unsuccessful trials on this platform.' },
                 C: { s: 0, a: 1.0, causes: { 'Control precision': 5 }, note: 'The operator notes record that the bolt could not be brought into alignment with its socket before the timeout, so no trial ever reached the sustained rotation that ended the corresponding trials on Platform A.' },
-                D: { s: 0, a: 5.2, causes: { 'Force limit': 4, 'Other': 1 }, note: 'The achievable grip force on the small screw head is insufficient to hold it against thread friction, in the power, tripod, and fine pinch configurations alike (9.2 regrasps per trial). The fifth trial started the screw on the thread but did not seat it before the timeout.' }
+                D: { s: 0, a: 5.2, causes: { 'Force limit': 4, 'Other': 1 }, note: 'The achievable grip force on the small screw head is insufficient to hold it against thread friction, in the power, tripod, and fine pinch configurations alike (9.2 regrasps per trial). The fifth trial started the screw on the thread but did not seat it before the timeout.' },
+                E: { s: 0, causes: { 'Kinematic limit': 5 }, note: 'The gripper could not align the fastener with its socket before timeout; times and attempts were not logged for unsuccessful trials.' }
               },
               {
                 n: 'Thread (M30)', cat: 'Precision', timeout: 120, crit: 'Bolt fully threaded along the available length',
                 A: { s: 0, a: 1.0, causes: { 'Kinematic limit': 5 }, note: 'Same wrist limitation as the M8 fastener: no workaround exists once sustained rotation is required.' },
                 B: { s: 0, causes: { 'Kinematic limit': 5 } },
                 C: { s: 0, a: 1.0, causes: { 'Control precision': 5 } },
-                D: { s: 4, t: 102.6, a: 2.2, causes: { 'Force limit': 1 }, note: 'The only cell in which any platform completed a threaded fastener. The larger head gives the hand something to hold: two successful trials threaded about three quarters of the length one-handed before friction stalled further advance, and the other two used two-handed operation.' }
+                D: { s: 4, t: 102.6, a: 2.2, causes: { 'Force limit': 1 }, note: 'The only cell in which any platform completed a threaded fastener. The larger head gives the hand something to hold: two successful trials threaded about three quarters of the length one-handed before friction stalled further advance, and the other two used two-handed operation.' },
+                E: { s: 0, causes: { 'Kinematic limit': 5 }, note: 'The gripper could not align the fastener with its socket before timeout; times and attempts were not logged for unsuccessful trials.' }
               },
               {
                 n: 'Peg insertion', cat: 'Precision', timeout: 120, crit: 'Free peg threaded into the empty socket until it seats',
                 A: { s: 0, causes: { 'Kinematic limit': 5 }, note: 'Per-trial times and attempt counts were not logged during the session, so only the outcome and the cause are recorded. Seating the pin demands the same sustained axial rotation that ended the two threaded-fastener trials.' },
                 B: { s: 0, causes: { 'Kinematic limit': 5 } },
                 C: { s: 0, a: 1.0, causes: { 'Control precision': 5 } },
-                D: { s: 0, a: 2.8, causes: { 'Control precision': 5 }, note: 'On three trials the hand never acquired the free peg; on the other two the peg started into the socket but could not be rotated further before the timeout. At 8 mm the pin is narrower than the M8 screw head, so it places the same demand on the hand.' }
+                D: { s: 0, a: 2.8, causes: { 'Control precision': 5 }, note: 'On three trials the hand never acquired the free peg; on the other two the peg started into the socket but could not be rotated further before the timeout. At 8 mm the pin is narrower than the M8 screw head, so it places the same demand on the hand.' },
+                E: { s: 0, causes: { 'Kinematic limit': 5 }, note: 'The gripper could not align the peg with the empty socket before timeout; times and attempts were not logged for unsuccessful trials.' }
               },
               {
                 n: 'Button', cat: 'Composed assembly', timeout: 60, crit: 'All stages completed within the timeout',
@@ -3067,7 +3108,8 @@
                 A: { s: 5, t: 23.9, a: 1.0, st: [5, 5], note: 'Operated non-prehensilely, like the ball valve.' },
                 B: { s: 5, t: 10.0, a: 3.2, st: [5, 5], note: 'Pushed with the closed gripper rather than grasped.' },
                 C: { s: 5, t: 13.3, a: 1.0, st: [5, 5] },
-                D: { s: 5, t: 3.0, a: 1.0, st: [5, 5], note: 'Completed without grasp actuation.' }
+                D: { s: 5, t: 3.0, a: 1.0, st: [5, 5], note: 'Completed without grasp actuation.' },
+                E: { s: 5, t: 23.1, a: 1.0, st: [5, 5] }
               },
               {
                 n: 'Lock and key', cat: 'Composed assembly', timeout: 180, crit: 'All stages completed within the timeout',
@@ -3075,7 +3117,8 @@
                 A: { s: 5, t: 40.4, a: 1.0, st: [5, 5, 5], note: 'The slowest task this platform completed &mdash; completion times grow with task complexity, from ~10 s on the ball valve to 40 s here.' },
                 B: { s: 5, t: 15.0, a: 4.2, st: [5, 5, 5] },
                 C: { s: 5, t: 21.4, a: 1.0, st: [5, 5, 5] },
-                D: { s: 5, t: 15.1, a: 1.0, st: [5, 5, 5] }
+                D: { s: 5, t: 15.1, a: 1.0, st: [5, 5, 5] },
+                E: { s: 4, t: 60.2, a: 1.0, st: [5, 5, 4], causes: { 'Slip': 1 }, note: 'Four trials reached the unlock state. One trial lost the key after insertion.' }
               },
               {
                 n: 'Drawer', cat: 'Composed assembly', timeout: 120, crit: 'All stages completed within the timeout',
@@ -3083,7 +3126,8 @@
                 A: { s: 0, a: 1.0, st: [0, 0, 0], causes: { 'Grasp geometry': 5 }, note: 'The parallel-jaw gripper could not engage the recessed handle in a stable grasp, so no trial reached even the first stage. The wide jaws also occlude the contact point from the operator.' },
                 B: { s: 5, t: 23.0, a: 5.4, st: [5, 5, 5], note: 'The narrow printed fingertips close around the recessed handle that the wider jaws of Platforms A and C cannot enter.' },
                 C: { s: 0, a: 1.0, st: [5, 0, 0], causes: { 'Control precision': 5 }, note: 'Reached stage 1 in all five trials, then failed to draw the drawer open. Jitter in the commanded motion damaged the printed drawer, which was replaced mid-session; these five trials are the only ones in the study logged under <em>other</em> in the outcome field.' },
-                D: { s: 5, t: 39.9, a: 1.6, st: [5, 5, 5], note: 'The fingers enter the recess where a parallel jaw cannot, at a mean of 3.4 regrasps on the handle.' }
+                D: { s: 5, t: 39.9, a: 1.6, st: [5, 5, 5], note: 'The fingers enter the recess where a parallel jaw cannot, at a mean of 3.4 regrasps on the handle.' },
+                E: { s: 1, t: 57.1, a: 1.0, st: [1, 1, 1], causes: { 'Grasp geometry': 4 }, note: 'One trial completed all three stages; four trials could not acquire the recessed handle.' }
               },
               {
                 n: 'Shock absorber', cat: 'Composed assembly', timeout: 180, crit: 'All stages completed within the timeout',
@@ -3091,16 +3135,17 @@
                 A: { s: 0, a: 1.0, st: [0, 0, 0], causes: { 'Grasp geometry': 5 }, note: 'The gripper could not grasp the pin axially.' },
                 B: { s: 5, t: 16.0, a: 4.8, st: [5, 5, 5], note: 'Acquired the free pin at stage 1 and carried every remaining stage, on the attachment that both legged platforms failed outright.' },
                 C: { s: 0, a: 1.0, st: [5, 0, 0], causes: { 'Control precision': 5 }, note: 'The pin was grasped in all five trials and the run stopped at stage 1; the notes give alignment of the pin with the hole as the reason.' },
-                D: { s: 4, t: 39.4, a: 1.2, st: [5, 5, 4], causes: { 'Force limit': 1 }, note: 'The failed trial reached stage 2, with the pin aligned but not fully inserted. On the successful trials the wearer&rsquo;s contralateral hand placed the pin into the grasp, after which alignment and seating were performed with the device alone.' }
+                D: { s: 4, t: 39.4, a: 1.2, st: [5, 5, 4], causes: { 'Force limit': 1 }, note: 'The failed trial reached stage 2, with the pin aligned but not fully inserted. On the successful trials the wearer&rsquo;s contralateral hand placed the pin into the grasp, after which alignment and seating were performed with the device alone.' },
+                E: { s: 5, t: 29.2, a: 1.0, st: [5, 5, 5] }
               }
             ];
 
             const platSummary = {
-              A: { completed: 8, wins: 40, fastest: 'Ball valve, 10.5 s', slowest: 'Lock and key, 40.4 s', cause: 'All 25 failed trials split between 15 kinematic limits on the two threaded fasteners and the peg, and 10 grasp-geometry failures on the drawer and the shock absorber: a wrist that cannot sustain rotation about a fixed axis, and a jaw too wide for a recessed handle. The printed parts came through all 65 trials with no observable wear and no loss of press-fit tolerance.' },
-              B: { completed: 9, wins: 44, fastest: 'Circuit breaker, 8.5 s', slowest: 'Light bulb, 83.0 s', cause: 'Twenty of the 21 failed trials reached their timeout under a kinematic limit, on the small gate valve, the two threaded fasteners, and the peg: accumulating rotation on this arm requires releasing the part and reacquiring it. The remaining failure is the breaker toggle snapping at the end of one motion. This is the only platform whose difficulty ordering diverges from the rest, and the three attachments responsible are exactly the drawer, the shock absorber, and the small gate valve.' },
-              C: { completed: 8, wins: 40, fastest: 'Circuit breaker, 6.7 s', slowest: 'Gate valve (small), 23.1 s', cause: 'All 25 failed trials are recorded as control precision, attributed to an interface that commands end-effector twist relative to a torso frame the whole-body policy is itself moving. No kinematic limit, force limit, or grasp-geometry failure appears at all. The VR interface moves the end-effector faster than a tablet over gross motion, at the cost of rotation stability.' },
-              D: { completed: 11, wins: 53, fastest: 'Circuit breaker, 1.6 s', slowest: 'Thread (M30), 102.6 s', cause: 'Since the operator&rsquo;s arm supplies positioning, the difficulty lies in grasp acquisition and grip force rather than gross motion. Eleven of the twelve failed trials are force limits or control precision, and every one occurs on a part that must be held while it is turned. Grasp geometry &mdash; the cause behind every Platform A assembly failure &mdash; never appears once.' },
-              E: { soon: true, cause: 'Quantitative benchmark evaluation on the Franka Robotics 3 (FR3) is currently underway under the standardized HiveBoard protocol. Video demonstrations are available in the Videos section.' }
+              A: { completed: 8, wins: 40, score: '7.0', scoreRange: '6.6&ndash;7.3', fastest: 'Ball valve, 10.5 s', slowest: 'Lock and key, 40.4 s', cause: 'All 25 failed trials split between 15 kinematic limits on the two threaded fasteners and the peg, and 10 grasp-geometry failures on the drawer and the shock absorber: a wrist that cannot sustain rotation about a fixed axis, and a jaw too wide for a recessed handle. The printed parts came through all 65 trials with no observable wear and no loss of press-fit tolerance.' },
+              B: { completed: 9, wins: 44, score: '12.0', scoreRange: '11.3&ndash;12.6', fastest: 'Circuit breaker, 8.5 s', slowest: 'Light bulb, 83.0 s', cause: 'Twenty of the 21 failed trials reached their timeout under a kinematic limit, on the small gate valve, the two threaded fasteners, and the peg: accumulating rotation on this arm requires releasing the part and reacquiring it. The remaining failure is the breaker toggle snapping at the end of one motion. This is the only platform whose difficulty ordering diverges from the rest, and the three attachments responsible are exactly the drawer, the shock absorber, and the small gate valve.' },
+              C: { completed: 8, wins: 40, score: '10.4', scoreRange: '9.9&ndash;10.9', fastest: 'Circuit breaker, 6.7 s', slowest: 'Gate valve (small), 23.1 s', cause: 'All 25 failed trials are recorded as control precision, attributed to an interface that commands end-effector twist relative to a torso frame the whole-body policy is itself moving. No kinematic limit, force limit, or grasp-geometry failure appears at all. The VR interface moves the end-effector faster than a tablet over gross motion, at the cost of rotation stability.' },
+              D: { completed: 11, wins: 53, score: '41.6', scoreRange: '40.0&ndash;43.2', fastest: 'Circuit breaker, 1.6 s', slowest: 'Thread (M30), 102.6 s', cause: 'Since the operator&rsquo;s arm supplies positioning, the difficulty lies in grasp acquisition and grip force rather than gross motion. Eleven of the twelve failed trials are force limits or control precision, and every one occurs on a part that must be held while it is turned. Grasp geometry &mdash; the cause behind every Platform A assembly failure &mdash; never appears once.' },
+              E: { completed: 9, wins: 40, fastest: 'Circuit breaker, 13.8 s', slowest: 'Lock and key, 60.2 s', score: '5.7', scoreRange: '5.4&ndash;6.0', cause: 'Twenty of the 25 failed trials are kinematic limits on the light bulb, the two threaded fasteners, and the peg. The remaining failures are four grasp-geometry failures on the drawer and one slip on the lock and key.' }
             };
 
             const grid = document.getElementById('results-matrix');
@@ -3263,6 +3308,7 @@
                  <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 6px;">${s.wins} of 65 trials succeeded</p>`)}
                   ${metric('Fastest', `<span style="font-size: 0.95rem;">${s.fastest}</span>`)}
                   ${metric('Slowest completed', `<span style="font-size: 0.95rem;">${s.slowest}</span>`)}
+                  ${metric('HiveScore', `<span style="font-size: 1.15rem;">${s.score} <span style="font-size: 0.75rem; color: #94a3b8; font-weight: 500;">(${s.scoreRange})</span></span>`)}
                 </div>
                 <p style="color: #475569; line-height: 1.6; font-size: 0.9rem; margin-top: 0.5rem;">${s.cause}</p>`;
             }
@@ -3470,7 +3516,7 @@
              Elanjimattathil Vijayan, Aravind and Capezzuto, Gianluca and
              Tommaselli, Felipe A. G. and Milazzo, Giuseppe and
              Ramírez Sánchez, Amy M. and Affonso, Francisco and Baptista, Rafael R. and
-             van Berge, Meiko Adriana and Bezerra, Ranulfo and Lahr, Gustavo J. G. and Ferrari Gerez, Lucas and
+             van Berge, Meiko A. and Chowdhary, Girish and Bezerra, Ranulfo and Lahr, Gustavo J. G. and Ferrari Gerez, Lucas and
              Bicchi, Antonio and Becker, Marcelo},
   journal = {Under review},
   year    = {2026},
