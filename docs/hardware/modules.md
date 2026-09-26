@@ -47,6 +47,10 @@ These tasks are scored by the last completed stage as well as by full success.
 
 Record `0` when no stage is completed. A full success reaches the final stage listed for the attachment.
 
+## Optional accessory
+
+The [ArUco cell](/hardware/aruco-cell) provides a visual reference for board localization and physical-to-simulation alignment. It adds no scored task or evaluation condition.
+
 ## Printable files
 
 The attachment folders and their components are available under [`STL/`](https://github.com/EESC-LabRoM/HiveBoard/tree/main/STL). The same high-level folder names are used under `CAD/` and `Simulation/` where the corresponding assets are available.

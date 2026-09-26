@@ -50,6 +50,10 @@ Check insertion and rotation manually. The initial key position must be repeatab
 
 Confirm that the pin can be grasped, aligned, and fully inserted. This attachment occupies two adjacent cells; reserve both before arranging the board.
 
+## Optional ArUco cell
+
+The [ArUco cell](/hardware/aruco-cell) provides a camera-visible reference for board localization. Fit the black insert into the white base and optionally glue the mating surfaces. Mount it in an available cell with a clear camera view, leaving the task cells and robot approach unobstructed. Record its position and orientation relative to the board.
+
 ## Mount the board
 
 Fix the base to a rigid surface within the platform's working volume. Horizontal tabletop and vertical fixture mounting are both allowed, but the orientation must be reported because it changes the approach direction and the likelihood of an attachment releasing from its cell.
