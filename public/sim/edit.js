@@ -270,10 +270,11 @@ export function attach(sim) {
           ? currentActive
           : data.modules[0];
       }
-      state.manualMode = state.module === 'lamp'
-        && Array.isArray(data.manualKeys) && data.manualKeys.length > 0;
-      if (state.manualMode) state.keys = data.manualKeys;
-
+      // state.manualMode = state.module === 'lamp'
+      //   && Array.isArray(data.manualKeys) && data.manualKeys.length > 0;
+      // if (state.manualMode) state.keys = data.manualKeys;
+      // Restore a saved hand-authored lamp path directly. Other tasks still
+      // start from the normal solver and their saved edits.
       await solve(state.module, state.robot, state.manualMode);
     } catch (err) {
       if (err.name !== 'AbortError') {
@@ -315,6 +316,19 @@ export function attach(sim) {
     solveTimer = setTimeout(() => solve(), delay);
   }
 
+  function preserveLocalKeyState(previousKeys, newKeys) {
+    if(previousKeys.length === 0 || newKeys.length === 0) return newKeys;
+
+    for (const newKey of newKeys || []) {
+      const prevKey = previousKeys.find((k) => String(k.index) === String(newKey.index));
+      if (!prevKey) continue;
+      if(prevKey.gripperPose) newKey.gripperPose = { ...prevKey.gripperPose };
+      if(prevKey.originalPos) newKey.originalPos = [...prevKey.originalPos];
+    }
+    
+    return newKeys;
+  }
+
   async function solve(targetModule = state.module, targetRobot = state.robot, forceManual = false) {
     clearTimeout(solveTimer);
     if (!targetModule || !targetRobot) return;
@@ -328,14 +342,15 @@ export function attach(sim) {
     const signal = activeAbortController.signal;
 
     state.busy = true;
-    const manual = (forceManual || state.manualMode) && targetModule === 'lamp';
-    if (manual) state.manualMode = true;
-    if (manual) {
-      sim.setPlaying(false);
-      sim.setTrajectoryPending(true);
-    }
+    const manual = false;
+    // if (manual) state.manualMode = true;
+    // if (manual) {
+    //   sim.setPlaying(false);
+    //   sim.setTrajectoryPending(true);
+    // }
     status('solving…');
     try {
+      console.log(`solving for: robot=${targetRobot}, edits=${JSON.stringify(editsFor(targetModule))}, manual=${manual}`);
       const result = await api(manual ? '/manual' : '/solve', manual
         ? { robot: targetRobot, module: targetModule, keys: state.keys,
             spin: sim.task ? sim.task.spin || 0 : 0 }
@@ -358,7 +373,8 @@ export function attach(sim) {
       const currentActiveModule = sim.task ? sim.task.watch.split('_')[0] : null;
       const currentActiveRobot = sim.robot ? sim.robot.name : null;
       if (currentActiveRobot === targetRobot && currentActiveModule === resultModule) {
-        state.keys = result.keys || [];
+        const previousKeys = state.keys;
+        state.keys = preserveLocalKeyState(previousKeys, result.keys || []);
         if (result.traj) {
           sim.setTrajectoryPending(false);
           sim.resetScene();
@@ -366,7 +382,7 @@ export function attach(sim) {
           const selected = state.keys.find((k) => String(k.index) === String(state.selected));
           if (state.holdAfterSolve && selected && selected.sample !== undefined) {
             sim.setPlaying(false);
-            sim.setSample(selected.sample);
+            sim.setSample(selected.sample,true);
           } else {
             sim.setPlaying(true);
           }
@@ -409,7 +425,7 @@ export function attach(sim) {
         edits: state.edits,
         manualKeys: state.module === 'lamp' ? state.keys : null,
       });
-      if (state.module === 'lamp' && state.keys.length) state.manualMode = true;
+      // if (state.module === 'lamp' && state.keys.length) state.manualMode = true;
       if (result.trajectory && state.module === 'lamp') {
         sim.replaceTrajectory('lamp', result.trajectory);
         sim.setTrajectoryPending(false);
@@ -764,9 +780,7 @@ export function attach(sim) {
       editFor(key.index).grip = value;
       key.grip = value;
       sim.setEditorPose(key.qpos, value);
-
-      if (state.module === 'lamp') {
-        state.manualMode = true;
+      if (state.auto) {
         solveSoon(180);
       }
       if (state.draftMode) solveSoon(220);
@@ -785,56 +799,610 @@ export function attach(sim) {
       gripControl.querySelector('input[type=range]').value = value;
       gripControl.querySelector('input[type=number]').value = value;
       sim.setEditorPose(key.qpos, value);
-      if (state.module === 'lamp') {
-        state.manualMode = true;
+      if (state.auto) {
         solveSoon(180);
       }
     });
     gripLabel.append(gripControl, gripReset);
     ui.joints.appendChild(gripLabel);
 
+    // const grid = document.createElement('div');
+    // grid.style.display = 'grid';
+    // grid.style.gridTemplateColumns = '1fr 1fr';
+    // grid.style.gap = '4px 8px';
+    // state.joints.forEach((joint, i) => {
+    //   if (i >= key.qpos.length) return;
+    //   const label = document.createElement('label');
+    //   label.textContent = joint;
+    //   label.style.marginTop = '4px';
+    //   const range = state.jointRanges[i] || [-3.14, 3.14];
+    //   const input = document.createElement('input');
+    //   input.type = 'range';
+    //   input.min = range[0];
+    //   input.max = range[1];
+    //   input.step = '0.001';
+    //   input.value = key.qpos[i];
+    //   input.title = 'MuJoCo joint position';
+    //   const value = document.createElement('output');
+    //   value.textContent = Number(key.qpos[i]).toFixed(4);
+    //   value.style.display = 'block';
+    //   value.style.color = '#0f172a';
+    //   input.addEventListener('input', () => {
+    //     const edit = editFor(key.index);
+    //     const qpos = [...key.qpos];
+    //     const value = parseFloat(input.value);
+    //     if (!Number.isFinite(value)) return;
+    //     qpos[i] = value;
+    //     edit.qpos = qpos;
+    //     key.qpos[i] = value;
+    //     output.textContent = value.toFixed(4);
+    //     sim.setEditorPose(qpos, key.grip);
+    //   });
+    //   const output = value;
+    //   label.appendChild(input);
+    //   label.appendChild(output);
+    //   const reset = document.createElement('button');
+    //   reset.type = 'button';
+    //   reset.textContent = '↺';
+    //   reset.title = 'Reset this joint to its original pose value';
+    //   reset.style.padding = '1px 5px';
+    //   reset.addEventListener('click', (event) => {
+    //     event.stopPropagation();
+    //     const original = key.originalQpos || key.qpos;
+    //     const qpos = [...key.qpos];
+    //     qpos[i] = original[i];
+    //     editFor(key.index).qpos = qpos;
+    //     key.qpos[i] = original[i];
+    //     input.value = original[i];
+    //     output.textContent = Number(original[i]).toFixed(4);
+    //     sim.setEditorPose(qpos, key.grip);
+    //   });
+    //   label.appendChild(reset);
+    //   grid.appendChild(label);
+    // });
+    // ui.joints.appendChild(grid);
+  }
+  function ensureGripperPose(key, edit) {
+    if (!key.gripperPose) {
+      console.log('Creating gripperPose for key', key.index);
+      key.gripperPose = {
+        originalPosition: Array.isArray(key.originalPos)
+          ? [...key.originalPos]
+          : [...key.pos],
+
+        originalFinger: Array.isArray(key.finger)
+          ? [...key.finger]
+          : [0, 1, 0],
+
+        originalApproach: Array.isArray(key.approach)
+          ? [...key.approach]
+          : [0, 0, -1],
+
+        finger: Array.isArray(key.finger)
+          ? [...key.finger]
+          : [0, 1, 0],
+
+        approach: Array.isArray(key.approach)
+          ? [...key.approach]
+          : [0, 0, -1],
+      };
+      edit.rpy = [0, 0, 0];
+    }
+
+    return key.gripperPose;
+  }
+
+  function formatVec(value, digits = 3) {
+    if (!Array.isArray(value)) return '—';
+
+    return value
+      .map((item) => Number(item).toFixed(digits))
+      .join(', ');
+  }
+
+  function addDetailLine(parent, label, value) {
+    const line = document.createElement('div');
+    line.className = 'detail-pose';
+
+    const name = document.createElement('span');
+    name.textContent = `${label}: `;
+    name.style.fontWeight = '600';
+
+    const text = document.createElement('span');
+    text.textContent = value;
+
+    line.append(name, text);
+    parent.appendChild(line);
+  }
+  function renderCartesianPose(key, edit) {
+    const section = document.createElement('div');
+    section.className = 'cartesian-pose';
+    section.style.margin = '8px 0';
+
+    const title = document.createElement('div');
+    title.textContent = 'Cartesian position offset (m)';
+    title.style.fontWeight = '600';
+    title.style.marginBottom = '4px';
+    section.appendChild(title);
+
+    /*
+    * Captura a posição original somente uma vez.
+    *
+    * Se já existir um edit.dpos salvo, remove esse deslocamento
+    * da posição atual para recuperar a posição original.
+    */
+    if (!Array.isArray(key.originalPos)) {
+      const current = Array.isArray(key.pos)
+        ? [...key.pos]
+        : [0, 0, 0];
+
+      const applied = Array.isArray(edit?.dpos)
+        ? edit.dpos
+        : [0, 0, 0];
+
+      key.originalPos = current.map(
+        (value, i) => value - (applied[i] || 0)
+      );
+    }
+
+    const original = [...key.originalPos];
+
+    /*
+    * Estado compartilhado dos três sliders.
+    * Não use uma cópia independente para cada callback.
+    */
+    if (!Array.isArray(edit.dpos)) {
+      edit.dpos = [0, 0, 0];
+    }
+
+    const gripperPose = ensureGripperPose(key, edit);
+
+    if (!Array.isArray(gripperPose.originalPosition)) {
+      gripperPose.originalPosition = [...original];
+    }
+
+    /*
+    * Garante que a origem da pose também permaneça fixa.
+    */
+    if (!Array.isArray(gripperPose.originalPosition)) {
+      gripperPose.originalPosition = [...original];
+    }
+
     const grid = document.createElement('div');
     grid.style.display = 'grid';
-    grid.style.gridTemplateColumns = '1fr 1fr';
-    grid.style.gap = '4px 8px';
-    state.joints.forEach((joint, i) => {
-      if (i >= key.qpos.length) return;
-      const label = document.createElement('label');
-      label.textContent = joint;
-      label.style.marginTop = '4px';
-      const range = state.jointRanges[i] || [-3.14, 3.14];
-      const control = rangeNumber(key.qpos[i], range[0], range[1], '0.001', (nextValue) => {
-        const edit = editFor(key.index);
-        const qpos = [...key.qpos];
-        qpos[i] = nextValue;
-        edit.qpos = qpos;
-        key.qpos[i] = nextValue;
-        sim.setEditorPose(qpos, key.grip);
-        if (state.draftMode) solveSoon(220);
+    grid.style.gridTemplateColumns = 'repeat(3, minmax(0, 1fr))';
+    grid.style.gap = '8px';
+
+    const labels = ['X', 'Y', 'Z'];
+
+    labels.forEach((label, i) => {
+      const field = document.createElement('label');
+      field.style.display = 'flex';
+      field.style.flexDirection = 'column';
+      field.style.gap = '3px';
+      field.style.minWidth = '0';
+
+      const labelText = document.createElement('span');
+      labelText.textContent = `${label} offset`;
+      labelText.style.fontSize = '12px';
+      labelText.style.fontWeight = '600';
+
+      const valueText = document.createElement('span');
+      valueText.textContent = `${Number(edit.dpos[i] || 0).toFixed(3)} m`;
+      valueText.style.fontSize = '12px';
+      valueText.style.opacity = '0.75';
+
+      const input = document.createElement('input');
+      input.type = 'range';
+      input.min = '-0.100';
+      input.max = '0.100';
+      input.step = '0.001';
+      input.value = Number(edit.dpos[i] || 0).toFixed(3);
+      input.title = `Cartesian ${label} offset in meters`;
+
+      input.addEventListener('input', () => {
+        const offset = parseFloat(input.value);
+
+        if (!Number.isFinite(offset)) {
+          return;
+        }
+
+        valueText.textContent = `${offset.toFixed(3)} m`;
+
+        /*
+        * Lê os deslocamentos atuais dos três sliders.
+        * Cada valor é absoluto em relação à pose original.
+        */
+        const dpos = Array.isArray(edit.dpos)
+          ? [...edit.dpos]
+          : [0, 0, 0];
+
+        dpos[i] = offset;
+
+        /*
+        * A posição nunca é incrementada sobre key.pos.
+        * Ela é sempre reconstruída a partir de originalPos.
+        */
+        const nextPosition = original.map(
+          (value, axis) => value + (dpos[axis] || 0)
+        );
+
+        edit.dpos = [...dpos];
+        key.pos = [...nextPosition];
+
+        /*
+        * Mantém a origem fixa e atualiza apenas a pose atual.
+        */
+        gripperPose.originalPosition = [...original];
+        gripperPose.position = [...nextPosition];
+
+        sim.applyGripperPreviewPose(gripperPose);
+
+        if (state.auto) {
+          solveSoon(180);
+        }
       });
-      control.querySelector('input[type=range]').title = 'MuJoCo joint position';
-      label.appendChild(control);
-      const reset = document.createElement('button');
-      reset.type = 'button';
-      reset.textContent = '↺';
-      reset.title = 'Reset this joint to its original pose value';
-      reset.style.padding = '1px 5px';
-      reset.addEventListener('click', (event) => {
-        event.stopPropagation();
-        const original = key.originalQpos || key.qpos;
-        const qpos = [...key.qpos];
-        qpos[i] = original[i];
-        editFor(key.index).qpos = qpos;
-        key.qpos[i] = original[i];
-        control.querySelector('input[type=range]').value = original[i];
-        control.querySelector('input[type=number]').value = original[i];
-        sim.setEditorPose(qpos, key.grip);
-      });
-      label.appendChild(reset);
-      grid.appendChild(label);
+
+      field.appendChild(labelText);
+      field.appendChild(input);
+      field.appendChild(valueText);
+
+      grid.appendChild(field);
     });
-    ui.joints.appendChild(grid);
+
+    section.appendChild(grid);
+
+    return section;
   }
+
+  /*
+  * Conversão de um vetor Three.js para MuJoCo.
+  */
+  function threeVectorToMujoco(v) {
+    return [
+      v.x,
+      -v.z,
+      v.y,
+    ];
+  }
+
+  /*
+  * Conversão de um vetor MuJoCo para Three.js.
+  */
+  function mujocoVectorToThree(v) {
+    return new THREE.Vector3(
+      v[0],
+      v[2],
+      -v[1]
+    );
+  }
+
+
+  function rpyDeltaMatrix(rpyDegrees) {
+    const [roll, pitch, yaw] = rpyDegrees.map(
+      angle => THREE.MathUtils.degToRad(angle)
+    );
+
+    const quaternion = new THREE.Quaternion().setFromEuler(
+      new THREE.Euler(
+        roll,
+        pitch,
+        yaw,
+        'XYZ'
+      )
+    );
+
+    return new THREE.Matrix4().makeRotationFromQuaternion(
+      quaternion
+    );
+  }
+
+  function gripperVectorsFromRPY(key, rpyDegrees, edit) {
+    const pose = ensureGripperPose(key, edit);
+
+    /*
+    * A orientação original deve permanecer fixa.
+    * Nunca use pose.finger e pose.approach como base,
+    * pois eles já podem conter uma edição anterior.
+    */
+    const originalFinger = pose.originalFinger;
+    const originalApproach = pose.originalApproach;
+
+    if (
+      !Array.isArray(originalFinger) ||
+      !Array.isArray(originalApproach)
+    ) {
+      console.warn(
+        '[Gripper RPY] Orientação original não foi capturada.',
+        key
+      );
+
+      return {
+        finger: [...pose.finger],
+        approach: [...pose.approach],
+        quaternion: new THREE.Quaternion(),
+      };
+    }
+
+    /*
+    * Converte os eixos originais para Three.js.
+    * No frame MuJoCo:
+    *   finger  = eixo Y
+    *   approach = eixo Z
+    */
+    const originalY = mujocoVectorToThree(originalFinger);
+    const originalZ = mujocoVectorToThree(originalApproach);
+
+    /*
+    * Reconstrói o eixo X para formar o frame completo.
+    * A ordem é X, Y, Z, exatamente como no solver.
+    */
+    const originalX = new THREE.Vector3()
+      .crossVectors(originalY, originalZ)
+      .normalize();
+
+    /*
+    * Matriz da orientação original da ferramenta em Three.js.
+    */
+    const baseFrame = new THREE.Matrix4().makeBasis(
+      originalX,
+      originalY,
+      originalZ
+    );
+
+    /*
+    * RPY relativo à orientação original.
+    */
+    const deltaFrame = rpyDeltaMatrix(rpyDegrees);
+
+    /*
+    * Rotação local:
+    *
+    * targetFrame = baseFrame * deltaFrame
+    *
+    * Isso significa que roll, pitch e yaw são aplicados
+    * nos eixos locais da ferramenta, e não nos eixos globais.
+    */
+    const targetFrame = baseFrame.clone().multiply(deltaFrame);
+
+    /*
+    * Extrai os eixos resultantes.
+    */
+    const targetX = new THREE.Vector3();
+    const targetY = new THREE.Vector3();
+    const targetZ = new THREE.Vector3();
+
+    targetFrame.extractBasis(
+      targetX,
+      targetY,
+      targetZ
+    );
+
+    targetX.normalize();
+    targetY.normalize();
+    targetZ.normalize();
+
+    /*
+    * O solver recebe somente:
+    *   finger  = coluna Y
+    *   approach = coluna Z
+    */
+    
+    const roll = THREE.MathUtils.degToRad(Number(rpyDegrees?.[0] || 0));
+    const pitch = THREE.MathUtils.degToRad(Number(rpyDegrees?.[1] || 0));
+    const yaw = THREE.MathUtils.degToRad(Number(rpyDegrees?.[2] || 0));
+
+    if (Number.isNaN(roll) || Number.isNaN(pitch) || Number.isNaN(yaw)) {
+      console.warn(
+        '[Gripper RPY] Valores inválidos de roll, pitch ou yaw.',
+        rpyDegrees
+      );
+    }
+    
+    return {
+      finger: threeVectorToMujoco(targetY),
+      approach: threeVectorToMujoco(targetZ),
+      quaternion: new THREE.Quaternion()
+        .setFromRotationMatrix(targetFrame),
+      deltaQuaternion: new THREE.Quaternion()
+        .setFromEuler(
+          new THREE.Euler(
+            roll,
+            -yaw,
+            pitch,
+            'XYZ')),
+    };
+  }
+
+  function renderGripperOrientationControls(key, edit) {
+    const section = document.createElement('div');
+    section.className = 'gripper-orientation-controls';
+    section.style.margin = '8px 0';
+
+    const title = document.createElement('div');
+    title.textContent = 'Gripper orientation offset (XYZ °)';
+    title.style.fontWeight = '600';
+    title.style.marginBottom = '4px';
+    section.appendChild(title);
+
+    const pose = ensureGripperPose(key, edit);
+
+    /*
+    * O valor armazenado em edit.rpy é sempre o offset em relação
+    * à orientação original da key.
+    */
+    if (!Array.isArray(edit.rpy)) {
+      edit.rpy = [0, 0, 0];
+    }
+
+    if (!Array.isArray(pose.rpy)) {
+      pose.rpy = [...edit.rpy];
+    }
+
+    /*
+    * Mantém o estado da pose sincronizado com o estado persistido
+    * da edição.
+    */
+    pose.rpy = [...edit.rpy];
+
+    pose.deltaQuaternion = gripperVectorsFromRPY(key, pose.rpy, edit).deltaQuaternion;
+
+    sim.applyGripperPreviewPose(pose);
+
+    const axes = ['Rx', 'Ry', 'Rz'];
+
+    const grid = document.createElement('div');
+    grid.style.display = 'grid';
+    grid.style.gridTemplateRows = 'repeat(3, minmax(0, 1fr))';
+    grid.style.gap = '8px';
+
+    axes.forEach((axis, i) => {
+      const field = document.createElement('label');
+      field.style.display = 'flex';
+      field.style.flexDirection = 'column';
+      field.style.gap = '3px';
+      field.style.minWidth = '0';
+
+      const label = document.createElement('span');
+      label.textContent = `${axis} offset`;
+      label.style.fontSize = '12px';
+      label.style.fontWeight = '600';
+
+      const valueText = document.createElement('span');
+      valueText.textContent = `${Number(edit.rpy[i] || 0).toFixed(0)}°`;
+      valueText.style.fontSize = '12px';
+      valueText.style.opacity = '0.75';
+
+      const input = document.createElement('input');
+      input.type = 'range';
+      input.min = '-180';
+      input.max = '180';
+      input.step = '1';
+      input.value = Number(edit.rpy[i] || 0);
+      input.title = `Gripper ${axis} orientation offset in degrees`;
+
+      input.addEventListener('input', () => {
+        const value = Number(input.value);
+
+        if (!Number.isFinite(value)) {
+          return;
+        }
+
+        valueText.textContent = `${value.toFixed(0)}°`;
+
+        /*
+        * Lê sempre o estado atual de edit.rpy.
+        * Assim, alterar Pitch não apaga o Roll já alterado,
+        * e alterar Yaw não apaga os dois anteriores.
+        */
+        const rpy = Array.isArray(edit.rpy)
+          ? [...edit.rpy]
+          : [0, 0, 0];
+
+        rpy[i] = value;
+
+        edit.rpy = [...rpy];
+        pose.rpy = [...rpy];
+
+        /*
+        * Converte o offset RPY usando a orientação original
+        * preservada em key.gripperPose.originalFinger e
+        * key.gripperPose.originalApproach.
+        */
+        const converted = gripperVectorsFromRPY(
+          key,
+          pose.rpy,
+          edit
+        );
+
+        /*
+        * Guarda também a orientação calculada para o preview.
+        */
+        pose.quaternion = converted.quaternion;
+        pose.deltaQuaternion = converted.deltaQuaternion;
+
+        sim.applyGripperPreviewPose(pose);
+
+      });
+
+      input.addEventListener('change', () => {
+        const value = Number(input.value);
+
+        if (!Number.isFinite(value)) {
+          return;
+        }
+
+        valueText.textContent = `${value.toFixed(0)}°`;
+
+        /*
+        * Lê sempre o estado atual de edit.rpy.
+        * Assim, alterar Pitch não apaga o Roll já alterado,
+        * e alterar Yaw não apaga os dois anteriores.
+        */
+        const rpy = Array.isArray(edit.rpy)
+          ? [...edit.rpy]
+          : [0, 0, 0];
+
+        rpy[i] = value;
+
+        edit.rpy = [...rpy];
+        pose.rpy = [...rpy];
+
+        /*
+        * Converte o offset RPY usando a orientação original
+        * preservada em key.gripperPose.originalFinger e
+        * key.gripperPose.originalApproach.
+        */
+        const converted = gripperVectorsFromRPY(
+          key,
+          pose.rpy,
+          edit
+        );
+
+        /*
+        * Estes são os valores efetivamente enviados ao solver.
+        */
+        key.finger = [...converted.finger];
+        key.approach = [...converted.approach];
+
+        edit.finger = [...converted.finger];
+        edit.approach = [...converted.approach];
+
+        pose.finger = [...converted.finger];
+        pose.approach = [...converted.approach];
+
+        /*
+        * Guarda também a orientação calculada para o preview.
+        */
+        pose.quaternion = converted.quaternion;
+        pose.deltaQuaternion = converted.deltaQuaternion;
+
+        console.log('[Gripper RPY] Converted vectors:', {
+          finger: pose.finger,
+          originalFinger: pose.originalFinger,
+          approach: pose.approach,
+          originalApproach: pose.originalApproach,
+          quaternion: pose.quaternion,
+          deltaQuaternion: pose.deltaQuaternion,
+        });
+
+        sim.applyGripperPreviewPose(pose);
+
+        if (state.auto) {
+          solveSoon(180);
+        }
+      });
+
+      field.appendChild(label);
+      field.appendChild(input);
+      field.appendChild(valueText);
+      grid.appendChild(field);
+    });
+
+    section.appendChild(grid);
+    return section;
+  }
+
 
   function render() {
     const edits = state.module ? moduleEdits().keys : {};
@@ -924,12 +1492,74 @@ export function attach(sim) {
       ? state.keys.find((k) => String(k.index) === String(state.selected))
       : null;
     const edit = key ? editFor(key.index) : null;
-    ui.detail.textContent = key
-      ? `#${key.index}${key.added ? ' (added pose)' : ''} at ${key.pos ? key.pos.map((v) => v.toFixed(3)).join(', ') : '—'}` +
-        (edit && edit.dpos
-          ? `   moved ${edit.dpos.map((v) => (v * 1000).toFixed(0)).join(', ')} mm`
-          : '')
-      : 'pick a bead on the path, or a row here';
+
+    if (!key) {
+      ui.detail.textContent = 'pick a bead on the path, or a row here';
+      // renderJointControls(null);
+      return;
+    }
+
+    // Recria apenas o painel de detalhes do waypoint selecionado.
+    ui.detail.replaceChildren();
+
+    // Identificação do waypoint.
+    const heading = document.createElement('div');
+    heading.className = 'detail-heading';
+    heading.textContent =
+      `#${key.index}${key.added ? ' (added pose)' : ''}`;
+    ui.detail.appendChild(heading);
+
+    // Campos editáveis de posição cartesiana.
+    ui.detail.appendChild(
+      renderCartesianPose(key, edit)
+    );
+
+    ui.detail.appendChild(
+      renderGripperOrientationControls(key, edit)
+    );
+
+    // Posição cartesiana original.
+    addDetailLine(
+      ui.detail,
+      'Position',
+      formatVec(key.pos)
+    );
+
+    // Deslocamento aplicado pelo editor, quando existir.
+    if (edit && edit.dpos) {
+      addDetailLine(
+        ui.detail,
+        'Moved',
+        `${formatVec(edit.dpos.map((v) => v * 1000), 0)} mm`
+      );
+    }
+
+    // Orientação cartesiana.
+    addDetailLine(
+      ui.detail,
+      'Finger',
+      formatVec(key.finger)
+    );
+
+    addDetailLine(
+      ui.detail,
+      'Approach',
+      formatVec(key.approach)
+    );
+
+    // Parâmetros já existentes do waypoint.
+    addDetailLine(
+      ui.detail,
+      'Gripper',
+      Number(key.grip ?? 0).toFixed(3)
+    );
+
+    addDetailLine(
+      ui.detail,
+      'Duration',
+      `${Number(key.secs ?? 0).toFixed(3)} s`
+    );
+
     renderJointControls(key);
   }
 

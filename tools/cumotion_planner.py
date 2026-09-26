@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""FR3 joint planning backend using cuMotion standalone."""
+"""Joint planning backend using cuMotion standalone."""
 
 from __future__ import annotations
 
@@ -34,26 +34,9 @@ class RobotResources:
     def mujoco_xml(self) -> Path:
         return REPO_ROOT / self.mujoco_xml_pattern.format()
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
-
-CUMOTION_ROOT = Path(
-    os.environ.get(
-        "CUMOTION_HOME",
-        str(
-            Path.home()
-            / "hiveboard-cumotion"
-            / "cumotion"
-            / "cumotion-1.1.0-cuda12.6-x86_64"
-        ),
-    )
-)
-
-CUMOTION_ROBOTS_ROOT = Path(
-    os.environ.get(
-        "CUMOTION_ROBOTS_HOME",
-        str(Path.home() / "hiveboard-cumotion"),
-    )
-)
+TOOLS_ROOT = Path(__file__).resolve().parent
+REPO_ROOT = TOOLS_ROOT.parent
+CUMOTION_ROBOTS_ROOT = TOOLS_ROOT / "cumotion"
 
 
 ROBOT_RESOURCES = {
@@ -77,24 +60,44 @@ ROBOT_RESOURCES = {
             0.79,
         ),
     ),
+
+    "spot": RobotResources(
+        name="spot",
+        mujoco_xml_pattern="public/sim/models/spot.xml",
+        urdf=CUMOTION_ROBOTS_ROOT
+        / "spot_cumotion"
+        / "spot.urdf",
+        xrdf=CUMOTION_ROBOTS_ROOT
+        / "spot_cumotion"
+        / "spot.xrdf",
+        joint_names=("arm_sh0", "arm_sh1", "arm_el0", "arm_el1", "arm_wr0", "arm_wr1"),
+        home=(0.0, -1.9, 2.0, 0.0, -0.6, 0.0),
+    ),
+
 }
 
 # ---------------------------------------------------------------------------
 # Utils
 # ---------------------------------------------------------------------------
 
-def _as_qpos(values: Sequence[float], name: str) -> np.ndarray:
-    """Converts a configuration into a 7-DOF FR3 joint vector."""
+def _as_qpos(
+    values: Sequence[float],
+    name: str,
+    expected_dofs: int,
+) -> np.ndarray:
+    """Converts a configuration into the robot C-space vector."""
     q = np.asarray(values, dtype=np.float64)
 
-    if q.shape != (7,):
+    if q.shape != (expected_dofs,):
         raise ValueError(
-            f"{name} must contain exactly 7 values; "
+            f"{name} must contain exactly {expected_dofs} values; "
             f"received shape={q.shape}"
         )
 
     if not np.all(np.isfinite(q)):
-        raise ValueError(f"{name} contains non-finite values.")
+        raise ValueError(
+            f"{name} contains non-finite values."
+        )
 
     return q
 
@@ -164,6 +167,35 @@ def _validate_limits(
                 f"{upper}"
             )
 
+def _print_trajectory_stats(samples, q_start, q_goal):
+    qpos = np.asarray(samples["qpos"], dtype=float)
+    qvel = np.asarray(samples["qvel"], dtype=float)
+    qacc = np.asarray(samples["qacc"], dtype=float)
+
+    print("\n=== cuMotion trajectory stats ===")
+
+    for j in range(qpos.shape[1]):
+        dq = qpos[:, j].max() - qpos[:, j].min()
+        vmax = np.max(np.abs(qvel[:, j]))
+        amax = np.max(np.abs(qacc[:, j]))
+
+        print(
+            f"J{j+1}: "
+            f"range={dq:.4f} rad | "
+            f"max_vel={vmax:.4f} | "
+            f"max_acc={amax:.4f}"
+        )
+
+    print(
+        "Total joint-space displacement:",
+        np.sum(np.abs(np.diff(qpos, axis=0))),
+    )
+
+    print(
+        "Direct joint-space displacement:",
+        np.linalg.norm(q_goal - q_start),
+    )
+
 
 # ---------------------------------------------------------------------------
 # Planner
@@ -215,12 +247,22 @@ class CuMotionPlanner:
         self.world = cumotion.create_world()
         self.world_view = self.world.add_world_view()
 
+        self.robot_inspector = cumotion.create_robot_world_inspector(
+            self.robot,
+            self.world_view,
+        )
+
         self.optimizer_config = (
             cumotion.create_default_trajectory_optimizer_config(
                 self.robot,
                 self.tool_frame,
                 self.world_view,
             )
+        )
+
+        self.optimizer_config.set_param(
+                "trajopt/pbo/enabled",
+                False,
         )
 
         self.optimizer = cumotion.create_trajectory_optimizer(
@@ -259,7 +301,46 @@ class CuMotionPlanner:
         self.q_home = _as_qpos(
             self.robot.default_cspace_configuration(),
             "q_home",
+            len(resources.joint_names),
         )
+
+    def _analyze_direct_path(
+        self,
+        q_start: np.ndarray,
+        q_goal: np.ndarray,
+        num_samples: int = 200,
+    ) -> None:
+        print("\n=== Direct C-space path analysis ===")
+
+        first_collision = None
+        collision_count = 0
+
+        for i, s in enumerate(np.linspace(0.0, 1.0, num_samples)):
+            q = (1.0 - s) * q_start + s * q_goal
+
+            if self.robot_inspector.in_self_collision(q):
+                collision_count += 1
+
+                if first_collision is None:
+                    first_collision = (
+                        i,
+                        s,
+                        q.copy(),
+                        self.robot_inspector.frames_in_self_collision(q),
+                    )
+
+        if first_collision is None:
+            print("Direct C-space path: COLLISION-FREE")
+        else:
+            i, s, q, pairs = first_collision
+
+            print("Direct C-space path: SELF-COLLISION")
+            print(f"  sample      : {i}/{num_samples - 1}")
+            print(f"  interpolation: {s:.4f}")
+            print(f"  collision samples: {collision_count}")
+            print(f"  frames      : {pairs}")
+            print(f"  q           : {q}")
+
 
     def plan_joint_trajectory(
         self,
@@ -274,10 +355,26 @@ class CuMotionPlanner:
         Returns a cuMotion-independent dictionary containing:
           duration, times, qpos, qvel, qacc, qjerk.
         """
-        q_start = _as_qpos(q_start, "q_start")
-        q_goal = _as_qpos(q_goal, "q_goal")
+        expected_dofs = len(self.resources.joint_names)
+
+        q_start = _as_qpos(
+            q_start,
+            "q_start",
+            expected_dofs,
+        )
+
+        q_goal = _as_qpos(
+            q_goal,
+            "q_goal",
+            expected_dofs,
+        )
 
         target = cumotion.TrajectoryOptimizer.CSpaceTarget(q_goal)
+
+        # self._analyze_direct_path(
+        #     q_start,
+        #     q_goal,
+        # )
 
         result = self.optimizer.plan_to_cspace_target(
             q_start,

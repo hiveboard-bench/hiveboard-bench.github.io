@@ -190,6 +190,7 @@ ROBOTS = [
         "name": "spot",
         "label": "Spot + Spot Arm",
         "note": "Platform A",
+        "planner": "cumotion",
         "source": "boston_dynamics_spot/spot_arm.xml",
         "arm": ["arm_sh0", "arm_sh1", "arm_el0", "arm_el1", "arm_wr0", "arm_wr1"],
         "grip": {"actuator": "arm_f1x", "open": -1.5, "grasp": 0.0, "fist": 0.0},
@@ -373,9 +374,7 @@ def ensure_menagerie() -> Path:
     required = [
     root / "franka_fr3/fr3.xml",
     root / "boston_dynamics_spot/spot_arm.xml",
-    root / "franka_emika_panda/panda.xml",
     root / "robotstudio_so101/so101.xml",
-    root / "anybotics_anymal_c/anymal_c.xml",
     ]
 
     if not all(path.exists() for path in required):

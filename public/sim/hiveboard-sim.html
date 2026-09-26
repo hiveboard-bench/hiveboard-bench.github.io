@@ -410,10 +410,11 @@
 
     let mujoco, mjModel, mjData;
     let scene, camera, renderer, controls;
-    let mujocoRoot = null;
-    let bodies = {};
-    let bodyNames = [];
-    let jointNames = [];
+    let mujocoRoot = null;      // holds every body's meshes, rebuilt per robot
+    let bodies = {};            // MuJoCo body id -> THREE.Group
+    let gripperPreview = null;     // a live preview of the gripper's pose, only in ?edit=1
+    let bodyNames = [];         // MuJoCo body id -> name
+    let jointNames = [];        // cached: WASM name wrappers must not run every step
 
     let catalogue = [];
     let robot = null;
@@ -593,7 +594,50 @@
     }
 
     async function fetchJson(path) {
-      return JSON.parse(new TextDecoder().decode(await fetchGzip(path)));
+      const response = await fetch(`${path}.gz`);
+
+      if (!response.ok) {
+        throw new Error(`${path}.gz → HTTP ${response.status}`);
+      }
+
+      const buffer = await response.arrayBuffer();
+      const bytes = new Uint8Array(buffer);
+
+      let decodedBytes = bytes;
+
+      const isGzip =
+        bytes.length >= 2 &&
+        bytes[0] === 0x1f &&
+        bytes[1] === 0x8b;
+
+      if (isGzip) {
+        if (typeof DecompressionStream === 'undefined') {
+          throw new Error('Este navegador não suporta DecompressionStream');
+        }
+
+        const stream = new Blob([buffer])
+          .stream()
+          .pipeThrough(new DecompressionStream('gzip'));
+
+        decodedBytes = new Uint8Array(
+          await new Response(stream).arrayBuffer()
+        );
+      }
+
+      const text = new TextDecoder().decode(decodedBytes);
+
+      try {
+        return JSON.parse(text);
+      } catch (error) {
+        console.error('Conteúdo recebido não é JSON:', {
+          path,
+          preview: text.slice(0, 200)
+        });
+
+        throw new Error(
+          `JSON inválido em ${path}. Primeiros caracteres: ${text.slice(0, 80)}`
+        );
+      }
     }
 
     async function startMujoco() {
@@ -721,11 +765,16 @@
       controls.minDistance = reach * 0.12;
       controls.maxDistance = reach * 3.0;
 
-      resetScene();
-      buildBodies();
-      lookAt(homeView.target, homeView.position);
-      buildTaskList();
-      loadSavedViews();
+        resetScene();
+        buildBodies();
+
+        if (new URLSearchParams(location.search).has('edit')) {
+          createGripperPreview();
+        }
+
+        lookAt(homeView.target, homeView.position);
+        buildTaskList();
+        loadSavedViews();
     }
 
     function buildScene() {
@@ -816,6 +865,295 @@
       scene.add(pathMarker);
     }
 
+    function getGripperGroups() {
+      const names = ['hand', 'left_finger', 'right_finger'];
+
+      return Object.fromEntries(
+        names.map((name) => {
+          const id = Array.from({ length: mjModel.nbody }, (_, i) => i)
+            .find((i) => mjModel.body(i).name === name);
+
+          return [name, id !== undefined ? bodies[id] : null];
+        })
+      );
+    }
+
+    function createGripperPreview() {
+      const groups = getGripperGroups();
+
+      if (!groups.hand) {
+        console.warn('[editor] Body hand not found');
+        return null;
+      }
+
+      if (gripperPreview) {
+        gripperPreview.visible = true;
+        return gripperPreview;
+      }
+
+      gripperPreview = new THREE.Group();
+      gripperPreview.name = 'editor_gripper_preview';
+      scene.add(gripperPreview);
+
+      for (const name of ['hand', 'left_finger', 'right_finger']) {
+        const source = groups[name];
+
+        if (!source) {
+          console.warn(`[editor] Body ${name} not found`);
+          continue;
+        }
+
+        source.updateWorldMatrix(true, true);
+
+        const clone = source.clone(true);
+        clone.name = `preview_${name}`;
+
+        // Each clone receives its own world transformation.
+        clone.position.set(0, 0, 0);
+        clone.quaternion.identity();
+        clone.scale.set(1, 1, 1);
+        clone.matrixAutoUpdate = false;
+        clone.matrix.copy(source.matrixWorld);
+
+        clone.traverse((object) => {
+          if (!object.isMesh) return;
+
+          object.visible = true;
+          object.frustumCulled = false;
+          object.material = object.material.clone();
+          object.material.transparent = true;
+          object.material.opacity = 0.35;
+          object.material.depthWrite = false;
+          object.material.depthTest = false;
+          object.material.side = THREE.DoubleSide;
+          object.material.needsUpdate = true;
+        });
+
+        gripperPreview.add(clone);
+      }
+
+      gripperPreview.visible = true;
+      return gripperPreview;
+    }
+
+    function hideGripperPreview() {
+      if (gripperPreview) {
+        gripperPreview.visible = false;
+      }
+    }
+
+    function captureGripperPreviewPose() {
+      if (!gripperPreview) return;
+
+      const groups = getGripperGroups();
+
+      for (const name of ['hand', 'left_finger', 'right_finger']) {
+        const source = groups[name];
+        const clone = gripperPreview.getObjectByName(`preview_${name}`);
+
+        if (!source || !clone) continue;
+
+        source.updateWorldMatrix(true, true);
+
+        // Store the original world transformation of each body.
+        clone.matrix.copy(source.matrixWorld);
+        clone.matrixAutoUpdate = false;
+        clone.matrixWorldNeedsUpdate = true;
+      }
+
+      gripperPreview.updateMatrixWorld(true);
+
+      // Store the original transformation of each clone.
+      gripperPreview.originalGripperPose = {};
+
+      for (const name of ['hand', 'left_finger', 'right_finger']) {
+        const clone = gripperPreview.getObjectByName(`preview_${name}`);
+
+        if (!clone) continue;
+
+        const position = new THREE.Vector3();
+        const quaternion = new THREE.Quaternion();
+        const scale = new THREE.Vector3();
+
+        clone.matrixWorld.decompose(position, quaternion, scale);
+
+        gripperPreview.originalGripperPose[name] = {
+          position: position.clone(),
+          quaternion: quaternion.clone(),
+          scale: scale.clone(),
+        };
+      }
+
+      const handPose = gripperPreview.originalGripperPose.hand;
+
+      if (handPose) {
+        gripperPreview.originalHandPosition = handPose.position.clone();
+        gripperPreview.originalHandQuaternion = handPose.quaternion.clone();
+
+        const tcpLocalPosition = new THREE.Vector3(
+          0,
+          0.1034,
+          0
+        );
+
+        const tcpWorldPosition = tcpLocalPosition
+          .applyQuaternion(handPose.quaternion)
+          .add(handPose.position);
+
+        gripperPreview.originalGripperPose.tcpPosition =
+          tcpWorldPosition ? tcpWorldPosition.clone() : null;
+      }
+    }
+
+    function getPreviewGripperParts() {
+      if (!gripperPreview) return {};
+
+      return {
+        hand: gripperPreview.getObjectByName('preview_hand'),
+        left: gripperPreview.getObjectByName('preview_left_finger'),
+        right: gripperPreview.getObjectByName('preview_right_finger'),
+      };
+    }
+
+    function applyGripperPreviewPose(pose) {
+      if (!gripperPreview || !pose) return;
+
+      const originalGripperPose =
+        gripperPreview.originalGripperPose;
+
+      if (!originalGripperPose) return;
+
+      const originalPos = Array.isArray(pose.originalPosition)
+        ? pose.originalPosition
+        : [0, 0, 0];
+
+      const position = Array.isArray(pose.position)
+        ? pose.position
+        : originalPos;
+
+      /*
+      * Translation in MuJoCo.
+      */
+      const delta = [
+        position[0] - originalPos[0],
+        position[1] - originalPos[1],
+        position[2] - originalPos[2],
+      ];
+
+      /*
+      * MuJoCo -> Three.js.
+      */
+      const deltaThree = new THREE.Vector3(
+        delta[0],
+        delta[2],
+        -delta[1]
+      );
+
+      /*
+      * Rotation relative to the original pose.
+      */
+      if (!pose.deltaQuaternion) {
+        console.warn(
+          '[Gripper Preview] Invalid or uncaptured deltaQuaternion.',
+          pose.deltaQuaternion
+        );
+        return;
+      }
+
+      const visualDeltaQuaternion = pose.deltaQuaternion;
+
+      /*
+      * The TCP is the pivot of the rigid transformation.
+      */
+      const rotationPivot =
+        originalGripperPose.tcpPosition;
+
+      if (!(rotationPivot instanceof THREE.Vector3)) {
+        console.warn(
+          '[Gripper Preview] Invalid or uncaptured tcpPosition.'
+        );
+        return;
+      }
+
+      /*
+      * The transformation is always applied from the original pose.
+      * Never use the clone's current position as the origin, otherwise
+      * the rotation would accumulate with every slider movement.
+      */
+      for (const name of [
+        'hand',
+        'left_finger',
+        'right_finger',
+      ]) {
+        const clone = gripperPreview.getObjectByName(
+          `preview_${name}`
+        );
+
+        const original = originalGripperPose[name];
+
+        if (!clone || !original) continue;
+
+        /*
+        * Original body position relative to the TCP.
+        */
+        const relativePosition = original.position
+          .clone()
+          .sub(rotationPivot);
+
+        /*
+        * Apply the same relative rotation to all bodies.
+        */
+        relativePosition.applyQuaternion(visualDeltaQuaternion);
+
+        /*
+        * Reposition the body relative to the TCP.
+        */
+        const worldPosition = rotationPivot
+          .clone()
+          .add(relativePosition)
+          .add(deltaThree);
+
+        /*
+        * Preserve the original relative orientation of each body.
+        *
+        * The premultiply order is:
+        *
+        * newOrientation = deltaQuaternion * originalOrientation
+        */
+        const worldQuaternion = original.quaternion
+          .clone()
+          .premultiply(visualDeltaQuaternion);
+
+        clone.matrixAutoUpdate = true;
+        clone.position.copy(worldPosition);
+        clone.quaternion.copy(worldQuaternion);
+        clone.scale.copy(original.scale);
+        clone.updateMatrixWorld(true);
+      }
+
+      /*
+      * The TCP is exactly at the pivot.
+      * Therefore, rotation does not change its position.
+      * It only follows the translation.
+      */
+      const tcpClone = gripperPreview.getObjectByName(
+        'preview_tcp'
+      );
+
+      if (tcpClone) {
+        tcpClone.position.copy(
+          rotationPivot
+            .clone()
+            .add(deltaThree)
+        );
+
+        tcpClone.quaternion.identity();
+        tcpClone.updateMatrixWorld(true);
+      }
+
+      gripperPreview.updateMatrixWorld(true);
+    }
+
     function buildBodies() {
 
       if (mujocoRoot) {
@@ -824,6 +1162,17 @@
         });
         scene.remove(mujocoRoot);
       }
+      if (gripperPreview) {
+        gripperPreview.traverse((node) => {
+          if (node.isMesh) {
+            node.geometry.dispose();
+            node.material.dispose();
+          }
+        });
+
+        scene.remove(gripperPreview);
+        gripperPreview = null;
+      } 
       bodies = {};
 
       const geometries = {};
@@ -1002,7 +1351,7 @@
       const target = devPose ? devPose.qpos : (task && (playing || devHold)
         ? task.qpos[sampleIndex] : idleHome);
       if (devObjectPose && task && !playing) {
-        const prefix = `${task.watch.split('_')[0]}_`;
+        const prefix = `${modulePrefix()}_`;        
         let oi = 0;
         for (let jid = 0; jid < mjModel.njnt && oi < devObjectPose.length; jid++) {
           const name = mjModel.joint(jid).name;
@@ -1089,7 +1438,12 @@
     }
 
     function modulePrefix() {
-      return task ? task.watch.split('_')[0] : null;
+      if (!task) return null;
+
+      return task.watch.replace(
+        /_(RevoluteJoint|PrismaticJoint|SlideJoint|HingeJoint|BallJoint)$/,
+        ''
+      );
     }
 
     function taskKey() {
@@ -1840,8 +2194,10 @@
         if (new URLSearchParams(location.search).has('edit')) {
           import('./edit.js').then((editor) => editor.attach({
             THREE, scene, camera, renderer, controls, toThree,
-            resetScene, drawPath, setPlaying, setTrajectoryPending, replaceTrajectory,
-            setSample(i) {
+            resetScene, drawPath, setPlaying, setTrajectoryPending, replaceTrajectory, 
+            getGripperGroups, createGripperPreview, hideGripperPreview, captureGripperPreviewPose,
+            applyGripperPreviewPose,
+            setSample(i,afterSolve = false) {
               if (!task) return;
               devHold = true;
               devPose = null;
@@ -1849,6 +2205,7 @@
               sampleIndex = Math.max(0, Math.min(i, task.qpos.length - 1));
               subStep = 0;
               teleportSample();
+              if(!afterSolve) captureGripperPreviewPose();
             },
             setEditorPose(qpos, grip) {
               if (!task || !Array.isArray(qpos)) return;
@@ -1860,6 +2217,8 @@
               mjData.qvel.fill(0);
               mujoco.mj_forward(mjModel, mjData);
               syncBodies();
+              if(captureGripperPreviewPose) captureGripperPreviewPose();
+
             },
             setEditorObjectPose(qpos) {
               if (!task || !Array.isArray(qpos)) return;
@@ -1867,7 +2226,7 @@
               setPlaying(false);
               devPose = null;
               devObjectPose = qpos;
-              const prefix = `${task.watch.split('_')[0]}_`;
+              const prefix = `${modulePrefix()}_`;
               let oi = 0;
               for (let jid = 0; jid < mjModel.njnt && oi < qpos.length; jid++) {
                 const name = mjModel.joint(jid).name;
@@ -1878,8 +2237,8 @@
               mjData.qvel.fill(0);
               mujoco.mj_forward(mjModel, mjData);
               syncBodies();
+              if(captureGripperPreviewPose) captureGripperPreviewPose();
             },
-
             setDraftTrajectory(key, traj) {
               if (!traj) return;
               traj.watch = traj.watch || '';
