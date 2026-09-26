@@ -59,12 +59,12 @@ The following primary task IDs are registered in [`tasks/__init__.py`](https://g
 |---|---|---|
 | `Isaac-HiveBoard-Spot-BallValve-v0` | Spot with arm | Ball valve |
 | `Isaac-HiveBoard-Spot-CircuitBreaker-v0` | Spot with arm | Circuit breaker |
-| `Isaac-HiveBoard-Spot-HighTorqueValve-v0` | Spot with arm | High-torque gate valve |
-| `Isaac-HiveBoard-Spot-SmallValve-v0` | Spot with arm | Small gate valve |
-| `Isaac-HiveBoard-Spot-Lamp-v0` | Spot with arm | Threaded lamp |
+| `Isaac-HiveBoard-Spot-HighTorqueValve-v0` | Spot with arm | Gate valve (large) |
+| `Isaac-HiveBoard-Spot-SmallValve-v0` | Spot with arm | Gate valve (small) |
+| `Isaac-HiveBoard-Spot-Lamp-v0` | Spot with arm | Light bulb |
 | `Isaac-HiveBoard-Franka-LeverValve-v0` | Franka | Ball valve |
 | `Isaac-HiveBoard-Franka-CircuitBreaker-v0` | Franka | Circuit breaker |
-| `Isaac-HiveBoard-Franka-Lamp-v0` | Franka | Threaded lamp |
+| `Isaac-HiveBoard-Franka-Lamp-v0` | Franka | Light bulb |
 | `Isaac-HiveBoard-Anymal-BallValve-v0` | ANYmal with DynaArm | Ball valve |
 
 The repository also registers camera, play, robot-only, and gripper-only configurations for debugging. Use `scripts/list_envs.py` for the complete current list. Legacy aliases remain registered for backwards compatibility; new experiments should use the `Isaac-HiveBoard-*` identifiers.

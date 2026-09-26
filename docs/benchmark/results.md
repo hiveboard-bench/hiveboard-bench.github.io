@@ -1,20 +1,22 @@
 # Report results
 
-Report performance per attachment and preserve the trial-level data. Aggregate values alone hide the failure modes and stage progression that make the benchmark informative.
+Report performance per condition and preserve the trial-level data. Aggregate values alone hide the failure modes and stage progression that make the benchmark informative.
 
 ## Recommended metrics
 
 | Metric | Calculation | Report for |
 |---|---|---|
-| Success rate | Successful trials ÷ recorded trials | Every attachment |
-| Completion time | Median and individual successful-trial times | Every attachment with successes |
-| Attempts | Median and individual counts | Every attachment |
-| Regrasps | Median and individual counts | Every attachment |
-| Stage completion | Fraction reaching each stage | Composed tasks |
-| Failure distribution | Count by primary failure cause | Unsuccessful trials |
-| Strategy distribution | Count of prehensile and non-prehensile trials | Every attachment |
+| Success rate | Successful trials ÷ recorded trials | Every condition |
+| Completion time | Median and individual successful-trial times | Every condition with successes |
+| Attempts | Median and individual counts | Every condition |
+| Regrasps | Median and individual counts | Every condition |
+| Stage completion | Fraction reaching each stage | Composed assembly tasks |
+| Failure distribution | Count by dominant failure cause | Unsuccessful trials |
+| Strategy distribution | Count of prehensile and non-prehensile trials | Every condition |
 
-With five trials per attachment, always show the numerator and denominator—for example, `4/5 (80%)`—rather than only a percentage.
+With five trials per condition, always show the numerator and denominator—for example, `4/5 (80%)`—rather than only a percentage.
+
+Use the [counting conventions](/benchmark/logging#counting-conventions) for attempts and regrasps. If an existing dataset reports total grasps, retain that label until its counting convention has been checked. Do not relabel grasp counts as regrasp counts.
 
 ## Keep conditions separate
 
@@ -42,11 +44,15 @@ result-package/
 └── videos/              # one recording per trial
 ```
 
-The platform description identifies the robot, end-effector, control method, board orientation, calibration notes, HiveBoard version, printing parameters, post-processing, and any protocol deviations.
+The platform description identifies the robot, end-effector, control interface, board orientation, calibration notes, HiveBoard version, printing parameters, post-processing, and any protocol deviations.
 
 The [Evaluation Runner](/benchmark/evaluation-runner) generates the ZIP after all 65 trial entries and required setup details pass validation. Attach a JPEG setup photograph to include it as `setup.jpg`, or add it after extracting the ZIP. Add the recordings to `videos/` using the filenames in `recording-instructions.md`.
 
 “Trial records complete” refers to the log and setup fields. It does not confirm that all supporting files are present or that an organizer has reviewed the outcomes. The manifest lists the expected recordings and whether the setup photograph was included when the ZIP was generated.
+
+### Learning data collected during evaluation
+
+If you recorded the trials with [DataHive](/guides/datahive), keep an index linking the benchmark trial IDs to the learning episodes and submit the dataset through the [dataset call](/contribute/evaluations#send-the-data-for-review). DataHive's extended annotation CSV does not replace the benchmark `trials.csv` in this package. Enter the scored results in the website Evaluation Runner to generate the submission ZIP; see the [combined workflow](/guides/datahive#collect-during-a-benchmark-evaluation).
 
 ## Submit for organizer review
 

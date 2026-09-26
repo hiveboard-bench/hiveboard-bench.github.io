@@ -4,6 +4,8 @@ This protocol characterizes robot-side performance across HiveBoard attachments.
 
 The source protocol is available in [`Documentation/PROTOCOL.md`](https://github.com/EESC-LabRoM/HiveBoard/blob/main/Documentation/PROTOCOL.md). Submissions through this documentation require all 13 conditions, with five recorded trials per condition (65 trials).
 
+Before recording, open [How to perform each task](/benchmark/tasks). It lists the starting state, required actions, success criterion, timeout, and reset for every condition, including the [shock absorber](/benchmark/tasks#shock-absorber).
+
 ## Required material
 
 - One printed HiveBoard base.
@@ -22,6 +24,10 @@ The source protocol is available in [`Documentation/PROTOCOL.md`](https://github
 6. Create `platform.md` with the end-effector, control interface or policy, mounting orientation, control mode, and relevant calibration notes.
 7. Record the printer, material, print settings, and post-processing. The runner includes these fields in `platform.md`.
 
+## Optional dataset collection
+
+We encourage labs to record robot states, executed commands, and camera streams during evaluation using [DataHive](/guides/datahive). Test the recording setup before the scored trials and link each episode to its benchmark trial record. Dataset collection is optional and does not change the task criteria, timing, or requirement for 65 trials. The [DataHive guide](/guides/datahive#collect-during-a-benchmark-evaluation) explains how to prepare both submissions; the [learning-dataset call](/contribute/evaluations) also accepts larger collections and task subsets outside a formal evaluation.
+
 ## Familiarization
 
 Run unrecorded practice trials for each attachment until completion times stabilize. Begin recording after three consecutive practice trials finish within 20% of each other or within the timeout, whichever comes first.
@@ -30,7 +36,7 @@ Practice trials are not included in the submitted result.
 
 ## Recorded trials
 
-For each platform and attachment pair:
+For each platform and evaluation condition:
 
 1. Run **five recorded trials**.
 2. Start the end-effector from the same neutral pose.
@@ -40,7 +46,7 @@ For each platform and attachment pair:
 
 Run the ball valve as two separate blocks: five trials without a friction ring and five with the ring fitted.
 
-Do not tune parameters or change the control mode between recorded trials in the same condition. A restarted approach inside a trial is counted as another attempt or regrasp; it is not a new trial.
+Do not tune parameters or change the control mode between recorded trials in the same condition. A restarted approach within a trial counts as another attempt. Count a regrasp only when the end-effector releases the part and grasps it again. The initial grasp is not a regrasp. Attempts and regrasps are separate counts; neither starts a new trial.
 
 ## Outcomes
 
@@ -69,7 +75,7 @@ Every unsuccessful trial must contain one dominant failure cause.
 | `control_precision` | Control resolution was too coarse for the task |
 | `other` | None of the listed causes fits; explain in `notes` |
 
-Choose one primary cause even when several factors contributed.
+Choose one dominant cause even when several factors contributed.
 
 ## Broken or displaced parts
 
@@ -90,10 +96,10 @@ Do not silently replace the affected row with a rerun.
 - [ ] All attachments are fully seated.
 - [ ] Familiarization is complete for every attachment.
 - [ ] Five recorded trials exist for all 13 conditions (65 trials total).
-- [ ] Timeouts and task criteria match the module reference.
+- [ ] Timeouts and task criteria match the attachment reference.
 - [ ] Every unsuccessful trial has one failure cause.
 - [ ] Attempts, regrasps, and strategy are present on every row.
-- [ ] Composed tasks include `stage_reached`.
+- [ ] Composed assembly tasks include `stage_reached`.
 - [ ] Broken or reseated parts are described.
 - [ ] `setup.jpg` and `platform.md` accompany the log.
 - [ ] One external-camera recording accompanies each trial, using the filenames in `recording-instructions.md`.

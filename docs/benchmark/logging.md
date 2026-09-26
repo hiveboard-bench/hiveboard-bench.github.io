@@ -9,7 +9,13 @@ The [Evaluation Runner](/benchmark/evaluation-runner) provides a guided timer an
   <li><a href="https://github.com/EESC-LabRoM/HiveBoard/raw/main/Documentation/trials.csv"><strong>Download the CSV template</strong></a> — for scripts, version control, and automated validation.</li>
 </ul>
 
+Use the [task-name and identifier table](/reference/terminology#task-names-and-identifiers) to match each record to its task.
+
 Do not change `trial_id` or `attachment_id`. Fill the remaining columns while running the trials.
+
+## Logging with DataHive
+
+[DataHive](/guides/datahive) links learning episodes to trial annotations. Its session `trials.csv` has additional fields and is not the benchmark template described here. When collecting data during evaluation, prepare the benchmark CSV with the columns below and keep an index mapping each scored trial to its DataHive session and episode. Session trial numbers may differ from the template's fixed condition assignments. See the [combined workflow](/guides/datahive#collect-during-a-benchmark-evaluation) before transferring results.
 
 ## Column reference
 
@@ -23,7 +29,7 @@ Do not change `trial_id` or `attachment_id`. Fill the remaining columns while ru
 | `completion_time_s` | Decimal seconds for successful trials only |
 | `n_attempts` | Discrete task attempts, counted from 1 |
 | `n_regrasps` | Release-and-grasp events, counted from 0 |
-| `stage_reached` | Last completed stage, only for composed tasks |
+| `stage_reached` | Last completed stage, only for composed assembly tasks |
 | `strategy` | `prehensile` or `non_prehensile` |
 | `notes` | Deviations, adjustments, damage, or other concise observations |
 
@@ -35,7 +41,7 @@ An attempt ends when the current approach is abandoned and a new approach begins
 
 ### Regrasps
 
-Count each time the end-effector releases a part and closes on it again. A trial with one grasp and no release records `0`.
+Count each time the end-effector releases a part and closes on it again. A trial with one grasp and no release records `0`. A restarted approach adds an attempt; it adds a regrasp only if the part is released and grasped again.
 
 ### Strategy
 
@@ -62,7 +68,7 @@ trial_id,lab_id,platform_id,attachment_id,date,outcome,failure_cause,completion_
 | `timeout` written in the time column | Set outcome to `timeout` and leave time blank |
 | Regrasps counted from 1 | Count release-and-grasp events from 0 |
 | Blank counts on failed trials | Record attempts, regrasps, and strategy on every row |
-| Blank stage on a failed composed task | Record the last completed stage, including `0` |
+| Blank stage on a failed composed assembly task | Record the last completed stage, including `0` |
 | Replacing a damaged-part trial with a clean rerun | Preserve the trial and explain the event in `notes` |
 
 See the [column-by-column instructions](https://github.com/EESC-LabRoM/HiveBoard/blob/main/Documentation/HOW_TO_FILL_TRIALS.md) for the full reference.

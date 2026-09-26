@@ -8,16 +8,18 @@ Browse the [`Simulation/` directory](https://github.com/EESC-LabRoM/HiveBoard/tr
 
 | Folder | Mechanisms |
 |---|---|
-| `Button/` | Covered push button |
-| `Circuit Breaker/` | Toggle mechanism |
-| `Drawer/` | Sliding drawer |
-| `Honeycomb/` | Base geometry |
-| `Key/` | Lock-and-key mechanism |
-| `Lamp/` | Threaded light-bulb mechanism |
-| `Peg Insertion/` | Threaded peg and socket |
-| `Shock Absorber/` | Pin-insertion assembly |
-| `Threads/` | M8 and M30 fasteners |
-| `Valves/` | Ball and gate valves |
+| `Button/` | Button |
+| `Circuit Breaker/` | Circuit breaker |
+| `Drawer/` | Drawer |
+| `Honeycomb/` | Honeycomb base |
+| `Key/` | Lock and key |
+| `Lamp/` | Light bulb |
+| `Peg Insertion/` | Peg insertion |
+| `Shock Absorber/` | Shock absorber |
+| `Threads/` | Thread (M8); Thread (M30) |
+| `Valves/` | Ball valve; Gate valve (small); Gate valve (large) |
+
+Folder names are retained for compatibility. The [terminology reference](/reference/terminology) maps older names to the task names used in the paper.
 
 ## Model contents
 

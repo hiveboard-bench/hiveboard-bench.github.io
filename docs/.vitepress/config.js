@@ -36,16 +36,23 @@ export default defineConfig({
         items: [
           { text: '3D Printing', link: '/hardware/printing' },
           { text: 'Assembly and Mounting', link: '/hardware/assembly' },
-          { text: 'Module Reference', link: '/hardware/modules' }
+          { text: 'Attachment Reference', link: '/hardware/modules' }
         ]
       },
       {
         text: 'Benchmark',
         items: [
+          { text: 'How to Perform Each Task', link: '/benchmark/tasks' },
           { text: 'Evaluation Runner', link: '/benchmark/evaluation-runner' },
           { text: 'Evaluation Protocol', link: '/benchmark/protocol' },
           { text: 'Trial Logging', link: '/benchmark/logging' },
           { text: 'Reporting Results', link: '/benchmark/results' }
+        ]
+      },
+      {
+        text: 'Data Collection',
+        items: [
+          { text: 'DataHive', link: '/guides/datahive' }
         ]
       },
       {
@@ -69,6 +76,7 @@ export default defineConfig({
       {
         text: 'Reference',
         items: [
+          { text: 'Terminology', link: '/reference/terminology' },
           { text: 'Repository Structure', link: '/reference/repositories' },
           { text: 'Troubleshooting', link: '/reference/troubleshooting' },
           { text: 'Citation', link: '/reference/citation' }

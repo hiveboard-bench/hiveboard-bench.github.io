@@ -6,13 +6,16 @@ For the paper, demonstration videos, and reported results, see the [HiveBoard pr
 
 ## Documentation
 
+**Running an evaluation?** Start with [How to perform each task](/benchmark/tasks) for initial states, actions, success criteria, timeouts, and resets. For example, see the [shock absorber instructions](/benchmark/tasks#shock-absorber).
+
 - [Benchmark overview](/getting-started/overview)
 - [Getting started](/getting-started/quick-start)
 - [3D printing](/hardware/printing)
 - [Assembly and mounting](/hardware/assembly)
-- [Module reference](/hardware/modules)
+- [Attachment reference](/hardware/modules)
 - [Evaluation Runner](/benchmark/evaluation-runner)
 - [Evaluation protocol](/benchmark/protocol)
+- [Data collection with DataHive](/guides/datahive)
 - [Simulation assets](/simulation/assets)
 
 The printable parts, CAD models, articulated assets, protocol, and trial templates are maintained in the [HiveBoard repository](https://github.com/EESC-LabRoM/HiveBoard). The Isaac Lab environments are maintained in a [separate repository](https://github.com/EESC-LabRoM/isaaclab-hiveboard).
@@ -21,9 +24,11 @@ The printable parts, CAD models, articulated assets, protocol, and trial templat
 
 We invite laboratories and individual researchers to [contribute datasets for learning-based manipulation](/contribute/evaluations), including robot states, actions, camera observations, timestamps, calibration, and task outcomes. There is no fixed episode count; larger collections of demonstrations and rollouts are encouraged.
 
-We welcome functional assets for [activities of daily living](/contribute/adl) and [bimanual manipulation](/contribute/bimanual). Contact the authors before starting a design to check its suitability and avoid duplicating work.
+Use [DataHive](/guides/datahive) to collect, annotate, validate, and upload episodes. We encourage labs running a benchmark evaluation to record learning data during the same trials when their system supports it.
 
-Contributors who deliver at least one accepted, functional asset with the complete files and validation evidence may be eligible for authorship on future papers that use the contribution. Smaller contributions may be acknowledged. See the [requirements and credit policy](/contribute/requirements).
+We welcome functional attachments for [activities of daily living](/contribute/adl) and [bimanual manipulation](/contribute/bimanual). Contact the authors before starting a design to check its suitability and avoid duplicating work.
+
+Contributors who deliver at least one accepted, functional attachment with the complete files and validation evidence may be eligible for authorship on future papers that use the contribution. Smaller contributions may be acknowledged. See the [requirements and credit policy](/contribute/requirements).
 
 ## Citation
 

@@ -14,8 +14,8 @@ This repository hosts the official project website for **HiveBoard: An Open, Mod
 
 The purpose of this website is to serve as the interactive companion and presentation portal for the HiveBoard benchmark:
 
-- **Interactive 3D & Physics Viewer:** Allows visitors to view and interactively simulate the mechanism modules directly in the browser using [Three.js](https://threejs.org/) and WebAssembly-powered [MuJoCo](https://mujoco.org/).
-- **Module & Task Catalog:** Details the 13 functional 3D-printed mechanism attachments across three manipulation skill categories: *Torque*, *Precision*, and *Composed Assembly*.
+- **Interactive 3D & Physics Viewer:** Allows visitors to view and interactively simulate the attachments directly in the browser using [Three.js](https://threejs.org/) and WebAssembly-powered [MuJoCo](https://mujoco.org/).
+- **Attachment & Task Catalog:** Details 12 functional 3D-printed attachment designs evaluated in 13 conditions across three manipulation skill categories: *Torque*, *Precision*, and *Composed assembly*.
 - **Simulation Compatibility:** Provides information and direct access to digital assets for simulators including MuJoCo, Isaac Sim (USD), and standard URDFs.
 - **Experimental Results & Media:** Showcases evaluation results and video demonstrations across diverse robotic embodiments (fixed-base arms, quadruped manipulators, VR-teleoperated robots, and wearable prosthetic hands).
 - **Documentation & Evaluation Protocol:** Includes the full HiveBoard documentation, contribution guides, and browser-based 65-trial evaluation runner at [`/hivedocs/`](https://hiveboard-bench.github.io/hivedocs/).
@@ -108,12 +108,12 @@ The repository includes a live visual editor to adjust waypoints directly in 3D:
   ```bash
   python3 tools/build-sim-assets.py
   ```
-  *(This compiles MuJoCo scenes, solves IK, and runs acceptance tests across all modules).*
+  *(This compiles MuJoCo scenes, solves IK, and runs acceptance tests across all attachments).*
 
 ### ANYmal-D + DynaArm + Robotiq 2F-140
 
 The `anymal` model is available in `public/sim/models/anymal.xml`, with editable
-starter trajectories for the valve, lamp and circuit breaker. To start editing:
+starter trajectories for the ball valve, light bulb, and circuit breaker. To start editing:
 
 ```bash
 pip install mujoco numpy
@@ -183,7 +183,7 @@ If you find HiveBoard useful in your research, please cite:
 ```bibtex
 @article{godoy2024hiveboard,
   title     = {HiveBoard: An Open, Modular, 3D-Printed Benchmark of Industrial Mechanisms for Robotic and Prosthetic Manipulation},
-  author    = {Godoy, Ricardo V. and de Souza, Enzo F. and de Lange, Rudy De-Xin and Negri, Juliano and Marsicano, Jo{\~a}o A. and van Halst, Victor and Vijayan, Aravind Elanjimattathil and Capezzuto, Gianluca and Angarola, Matheus P. and Tommaselli, Felipe A. G. and Milazzo, Giuseppe and Aléssio, João H. and Baptista, Rafael R. and van Berge, Meiko Adriana and Bezerra, Ranulfo and Lahr, Gustavo J. G. and Gerez, Lucas Ferrari and Bicchi, Antonio and Becker, Marcelo},
+  author    = {Godoy, Ricardo V. and de Souza, Enzo F. and de Lange, Rudy De-Xin and Negri, Juliano and Marsicano, Jo{\~a}o A. and van Halst, Victor and Vijayan, Aravind Elanjimattathil and Capezzuto, Gianluca and Angarola, Matheus P. and Tommaselli, Felipe A. G. and Milazzo, Giuseppe and Aléssio, João H. and Ramírez Sánchez, Amy M. and Baptista, Rafael R. and van Berge, Meiko Adriana and Bezerra, Ranulfo and Lahr, Gustavo J. G. and Gerez, Lucas Ferrari and Bicchi, Antonio and Becker, Marcelo},
   journal   = {arXiv preprint},
   year      = {2024}
 }

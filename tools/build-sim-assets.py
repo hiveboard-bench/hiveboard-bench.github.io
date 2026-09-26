@@ -281,6 +281,23 @@ ROBOTS = [
         "tcp": ("macao_hand", (0.0, 0.0, 0.11)),
         "skip": ["toggle", "button", "dial"],
     },
+    {
+        "name": "fr3",
+        "label": "Franka FR3",
+        "note": "Platform E",
+        "arm": [f"fr3_joint{i}" for i in range(1, 8)],
+        "grip": {"actuator": "gripper", "open": 0.034, "grasp": 0.002, "fist": 0.0},
+        "home": [0.0, -0.0881, 0.0, -2.1491, 0.0, 2.0611, 0.79],
+        # held back for now; both show as coming soon
+        "skip": ["drawer", "button-cover"],
+        # the breaker is thrown for real, not demonstrated
+        "physical": ["breaker"],
+        # the bulb has to leave its socket, not clear it by a further tenth
+        "lamp_tolerance": 1.0,
+        "board": (0.52, 0.0, 0.20),
+        "bench": {"half": 0.19, "top": 0.20},
+        "tcp": ("hand", (0.0, 0.0, 0.1034)),
+    },
 ]
 URDF_HINT = (
     '<mujoco><compiler meshdir="." balanceinertia="true" '

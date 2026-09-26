@@ -27,21 +27,21 @@ const tasks = [
     reset: 'Return the handle to the closed position and confirm that the attachment is fully seated.'
   },
   {
-    id: 'valve_ball_ring', name: 'Ball valve with friction ring', family: 'Torque', timeout: 90,
+    id: 'valve_ball_ring', name: 'Ball valve + ring', family: 'Torque', timeout: 90,
     image: '/images/tasks/torque_valve_noFriction_3d.png',
     video: `${VIDEO_BASE}/anymal_valve_lever_hard_vr.mp4`, videoPlatform: 'Platform C · ANYmal with DynaArm (VR)',
     success: 'Rotate the handle 90° from closed to open with the friction ring fitted.',
     reset: 'Fit the friction ring, return the handle to closed, and confirm that the attachment is seated.'
   },
   {
-    id: 'valve_gate_small', name: 'Small gate valve', family: 'Torque', timeout: 90,
+    id: 'valve_gate_small', name: 'Gate valve (small)', family: 'Torque', timeout: 90,
     image: '/images/tasks/small_valve_3d.png',
     video: `${VIDEO_BASE}/spot_small_valve.mp4`, videoPlatform: 'Platform A · Spot with Spot Arm',
     success: 'Complete one full turn of the valve stem.',
     reset: 'Return the stem to the marked initial orientation without changing the board position.'
   },
   {
-    id: 'valve_gate_large', name: 'Large gate valve', family: 'Torque', timeout: 120,
+    id: 'valve_gate_large', name: 'Gate valve (large)', family: 'Torque', timeout: 120,
     image: '/images/tasks/big_valve_3d.png',
     video: `${VIDEO_BASE}/spot_big_valve.mp4`, videoPlatform: 'Platform A · Spot with Spot Arm',
     success: 'Complete one full turn of the valve stem.',
@@ -55,35 +55,35 @@ const tasks = [
     reset: 'Return the toggle to its initial state and confirm that it moves freely.'
   },
   {
-    id: 'light_bulb', name: 'Light bulb and socket', family: 'Precision', timeout: 120,
+    id: 'light_bulb', name: 'Light bulb', family: 'Precision', timeout: 120,
     image: '/images/tasks/lamp_3d.png',
-    video: `${VIDEO_BASE}/spot_light_bulb.mp4`, videoPlatform: 'Platform A · Spot with Spot Arm',
+    video: `${VIDEO_BASE}/anymal_light_bulb.mp4`, videoPlatform: 'Platform C · ANYmal with DynaArm (VR)',
     success: 'Thread the bulb into the socket until it is seated.',
     reset: 'Remove the bulb, restore the documented starting pose, and inspect the thread.'
   },
   {
-    id: 'thread_m8', name: 'M8 threaded fastener', family: 'Precision', timeout: 120,
+    id: 'thread_m8', name: 'Thread (M8)', family: 'Precision', timeout: 120,
     image: '/images/tasks/m8_3d.png',
     video: `${VIDEO_BASE}/s010_m8_exp5.mp4`, videoPlatform: 'Platform B · LeRobot SO-101',
     success: 'Thread the bolt along the available length.',
     reset: 'Return the bolt to the documented initial engagement and check that the thread is clear.'
   },
   {
-    id: 'thread_m30', name: 'M30 threaded fastener', family: 'Precision', timeout: 120,
+    id: 'thread_m30', name: 'Thread (M30)', family: 'Precision', timeout: 120,
     image: '/images/tasks/m30_3d.png',
     video: `${VIDEO_BASE}/s010_m30_exp5.mp4`, videoPlatform: 'Platform B · LeRobot SO-101',
     success: 'Thread the bolt along the available length.',
     reset: 'Return the bolt to the documented initial engagement and check that the thread is clear.'
   },
   {
-    id: 'peg_insertion', name: 'Threaded peg insertion', family: 'Precision', timeout: 120,
+    id: 'peg_insertion', name: 'Peg insertion', family: 'Precision', timeout: 120,
     image: '/images/tasks/peg_and_hole_3d.png',
     video: `${VIDEO_BASE}/macao_peg_and_hole.mp4`, videoPlatform: 'Platform D · Macao prosthetic hand',
     success: 'Thread the free 8 mm peg into the empty socket until it is seated.',
     reset: 'Remove the peg and return it to the initial pose next to the empty socket.'
   },
   {
-    id: 'button', name: 'Covered button', family: 'Composed assembly', timeout: 60,
+    id: 'button', name: 'Button', family: 'Composed assembly', timeout: 60,
     image: '/images/tasks/button_3d.png',
     video: `${VIDEO_BASE}/spot_button.mp4`, videoPlatform: 'Platform A · Spot with Spot Arm',
     success: 'Open the cover and press the button.',
@@ -99,7 +99,7 @@ const tasks = [
     stages: ['Grasp key', 'Insert key vertically', 'Rotate to unlock']
   },
   {
-    id: 'drawer', name: 'Sliding drawer', family: 'Composed assembly', timeout: 120,
+    id: 'drawer', name: 'Drawer', family: 'Composed assembly', timeout: 120,
     image: '/images/tasks/box_3d.png',
     video: `${VIDEO_BASE}/macao_box.mp4`, videoPlatform: 'Platform D · Macao prosthetic hand',
     success: 'Grasp the handle, pull the drawer open, and push it closed.',
@@ -109,7 +109,7 @@ const tasks = [
   {
     id: 'shock_absorber', name: 'Shock absorber', family: 'Composed assembly', timeout: 180,
     image: '/images/tasks/spring_3d.png',
-    video: `${VIDEO_BASE}/macao_spring.mp4`, videoPlatform: 'Platform D · Macao prosthetic hand',
+    video: `${VIDEO_BASE}/fr3_shock_absorver.MOV`, videoPlatform: 'Platform E · Franka Research 3',
     success: 'Grasp the pin, align it with the hole, and insert it fully.',
     reset: 'Remove the pin, restore its starting pose, and check both occupied board cells.',
     stages: ['Grasp pin', 'Align with hole', 'Insert fully']
@@ -260,7 +260,7 @@ function recordErrors(trial, setup = session) {
   if (!trial || typeof trial !== 'object') return ['Invalid trial record.']
   const issues = []
   const task = tasks.find(candidate => candidate.id === trial.attachment_id)
-  if (!task) return ['Unknown attachment.']
+  if (!task) return ['Unknown condition.']
   if (!isCount(trial.trial_id, 1)) issues.push('Trial ID must be a positive integer.')
   if (!['success', 'fail', 'timeout', 'safety_stop'].includes(trial.outcome)) issues.push('Select a trial outcome.')
   if (!isCount(trial.n_attempts, 1)) issues.push('Attempts must be an integer of at least 1.')
@@ -270,7 +270,7 @@ function recordErrors(trial, setup = session) {
     if (!isNumber(trial.completion_time_s) || Number(trial.completion_time_s) < 0 || Number(trial.completion_time_s) > task.timeout) issues.push(`Completion time must be between 0 and ${task.timeout} s.`)
     if (trial.failure_cause !== '') issues.push('Successful trials must have a blank failure cause.')
   } else {
-    if (!['grasp_geometry', 'kinematic_limit', 'perception', 'slip', 'force_limit', 'control_precision', 'other'].includes(trial.failure_cause)) issues.push('Select a primary failure cause.')
+    if (!['grasp_geometry', 'kinematic_limit', 'perception', 'slip', 'force_limit', 'control_precision', 'other'].includes(trial.failure_cause)) issues.push('Select a dominant failure cause.')
     if (trial.completion_time_s !== '') issues.push('Unsuccessful trials must have a blank completion time.')
     if (trial.failure_cause === 'other' && !hasText(trial.notes)) issues.push('Explain the failure in Notes.')
   }
@@ -438,7 +438,7 @@ function saveTrial() {
   if (timerState.value !== 'form' || !sessionReady.value || currentTrials.value.length >= REQUIRED_TRIALS) return
   const unsuccessful = trialForm.outcome !== 'success'
   if (unsuccessful && !trialForm.failure_cause) {
-    error.value = 'Select one primary failure cause.'
+    error.value = 'Select one dominant failure cause.'
     return
   }
   if (currentTask.value.stages && trialForm.stage_reached === '') {
@@ -511,7 +511,7 @@ function buildPlatformMarkdown() {
 - Platform ID: ${session.platform_id}
 - Robot: ${session.robot_model}
 - End-effector: ${session.end_effector}
-- Control method or interface: ${session.control_method}
+- Control interface: ${session.control_method}
 - Board orientation: ${session.board_orientation}
 - HiveBoard version or commit: ${session.hiveboard_version}
 - Evaluation date: ${session.date}
@@ -563,7 +563,7 @@ Submission ID: \`${ensureSubmissionId()}\`
 4. Save one MP4 file for each row in \`trials.csv\`.
 5. Rename each file exactly as listed below and place it in the package's \`videos/\` directory before submission.
 
-| Trial | Attachment | Required filename |
+| Trial | Condition | Required filename |
 | ---: | --- | --- |
 ${rows}
 `
@@ -923,7 +923,7 @@ onUnmounted(() => {
         <label>End-effector *
           <input v-model="session.end_effector" placeholder="Robotiq 2F-85">
         </label>
-        <label>Control method or interface *
+        <label>Control interface *
           <input v-model="session.control_method" placeholder="Cartesian teleoperation">
         </label>
         <label>Board orientation *
@@ -952,7 +952,7 @@ onUnmounted(() => {
 
     <section v-else-if="step === 'task'" class="runner-section">
       <div class="section-heading">
-        <div><p class="eyebrow">Task selection</p><h2>Select an attachment</h2></div>
+        <div><p class="eyebrow">Task selection</p><h2>Select a condition</h2></div>
         <p>Each condition requires five recorded trials.</p>
       </div>
       <div class="task-grid">
@@ -1030,7 +1030,7 @@ onUnmounted(() => {
           <label>Outcome *
             <select v-model="trialForm.outcome">
               <option value="success">Success</option>
-              <option value="fail">Fail</option>
+              <option value="fail">Failure</option>
               <option value="timeout">Timeout</option>
               <option value="safety_stop">Safety stop</option>
             </select>
@@ -1039,7 +1039,7 @@ onUnmounted(() => {
             <input :value="elapsedSeconds.toFixed(2)" type="text" readonly>
             <span>Seconds, recorded by the timer.</span>
           </label>
-          <label v-else>Primary failure cause *
+          <label v-else>Dominant failure cause *
             <select v-model="trialForm.failure_cause">
               <option value="" disabled>Select one</option>
               <option value="grasp_geometry">Grasp geometry</option>
@@ -1053,9 +1053,11 @@ onUnmounted(() => {
           </label>
           <label>Attempts *
             <input v-model.number="trialForm.n_attempts" type="number" min="1" step="1">
+            <span>Start at 1. Add 1 when you abandon an approach and start another.</span>
           </label>
           <label>Regrasps *
             <input v-model.number="trialForm.n_regrasps" type="number" min="0" step="1">
+            <span>Start at 0. Count each release followed by grasping the part again.</span>
           </label>
           <label>Strategy *
             <select v-model="trialForm.strategy">
@@ -1109,7 +1111,7 @@ onUnmounted(() => {
         </div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Trial</th><th>Attachment</th><th>Outcome</th><th>Time (s)</th><th>Attempts</th><th>Regrasps</th><th></th></tr></thead>
+            <thead><tr><th>Trial</th><th>Condition</th><th>Outcome</th><th>Time (s)</th><th>Attempts</th><th>Regrasps</th><th></th></tr></thead>
             <tbody>
               <tr v-for="trial in trials" :key="trial.trial_id">
                 <td>{{ trial.trial_id }}</td><td><code>{{ trial.attachment_id }}</code></td><td>{{ trial.outcome }}</td>
@@ -1212,7 +1214,7 @@ onUnmounted(() => {
           <button class="video-close" type="button" aria-label="Close example video" @click="closeExampleVideo">Close</button>
         </header>
         <video :key="exampleVideoTask.video" controls autoplay muted playsinline preload="metadata" controlslist="nodownload">
-          <source :src="exampleVideoTask.video" type="video/mp4">
+          <source :src="exampleVideoTask.video" :type="/\.mp4$/i.test(exampleVideoTask.video) ? 'video/mp4' : undefined">
           Your browser does not support HTML video.
         </video>
       </section>

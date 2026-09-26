@@ -51,9 +51,9 @@ Smaller variants of the honeycomb panel are included in the repository, but the 
 
 For a new printer or filament batch, use this order:
 
-1. Print one honeycomb cell and one simple module base.
+1. Print one honeycomb cell and one simple attachment base.
 2. Check the press fit and dimensional consistency.
-3. Print the M8 and M30 test pieces before the complete threaded modules.
+3. Print the M8 and M30 test pieces before the complete threaded attachments.
 4. Print the base panels.
 5. Print the remaining functional mechanisms.
 
@@ -63,7 +63,7 @@ This order catches tolerance and thread problems before the longest prints.
 
 - Remove stringing and support material without rounding functional edges.
 - Check that mating faces seat fully.
-- Test threads by hand before mounting the module.
+- Test threads by hand before mounting the attachment.
 - Apply light sanding only when printer calibration produces tight surfaces.
 - Record any sanding or dimensional adjustment in the trial notes.
 
@@ -78,4 +78,4 @@ Do not lubricate or modify friction surfaces without reporting the change. These
 | Threads | [`STL/Threads`](https://github.com/EESC-LabRoM/HiveBoard/tree/main/STL/Threads) |
 | Other mechanisms | [`STL/`](https://github.com/EESC-LabRoM/HiveBoard/tree/main/STL) |
 
-The repository README also links to the current module-specific printing guide.
+The repository README also links to the current attachment-specific printing guide.
