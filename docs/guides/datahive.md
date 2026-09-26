@@ -89,6 +89,10 @@ DataHive currently expects aligned state and command arrays in HDF5, a proprioce
 
 Record and validate a short pilot episode before starting the collection. Preserve the original streams and timestamps and document any conversion. If your system cannot meet these constraints, discuss an alternative format with the organizers before collection. The dataset call also welcomes depth, force/torque, tactile, and other signals; agree on supplemental files for modalities outside DataHive's current episode format.
 
+### Optional board localization
+
+The [ArUco cell](/hardware/aruco-cell) can provide a visual reference for board pose during collection. Retain the camera calibration, measured marker size, marker-to-board transform, and timestamped images used for detection. Store any estimated poses with their frame conventions and timestamps. Marker detection and pose estimation are part of the lab's recording integration. Keep calibration records with the session metadata and agree on supplemental files with the organizers where needed.
+
 ## Annotate and validate
 
 The local interface supports review and validation. The equivalent command sequence for an existing episode is:

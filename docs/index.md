@@ -13,6 +13,7 @@ For the paper, demonstration videos, and reported results, see the [HiveBoard pr
 - [3D printing](/hardware/printing)
 - [Assembly and mounting](/hardware/assembly)
 - [Attachment reference](/hardware/modules)
+- [ArUco cell for board localization](/hardware/aruco-cell)
 - [Evaluation Runner](/benchmark/evaluation-runner)
 - [Evaluation protocol](/benchmark/protocol)
 - [Data collection with DataHive](/guides/datahive)

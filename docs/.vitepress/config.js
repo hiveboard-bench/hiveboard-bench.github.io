@@ -36,7 +36,8 @@ export default defineConfig({
         items: [
           { text: '3D Printing', link: '/hardware/printing' },
           { text: 'Assembly and Mounting', link: '/hardware/assembly' },
-          { text: 'Attachment Reference', link: '/hardware/modules' }
+          { text: 'Attachment Reference', link: '/hardware/modules' },
+          { text: 'ArUco Cell', link: '/hardware/aruco-cell' }
         ]
       },
       {

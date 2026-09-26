@@ -1,6 +1,8 @@
 # Print the parts
 
-The printable files are stored in the [`STL/` directory](https://github.com/EESC-LabRoM/HiveBoard/tree/main/STL). Editable sources are available separately in [`CAD/`](https://github.com/EESC-LabRoM/HiveBoard/tree/main/CAD).
+The printable files are stored in the [`STL/` directory](https://github.com/EESC-LabRoM/HiveBoard/tree/main/STL). Source geometry and mesh exports are available separately in [`CAD/`](https://github.com/EESC-LabRoM/HiveBoard/tree/main/CAD).
+
+The optional [ArUco cell](/hardware/aruco-cell) uses two OBJ parts, printed separately in white and black PLA. Follow its import-scale and assembly instructions.
 
 ::: tip Check the fit first
 Before printing the full set, print one honeycomb cell and one attachment base. Verify that the attachment seats fully, remains stable during manipulation, and can be removed without damaging either part.
@@ -76,6 +78,7 @@ Do not lubricate or modify friction surfaces without reporting the change. These
 | Honeycomb base | [`STL/Honeycomb`](https://github.com/EESC-LabRoM/HiveBoard/tree/main/STL/Honeycomb) |
 | Valves | [`STL/Valves`](https://github.com/EESC-LabRoM/HiveBoard/tree/main/STL/Valves) |
 | Threads | [`STL/Threads`](https://github.com/EESC-LabRoM/HiveBoard/tree/main/STL/Threads) |
+| ArUco cell (OBJ/MTL) | [`CAD/ArUco Cell`](https://github.com/EESC-LabRoM/HiveBoard/tree/main/CAD/ArUco%20Cell) |
 | Other mechanisms | [`STL/`](https://github.com/EESC-LabRoM/HiveBoard/tree/main/STL) |
 
 The repository README also links to the current attachment-specific printing guide.

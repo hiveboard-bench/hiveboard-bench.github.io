@@ -43,6 +43,12 @@ Threaded motion is represented by coupled rotational and translational joints wh
 | Train and evaluate policies in Isaac Lab | Dedicated Isaac Lab repository |
 | Compare simulation with the printed board | Record model commit and locally identified physical parameters |
 
+## Align the physical and simulated board
+
+Use the optional [ArUco cell](/hardware/aruco-cell) as a visual reference for board pose. The guide covers marker detection, camera calibration, and the marker-to-board transform. Its assembly mesh is provided as OBJ/MTL under `CAD/ArUco Cell/`. For a metre-based simulator, multiply the exported coordinates by 0.01 and verify the 0.0881 m overall width.
+
+Place the mesh relative to the board using the measured transform. Check alignment at known board points before comparing physical and simulated trajectories.
+
 ## Physical parameters
 
 The provided masses, inertias, friction values, and contact properties are nominal. They are not system-identified values for every printed instance.
