@@ -123,10 +123,10 @@
       <geom class="visual" pos="-0.006365 0 -0.0024" quat="0.5 0.5 0.5 0.5" material="base_so101_v2_material" mesh="base_so101_v2" />
       <geom class="visual" pos="0.0263353 0 0.0437" quat="1 0 0 0" material="sts3215_03a_v1_material" mesh="sts3215_03a_v1" />
       <geom class="visual" pos="-0.0309827 -0.000199 0.0474" quat="0.5 0.5 0.5 0.5" material="waveshare_mounting_plate_so101_v2_material" mesh="waveshare_mounting_plate_so101_v2" />
-      <site name="baseframe" pos="0 0 0" group="3" />
+      <site name="baseframe" group="3" />
       <body name="shoulder" pos="0.0388353 0 0.0624" quat="0 0 -1 0" gravcomp="1">
         <inertial pos="-0.0307604 -1.7e-05 -0.0252713" quat="0.999865 0.00149563 0.0097084 0.0132043" mass="0.100006" diaginertia="8.37836e-05 8.10388e-05 2.39552e-05" />
-        <joint name="shoulder_pan" class="sts3215" pos="0 0 0" axis="0 0 1" range="-1.91986 1.91986" />
+        <joint name="shoulder_pan" class="sts3215" range="-1.91986 1.91986" />
         <geom class="visual" pos="-0.030399 0.000422 -0.0417" quat="0.5 0.5 0.5 -0.5" material="sts3215_03a_v1_material" mesh="sts3215_03a_v1" />
         <geom class="collision" size="0.023 0.015 0.01" pos="-0.030399 0.000422 -0.0387" quat="0.5 0.5 0.5 -0.5" type="box" />
         <geom class="visual" pos="-0.067599 -0.0001778 0.01585" quat="0.5 0.5 -0.5 0.5" material="motor_holder_so101_base_v1_material" mesh="motor_holder_so101_base_v1" />
@@ -134,14 +134,14 @@
         <geom class="visual" pos="0.012201 2.2e-05 0.0464" quat="0.707107 -0.707107 0 0" material="rotation_pitch_so101_v1_material" mesh="rotation_pitch_so101_v1" />
         <body name="upper_arm" pos="-0.0303992 -0.0182778 -0.0542" quat="0.5 -0.5 -0.5 -0.5" gravcomp="1">
           <inertial pos="-0.089847 -0.008382 0.018409" quat="0.453195 0.454063 0.541891 0.542951" mass="0.103" diaginertia="0.000150873 0.000142487 3.72451e-05" />
-          <joint name="shoulder_lift" class="sts3215" pos="0 0 0" axis="0 0 1" range="-1.74533 1.74533" />
+          <joint name="shoulder_lift" class="sts3215" range="-1.74533 1.74533" />
           <geom class="visual" pos="-0.11257 -0.0155 0.0187" quat="0 -0.707107 0.707107 0" material="sts3215_03a_v1_material" mesh="sts3215_03a_v1" />
           <geom class="collision" size="0.01 0.07 0.03" pos="-0.06 0 0.02" quat="0 -0.707107 0.707107 0" type="box" />
           <geom class="visual" pos="-0.065085 0.012 0.0182" quat="0 1 0 0" material="upper_arm_so101_v1_material" mesh="upper_arm_so101_v1" />
           <geom class="collision" size="0.01 0.02 0.015" pos="-0.12 -0.014 0.0182" quat="0 1 0 0" type="box" />
           <body name="lower_arm" pos="-0.11257 -0.028 0" quat="0.707107 0 0 0.707107" gravcomp="1">
             <inertial pos="-0.09807 0.0032438 0.018283" quat="0.510729 0.517006 0.487966 0.483477" mass="0.104" diaginertia="0.000160262 0.000145304 2.83125e-05" />
-            <joint name="elbow_flex" class="sts3215" pos="0 0 0" axis="0 0 1" range="-1.69 1.69" />
+            <joint name="elbow_flex" class="sts3215" range="-1.69 1.69" />
             <geom class="visual" pos="-0.06485 -0.032 0.0182" quat="0 1 0 0" material="under_arm_so101_v1_material" mesh="under_arm_so101_v1" />
             <geom class="collision" size="0.07 0.01 0.03" pos="-0.05 0 0.0182" quat="0 1 0 0" type="box" />
             <geom class="visual" pos="-0.06485 -0.032 0.018" quat="0 -1 0 0" material="motor_holder_so101_wrist_v1_material" mesh="motor_holder_so101_wrist_v1" />
@@ -149,14 +149,14 @@
             <geom class="visual" pos="-0.1224 0.0052 0.0187" quat="0 0 1 0" material="sts3215_03a_v1_material" mesh="sts3215_03a_v1" />
             <body name="wrist" pos="-0.1349 0.0052 0" quat="0.707107 0 0 -0.707107" gravcomp="1">
               <inertial pos="-0.000103312 -0.0386143 0.0281156" quat="0.967143 0.254226 0.00162226 -0.000146307" mass="0.079" diaginertia="3.68265e-05 2.74474e-05 1.89434e-05" />
-              <joint name="wrist_flex" class="sts3215" pos="0 0 0" axis="0 0 1" range="-1.65806 1.65806" />
+              <joint name="wrist_flex" class="sts3215" range="-1.65806 1.65806" />
               <geom class="visual" pos="0 -0.0424 0.0306" quat="0.5 0.5 0.5 -0.5" material="sts3215_03a_no_horn_v1_material" mesh="sts3215_03a_no_horn_v1" />
               <geom class="collision" size="0.029 0.015 0.018" pos="0 -0.0424 0.0256" quat="0.5 0.5 0.5 -0.5" type="box" />
               <geom class="visual" pos="0 -0.028 0.0181" quat="0.5 -0.5 -0.5 -0.5" material="wrist_roll_pitch_so101_v2_material" mesh="wrist_roll_pitch_so101_v2" />
               <geom class="collision" size="0.027 0.01 0.03" pos="0 -0.02 0.0191" quat="0.5 -0.5 -0.5 -0.5" type="box" />
               <body name="gripper" pos="0 -0.0611 0.0181" quat="0.0172091 -0.0172091 0.706897 0.706897" gravcomp="1">
                 <inertial pos="0.000214 0.000245 -0.025187" quat="0.600717 0.355993 0.35863 0.61951" mass="0.087" diaginertia="4.33735e-05 3.77229e-05 2.42839e-05" />
-                <joint name="wrist_roll" class="sts3215" pos="0 0 0" axis="0 0 1" range="-2.74385 2.74385" />
+                <joint name="wrist_roll" class="sts3215" range="-2.74385 2.74385" />
                 <geom class="visual" pos="0.0077 0.0001 -0.0234" quat="0.707107 -0.707107 0 0" material="sts3215_03a_v1_material" mesh="sts3215_03a_v1" friction="2 0.05 0.0002" solimp="0.95 0.99 0.001" solref="0.005 1" />
                 <geom class="visual" pos="0 -0.000218 0.00095" quat="0 1 0 0" material="wrist_roll_follower_so101_v1_material" mesh="wrist_roll_follower_so101_v1" friction="2 0.05 0.0002" solimp="0.95 0.99 0.001" solref="0.005 1" />
                 <geom class="collision" size="0.01 0.01 0.018" pos="0 -0.000218 0.00095" quat="0 1 0 0" type="box" friction="2 0.05 0.0002" solimp="0.95 0.99 0.001" solref="0.005 1" />
@@ -171,16 +171,16 @@
                 <geom name="fixed_jaw_box5" class="collision_gripper" size="0.001 0.005 0.006" pos="-0.0108 0 -0.0905" type="box" mass="0" friction="2 0.05 0.0002" solimp="0.95 0.99 0.001" solref="0.005 1" />
                 <geom name="fixed_jaw_box6" class="collision_gripper" size="0.001 0.009 0.008" pos="-0.0125 0 -0.0727" type="box" mass="0" friction="2 0.05 0.0002" solimp="0.95 0.99 0.001" solref="0.005 1" />
                 <geom name="fixed_jaw_box7" class="collision_gripper" size="0.001 0.01 0.008" pos="-0.0143 0 -0.053" type="box" mass="0" friction="2 0.05 0.0002" solimp="0.95 0.99 0.001" solref="0.005 1" />
-                <site name="gripperframe" pos="0.012 -0.000218 -0.098127" quat="0.707107 0 0.707107 0" group="3" />
+                <site name="gripperframe" quat="0.707107 0 0.707107 0" group="3" pos="0.012 -0.000218 -0.098127" />
                 <body name="camera_mount" gravcomp="1">
                   <geom class="visual" pos="0 -0.000218 0.00095" quat="0 1 0 0" mass="0.012" material="wrist_roll_follower_so101_v1_material" mesh="wrist_roll_follower_so101_camera_mount" />
                   <geom name="camera_box1" class="collision_gripper" size="0.015 0.015 0.003" pos="-0.0025 0.03 -0.03" type="box" mass="0" />
                   <geom name="camera_box2" class="collision_gripper" size="0.021 0.021 0.003" pos="-0.001 0.06 -0.04" quat="0.962425 -0.271547 0 0" type="box" mass="0" />
-                  <camera name="wrist_cam" pos="0 0.055 -0.045" quat="0.959662 -0.281157 0 0" resolution="1920 1080" sensorsize="0.00576 0.00324" focal="0.0036 0.0036" />
+                  <camera name="wrist_cam" quat="0.959662 -0.281157 0 0" resolution="1920 1080" pos="0 0.055 -0.045" sensorsize="0.00576 0.00324" focal="0.0036 0.0036" />
                 </body>
                 <body name="moving_jaw_so101_v1" pos="0.0202 0.0188 -0.0234" quat="0.707107 0.707107 0 0" gravcomp="1">
                   <inertial pos="-0.001575 -0.0300244 0.0192755" quat="0.695265 0.717965 -0.0245618 -0.0230097" mass="0.012" diaginertia="6.63582e-06 5.29092e-06 1.86523e-06" />
-                  <joint name="gripper" class="sts3215" pos="0 0 0" axis="0 0 1" range="-0.174533 1.74533" />
+                  <joint name="gripper" class="sts3215" range="-0.174533 1.74533" />
                   <geom class="visual" pos="0 0 0.0189" quat="1 0 0 0" material="moving_jaw_so101_v1_material" mesh="moving_jaw_so101_v1" friction="2 0.05 0.0002" solimp="0.95 0.99 0.001" solref="0.005 1" />
                   <geom class="collision_gripper_mesh" pos="0 0 0.0189" quat="1 0 0 0" type="mesh" mass="0" mesh="moving_jaw_so101_gripper_part0_v1" friction="2 0.05 0.0002" solimp="0.95 0.99 0.001" solref="0.005 1" />
                   <geom class="collision_gripper_mesh" pos="0 0 0.0189" quat="1 0 0 0" type="mesh" mass="0" mesh="moving_jaw_so101_gripper_part1_v1" friction="2 0.05 0.0002" solimp="0.95 0.99 0.001" solref="0.005 1" />
@@ -223,7 +223,7 @@
         <geom pos="-0.0400277 0 0" quat="0.5 0.5 0.5 0.5" type="mesh" mesh="valve_Mesh" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
         <body name="valve_alavanca_pivot">
           <inertial pos="0.033278 0.0115 0.052028" quat="0.5 0.5 0.5 0.5" mass="0.123" diaginertia="0.000199351 0.000188323 2.18765e-05" />
-          <joint name="valve_RevoluteJoint" pos="0 0 0" axis="1 0 0" range="-1.5708 0" actuatorfrcrange="-100 100" springref="0" stiffness="0" damping="0.1" armature="0.002" frictionloss="0.02" />
+          <joint name="valve_RevoluteJoint" range="-1.5708 0" actuatorfrcrange="-100 100" axis="1 0 0" springref="0" stiffness="0" damping="0.1" armature="0.002" frictionloss="0.02" />
           <geom pos="-0.0468898 0.0175836 -0.0114654" quat="0.5 0.5 0.5 0.5" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="valve_Mesh_1" material="hb_accent" />
           <geom pos="-0.0468898 0.0175836 -0.0114654" quat="0.5 0.5 0.5 0.5" type="mesh" mesh="valve_Mesh_1" group="3" material="hb_accent" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="2" conaffinity="1" />
         </body>
@@ -234,18 +234,17 @@
         <geom pos="-0.0447325 0 0" quat="0.707107 0 0.707107 0" type="mesh" mesh="lamp_base_pivot_Mesh" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
         <body name="lamp_rotation_pivot">
           <inertial pos="0 0 0" mass="0.05" diaginertia="1e-05 1e-05 1e-05" />
-          <joint name="lamp_RevoluteJoint" pos="0 0 0" axis="1 0 0" springref="0" stiffness="0" damping="0.02" armature="0.0005" frictionloss="0.002" range="0 6.1" limited="true" />
+          <joint name="lamp_RevoluteJoint" axis="1 0 0" springref="0" stiffness="0" damping="0.02" armature="0.0005" frictionloss="0.002" range="0 6.1" limited="true" />
           <geom size="0.005 0.005" pos="-0.0390718 0 0" quat="0.707107 0 0.707107 0" type="cylinder" contype="0" conaffinity="0" group="2" density="0" material="hb_accent" />
           <geom size="0.005 0.005" pos="-0.0390718 0 0" quat="0.707107 0 0.707107 0" type="cylinder" group="3" material="hb_accent" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="2" conaffinity="1" />
           <body name="lamp_lamp_pivot">
-            <inertial pos="-1e-06 -1e-06 0.015" mass="0.0219" diaginertia="2.97044e-06 2.9701e-06 2.65895e-06" />
-            <joint name="lamp_PrismaticJoint" pos="0 0 0" axis="1 0 0" type="slide" range="0 0.05" actuatorfrcrange="-100 100" springref="0" stiffness="0" damping="1" armature="0.01" frictionloss="0.01" />
+            <inertial pos="0.03 0 0" quat="0.5 0.5 0.5 0.5" mass="0.2" diaginertia="0.000146 0.000146 7.84e-05" />
+            <joint name="lamp_PrismaticJoint" type="slide" range="0 0.05" actuatorfrcrange="-100 100" axis="1 0 0" springref="0" stiffness="0" damping="1" armature="0.01" frictionloss="0.01" />
             <geom quat="0.706516 -0.0544603 -0.70352 0.0541206" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="lamp_Corpo1_Mesh" material="hb_accent" />
             <geom quat="0.706516 -0.0544603 -0.70352 0.0541206" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="lamp_tn__Corpo11_j7m1J_Mesh" material="hb_accent" />
             <geom quat="0.706516 -0.0544603 -0.70352 0.0541206" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="lamp_tn__Corpo12_j7m1J_Mesh" material="hb_accent" />
-            <geom quat="0.706516 -0.0544603 -0.70352 0.0541206" type="mesh" mesh="lamp_Corpo1_Mesh" group="3" material="hb_accent" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="2" conaffinity="1" />
-            <geom quat="0.706516 -0.0544603 -0.70352 0.0541206" type="mesh" mesh="lamp_tn__Corpo11_j7m1J_Mesh" group="3" material="hb_accent" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="2" conaffinity="1" />
-            <geom quat="0.706516 -0.0544603 -0.70352 0.0541206" type="mesh" mesh="lamp_tn__Corpo12_j7m1J_Mesh" group="3" material="hb_accent" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="2" conaffinity="1" />
+            <geom size="0.014 0.015" pos="-0.015 0 0" quat="0.707107 0 0.707107 0" type="cylinder" group="3" material="hb_accent" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="2" conaffinity="1" />
+            <geom size="0.028 0.04" pos="0.035 0 0" quat="0.707107 0 0.707107 0" type="cylinder" group="3" material="hb_accent" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="2" conaffinity="1" />
           </body>
         </body>
       </body>
@@ -255,7 +254,7 @@
         <geom pos="-0.0350036 0 0" quat="0.5 -0.5 0.5 -0.5" type="mesh" mesh="breaker_tn__corpo1_dC_Corpo1_Mesh" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
         <body name="breaker_lever_pivot" quat="1 0 0 -5e-08">
           <inertial pos="0.02 0.01 -0.0015" quat="0.5 0.5 0.5 0.5" mass="0.0264" diaginertia="5.9158e-06 4.4e-06 3.2758e-06" />
-          <joint name="breaker_RevoluteJoint" pos="0 0 0" axis="0 1 0" range="-0.523599 0.523599" actuatorfrcrange="-100 100" springref="0" stiffness="0" damping="0.06" armature="0.002" frictionloss="0.01" />
+          <joint name="breaker_RevoluteJoint" range="-0.523599 0.523599" actuatorfrcrange="-100 100" axis="0 1 0" springref="0" stiffness="0" damping="0.06" armature="0.002" frictionloss="0.01" />
           <geom pos="0.0081193 0.0200116 0.0099949" quat="0.5 -0.5 0.5 -0.5" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="breaker_tn__Alavanca1_zH_Corpo1_Mesh" material="hb_accent" />
           <geom pos="0.0081193 0.0200116 0.0099949" quat="0.5 -0.5 0.5 -0.5" type="mesh" mesh="breaker_tn__Alavanca1_zH_Corpo1_Mesh" group="3" material="hb_accent" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="2" conaffinity="1" />
         </body>
@@ -264,13 +263,13 @@
         <inertial pos="0 0 0" mass="0.05" diaginertia="1e-05 1e-05 1e-05" />
         <body name="high-valve_base" pos="0 0 -0.0157571">
           <inertial pos="0 0 0.068" quat="0.707107 0 0 0.707107" mass="0.9142" diaginertia="0.0020003 0.00185248 0.00103474" />
-          <joint name="high-valve_PrismaticJoint" pos="0 0 0" axis="0 0 1" type="slide" range="-0.0005 0.0005" actuatorfrcrange="-100 100" springref="0" stiffness="0" damping="5" armature="0.01" frictionloss="0.01" limited="true" />
+          <joint name="high-valve_PrismaticJoint" type="slide" range="-0.0005 0.0005" actuatorfrcrange="-100 100" springref="0" stiffness="0" damping="5" armature="0.01" frictionloss="0.01" limited="true" />
           <geom pos="0 0 0.0157571" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="high-valve_Corpo1__2_" material="hb_accent" />
           <geom pos="0 0 0.0157571" quat="1 0 0 0" type="mesh" mesh="high-valve_Corpo1__2_" group="3" material="hb_accent" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="2" conaffinity="1" />
         </body>
         <body name="high-valve_nut">
           <inertial pos="0 0 0.1354" quat="0.5 0.5 -0.5 0.5" mass="1.1193" diaginertia="0.00247172 0.00201322 0.00180004" />
-          <joint name="high-valve_RevoluteJoint" pos="0 0 0" axis="0 0 1" springref="0" stiffness="0" damping="0.02" armature="0.0008" frictionloss="0.05" limited="true" range="-6.4 6.4" />
+          <joint name="high-valve_RevoluteJoint" springref="0" stiffness="0" damping="0.02" armature="0.0008" frictionloss="0.05" limited="true" range="-6.4 6.4" />
           <geom pos="0 0 -0.0157571" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="high-valve_Corpo1__1_" material="hb_accent" />
           <geom pos="0 0 -0.0157571" quat="1 0 0 0" type="mesh" mesh="high-valve_Corpo1__1_" group="3" material="hb_accent" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="2" conaffinity="1" />
         </body>
@@ -281,12 +280,12 @@
         <geom pos="0 0.0740621 0" quat="0.707107 0.707107 0 0" type="mesh" mesh="small-valve_Mesh_1" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
         <body name="small-valve_pivot_registro" quat="0.707107 0.707107 0 0">
           <inertial pos="0 0 0" mass="0.005" diaginertia="1e-06 1e-06 1e-06" />
-          <joint name="small-valve_RevoluteJoint" pos="0 0 0" axis="0 0 1" springref="0" stiffness="0" damping="0.02" armature="0.0008" frictionloss="0.02" limited="true" range="-6.4 6.4" />
+          <joint name="small-valve_RevoluteJoint" springref="0" stiffness="0" damping="0.02" armature="0.0008" frictionloss="0.02" limited="true" range="-6.4 6.4" />
           <geom type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="small-valve_Cylinder" material="hb_accent" />
           <geom type="mesh" mesh="small-valve_Cylinder" group="3" material="hb_accent" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="2" conaffinity="1" />
           <body name="small-valve_eixo_trans" quat="1 -0.0001295 0 0">
             <inertial pos="0 0 0.1017" mass="0.005" diaginertia="1e-06 1e-06 1e-06" />
-            <joint name="small-valve_PrismaticJoint" pos="0 0 0" axis="0 0 1" type="slide" range="-0.0005 0.0005" actuatorfrcrange="-100 100" springref="0" stiffness="0" damping="5" armature="0.01" frictionloss="0.01" limited="true" />
+            <joint name="small-valve_PrismaticJoint" type="slide" range="-0.0005 0.0005" actuatorfrcrange="-100 100" springref="0" stiffness="0" damping="5" armature="0.01" frictionloss="0.01" limited="true" />
             <geom pos="0 1.87e-05 -0.0723285" quat="0.266963 3.45767e-05 0.000124655 -0.963707" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="small-valve_Mesh_22" material="hb_accent" />
             <geom pos="0 1.87e-05 -0.0723285" quat="0.266963 3.45767e-05 0.000124655 -0.963707" type="mesh" mesh="small-valve_Mesh_22" group="3" material="hb_accent" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="2" conaffinity="1" />
           </body>
@@ -296,14 +295,14 @@
         <inertial pos="0 0 0" mass="0.05" diaginertia="1e-05 1e-05 1e-05" />
         <body name="thread-m30_Base">
           <inertial pos="0 0 0.0325" quat="0 0.707107 0 0.707107" mass="0.4369" diaginertia="0.000494543 0.000436426 0.000365777" />
-          <joint name="thread-m30_PrismaticJoint" pos="0 0 0" axis="0 0 1" type="slide" range="-0.0005 0.0005" actuatorfrcrange="-100 100" springref="0" stiffness="0" damping="5" armature="0.01" frictionloss="0.01" limited="true" />
+          <joint name="thread-m30_PrismaticJoint" type="slide" range="-0.0005 0.0005" actuatorfrcrange="-100 100" springref="0" stiffness="0" damping="5" armature="0.01" frictionloss="0.01" limited="true" />
           <geom type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="thread-m30_Base_Corpo1" material="hb_accent" />
           <geom type="mesh" mesh="thread-m30_Base_Corpo1" group="3" material="hb_accent" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="2" conaffinity="1" />
         </body>
         <body name="thread-m30_Nut" pos="0 0 0.015649">
           <joint name="thread-m30_RiseJoint" type="slide" axis="0 0 1" range="0 0.04" damping="1" stiffness="0" />
           <inertial pos="0 0 0.012" quat="0.5 0.5 -0.5 0.5" mass="0.0586" diaginertia="2.41272e-05 1.66017e-05 1.3155e-05" />
-          <joint name="thread-m30_RevoluteJoint" pos="0 0 0" axis="0 0 1" springref="0" stiffness="0" damping="0.02" armature="0.0008" frictionloss="0.01" limited="true" range="0 6.4" />
+          <joint name="thread-m30_RevoluteJoint" springref="0" stiffness="0" damping="0.02" armature="0.0008" frictionloss="0.01" limited="true" range="0 6.4" />
           <geom quat="0.97547 0 0 -0.220133" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="thread-m30_Nut_Corpo1" material="hb_accent" />
           <geom quat="0.97547 0 0 -0.220133" type="mesh" mesh="thread-m30_Nut_Corpo1" group="3" material="hb_accent" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="2" conaffinity="1" />
         </body>
@@ -314,12 +313,12 @@
         <geom pos="-0.0253536 0 0" quat="0.707107 0 0.707107 0" type="mesh" mesh="thread-m8_M8_Screw_Base_Corpo1_Mesh" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
         <body name="thread-m8_rot_pivot">
           <inertial pos="0 0 0" mass="0.05" diaginertia="1e-05 1e-05 1e-05" />
-          <joint name="thread-m8_RevoluteJoint" pos="0 0 0" axis="1 0 0" springref="0" stiffness="0" damping="0.02" armature="0.0008" frictionloss="0.002" limited="true" range="0 6.4" />
+          <joint name="thread-m8_RevoluteJoint" axis="1 0 0" springref="0" stiffness="0" damping="0.02" armature="0.0008" frictionloss="0.002" limited="true" range="0 6.4" />
           <geom size="0.005 0.005" pos="-0.0142895 0 0" quat="0.707107 0 0.707107 0" type="cylinder" contype="0" conaffinity="0" group="2" density="0" material="hb_accent" />
           <geom size="0.005 0.005" pos="-0.0142895 0 0" quat="0.707107 0 0.707107 0" type="cylinder" group="3" material="hb_accent" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="2" conaffinity="1" />
           <body name="thread-m8_nut_pivot">
             <inertial pos="0 0 0.003" mass="0.005" diaginertia="1e-06 1e-06 1e-06" />
-            <joint name="thread-m8_PrismaticJoint" pos="0 0 0" axis="1 0 0" type="slide" range="0 0.02" actuatorfrcrange="-100 100" springref="0" stiffness="0" damping="0.2" armature="0.01" frictionloss="0.01" />
+            <joint name="thread-m8_PrismaticJoint" type="slide" range="0 0.02" actuatorfrcrange="-100 100" axis="1 0 0" springref="0" stiffness="0" damping="0.2" armature="0.01" frictionloss="0.01" />
             <geom quat="0.707107 0 0.707107 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="thread-m8_M8_Nut_Corpo1_Mesh" material="hb_accent" />
             <geom quat="0.707107 0 0.707107 0" type="mesh" mesh="thread-m8_M8_Nut_Corpo1_Mesh" group="3" material="hb_accent" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="2" conaffinity="1" />
           </body>
@@ -345,13 +344,13 @@
         <geom pos="-0.0209518 0 0" quat="4.32978e-17 0.707107 4.32978e-17 0.707107" type="mesh" mesh="button-cover_tn__corpo1_dC_Corpo1_Mesh" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
         <body name="button-cover_button_pivot">
           <inertial pos="0 0 0.0057" quat="0.5 0.5 -0.5 0.5" mass="0.0377" diaginertia="1.27119e-05 7.44185e-06 7.44185e-06" />
-          <joint name="button-cover_PrismaticJoint" pos="0 0 0" axis="1 0 0" type="slide" range="-0.01 0" actuatorfrcrange="-100 100" springref="0" stiffness="800" damping="2" armature="0.01" frictionloss="0.01" />
+          <joint name="button-cover_PrismaticJoint" type="slide" range="-0.01 0" actuatorfrcrange="-100 100" axis="1 0 0" springref="0" stiffness="800" damping="2" armature="0.01" frictionloss="0.01" />
           <geom quat="0.707107 0 0.707107 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="button-cover_tn__botao1_dC_Corpo1_Mesh" material="hb_accent" />
           <geom quat="0.707107 0 0.707107 0" type="mesh" mesh="button-cover_tn__botao1_dC_Corpo1_Mesh" group="3" material="hb_accent" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="2" conaffinity="1" />
         </body>
         <body name="button-cover_lid_pivot" pos="-0.0034325 -0.0304632 3.73067e-18" quat="6.12323e-17 1 3.06162e-24 5e-08">
           <inertial pos="0.025 0.024 -0.0085" quat="0.5 0.5 -0.5 0.5" mass="0.0824" diaginertia="4.9679e-05 3.17707e-05 2.51761e-05" />
-          <joint name="button-cover_RevoluteJoint" pos="0 0 0" axis="0 0 1" range="-1.5708 0.698132" actuatorfrcrange="-100 100" springref="-1.5708" stiffness="0" damping="0.05" armature="0.002" frictionloss="0.03" />
+          <joint name="button-cover_RevoluteJoint" range="-1.5708 0.698132" actuatorfrcrange="-100 100" springref="-1.5708" stiffness="0" damping="0.05" armature="0.002" frictionloss="0.03" />
           <geom pos="0.0055156 0.0175212 -0.0249821" quat="0.5 -0.5 -0.5 -0.5" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="button-cover_tn__Tampa1_dC_Corpo1_Mesh" material="hb_accent" />
           <geom pos="0.0055156 0.0175212 -0.0249821" quat="0.5 -0.5 -0.5 -0.5" type="mesh" mesh="button-cover_tn__Tampa1_dC_Corpo1_Mesh" group="3" material="hb_accent" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="2" conaffinity="1" />
         </body>
@@ -472,7 +471,7 @@
       <general forcerange="-2.94 2.94" biastype="affine" gainprm="998.22" biasprm="0 -998.22 -2.731" />
     </default>
     <default class="backlash">
-      <joint limited="true" range="-0.0087267 0.0087267" armature="0.01" damping="0.01" />
+      <joint range="-0.0087267 0.0087267" armature="0.01" damping="0.01" limited="true" />
     </default>
   </default>
   <actuator>
@@ -489,6 +488,6 @@
     <joint joint1="thread-m8_PrismaticJoint" joint2="thread-m8_RevoluteJoint" polycoef="0 0.00125 0 0 0" solref="0.01 1" solimp="0.95 0.999 0.001" />
   </equality>
   <keyframe>
-    <key name="home" qpos="0 0 0 0 0 1.6 -4.92524e-07 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1.5708 0 0 0 0" />
+    <key name="home" qpos="0 0 0 0 0 1.6 0.000150987 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1.5708 0 0 0 0" />
   </keyframe>
 </mujoco>

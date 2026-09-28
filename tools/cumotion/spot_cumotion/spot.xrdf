@@ -1,0 +1,27 @@
+format: xrdf
+format_version: 1.0
+
+modifiers:
+  - set_base_frame: "base_link"
+
+default_joint_positions:
+  arm_sh0: 0.0
+  arm_sh1: -3.14
+  arm_el0: 3.06
+  arm_el1: 0.0
+  arm_wr0: 0.0
+  arm_wr1: 0.0
+  arm_f1x: 0.0
+
+cspace:
+  joint_names:
+    - "arm_sh0"
+    - "arm_sh1"
+    - "arm_el0"
+    - "arm_el1"
+    - "arm_wr0"
+    - "arm_wr1"
+  acceleration_limits: [15.0, 15.0, 15.0, 15.0, 15.0, 15.0]
+  jerk_limits: [1000.0, 1000.0, 1000.0, 1000.0, 1000.0, 1000.0]
+
+tool_frames: ["arm_link_fngr"]

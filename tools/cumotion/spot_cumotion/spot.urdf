@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<robot name="spot_arm">
+
+  <!-- Kinematic description extracted from the supplied spot_arm.xml.
+       The MuJoCo freejoint and locomotion joints are intentionally omitted.
+       The six Spot Arm joints form the cuMotion c-space.
+       The gripper joint is retained as a non-c-space joint. -->
+
+  <link name="base_link"/>
+
+  <link name="arm_link_sh0"/>
+  <joint name="arm_sh0" type="revolute">
+    <parent link="base_link"/>
+    <child link="arm_link_sh0"/>
+    <origin xyz="0.292 0 0.188" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-2.61799" upper="3.14159" effort="90" velocity="10"/>
+  </joint>
+
+  <link name="arm_link_sh1"/>
+  <joint name="arm_sh1" type="revolute">
+    <parent link="arm_link_sh0"/>
+    <child link="arm_link_sh1"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-3.14159" upper="0.523599" effort="90" velocity="10"/>
+  </joint>
+
+  <link name="arm_link_hr0"/>
+  <joint name="arm_hr0_fixed" type="fixed">
+    <parent link="arm_link_sh1"/>
+    <child link="arm_link_hr0"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <link name="arm_link_el0"/>
+  <joint name="arm_el0" type="revolute">
+    <parent link="arm_link_hr0"/>
+    <child link="arm_link_el0"/>
+    <origin xyz="0.3385 0 0" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="0" upper="3.14159" effort="90" velocity="10"/>
+  </joint>
+
+  <link name="arm_link_el1"/>
+  <joint name="arm_el1" type="revolute">
+    <parent link="arm_link_el0"/>
+    <child link="arm_link_el1"/>
+    <origin xyz="0.4033 0 0.075" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-2.79253" upper="2.79253" effort="23" velocity="10"/>
+  </joint>
+
+  <link name="arm_link_wr0"/>
+  <joint name="arm_wr0" type="revolute">
+    <parent link="arm_link_el1"/>
+    <child link="arm_link_wr0"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-1.8326" upper="1.8326" effort="23" velocity="10"/>
+  </joint>
+
+  <link name="arm_link_wr1"/>
+  <joint name="arm_wr1" type="revolute">
+    <parent link="arm_link_wr0"/>
+    <child link="arm_link_wr1"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-2.87979" upper="2.87979" effort="23" velocity="10"/>
+  </joint>
+
+  <link name="arm_link_fngr"/>
+  <joint name="arm_f1x" type="revolute">
+    <parent link="arm_link_wr1"/>
+    <child link="arm_link_fngr"/>
+    <origin xyz="0.11745 0 0.01482" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-1.57" upper="0" effort="11" velocity="10"/>
+  </joint>
+
+</robot>

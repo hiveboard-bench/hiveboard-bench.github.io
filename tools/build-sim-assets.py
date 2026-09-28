@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """Build the MuJoCo scenes the in-browser simulation widget loads.
 
-public/sim/hiveboard-sim.html compiles an MJCF at runtime inside MuJoCo WASM,
-so every mesh it names has to be fetched over the wire first. This script
-assembles one scene per robot in ROBOTS, each working the same board:
+The HTML page at public/sim/hiveboard-sim.html compiles an MJCF file at
+runtime inside MuJoCo WASM. That means every mesh referenced by the scene must
+be fetched over the network before the simulation can start. This script
+creates a MuJoCo scene for each robot listed in ROBOTS and for each Modular
+HiveBoard layout, covering three task configurations:
 
   * the robots come from mujoco_menagerie (Apache-2.0), cloned into .cache/ on
     first run and grafted in by compiling them and taking the flattened MJCF
@@ -167,9 +169,28 @@ PANEL_URDF = "Honeycomb/Honeycomb_Panel.urdf"
 
 ROBOTS = [
     {
+        "name": "fr3",
+        "label": "Franka FR3",
+        "note": "reference arm",
+        "planner": "cumotion",
+        "arm": [f"fr3_joint{i}" for i in range(1, 8)],
+        "grip": {"actuator": "gripper", "open": 0.034, "grasp": 0.002, "fist": 0.0},
+        "home": [0.0, -0.0881, 0.0, -2.1491, 0.0, 2.0611, 0.79],
+        # held back for now; both show as coming soon
+        "skip": ["drawer", "button-cover"],
+        # the breaker is thrown for real, not demonstrated
+        "physical": ["breaker"],
+        # the bulb has to leave its socket, not clear it by a further tenth
+        "lamp_tolerance": 1.0,
+        "board": (0.52, 0.0, 0.20),
+        "bench": {"half": 0.19, "top": 0.20},
+        "tcp": ("hand", (0.0, 0.0, 0.1034)),
+    },
+    {
         "name": "spot",
         "label": "Spot + Spot Arm",
         "note": "Platform A",
+        "planner": "cumotion",
         "source": "boston_dynamics_spot/spot_arm.xml",
         "arm": ["arm_sh0", "arm_sh1", "arm_el0", "arm_el1", "arm_wr0", "arm_wr1"],
         "grip": {"actuator": "arm_f1x", "open": -1.5, "grasp": 0.0, "fist": 0.0},
@@ -366,7 +387,14 @@ def emit_mesh(src: Path, dst_dir: Path, name: str = None, simplify=True) -> str:
 def ensure_menagerie() -> Path:
 
     root = CACHE / "mujoco_menagerie"
-    if not (root / "franka_fr3/fr3.xml").exists():
+
+    required = [
+    root / "franka_fr3/fr3.xml",
+    root / "boston_dynamics_spot/spot_arm.xml",
+    root / "robotstudio_so101/so101.xml",
+    ]
+
+    if not all(path.exists() for path in required):
         CACHE.mkdir(exist_ok=True)
         shutil.rmtree(root, ignore_errors=True)
         subprocess.run(
@@ -628,6 +656,11 @@ def adopt(root, prefix, mesh_src: Path, meshes: dict, shell="hb_shell", pose=Non
         mesh.attrib.pop("content_type", None)
 
     base = root.find("./worldbody/body")
+    if base is None:
+        raise ValueError(
+            f"URDF Module'{prefix}' does not have a <body> under <worldbody>;"
+            " MuJoCo's URDF importer expects"
+        )
     for body in root.iter("body"):
         material = shell if body is base else "hb_accent"
         for geom in body.findall("geom"):

@@ -2,6 +2,8 @@
 import json
 import math
 from pathlib import Path
+from datetime import datetime
+import sys
 import mujoco
 import numpy as np
 
@@ -10,6 +12,9 @@ IK_ITERS = 200
 IK_DAMPING = 1e-3
 LAMP_PITCH = 0.0082
 DOWN = np.array([0.0, 0.0, -1.0])
+
+CUMOTION_ENABLED = True       # Enable cuMotion for IK and trajectory optimization. Set to False to use MuJoCo's built-in IK solver instead.
+
 
 
 def approach_for(cfg, point, base):
@@ -69,7 +74,10 @@ def robot_base(model, data):
 def unit(v):
 
     v = np.asarray(v, float)
-    return v / np.linalg.norm(v)
+    norm = np.linalg.norm(v)
+    if norm < 1e-9:
+        raise ValueError(f"Direction vector must be non-zero: {v}")
+    return v / norm
 
 
 def smoothstep(s):
@@ -155,7 +163,12 @@ def rotation_error(target, current):
                      err[1, 0] - err[0, 1]]) * 0.5
 
 
-def solve_ik(model, data, site, path, cfg):
+def solve_ik(model, data, site, path, cfg, ik_indices):
+
+    if ik_indices is None:
+        ik_indices = range(len(path))
+    else:
+        ik_indices = sorted(set(ik_indices))
 
     n = len(cfg["arm"])
     lo, hi = model.jnt_range[:n].T
@@ -167,11 +180,12 @@ def solve_ik(model, data, site, path, cfg):
     q = rest.copy()
     jacp = np.zeros((3, model.nv))
     jacr = np.zeros((3, model.nv))
-    out = []
+    out = [None] * len(path)
     worst = 0.0
 
     worst_precise = 0.0
-    for pos, finger, approach, grip, precise in path:
+    for index in ik_indices:
+        pos, finger, approach, grip, precise = path[index]
         target = frame(approach, finger)
         for it in range(IK_ITERS):
             data.qpos[:n] = q
@@ -198,7 +212,7 @@ def solve_ik(model, data, site, path, cfg):
         worst = max(worst, reached)
         if precise:
             worst_precise = max(worst_precise, reached)
-        out.append((q.copy(), grip))
+        out[index] = (q.copy(), grip)
 
     return out, worst_precise
 
@@ -219,7 +233,10 @@ def replay(model, samples, watch, cfg, spin=0.0):
     steps_per_sample = max(int(round((1.0 / RATE) / model.opt.timestep)), 1)
     seen = []
     states = []
-    for q, grip in samples:
+    for sample in samples:
+        if sample is None:
+            continue
+        q, grip = sample
         for _ in range(steps_per_sample):
             mujoco.mj_step1(model, data)
             data.ctrl[:n] = q
@@ -846,6 +863,123 @@ def draw_task(model, data, cfg, spec):
         "keys": keys,
     }
 
+def build_keyframe_anchors(task, num_samples):
+    anchors = [0]
+    frame = 0
+
+    for key in task["keys"][1:]:
+        frame += max(
+            int(round(key["secs"] * RATE)),
+            1,
+        )
+        anchors.append(
+            min(frame, num_samples - 1)
+        )
+
+    anchors[-1] = num_samples - 1
+
+    return anchors
+
+def plan_trajectory(samples, task, cfg, anchors = None, path = None):
+    if not anchors:
+        anchors = build_keyframe_anchors(
+            task,
+            len(samples),
+        )
+
+    out = []
+    planner = None
+    needs_cumotion = any("arc" not in key for key in task["keys"][1:])
+    if needs_cumotion:
+        from cumotion_planner import CuMotionPlanner
+        planner = CuMotionPlanner(robot_name=cfg["name"])
+
+    for segment, (start, end) in enumerate(
+        zip(anchors[:-1], anchors[1:])
+    ):
+        key = task["keys"][segment + 1]
+
+        planner_type = "cartesian" if "arc" in key else "cumotion"
+
+        if planner_type == "cumotion":
+
+            segment_samples = plan_with_cumotion(
+                samples,
+                start,
+                end,
+                cfg,
+                planner,
+                path
+            )
+
+        else:
+            segment_samples = samples[
+                start:end + 1
+            ]
+
+        # Evita duplicar o primeiro ponto.
+        if segment > 0:
+            segment_samples = segment_samples[1:]
+
+        out.extend(segment_samples)
+
+    return out
+
+def plan_with_cumotion(samples, start, end, cfg, planner, path):
+    """Suaviza a trajetória articular preservando os keyframes da tarefa.
+
+    O IK continua responsável por encontrar os objetivos cartesianos.
+    O cuMotion planeja cada segmento entre dois keyframes, em vez de
+    substituir a tarefa inteira por uma trajetória entre os extremos.
+
+    Os comandos de gripper e a quantidade de amostras permanecem alinhados
+    com a trajetória original.
+    """
+    if not CUMOTION_ENABLED:
+        return samples
+
+
+    if not samples:
+        return samples
+
+    out = []
+
+    # Um segmento de uma única amostra não precisa de planejamento.
+    if end <= start:
+        return out
+
+    q_start = np.asarray(
+        samples[start][0],
+        dtype=float,
+    )
+
+    q_goal = np.asarray(
+        samples[end][0],
+        dtype=float,
+    )
+
+    result = planner.plan_joint_trajectory(
+        q_start=q_start,
+        q_goal=q_goal,
+        num_samples=end - start + 1,
+    )
+
+    out = []
+
+    qpos = result["qpos"]
+
+    for i, q in enumerate(qpos):
+        sample_index = start + i
+
+        grip = path[sample_index][3]
+
+        out.append((
+            np.asarray(q, dtype=float),
+            grip,
+        ))
+
+    return out
+
 
 def button_task(model, data, cfg, spec):
 
@@ -1046,6 +1180,10 @@ def apply_edits(task, edits):
                     for field in ("angle", "rise"):
                         if field in edit:
                             key["arc"][field] = float(edit[field])
+                if "finger" in edit:
+                    key["finger"] = np.asarray(edit["finger"], float)
+                if "approach" in edit:
+                    key["approach"] = np.asarray(edit["approach"], float)
 
     added = (edits or {}).get("added", [])
     for idx, add in enumerate(added):
@@ -1102,8 +1240,11 @@ def apply_joint_edits(samples, task, edits):
         if i:
             frame += max(int(round(key["secs"] * RATE)), 1)
         anchors.append(min(frame, len(samples) - 1))
-
-    out = [(np.asarray(q, float).copy(), grip) for q, grip in samples]
+    for sample in samples:
+        if sample is None:
+            continue
+        q, grip = sample
+        out = [(np.asarray(q, float).copy(), grip)]
     override_frames = {}
     for key_index, edit in overrides.items():
         if "qpos" not in edit:
@@ -1245,6 +1386,27 @@ def clamped_joints(span):
 
     return sorted(span or {})
 
+def build_ik_indices(task, anchors):
+    indices = {0}
+
+    for segment, (start, end) in enumerate(
+        zip(anchors[:-1], anchors[1:])
+    ):
+        key = task["keys"][segment + 1]
+
+        planner_type = (
+            "cartesian"
+            if "arc" in key
+            else "cumotion"
+        )
+
+        if planner_type == "cartesian":
+            indices.update(range(start, end + 1))
+        else:
+            indices.add(start)
+            indices.add(end)
+
+    return sorted(indices)
 
 def attempt(model, data, site, cfg, factory, spin, spin_adr, edits=None):
 
@@ -1264,9 +1426,29 @@ def attempt(model, data, site, cfg, factory, spin, spin_adr, edits=None):
     apply_edits(task, edits)
 
     path = sample_path(task["keys"])
-    samples, worst = solve_ik(model, data, site, path, cfg)
-    original_samples = [(np.asarray(q, float).copy(), grip) for q, grip in samples]
-    samples = apply_joint_edits(samples, task, edits)
+    ik_indices = None
+    if cfg.get("planner") == "cumotion":
+        anchors = build_keyframe_anchors(task, len(path))
+        ik_indices = build_ik_indices(
+            task,
+            anchors,
+        )
+    samples, worst = solve_ik(model, data, site, path, cfg, ik_indices)
+    original_samples = [
+        None if sample is None else (
+            np.asarray(sample[0], float).copy(),
+            sample[1],
+        )
+        for sample in samples
+    ]
+    # IK remains responsible for finding the task objectives.
+    # cuMotion generates a smooth joint trajectory between the waypoints.
+    if cfg.get("planner") == "cumotion":
+        timestamp = datetime.now().isoformat(timespec="milliseconds")
+        print(f"[{timestamp}] [cuMotion] Running for {cfg['name']}")
+        samples = plan_trajectory(samples, task, cfg, anchors, path)
+    else:
+        samples = apply_joint_edits(samples, task, edits)
     if task.get("wrist_only") and cfg["name"] == "anymal":
         # Apply this after saved trajectory edits: the final arm configuration
         # must stay fixed after grasping, including any edited grasp pose.
@@ -1454,7 +1636,10 @@ def tcp_path(model, samples, site, cfg):
     data = mujoco.MjData(model)
     out = []
     n = len(cfg["arm"])
-    for q, _ in samples:
+    for sample in samples:
+        if sample is None:
+            continue
+        q, _ = sample
         data.qpos[:n] = q
         mujoco.mj_kinematics(model, data)
         out.append(np.array(data.site_xpos[site]))
@@ -1501,7 +1686,10 @@ def draft_samples(model, cfg, keys):
         samples.append((samples[0][0].copy(), samples[0][1]))
 
     states = []
-    for q, _ in samples:
+    for sample in samples:
+        if sample is None:
+            continue
+        q, _ = sample
         state = base.copy()
         state[:n] = q
         states.append(state)
