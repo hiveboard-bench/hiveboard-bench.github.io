@@ -340,13 +340,18 @@ function startSession() {
   error.value = ''
   session.lab_id = session.lab_id.trim()
   session.platform_id = session.platform_id.trim()
-  if (!sessionReady.value) {
-    error.value = 'Complete all required session fields before continuing.'
+  const identifierPattern = /^[a-z0-9_]+$/
+  const invalidIdentifiers = [
+    ['lab_id', 'Laboratory ID'],
+    ['platform_id', 'Platform ID']
+  ].filter(([field]) => hasText(session[field]) && !identifierPattern.test(session[field]))
+  if (invalidIdentifiers.length) {
+    error.value = invalidIdentifiers.map(([, label]) => label).join(' and ') +
+      ': use lowercase letters, numbers, and underscores only.'
     return
   }
-  const identifierPattern = /^[a-z0-9_]+$/
-  if (!identifierPattern.test(session.lab_id.trim()) || !identifierPattern.test(session.platform_id.trim())) {
-    error.value = 'Laboratory ID and platform ID may contain only lowercase letters, numbers, and underscores.'
+  if (!sessionReady.value) {
+    error.value = 'Complete all required session fields before continuing.'
     return
   }
   ensureSubmissionId()
@@ -915,7 +920,7 @@ onUnmounted(() => {
         </label>
         <label>Platform ID *
           <input v-model="session.platform_id" placeholder="franka_2f85" pattern="[a-z0-9_]+">
-          <span>Identifier for the end-effector and control-interface combination.</span>
+          <span>Lowercase letters, numbers and underscores. Identifies the end-effector and control-interface combination.</span>
         </label>
         <label>Robot model *
           <input v-model="session.robot_model" placeholder="Franka Research 3">
@@ -1039,18 +1044,39 @@ onUnmounted(() => {
             <input :value="elapsedSeconds.toFixed(2)" type="text" readonly>
             <span>Seconds, recorded by the timer.</span>
           </label>
-          <label v-else>Dominant failure cause *
-            <select v-model="trialForm.failure_cause">
-              <option value="" disabled>Select one</option>
-              <option value="grasp_geometry">Grasp geometry</option>
-              <option value="kinematic_limit">Kinematic limit</option>
-              <option value="perception">Perception</option>
-              <option value="slip">Slip</option>
-              <option value="force_limit">Force limit</option>
-              <option value="control_precision">Control precision</option>
-              <option value="other">Other</option>
-            </select>
-          </label>
+          <fieldset v-else class="failure-causes">
+            <legend>Dominant failure cause *</legend>
+            <div class="failure-cause-options">
+              <label class="failure-cause-option">
+                <input v-model="trialForm.failure_cause" type="radio" name="failure-cause" value="grasp_geometry">
+                <span>Grasp geometry</span>
+              </label>
+              <label class="failure-cause-option">
+                <input v-model="trialForm.failure_cause" type="radio" name="failure-cause" value="kinematic_limit">
+                <span>Kinematic limit</span>
+              </label>
+              <label class="failure-cause-option">
+                <input v-model="trialForm.failure_cause" type="radio" name="failure-cause" value="perception">
+                <span>Perception</span>
+              </label>
+              <label class="failure-cause-option">
+                <input v-model="trialForm.failure_cause" type="radio" name="failure-cause" value="slip">
+                <span>Slip</span>
+              </label>
+              <label class="failure-cause-option">
+                <input v-model="trialForm.failure_cause" type="radio" name="failure-cause" value="force_limit">
+                <span>Force limit</span>
+              </label>
+              <label class="failure-cause-option">
+                <input v-model="trialForm.failure_cause" type="radio" name="failure-cause" value="control_precision">
+                <span>Control precision</span>
+              </label>
+              <label class="failure-cause-option">
+                <input v-model="trialForm.failure_cause" type="radio" name="failure-cause" value="other">
+                <span>Other</span>
+              </label>
+            </div>
+          </fieldset>
           <label>Attempts *
             <input v-model.number="trialForm.n_attempts" type="number" min="1" step="1">
             <span>Start at 1. Add 1 when you abandon an approach and start another.</span>
@@ -1255,6 +1281,13 @@ label span { color: #6e7781; font-size: .76rem; font-weight: 400; }
 input, select, textarea { box-sizing: border-box; width: 100%; min-height: 42px; padding: .58rem .68rem; border: 1px solid #c7cdd3; border-radius: 2px; background: #fff; color: #24292f; font: inherit; font-size: 1rem; }
 textarea { resize: vertical; }
 input:focus, select:focus, textarea:focus, button:focus-visible { outline: 3px solid rgba(35, 82, 124, .18); outline-offset: 1px; border-color: #23527c; }
+.failure-causes { min-width: 0; margin: 0; padding: 0; border: 0; }
+.failure-causes legend { margin-bottom: .38rem; padding: 0; color: #34414d; font-size: .88rem; font-weight: 600; }
+.failure-cause-options { display: grid; gap: .35rem; }
+.failure-cause-option { flex-direction: row; align-items: center; gap: .6rem; min-height: 42px; padding: .45rem .65rem; border: 1px solid #c7cdd3; border-radius: 2px; background: #fff; cursor: pointer; }
+.failure-cause-option:has(input:checked) { border-color: #23527c; background: #edf4fa; }
+.failure-cause-option input { flex: 0 0 auto; width: 18px; height: 18px; min-height: 0; margin: 0; padding: 0; appearance: auto; accent-color: #23527c; }
+.failure-cause-option span { color: #24292f; font-size: .88rem; font-weight: 400; }
 .wide { grid-column: 1 / -1; }
 .actions { display: flex; justify-content: flex-end; gap: .7rem; margin-top: 1.25rem; }
 .actions.split { justify-content: space-between; }
