@@ -169,24 +169,6 @@ PANEL_URDF = "Honeycomb/Honeycomb_Panel.urdf"
 
 ROBOTS = [
     {
-        "name": "fr3",
-        "label": "Franka FR3",
-        "note": "reference arm",
-        "planner": "cumotion",
-        "arm": [f"fr3_joint{i}" for i in range(1, 8)],
-        "grip": {"actuator": "gripper", "open": 0.034, "grasp": 0.002, "fist": 0.0},
-        "home": [0.0, -0.0881, 0.0, -2.1491, 0.0, 2.0611, 0.79],
-        # held back for now; both show as coming soon
-        "skip": ["drawer", "button-cover"],
-        # the breaker is thrown for real, not demonstrated
-        "physical": ["breaker"],
-        # the bulb has to leave its socket, not clear it by a further tenth
-        "lamp_tolerance": 1.0,
-        "board": (0.52, 0.0, 0.20),
-        "bench": {"half": 0.19, "top": 0.20},
-        "tcp": ("hand", (0.0, 0.0, 0.1034)),
-    },
-    {
         "name": "spot",
         "label": "Spot + Spot Arm",
         "note": "Platform A",
@@ -285,6 +267,7 @@ ROBOTS = [
         "name": "fr3",
         "label": "Franka FR3",
         "note": "Platform E",
+        "planner": "cumotion",
         "arm": [f"fr3_joint{i}" for i in range(1, 8)],
         "grip": {"actuator": "gripper", "open": 0.034, "grasp": 0.002, "fist": 0.0},
         "home": [0.0, -0.0881, 0.0, -2.1491, 0.0, 2.0611, 0.79],
@@ -1268,6 +1251,13 @@ def build(hiveboard: Path, robot=None, isaaclab_repo=None, usd_cache=None):
         print(f"build failed -- {live_out} left unchanged", file=sys.stderr)
         raise
 
+    names = [entry["name"] for entry in catalogue]
+    if len(names) != len(set(names)):
+        OUT = live_out
+        shutil.rmtree(staging, ignore_errors=True)
+        duplicates = sorted({name for name in names if names.count(name) > 1})
+        raise SystemExit(f"duplicate robot names in simulation catalogue: {duplicates}")
+
     (OUT / "robots.json").write_text(json.dumps(catalogue, indent=1) + "\n")
     manifest()
     if robot is None:
@@ -1314,14 +1304,21 @@ def emit_all(hiveboard, robot, keep_anymal, menagerie, isaaclab_repo, usd_cache,
     catalogue = []
 
     for cfg in ROBOTS:
-        if (robot and cfg["name"] != robot) or (keep_anymal and cfg["name"] == "anymal"):
-            if cfg["name"] == "anymal" and refreshed_anymal:
+        if cfg["name"] == "anymal" and keep_anymal:
+            if refreshed_anymal:
                 updated = refreshed_anymal[0]
                 if "view" in existing.get("anymal", {}):
                     updated["view"] = existing["anymal"]["view"]
                 catalogue.append(updated)
-                continue
-            if cfg["name"] in existing and cfg["name"] != "anymal":
+            elif "anymal" in existing:
+                # A partial robot rebuild cannot regenerate ANYmal's USD model,
+                # but must retain its catalogue entry and saved animations.
+                catalogue.append(existing["anymal"])
+            else:
+                raise SystemExit(anymal_model.missing_usd_message(source_root))
+            continue
+        if robot and cfg["name"] != robot:
+            if cfg["name"] in existing:
                 catalogue.append(existing[cfg["name"]])
             continue
         if cfg["name"] == "anymal":

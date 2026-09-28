@@ -325,7 +325,7 @@ export function attach(sim) {
       if(prevKey.gripperPose) newKey.gripperPose = { ...prevKey.gripperPose };
       if(prevKey.originalPos) newKey.originalPos = [...prevKey.originalPos];
     }
-    
+
     return newKeys;
   }
 
@@ -1187,7 +1187,7 @@ export function attach(sim) {
     *   finger  = coluna Y
     *   approach = coluna Z
     */
-    
+
     const roll = THREE.MathUtils.degToRad(Number(rpyDegrees?.[0] || 0));
     const pitch = THREE.MathUtils.degToRad(Number(rpyDegrees?.[1] || 0));
     const yaw = THREE.MathUtils.degToRad(Number(rpyDegrees?.[2] || 0));
@@ -1198,7 +1198,7 @@ export function attach(sim) {
         rpyDegrees
       );
     }
-    
+
     return {
       finger: threeVectorToMujoco(targetY),
       approach: threeVectorToMujoco(targetZ),

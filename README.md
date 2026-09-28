@@ -108,7 +108,49 @@ The repository includes a live visual editor to adjust waypoints directly in 3D:
   ```bash
   python3 tools/build-sim-assets.py
   ```
-  *(This compiles MuJoCo scenes, solves IK, and runs acceptance tests across all attachments).*
+*(This compiles MuJoCo scenes, solves IK, and runs acceptance tests across all attachments).*
+
+### NVIDIA cuMotion for FR3 and Spot
+
+The FR3 and Spot trajectory builders use NVIDIA's standalone cuMotion package.
+It requires a supported NVIDIA GPU and a matching CUDA release. On Ubuntu 24.04
+with CUDA 13, install the project-local Python environment and official NVIDIA
+wheel with:
+
+```bash
+tools/install-cumotion.sh
+.venv/bin/python tools/test_cumotion_integration.py
+.venv/bin/python tools/test_cumotion_tasks.py
+```
+
+The installer defaults to cuMotion 1.1.0 for CUDA 13.0. For Ubuntu 22.04 with
+CUDA 12.6, run `CUMOTION_CUDA_VERSION=12.6 tools/install-cumotion.sh`. NVIDIA's
+binary package supports Python 3.10–3.14; the installer picks the matching
+wheel for `python3`. See NVIDIA's [system requirements and installation
+guide](https://nvidia-isaac.github.io/cumotion/getting_started.html#installation)
+before choosing a package for another platform.
+
+To run the planner directly, pass the robot's target joint positions. The
+planner defaults the starting state to that robot's cuMotion home pose:
+
+```bash
+.venv/bin/python tools/cumotion_planner.py --robot fr3 \
+  --goal -0.65 -0.04 0.64 -2.08 0.02 2.05 0.77
+```
+
+To regenerate the simulator scenes and rerun task acceptance for FR3 or Spot,
+provide the HiveBoard asset checkout:
+
+```bash
+.venv/bin/python tools/build-sim-assets.py \
+  --hiveboard /path/to/HiveBoard/Simulation --robot fr3
+.venv/bin/python tools/build-sim-assets.py \
+  --hiveboard /path/to/HiveBoard/Simulation --robot spot
+```
+
+The cuMotion Python runtime is a GPU binary and is not installed by the web
+site's Node.js dependencies. The browser continues to play the generated
+MuJoCo trajectories; Python cuMotion is needed only to regenerate them.
 
 ### ANYmal-D + DynaArm + Robotiq 2F-140
 
@@ -176,6 +218,16 @@ checked with the bundled MuJoCo WASM 3.11.0 runtime.
 └── package.json     # Node.js dependencies and scripts
 ```
 
+## Open Calls for Contributions
+
+We invite laboratories, individual researchers, and teams to contribute manipulation datasets or develop functional attachments for benchmark extensions:
+
+- **[Learning Datasets](https://hiveboard-bench.github.io/hivedocs/contribute/evaluations)**: Robot demonstrations and rollouts with synchronized states, actions, camera observations, and task outcomes. Use [DataHive](https://hiveboard-bench.github.io/hivedocs/guides/datahive) or agreed custom formats.
+- **[Activities of Daily Living (ADL)](https://hiveboard-bench.github.io/hivedocs/contribute/adl)**: Functional mechanisms representing everyday manipulation tasks with repeatable initial states and observable success conditions.
+- **[Bimanual Manipulation](https://hiveboard-bench.github.io/hivedocs/contribute/bimanual)**: Attachments requiring coordinated manipulation by two hands or end-effectors.
+
+Substantial accepted datasets and functional attachment packages can establish eligibility for co-authorship on future papers. See the [submission requirements and credit policy](https://hiveboard-bench.github.io/hivedocs/contribute/requirements). Contact [Ricardo V. Godoy](mailto:ricardo.godoy@usp.br) before starting design or collection.
+
 ## Citation
 
 If you find HiveBoard useful in your research, please cite:
@@ -183,7 +235,7 @@ If you find HiveBoard useful in your research, please cite:
 ```bibtex
 @article{godoy2024hiveboard,
   title     = {HiveBoard: An Open, Modular, 3D-Printed Benchmark of Industrial Mechanisms for Robotic and Prosthetic Manipulation},
-  author    = {Godoy, Ricardo V. and de Souza, Enzo F. and de Lange, Rudy De-Xin and Negri, Juliano and Marsicano, Jo{\~a}o A. and van Halst, Victor and Vijayan, Aravind Elanjimattathil and Capezzuto, Gianluca and Angarola, Matheus P. and Tommaselli, Felipe A. G. and Milazzo, Giuseppe and Aléssio, João H. and Ramírez Sánchez, Amy M. and Baptista, Rafael R. and van Berge, Meiko Adriana and Bezerra, Ranulfo and Lahr, Gustavo J. G. and Gerez, Lucas Ferrari and Bicchi, Antonio and Becker, Marcelo},
+  author    = {Godoy, Ricardo V. and de Souza, Enzo F. and Angarola, Matheus P. and de Lange, Rudy De-Xin and Negri, Juliano and Marsicano, Jo{\~a}o A. and Aléssio, João H. and van Halst, Victor and Vijayan, Aravind Elanjimattathil and Capezzuto, Gianluca and Tommaselli, Felipe A. G. and Milazzo, Giuseppe and Ramírez Sánchez, Amy M. and Affonso, Francisco and Baptista, Rafael R. and van Berge, Meiko A. and Chowdhary, Girish and Bezerra, Ranulfo and Lahr, Gustavo J. G. and Gerez, Lucas Ferrari and Bicchi, Antonio and Becker, Marcelo},
   journal   = {arXiv preprint},
   year      = {2024}
 }

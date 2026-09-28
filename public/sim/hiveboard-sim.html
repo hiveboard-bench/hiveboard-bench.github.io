@@ -1176,7 +1176,7 @@
 
         scene.remove(gripperPreview);
         gripperPreview = null;
-      } 
+      }
       bodies = {};
 
       const geometries = {};
@@ -1355,7 +1355,7 @@
       const target = devPose ? devPose.qpos : (task && (playing || devHold)
         ? task.qpos[sampleIndex] : idleHome);
       if (devObjectPose && task && !playing) {
-        const prefix = `${modulePrefix()}_`;        
+        const prefix = `${modulePrefix()}_`;
         let oi = 0;
         for (let jid = 0; jid < mjModel.njnt && oi < devObjectPose.length; jid++) {
           const name = mjModel.joint(jid).name;
@@ -2198,7 +2198,7 @@
         if (new URLSearchParams(location.search).has('edit')) {
           import('./edit.js').then((editor) => editor.attach({
             THREE, scene, camera, renderer, controls, toThree,
-            resetScene, drawPath, setPlaying, setTrajectoryPending, replaceTrajectory, 
+            resetScene, drawPath, setPlaying, setTrajectoryPending, replaceTrajectory,
             getGripperGroups, createGripperPreview, hideGripperPreview, captureGripperPreviewPose,
             applyGripperPreviewPose,
             setSample(i,afterSolve = false) {

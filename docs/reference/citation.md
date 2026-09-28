@@ -6,11 +6,13 @@ If you use HiveBoard in research or a publication, cite the project paper. The c
 @article{hiveboard2026,
   title   = {HiveBoard: An Open, Modular, 3D-Printed Benchmark of Industrial
              Mechanisms for Robotic and Prosthetic Manipulation},
-  author  = {Godoy, Ricardo V. and de Souza, Enzo F. and de Lange, Rudy De-Xin and
-             Negri, Juliano and Marsicano, Joao A. and van Halst, Victor and
+  author  = {Godoy, Ricardo V. and de Souza, Enzo F. and Angarola, Matheus P. and
+             de Lange, Rudy De-Xin and Negri, Juliano and Marsicano, Joao A. and
+             Aléssio, João H. and van Halst, Victor and
              Elanjimattathil Vijayan, Aravind and Capezzuto, Gianluca and
-             Angarola, Matheus P. and Tommaselli, Felipe A. G. and Milazzo, Giuseppe and
-             Aléssio, João H. and Ramírez Sánchez, Amy M. and Baptista, Rafael R. and van Berge, Meiko Adriana and Bezerra, Ranulfo and
+             Tommaselli, Felipe A. G. and Milazzo, Giuseppe and
+             Ramírez Sánchez, Amy M. and Affonso, Francisco and Baptista, Rafael R. and van Berge, Meiko A. and
+             Chowdhary, Girish and Bezerra, Ranulfo and
              Lahr, Gustavo J. G. and Ferrari Gerez, Lucas and Bicchi, Antonio and
              Becker, Marcelo},
   journal = {Under review},

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import gzip
 import json
 import math
 from pathlib import Path
@@ -163,7 +164,7 @@ def rotation_error(target, current):
                      err[1, 0] - err[0, 1]]) * 0.5
 
 
-def solve_ik(model, data, site, path, cfg, ik_indices):
+def solve_ik(model, data, site, path, cfg, ik_indices, seed_qpos=None):
 
     if ik_indices is None:
         ik_indices = range(len(path))
@@ -185,6 +186,9 @@ def solve_ik(model, data, site, path, cfg, ik_indices):
 
     worst_precise = 0.0
     for index in ik_indices:
+        if seed_qpos is not None and len(seed_qpos):
+            seed_index = round(index * (len(seed_qpos) - 1) / max(len(path) - 1, 1))
+            q = np.asarray(seed_qpos[seed_index], dtype=float).copy()
         pos, finger, approach, grip, precise = path[index]
         target = frame(approach, finger)
         for it in range(IK_ITERS):
@@ -1240,11 +1244,10 @@ def apply_joint_edits(samples, task, edits):
         if i:
             frame += max(int(round(key["secs"] * RATE)), 1)
         anchors.append(min(frame, len(samples) - 1))
-    for sample in samples:
-        if sample is None:
-            continue
-        q, grip = sample
-        out = [(np.asarray(q, float).copy(), grip)]
+    out = [
+        None if sample is None else (np.asarray(sample[0], float).copy(), sample[1])
+        for sample in samples
+    ]
     override_frames = {}
     for key_index, edit in overrides.items():
         if "qpos" not in edit:
@@ -1257,12 +1260,14 @@ def apply_joint_edits(samples, task, edits):
                 break
     for frame, edit in override_frames.items():
         target = np.asarray(edit["qpos"], float)
-        if target.shape == out[0][0].shape:
+        if out[0] is not None and target.shape == out[0][0].shape:
             out[frame] = (target.copy(), out[frame][1])
 
     edited_frames = set(override_frames)
     for start, end in zip(anchors[:-1], anchors[1:]):
         if start not in edited_frames and end not in edited_frames:
+            continue
+        if out[start] is None or out[end] is None:
             continue
         a, b = out[start][0], out[end][0]
         span = max(end - start, 1)
@@ -1408,7 +1413,8 @@ def build_ik_indices(task, anchors):
 
     return sorted(indices)
 
-def attempt(model, data, site, cfg, factory, spin, spin_adr, edits=None):
+def attempt(model, data, site, cfg, factory, spin, spin_adr, edits=None,
+            seed_qpos=None, fallback_trajectory=None):
 
     mujoco.mj_resetDataKeyframe(model, data, 0)
     if spin_adr is not None:
@@ -1426,14 +1432,17 @@ def attempt(model, data, site, cfg, factory, spin, spin_adr, edits=None):
     apply_edits(task, edits)
 
     path = sample_path(task["keys"])
+    use_cumotion = CUMOTION_ENABLED and cfg.get("planner") == "cumotion"
     ik_indices = None
-    if cfg.get("planner") == "cumotion":
+    if use_cumotion:
         anchors = build_keyframe_anchors(task, len(path))
         ik_indices = build_ik_indices(
             task,
             anchors,
         )
-    samples, worst = solve_ik(model, data, site, path, cfg, ik_indices)
+    samples, worst = solve_ik(
+        model, data, site, path, cfg, ik_indices, seed_qpos=seed_qpos
+    )
     original_samples = [
         None if sample is None else (
             np.asarray(sample[0], float).copy(),
@@ -1443,7 +1452,7 @@ def attempt(model, data, site, cfg, factory, spin, spin_adr, edits=None):
     ]
     # IK remains responsible for finding the task objectives.
     # cuMotion generates a smooth joint trajectory between the waypoints.
-    if cfg.get("planner") == "cumotion":
+    if use_cumotion:
         timestamp = datetime.now().isoformat(timespec="milliseconds")
         print(f"[{timestamp}] [cuMotion] Running for {cfg['name']}")
         samples = plan_trajectory(samples, task, cfg, anchors, path)
@@ -1473,12 +1482,51 @@ def attempt(model, data, site, cfg, factory, spin, spin_adr, edits=None):
             q[wrist] = lock_q[wrist] + task["wrist_angle"] * smoothstep(np.clip(s, 0.0, 1.0))
             samples[i] = (q, grip)
 
-    if worst > task.get("ik_tolerance", 0.005):
+    within_ik_tolerance = worst <= task.get("ik_tolerance", 0.005)
+    if within_ik_tolerance:
+        result = evaluate_samples(
+            model, cfg, task, samples, spin, edits, worst,
+            original_samples, original_grips,
+        )
+        if result["ok"]:
+            return result
+
+    saved_spin = float((fallback_trajectory or {}).get("spin", spin))
+    if fallback_trajectory and abs(saved_spin - spin) < 1e-3:
+        cached_samples = cached_samples_for_task(
+            fallback_trajectory, len(path), len(cfg["arm"])
+        )
+        if cached_samples is not None:
+            cached_result = evaluate_samples(
+                model, cfg, task, cached_samples, spin, edits, 0.0,
+                original_samples, original_grips,
+            )
+            if cached_result["ok"]:
+                cached_result["why"] += "  [saved trajectory replay passed]"
+                return cached_result
+
+    if not within_ik_tolerance:
         return {"task": task, "ok": False, "worst": worst, "samples": samples,
                 "original_samples": original_samples, "original_grips": original_grips,
                 "spin": spin, "left": 0.0,
                 "why": f"out of reach: fingertips off by {worst * 1000:.0f} mm"}
 
+    return result
+
+
+def cached_samples_for_task(trajectory, expected_samples, expected_dofs):
+    qpos = np.asarray(trajectory.get("qpos", []), dtype=float)
+    grips = np.asarray(trajectory.get("grip", []), dtype=float)
+    if (qpos.shape != (expected_samples, expected_dofs)
+            or grips.shape != (expected_samples,)
+            or not np.all(np.isfinite(qpos))
+            or not np.all(np.isfinite(grips))):
+        return None
+    return [(q.copy(), float(grip)) for q, grip in zip(qpos, grips)]
+
+
+def evaluate_samples(model, cfg, task, samples, spin, edits, worst,
+                     original_samples, original_grips):
     swing, states = replay(model, samples, task["watch"], cfg, spin)
     original_states = [np.asarray(s, float).copy() for s in states]
     module = task["module"]
@@ -1564,6 +1612,16 @@ def build(scene_path, cfg):
     geoms = module_geoms(model)
     contact = (model.geom_contype.copy(), model.geom_conaffinity.copy())
 
+    scene_path = Path(scene_path)
+    cached_path = scene_path.with_name(f"{scene_path.stem}.traj.json")
+    cached_gzip_path = cached_path.with_suffix(cached_path.suffix + ".gz")
+    cached = None
+    if cached_path.exists():
+        cached = json.loads(cached_path.read_text(encoding="utf-8"))
+    elif cached_gzip_path.exists():
+        with gzip.open(cached_gzip_path, "rt", encoding="utf-8") as source:
+            cached = json.load(source)
+
     out = {}
     for module, factory in TASKS.items():
         if factory.__name__.endswith("_for"):
@@ -1582,7 +1640,9 @@ def build(scene_path, cfg):
         for spin in spins:
             try:
                 result = attempt(model, data, site, cfg, factory, spin, spin_adr,
-                                 edits_for(cfg["name"], module))
+                                 edits_for(cfg["name"], module),
+                                 seed_qpos=(cached or {}).get(module, {}).get("qpos"),
+                                 fallback_trajectory=(cached or {}).get(module))
             except Exception as err:
                 result = {"ok": False, "why": f"skipped: {err}", "spin": spin}
             turned = f" [board {math.degrees(spin):+.0f}°]" if spin else ""

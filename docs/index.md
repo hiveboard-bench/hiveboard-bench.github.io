@@ -13,7 +13,6 @@ For the paper, demonstration videos, and reported results, see the [HiveBoard pr
 - [3D printing](/hardware/printing)
 - [Assembly and mounting](/hardware/assembly)
 - [Attachment reference](/hardware/modules)
-- [ArUco cell for board localization](/hardware/aruco-cell)
 - [Evaluation Runner](/benchmark/evaluation-runner)
 - [Evaluation protocol](/benchmark/protocol)
 - [Data collection with DataHive](/guides/datahive)
@@ -39,8 +38,8 @@ If you use HiveBoard in your research, please cite the project paper:
 @article{hiveboard2026,
   title   = {HiveBoard: An Open, Modular, 3D-Printed Benchmark of Industrial
              Mechanisms for Robotic and Prosthetic Manipulation},
-  author  = {Godoy, Ricardo V. and de Souza, Enzo F. and de Lange, Rudy De-Xin and
-             Negri, Juliano and Marsicano, Joao A. and van Halst, Victor and others},
+  author  = {Godoy, Ricardo V. and de Souza, Enzo F. and Angarola, Matheus P. and
+             de Lange, Rudy De-Xin and Negri, Juliano and Marsicano, Joao A. and others},
   journal = {Under review},
   year    = {2026},
   url     = {https://github.com/EESC-LabRoM/HiveBoard}

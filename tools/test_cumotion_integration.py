@@ -1,21 +1,18 @@
 #!/usr/bin/env python3
+"""Exercise the standalone cuMotion planner against both supported robots."""
+
+from __future__ import annotations
 
 import numpy as np
 
-from cumotion_planner import CuMotionPlanner
+from cumotion_planner import CuMotionPlanner, ROBOT_RESOURCES
 
 
-def main():
-    planner = CuMotionPlanner()
-
-    q_start = np.array(
-        [0.0, -0.0881, 0.0, -2.1491, 0.0, 2.0611, 0.79]
-    )
-
-    q_goal = np.array(
-        [-0.64995754, -0.03649896, 0.64340085,
-         -2.08020893, 0.02490260, 2.05131621, 0.77201368]
-    )
+def check_robot(robot_name: str) -> None:
+    planner = CuMotionPlanner(robot_name=robot_name)
+    q_start = planner.q_home
+    delta = np.linspace(0.015, 0.035, len(q_start))
+    q_goal = q_start + delta
 
     result = planner.plan_joint_trajectory(
         q_start=q_start,
@@ -23,11 +20,22 @@ def main():
         num_samples=100,
     )
 
-    print("Status:", result["status"])
-    print("Amostras:", len(result["times"]))
-    print("Duração:", result["duration"])
-    print("q_start:", result["qpos"][0])
-    print("q_goal:", result["qpos"][-1])
+    qpos = np.asarray(result["qpos"], dtype=float)
+    assert result["status"] == "Status.SUCCESS", result["status"]
+    assert qpos.shape == (100, len(ROBOT_RESOURCES[robot_name].joint_names))
+    assert np.all(np.isfinite(qpos))
+    assert np.allclose(qpos[0], q_start, atol=1e-4)
+    assert np.allclose(qpos[-1], q_goal, atol=1e-4)
+
+    print(
+        f"{robot_name}: {result['status']}; {len(qpos)} samples; "
+        f"{result['duration']:.3f}s; endpoints and joint limits valid"
+    )
+
+
+def main() -> None:
+    for robot_name in ("fr3", "spot"):
+        check_robot(robot_name)
 
 
 if __name__ == "__main__":

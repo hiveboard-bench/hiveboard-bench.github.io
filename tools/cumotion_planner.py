@@ -10,7 +10,20 @@ from typing import Any, Sequence
 
 import numpy as np
 import mujoco
-import cumotion
+try:
+    import cumotion
+except ImportError as exc:
+    raise SystemExit(
+        "cuMotion is not installed in this Python environment. "
+        "Run tools/install-cumotion.sh, then use .venv/bin/python."
+    ) from exc
+
+if not hasattr(cumotion, "load_robot_from_file"):
+    raise ImportError(
+        "The imported 'cumotion' module is not NVIDIA's standalone cuMotion "
+        "Python package. Check the active environment and remove conflicting "
+        "packages from PYTHONPATH."
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -36,7 +49,7 @@ class RobotResources:
 
 TOOLS_ROOT = Path(__file__).resolve().parent
 REPO_ROOT = TOOLS_ROOT.parent
-CUMOTION_ROBOTS_ROOT = TOOLS_ROOT / "cumotion"
+CUMOTION_ROBOTS_ROOT = TOOLS_ROOT / "cumotion_resources"
 
 
 ROBOT_RESOURCES = {
@@ -242,7 +255,26 @@ class CuMotionPlanner:
             self.urdf_path,
         )
 
-        self.tool_frame = self.robot.tool_frame_names()[0]
+        robot_dofs = self.robot.num_cspace_coords()
+        if robot_dofs != len(resources.joint_names):
+            raise RuntimeError(
+                f"{resources.name} XRDF has {robot_dofs} C-space coordinates, "
+                f"but the simulator config lists {len(resources.joint_names)} joints."
+            )
+
+        planner_joint_names = tuple(
+            self.robot.cspace_coord_name(i) for i in range(robot_dofs)
+        )
+        if planner_joint_names != resources.joint_names:
+            raise RuntimeError(
+                f"{resources.name} joint order differs between cuMotion and MuJoCo: "
+                f"cuMotion={planner_joint_names}, MuJoCo={resources.joint_names}"
+            )
+
+        tool_frames = self.robot.tool_frame_names()
+        if not tool_frames:
+            raise RuntimeError(f"No tool frame is configured for {resources.name}.")
+        self.tool_frame = tool_frames[0]
 
         self.world = cumotion.create_world()
         self.world_view = self.world.add_world_view()
@@ -434,8 +466,15 @@ def main() -> int:
     )
 
     parser.add_argument(
+        "--robot",
+        choices=sorted(ROBOT_RESOURCES),
+        default="fr3",
+        help="Robot to plan (default: fr3).",
+    )
+
+    parser.add_argument(
         "--goal",
-        nargs=7,
+        nargs="+",
         type=float,
         required=True,
         metavar="Q",
@@ -444,7 +483,7 @@ def main() -> int:
 
     parser.add_argument(
         "--start",
-        nargs=7,
+        nargs="+",
         type=float,
         default=None,
         metavar="Q",
@@ -467,10 +506,10 @@ def main() -> int:
 
     args = parser.parse_args()
 
-    planner = CuMotionPlanner()
+    planner = CuMotionPlanner(robot_name=args.robot)
 
     result = planner.plan_joint_trajectory(
-        q_start=args.start,
+        q_start=args.start if args.start is not None else planner.q_home,
         q_goal=args.goal,
         num_samples=args.samples,
     )
