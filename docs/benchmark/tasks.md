@@ -21,7 +21,7 @@ Select a task below for its starting state, required actions, success criterion,
 | [Button](#covered-button) | Open the cover, then press the button until actuation | 60 s |
 | [Lock and key](#lock-and-key) | Grasp the key, insert it vertically, and rotate to unlock | 180 s |
 | [Drawer](#sliding-drawer) | Grasp the handle, pull open, then push closed | 120 s |
-| [Shock absorber](#shock-absorber) | Grasp the pin, align it with the hole, and insert it fully | 180 s |
+| [Shock absorber](#shock-absorber) | Grasp the loose part, align its hole with the pin, and insert the part fully onto the pin | 180 s |
 
 Task names follow Table 2 of the paper. See [Terminology](/reference/terminology) to match them to trial IDs and older file names.
 
@@ -192,27 +192,27 @@ Record the last completed stage: `0`, `1`, `2`, or `3`. Opening the drawer witho
 
 Task ID: `shock_absorber`
 
-**The task is to pick up the loose pin and insert it fully into the shock absorber's hole.** The complete sequence has three stages and a single 180 s timeout.
+**Grasp the loose part of the shock absorber and insert it onto the pin.** The loose part moves while the pin stays in place. The complete sequence has three stages and a single 180 s timeout.
 
 | Step | Instruction |
 |---|---|
-| Starting state | Pin removed from the hole and placed in its documented starting pose. Check that the attachment is seated in both occupied board cells. |
-| Stage 1 — grasp | Approach and grasp the loose pin with the end-effector. |
-| Stage 2 — align | Bring the pin to the hole and align its insertion axis with the hole. |
-| Stage 3 — insert | Advance the aligned pin into the hole until it is fully inserted. |
-| Success | All three stages are complete, with the pin fully inserted. |
+| Starting state | Loose part removed from the pin and placed in its documented starting pose. Leave the pin in place and check that the attachment is seated in both occupied board cells. |
+| Stage 1 — grasp | Approach and grasp the loose part of the shock absorber with the end-effector. |
+| Stage 2 — align | Align the hole in the grasped part with the pin. |
+| Stage 3 — insert | Move the aligned part onto the pin until it is fully inserted. |
+| Success | All three stages are complete, with the loose part fully inserted onto the pin. |
 | Timeout | 180 s total, beginning with the first commanded task motion. Do not restart the timer between stages. |
-| Reset | Remove the pin, return it to its starting pose, and check attachment seating in both board cells. Restore the end-effector's neutral pose before the next trial. |
+| Reset | Remove the loose part from the pin and return it to its starting pose. Leave the pin in place and check attachment seating in both board cells. Restore the end-effector's neutral pose before the next trial. |
 
 Record the last **completed** stage:
 
 | `stage_reached` | What was completed |
 |---|---|
-| `0` | The pin was not grasped. |
-| `1` | The pin was grasped, but alignment was not completed. |
-| `2` | The pin was aligned with the hole, but full insertion was not completed. This includes a partially inserted pin. |
-| `3` | The pin was fully inserted. |
+| `0` | The loose part was not grasped. |
+| `1` | The loose part was grasped, but alignment with the pin was not completed. |
+| `2` | The hole in the part was aligned with the pin, but the part was not fully inserted onto it. This includes partial insertion. |
+| `3` | The part was fully inserted onto the pin. |
 
-For example, if the pin is aligned but only partly inserted when 180 s expires, record `outcome = timeout`, `stage_reached = 2`, and leave `completion_time_s` blank. Also record attempts, regrasps, strategy, and the dominant failure cause. See [trial logging](/benchmark/logging) for the field definitions.
+For example, if the part is aligned but only partly inserted onto the pin when 180 s expires, record `outcome = timeout`, `stage_reached = 2`, and leave `completion_time_s` blank. Also record attempts, regrasps, strategy, and the dominant failure cause. See [trial logging](/benchmark/logging) for the field definitions.
 
-The task definitions and timeouts follow the [source protocol](https://github.com/EESC-LabRoM/HiveBoard/blob/main/Documentation/PROTOCOL.md#5-per-attachment-success-criteria-and-timeouts); reset instructions follow the Evaluation Runner. The protocol does not specify a numeric insertion depth, holding duration, or loose-part pose. Document the physical setup rather than introducing a different threshold for each trial.
+See the [source protocol](https://github.com/EESC-LabRoM/HiveBoard/blob/main/Documentation/PROTOCOL.md#5-per-attachment-success-criteria-and-timeouts) for success criteria and timeouts. The protocol does not specify a numeric insertion depth, holding duration, or loose-part pose. Document the starting pose and use the same setup for every trial.

@@ -43,7 +43,7 @@ These tasks are scored by the last completed stage as well as by full success.
 | `button` | Button | Open cover | Press button | — | 60 s |
 | `lock` | Lock and key | Grasp key | Insert key vertically | Rotate to unlock | 180 s |
 | `drawer` | Drawer | Grasp handle | Pull open | Push closed | 120 s |
-| `shock_absorber` | Shock absorber | Grasp pin | Align with hole | Insert fully | 180 s |
+| `shock_absorber` | Shock absorber | Grasp loose part | Align its hole with the pin | Insert part fully onto pin | 180 s |
 
 Record `0` when no stage is completed. A full success reaches the final stage listed for the attachment.
 

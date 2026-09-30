@@ -813,8 +813,8 @@
           id: 'shock-absorber', pieceType: 'shock_absorber', name: 'Shock absorber', category: 'Composed assembly', realImg: './assets/modules/spring_setup.webp',
           modelImg: './assets/modules/spring_3d.webp',
           top: '-5%',
-          desc: 'A two-cell shock-absorber model in which two hexagonal end pieces are joined by a coil spring with a bolt running through the spring axis. It is the only attachment that occupies two adjacent cells of the honeycomb, and it combines axial grasping of a slender pin with alignment and insertion under spring load.',
-          params: [['Success criterion', 'All stages completed within the timeout'], ['Stages', '(1) Grasp the pin, (2) align with the hole, (3) insert fully'], ['Timeout', '180 s'], ['Cells occupied', '2 adjacent cells'], ['Material', 'PLA, parts printed sideways']]
+          desc: 'A two-cell shock-absorber model in which two hexagonal end pieces are joined by a coil spring with a bolt running through the spring axis. It is the only attachment that occupies two adjacent cells of the honeycomb, and the task is to grasp the loose part of the shock absorber, align its hole with the pin, and insert the part fully onto the pin.',
+          params: [['Success criterion', 'All stages completed within the timeout'], ['Stages', '(1) Grasp the loose part, (2) align its hole with the pin, (3) insert the part fully onto the pin'], ['Timeout', '180 s'], ['Cells occupied', '2 adjacent cells'], ['Material', 'PLA, parts printed sideways']]
         }
       ];
 
@@ -2740,7 +2740,7 @@
               <h4 class="title is-6" style="color: #0f172a; margin-bottom: 0.5rem;">A recess the wide jaws never
                 reach</h4>
               <p style="font-size: 0.85rem; color: #64748b; line-height: 1.5;">
-                The drawer handle and the shock-absorber pin defeat both platforms on legged bases in every trial, and
+                The drawer handle and the loose part of the shock absorber defeat both platforms on legged bases in every trial, and
                 are cleared by the two end-effectors slim enough to enter the recess: printed fingertips and a worn
                 hand.
               </p>
@@ -3070,11 +3070,11 @@
               },
               {
                 n: 'Shock absorber', cat: 'Composed assembly', timeout: 180, crit: 'All stages completed within the timeout',
-                stages: ['Grasp the pin', 'Align with the hole', 'Insert fully'],
-                A: { s: 0, a: 1.0, st: [0, 0, 0], causes: { 'Grasp geometry': 5 }, note: 'The gripper could not grasp the pin axially.' },
-                B: { s: 5, t: 16.0, a: 4.8, st: [5, 5, 5], note: 'Acquired the free pin at stage 1 and carried every remaining stage, on the attachment that both legged platforms failed outright.' },
-                C: { s: 0, a: 1.0, st: [5, 0, 0], causes: { 'Control precision': 5 }, note: 'The pin was grasped in all five trials and the run stopped at stage 1; the notes give alignment of the pin with the hole as the reason.' },
-                D: { s: 4, t: 39.4, a: 1.2, st: [5, 5, 4], causes: { 'Force limit': 1 }, note: 'The failed trial reached stage 2, with the pin aligned but not fully inserted. On the successful trials the wearer&rsquo;s contralateral hand placed the pin into the grasp, after which alignment and seating were performed with the device alone.' },
+                stages: ['Grasp the loose part', 'Align its hole with the pin', 'Insert the part onto the pin'],
+                A: { s: 0, a: 1.0, st: [0, 0, 0], causes: { 'Grasp geometry': 5 }, note: 'The gripper could not grasp the loose part of the shock absorber.' },
+                B: { s: 5, t: 16.0, a: 4.8, st: [5, 5, 5], note: 'Grasped the loose part at stage 1 and carried every remaining stage, on the attachment that both legged platforms failed outright.' },
+                C: { s: 0, a: 1.0, st: [5, 0, 0], causes: { 'Control precision': 5 }, note: 'The loose part was grasped in all five trials. Alignment of its hole with the pin was not completed.' },
+                D: { s: 4, t: 39.4, a: 1.2, st: [5, 5, 4], causes: { 'Force limit': 1 }, note: 'The failed trial reached stage 2, with the loose part aligned with the pin but not fully inserted onto it. On the successful trials the wearer&rsquo;s contralateral hand placed the loose part into the grasp, after which alignment and insertion onto the pin were performed with the device alone.' },
                 E: { s: 5, t: 29.2, a: 1.0, st: [5, 5, 5] }
               }
             ];
