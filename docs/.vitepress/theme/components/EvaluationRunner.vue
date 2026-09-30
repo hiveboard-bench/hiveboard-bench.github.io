@@ -110,9 +110,9 @@ const tasks = [
     id: 'shock_absorber', name: 'Shock absorber', family: 'Composed assembly', timeout: 180,
     image: '/images/tasks/spring_3d.png',
     video: `${VIDEO_BASE}/fr3_shock_absorver.MOV`, videoPlatform: 'Platform E · Franka Research 3',
-    success: 'Grasp the pin, align it with the hole, and insert it fully.',
-    reset: 'Remove the pin, restore its starting pose, and check both occupied board cells.',
-    stages: ['Grasp pin', 'Align with hole', 'Insert fully']
+    success: 'Grasp the loose part of the shock absorber, align its hole with the pin, and insert the part fully onto the pin.',
+    reset: 'Remove the loose part from the pin and return it to its documented starting pose. Leave the pin in place and check both occupied board cells.',
+    stages: ['Grasp loose part', 'Align hole with pin', 'Insert part onto pin']
   }
 ]
 

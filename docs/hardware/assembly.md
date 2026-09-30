@@ -48,7 +48,7 @@ Check insertion and rotation manually. The initial key position must be repeatab
 
 ### Shock absorber
 
-Confirm that the pin can be grasped, aligned, and fully inserted. This attachment occupies two adjacent cells; reserve both before arranging the board.
+Confirm that the loose part of the shock absorber can be grasped, aligned with the pin, and fully inserted onto it. This attachment occupies two adjacent cells; reserve both before arranging the board.
 
 ## Optional ArUco cell
 
