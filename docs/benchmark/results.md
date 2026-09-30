@@ -46,7 +46,25 @@ result-package/
 
 The platform description identifies the robot, end-effector, control interface, board orientation, calibration notes, HiveBoard version, printing parameters, post-processing, and any protocol deviations.
 
-The [Evaluation Runner](/benchmark/evaluation-runner) generates the ZIP after all 65 trial entries and required setup details pass validation. Attach a JPEG setup photograph to include it as `setup.jpg`, or add it after extracting the ZIP. Add the recordings to `videos/` using the filenames in `recording-instructions.md`.
+The [Evaluation Runner](/benchmark/evaluation-runner) generates the ZIP after all 65 trial entries and required setup details pass validation. Attach a JPEG setup photograph to include it as `setup.jpg`, or add it after extracting the ZIP. Add the recordings to `videos/` using the filenames in the generated recording instructions.
+
+### Find `recording-instructions.md` {#recording-instructions}
+
+The runner creates **`recording-instructions.md` inside your results ZIP**. Its contents depend on your evaluation session, so there is no separate file to download from GitHub or the documentation website.
+
+1. Complete the required setup details and all 65 trial records.
+2. Open **Review** in the Evaluation Runner and select **Download results (.zip)**.
+3. Extract the ZIP and open the folder named with your submission ID.
+4. Open `recording-instructions.md`, beside `trials.csv` and `platform.md`. Any text editor can read this Markdown file.
+5. Use its trial-by-trial filename table to rename your recordings and place them in the `videos/` folder.
+
+Record each trial during the evaluation. For physical trials, start an external camera before the countdown and keep the board, robot, end-effector, and final task state visible throughout. For simulated trials, record the complete trial on screen. Keep one MP4 per trial and track which trial it belongs to. Rename the files after downloading the results ZIP.
+
+| Runner download | Contents | Includes `recording-instructions.md`? |
+|---|---|---|
+| **Download results (.zip)** | Trial records, platform description, manifest, session backup, and recording and submission instructions | Yes, inside the extracted submission folder |
+| **Download trials.csv** | Trial log only | No |
+| **Export session** | JSON backup for resuming the evaluation | No |
 
 “Trial records complete” refers to the log and setup fields. It does not confirm that all supporting files are present or that an organizer has reviewed the outcomes. The manifest lists the expected recordings and whether the setup photograph was included when the ZIP was generated.
 
@@ -59,7 +77,7 @@ If you recorded the trials with [DataHive](/guides/datahive), keep an index link
 Submissions are reviewed by email. There is no upload server or automatic approval.
 
 1. Complete all 65 trial entries and the required platform details in the [Evaluation Runner](/benchmark/evaluation-runner).
-2. Download and extract the results ZIP. Add `setup.jpg` and the 65 external-camera recordings using the filenames in `recording-instructions.md`. For simulated evaluations, provide screen recordings of the complete trials.
+2. In **Review**, select **Download results (.zip)** and extract it. Open `recording-instructions.md` inside the extracted submission folder. Add `setup.jpg` if it is not already included, and place the 65 external-camera recordings in `videos/` using the listed filenames. For simulated evaluations, provide screen recordings of the complete trials.
 3. Recompress the completed folder and upload it to storage you control. Give **ricardo.godoy@usp.br** download access and keep the package private during review. Keep the link available until review is complete.
 4. In the runner's Review step, select **Submit for review**. Enter your contact name, email, institution (or Independent), and the package link. Robot, end-effector, and control interface are taken from the evaluation setup.
 5. Confirm file completeness and permission to publish the approved trial data, platform description, setup photograph, and recordings. You must have permission to share the materials, including permission from identifiable people in the media.
