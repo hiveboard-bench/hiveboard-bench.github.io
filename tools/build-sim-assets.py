@@ -201,6 +201,7 @@ ROBOTS = [
         "name": "so101",
         "label": "LeRobot SO-101",
         "note": "Platform B",
+        "planner": "cumotion",
         "source": "robotstudio_so101/so101.xml",
         "arm": ["shoulder_pan", "shoulder_lift", "elbow_flex", "wrist_flex", "wrist_roll"],
         "grip": {"actuator": "gripper", "open": 1.6, "grasp": -0.175, "fist": -0.175},
@@ -230,6 +231,7 @@ ROBOTS = [
         "name": "anymal",
         "label": "ANYmal-D + DynaArm + 2F-140",
         "note": "Platform C",
+        "planner": "cumotion",
         "arm": ["dynaarm_" + name for name in (
             "shoulder_rotation", "shoulder_flexion", "elbow_flexion",
             "forearm_rotation", "wrist_flexion", "wrist_rotation")],
@@ -252,6 +254,7 @@ ROBOTS = [
     },
     {
         "name": "macao", "label": "Macao hand", "note": "Platform D",
+        "planner": "cumotion",
         "arm": ["macao_x", "macao_y", "macao_z", "macao_roll", "macao_pitch", "macao_yaw"],
         "grip": {"actuator": "macao_grip", "open": 0.0, "grasp": 0.8, "fist": 1.1},
         "home": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
@@ -1264,7 +1267,15 @@ def build(hiveboard: Path, robot=None, isaaclab_repo=None, usd_cache=None):
         vendor()
     OUT = live_out
     shutil.rmtree(live_out, ignore_errors=True)
-    staging.rename(live_out)
+    import time
+    for _ in range(5):
+        try:
+            staging.rename(live_out)
+            break
+        except PermissionError:
+            time.sleep(0.5)
+    else:
+        staging.rename(live_out)
 
 
 def emit_all(hiveboard, robot, keep_anymal, menagerie, isaaclab_repo, usd_cache, source_root):
@@ -1497,12 +1508,14 @@ def manifest():
         if path.is_dir() or path.suffix == ".gz" or path.name == "manifest.json":
             continue
         size, packed = emit(path)
-        files.append(str(path.relative_to(OUT)))
+        files.append(path.relative_to(OUT).as_posix())
         raw += size
         comp += packed
 
     listing = OUT / "manifest.json"
-    listing.write_text("[\n" + ",\n".join(f'  "{f}"' for f in files) + "\n]\n")
+    # On Windows, path.relative_to() yields backslashes. Those must be
+    # JSON-escaped; generate via json.dumps instead of manual quoting.
+    listing.write_text(json.dumps(files, indent=2) + "\n")
     emit(listing)
 
     for stale in OUT.rglob("*.gz"):
