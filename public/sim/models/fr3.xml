@@ -299,7 +299,7 @@
           <geom pos="0 0 -0.0157571" quat="1 0 0 0" type="mesh" mesh="high-valve_Corpo1__1_" group="3" material="hb_accent" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="2" conaffinity="1" />
         </body>
       </body>
-      <body name="small-valve_valvula_gaveta" pos="0.0790621 0 0" quat="0.517698 -0.481652 0.481652 0.517698">
+      <body name="small-valve_valvula_gaveta" pos="0.0790621 0 0" quat="0.517697 -0.481654 0.481654 0.517697">
         <inertial pos="0 0 0.0345" quat="0.5 0.5 0.5 0.5" mass="0.531" diaginertia="0.000619637 0.000601061 0.000533771" />
         <geom pos="0 0.0740621 0" quat="0.707107 0.707107 0 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="small-valve_Mesh_1" material="hb_shell" />
         <geom pos="0 0.0740621 0" quat="0.707107 0.707107 0 0" type="mesh" mesh="small-valve_Mesh_1" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
@@ -321,8 +321,8 @@
         <body name="thread-m30_Base">
           <inertial pos="0 0 0.0325" quat="0 0.707107 0 0.707107" mass="0.4369" diaginertia="0.000494543 0.000436426 0.000365777" />
           <joint name="thread-m30_PrismaticJoint" type="slide" range="-0.0005 0.0005" actuatorfrcrange="-100 100" springref="0" stiffness="0" damping="5" armature="0.01" frictionloss="0.01" limited="true" />
-          <geom type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="thread-m30_Base_Corpo1" material="hb_accent" />
-          <geom type="mesh" mesh="thread-m30_Base_Corpo1" group="3" material="hb_accent" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="2" conaffinity="1" />
+          <geom quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="thread-m30_Base_Corpo1" material="hb_accent" />
+          <geom quat="1 0 0 0" type="mesh" mesh="thread-m30_Base_Corpo1" group="3" material="hb_accent" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="2" conaffinity="1" />
         </body>
         <body name="thread-m30_Nut" pos="0 0 0.015649">
           <joint name="thread-m30_RiseJoint" type="slide" axis="0 0 1" range="0 0.04" damping="1" stiffness="0" />
@@ -332,7 +332,7 @@
           <geom quat="0.97547 0 0 -0.220133" type="mesh" mesh="thread-m30_Nut_Corpo1" group="3" material="hb_accent" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="2" conaffinity="1" />
         </body>
       </body>
-      <body name="thread-m8_World" pos="0.0253536 0 0" quat="0.272267 0.962222 0 0">
+      <body name="thread-m8_World" pos="0.0253536 0 0" quat="0.272268 0.962222 0 0">
         <inertial pos="0 0 0.0225" quat="0 0.707107 0 0.707107" mass="0.3025" diaginertia="0.000342376 0.000246687 0.000197776" />
         <geom pos="-0.0253536 0 0" quat="0.707107 0 0.707107 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="thread-m8_M8_Screw_Base_Corpo1_Mesh" material="hb_shell" />
         <geom pos="-0.0253536 0 0" quat="0.707107 0 0.707107 0" type="mesh" mesh="thread-m8_M8_Screw_Base_Corpo1_Mesh" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
@@ -349,11 +349,11 @@
           </body>
         </body>
       </body>
-      <body name="peg-insertion_World" pos="-0 0 0" quat="0.00662952 0.707076 0.00662952 0.707076">
+      <body name="peg-insertion_World" pos="4.63305e-10 0 0" quat="0.00662952 0.707076 0.00662952 0.707076">
         <body name="peg-insertion_Base">
           <inertial pos="0 0 0.0075" quat="0 0.707107 0 0.707107" mass="0.1008" diaginertia="0.000114125 6.7105e-05 5.08014e-05" />
-          <geom type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="peg-insertion_Base_principal_Corpo1" material="hb_accent" />
-          <geom type="mesh" mesh="peg-insertion_Base_principal_Corpo1" group="3" material="hb_accent" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="2" conaffinity="1" />
+          <geom quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="peg-insertion_Base_principal_Corpo1" material="hb_accent" />
+          <geom quat="1 0 0 0" type="mesh" mesh="peg-insertion_Base_principal_Corpo1" group="3" material="hb_accent" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="2" conaffinity="1" />
         </body>
         <body name="peg-insertion_peg" pos="0 0 0">
           <joint name="peg-insertion_PrismaticJoint" type="slide" axis="0 0 1" range="0 0.04" damping="1" stiffness="0" pos="0 0 0" />
@@ -422,14 +422,14 @@
         <geom pos="0.013983 -0.03699 -0.011011" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="drawer_left_Guide_Cube" material="hb_shell" />
         <geom pos="0.024419 -0.03699 0.007061" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="drawer_left_Guide_Cube_01" material="hb_shell" />
         <geom pos="0.019104 -0.03699 -0.023485" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="drawer_left_Guide_Cube_02" material="hb_shell" />
-        <geom pos="0.03553 -0.03699 -0.016197" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="drawer_left_Guide_Cube_03" material="hb_shell" />
-        <geom pos="0.001747 -0.03699 -0.019452" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="drawer_left_Guide_Cube_04" material="hb_shell" />
+        <geom pos="0.03553 -0.03699 -0.016197" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="drawer_left_Guide_Cube_03" material="hb_shell" />
+        <geom pos="0.001747 -0.03699 -0.019452" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="drawer_left_Guide_Cube_04" material="hb_shell" />
         <geom pos="0.025516 -0.037173 -0.014515" quat="0.707107 0.707107 0 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="drawer_Cylinder" material="hb_shell" />
         <geom pos="0.013983 0.036913 -0.011011" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="drawer_right_Guide_Cube" material="hb_shell" />
         <geom pos="0.024419 0.036913 0.007061" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="drawer_right_Guide_Cube_01" material="hb_shell" />
         <geom pos="0.019104 0.036913 -0.023485" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="drawer_right_Guide_Cube_02" material="hb_shell" />
-        <geom pos="0.03553 0.036913 -0.016197" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="drawer_right_Guide_Cube_03" material="hb_shell" />
-        <geom pos="0.001747 0.036913 -0.019452" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="drawer_right_Guide_Cube_04" material="hb_shell" />
+        <geom pos="0.03553 0.036913 -0.016197" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="drawer_right_Guide_Cube_03" material="hb_shell" />
+        <geom pos="0.001747 0.036913 -0.019452" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="drawer_right_Guide_Cube_04" material="hb_shell" />
         <geom pos="0.025516 0.03711 -0.014515" quat="0.707107 0.707107 0 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="drawer_right_Guide_Cylinder_01" material="hb_shell" />
         <geom pos="0.019 0 0.022396" quat="0.707107 0 0.707107 0" type="mesh" mesh="drawer_simple_colliders_Cube" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
         <geom pos="0.019 0 -0.022839" quat="0.707107 0 0.707107 0" type="mesh" mesh="drawer_simple_colliders_Cube_01" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
@@ -437,14 +437,14 @@
         <geom pos="0.013983 -0.03699 -0.011011" quat="1 0 0 0" type="mesh" mesh="drawer_left_Guide_Cube" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
         <geom pos="0.024419 -0.03699 0.007061" quat="1 0 0 0" type="mesh" mesh="drawer_left_Guide_Cube_01" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
         <geom pos="0.019104 -0.03699 -0.023485" quat="1 0 0 0" type="mesh" mesh="drawer_left_Guide_Cube_02" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
-        <geom pos="0.03553 -0.03699 -0.016197" type="mesh" mesh="drawer_left_Guide_Cube_03" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
-        <geom pos="0.001747 -0.03699 -0.019452" type="mesh" mesh="drawer_left_Guide_Cube_04" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
+        <geom pos="0.03553 -0.03699 -0.016197" quat="1 0 0 0" type="mesh" mesh="drawer_left_Guide_Cube_03" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
+        <geom pos="0.001747 -0.03699 -0.019452" quat="1 0 0 0" type="mesh" mesh="drawer_left_Guide_Cube_04" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
         <geom pos="0.025516 -0.037173 -0.014515" quat="0.707107 0.707107 0 0" type="mesh" mesh="drawer_Cylinder" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
         <geom pos="0.013983 0.036913 -0.011011" quat="1 0 0 0" type="mesh" mesh="drawer_right_Guide_Cube" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
         <geom pos="0.024419 0.036913 0.007061" quat="1 0 0 0" type="mesh" mesh="drawer_right_Guide_Cube_01" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
         <geom pos="0.019104 0.036913 -0.023485" quat="1 0 0 0" type="mesh" mesh="drawer_right_Guide_Cube_02" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
-        <geom pos="0.03553 0.036913 -0.016197" type="mesh" mesh="drawer_right_Guide_Cube_03" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
-        <geom pos="0.001747 0.036913 -0.019452" type="mesh" mesh="drawer_right_Guide_Cube_04" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
+        <geom pos="0.03553 0.036913 -0.016197" quat="1 0 0 0" type="mesh" mesh="drawer_right_Guide_Cube_03" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
+        <geom pos="0.001747 0.036913 -0.019452" quat="1 0 0 0" type="mesh" mesh="drawer_right_Guide_Cube_04" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
         <geom pos="0.025516 0.03711 -0.014515" quat="0.707107 0.707107 0 0" type="mesh" mesh="drawer_right_Guide_Cylinder_01" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
         <body name="drawer_drawer" pos="0 0 0">
           <joint name="drawer_PrismaticJoint" type="slide" axis="1 0 0" range="0 0.05" damping="2" stiffness="0" pos="0 0 0" />
@@ -460,9 +460,9 @@
       </body>
       <body name="shock-absorber_Montagem_Principal" pos="0.063893 0 0" quat="0.707107 0 0.707107 0">
         <geom pos="0 0.016378 -0.048893" quat="-2.32051e-08 1 0 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="shock-absorber_MeshInstance_Corpo1" material="hb_shell" />
-        <geom pos="-0.035 0.016489 -0.063893" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="shock-absorber_MeshInstance_1_Corpo1" material="hb_shell" />
+        <geom pos="-0.035 0.016489 -0.063893" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="shock-absorber_MeshInstance_1_Corpo1" material="hb_shell" />
         <geom pos="0 0.016378 -0.048893" quat="-2.32051e-08 1 0 0" type="mesh" mesh="shock-absorber_MeshInstance_Corpo1" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
-        <geom pos="-0.035 0.016489 -0.063893" type="mesh" mesh="shock-absorber_MeshInstance_1_Corpo1" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
+        <geom pos="-0.035 0.016489 -0.063893" quat="1 0 0 0" type="mesh" mesh="shock-absorber_MeshInstance_1_Corpo1" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
         <body name="shock-absorber_rod" pos="0 0 0">
           <joint name="shock-absorber_PrismaticJoint" type="slide" axis="1 0 0" range="0 0.03" damping="2" stiffness="120" pos="0 0 0" />
           <geom pos="-0.045 0.016489 -0.042935" quat="0.707107 0 -0.707107 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="shock-absorber_Corpo3" material="hb_accent" />
@@ -511,6 +511,6 @@
     <joint joint1="thread-m8_PrismaticJoint" joint2="thread-m8_RevoluteJoint" polycoef="0 0.00125 0 0 0" solref="0.01 1" solimp="0.95 0.999 0.001" />
   </equality>
   <keyframe>
-    <key name="home" qpos="0 -0.0881 0 -2.1491 0 2.0611 0.79 0.034 0.0517105 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1.5708 0 0 0 0" />
+    <key name="home" qpos="0 -0.0881 0 -2.1491 0 2.0611 0.79 0.034 0.0517119 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1.5708 0 0 0 0" />
   </keyframe>
 </mujoco>

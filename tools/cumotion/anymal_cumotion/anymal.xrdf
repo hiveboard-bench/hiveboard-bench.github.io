@@ -1,0 +1,27 @@
+format: xrdf
+format_version: 2.0
+
+modifiers:
+  - set_base_frame: "base_link"
+
+default_joint_positions:
+  dynaarm_shoulder_rotation: 0.0
+  dynaarm_shoulder_flexion: -0.7
+  dynaarm_elbow_flexion: 1.4
+  dynaarm_forearm_rotation: 0.0
+  dynaarm_wrist_flexion: 0.0
+  dynaarm_wrist_rotation: 0.0
+
+cspace:
+  joint_names:
+    - "dynaarm_shoulder_rotation"
+    - "dynaarm_shoulder_flexion"
+    - "dynaarm_elbow_flexion"
+    - "dynaarm_forearm_rotation"
+    - "dynaarm_wrist_flexion"
+    - "dynaarm_wrist_rotation"
+  acceleration_limits: [15.0, 15.0, 15.0, 15.0, 15.0, 15.0]
+  jerk_limits: [1000.0, 1000.0, 1000.0, 1000.0, 1000.0, 1000.0]
+
+tool_frames:
+  - "tcp"

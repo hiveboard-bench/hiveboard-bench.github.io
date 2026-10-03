@@ -74,6 +74,65 @@ ROBOT_RESOURCES = {
         home=(0.0, -1.9, 2.0, 0.0, -0.6, 0.0),
     ),
 
+    "so101": RobotResources(
+        name="so101",
+        mujoco_xml_pattern="public/sim/models/so101.xml",
+        urdf=CUMOTION_ROBOTS_ROOT
+        / "so101_cumotion"
+        / "so101.urdf",
+        xrdf=CUMOTION_ROBOTS_ROOT
+        / "so101_cumotion"
+        / "so101.xrdf",
+        joint_names=(
+            "shoulder_pan",
+            "shoulder_lift",
+            "elbow_flex",
+            "wrist_flex",
+            "wrist_roll",
+        ),
+        home=(0.0, -0.6, 0.9, 0.6, 0.0),
+    ),
+
+    "anymal": RobotResources(
+        name="anymal",
+        mujoco_xml_pattern="public/sim/models/anymal.xml",
+        urdf=CUMOTION_ROBOTS_ROOT
+        / "anymal_cumotion"
+        / "anymal.urdf",
+        xrdf=CUMOTION_ROBOTS_ROOT
+        / "anymal_cumotion"
+        / "anymal.xrdf",
+        joint_names=(
+            "dynaarm_shoulder_rotation",
+            "dynaarm_shoulder_flexion",
+            "dynaarm_elbow_flexion",
+            "dynaarm_forearm_rotation",
+            "dynaarm_wrist_flexion",
+            "dynaarm_wrist_rotation",
+        ),
+        home=(0.0, -0.7, 1.4, 0.0, 0.0, 0.0),
+    ),
+
+    "macao": RobotResources(
+        name="macao",
+        mujoco_xml_pattern="public/sim/models/macao.xml",
+        urdf=CUMOTION_ROBOTS_ROOT
+        / "macao_cumotion"
+        / "macao.urdf",
+        xrdf=CUMOTION_ROBOTS_ROOT
+        / "macao_cumotion"
+        / "macao.xrdf",
+        joint_names=(
+            "macao_x",
+            "macao_y",
+            "macao_z",
+            "macao_roll",
+            "macao_pitch",
+            "macao_yaw",
+        ),
+        home=(0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+    ),
+
 }
 
 # ---------------------------------------------------------------------------

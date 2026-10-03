@@ -19,6 +19,7 @@ export function attach(sim) {
     edits: {},
     selected: null,
     busy: false,
+    previewEnabled: true,
     loaded: false,
     link: true,
     auto: true,
@@ -322,10 +323,15 @@ export function attach(sim) {
     for (const newKey of newKeys || []) {
       const prevKey = previousKeys.find((k) => String(k.index) === String(newKey.index));
       if (!prevKey) continue;
-      if(prevKey.gripperPose) newKey.gripperPose = { ...prevKey.gripperPose };
+      // Preserve originalPos so the XYZ sliders keep a stable baseline across
+      // solves.  Do NOT copy gripperPose: it contains the Three.js world-space
+      // TCP position that captureGripperPreviewPose() must re-derive fresh from
+      // mjData.site_xpos the next time this key is selected.  A stale tcpPosition
+      // (captured from a previous teleport) is the root cause of the offset-after-
+      // play-then-reselect bug.
       if(prevKey.originalPos) newKey.originalPos = [...prevKey.originalPos];
     }
-    
+
     return newKeys;
   }
 
@@ -386,7 +392,10 @@ export function attach(sim) {
           } else {
             sim.setPlaying(true);
           }
-          state.holdAfterSolve = false;
+          state.holdAfterSolve = false; // when resuming, preview will be hidden
+
+          // If we’re staying paused after solve (applyGripperPreviewPose should have
+          // happened above), ensure cartesian panel baseline is consistent.
         }
         status(result.why, result.ok);
       }
@@ -555,6 +564,7 @@ export function attach(sim) {
     event.stopPropagation();
     event.preventDefault();
     sim.controls.enabled = false;
+    if (sim.setDevHold) sim.setDevHold(true);
     drag.index = index;
     drag.origin.copy(hitPos);
     plane.setFromNormalAndCoplanarPoint(
@@ -649,9 +659,20 @@ export function attach(sim) {
       state.busy = false;
     }
     state.selected = index;
+    if (sim.setDevHold) sim.setDevHold(true);
     const key = state.keys.find((k) => String(k.index) === String(index));
     if (key && key.sample !== undefined && !key.off) {
       sim.setPlaying(false);
+
+      // Take control of the TCP marker so it snaps to this key.
+      // This maps to the `devHold` flag in hivboard-sim.html's
+      // render loop, preventing `task.tcp` from clobbering this position.
+      // We'll simulate this by triggering the update directly.
+      if (sim.setKeyframeMarkerPos && key.pos) {
+        sim.setKeyframeMarkerPos(key.pos);
+      }
+
+
       sim.setSample(key.sample);
     }
     draw();
@@ -863,21 +884,61 @@ export function attach(sim) {
     // ui.joints.appendChild(grid);
   }
   function ensureGripperPose(key, edit) {
+    /*
+    * Freeze the key's ORIGINAL orientation once, inside the persisted edit.
+    *
+    * The Rx/Ry/Rz sliders are absolute offsets from this baseline, so it must
+    * never move.  It cannot live on the key: the RPY `change` handler replaces
+    * key.finger / key.approach with the ROTATED axes, and the backend merges
+    * edit.finger / edit.approach back into the key on every solve (see
+    * tools/sim_trajectories.py::apply_edits), so a solve already returns a
+    * rotated key.  Re-seeding the baseline from key.finger after a solve would
+    * fold the previous edit into the reference and apply the rotation twice.
+    *
+    * `edit` is written verbatim by /save and returned by /state, so the frozen
+    * baseline survives both the solve and a page reload.
+    */
+    if (!Array.isArray(edit.originalFinger)) {
+      edit.originalFinger = Array.isArray(key.finger) ? [...key.finger] : [0, 1, 0];
+      edit.originalApproach = Array.isArray(key.approach) ? [...key.approach] : [0, 0, -1];
+    }
+
+    // Seed the offset only.  A saved rotation has to survive a pose rebuild,
+    // which happens for every key on every solve.
+    if (!Array.isArray(edit.rpy)) edit.rpy = [0, 0, 0];
+
     if (!key.gripperPose) {
-      console.log('Creating gripperPose for key', key.index);
+      const originalPosition = Array.isArray(key.originalPos)
+        ? [...key.originalPos]
+        : Array.isArray(key.pos)
+        ? [...key.pos]
+        : [0, 0, 0];
+
+      /*
+      * The preview translation is (position - originalPosition), so a freshly
+      * created pose must already carry the key's current offset.  A solve
+      * rebuilds every key from the server response, and preserveLocalKeyState()
+      * deliberately does not copy gripperPose onto the new keys -- so this runs
+      * again for every key after every solve.  Without re-deriving `position`
+      * from the persisted edit.dpos, applyGripperPreviewPose() falls back to
+      * originalPosition, the delta collapses to zero, and the preview snaps
+      * back to the captured baseline (the pre-edit pose).
+      */
+      const dpos = Array.isArray(edit.dpos) ? edit.dpos : [0, 0, 0];
+
       key.gripperPose = {
-        originalPosition: Array.isArray(key.originalPos)
-          ? [...key.originalPos]
-          : [...key.pos],
+        originalPosition,
 
-        originalFinger: Array.isArray(key.finger)
-          ? [...key.finger]
-          : [0, 1, 0],
+        position: originalPosition.map(
+          (value, axis) => value + (dpos[axis] || 0)
+        ),
 
-        originalApproach: Array.isArray(key.approach)
-          ? [...key.approach]
-          : [0, 0, -1],
+        // The frozen baseline every RPY offset is measured against.
+        originalFinger: [...edit.originalFinger],
+        originalApproach: [...edit.originalApproach],
 
+        // The axes as the key currently holds them (already rotated whenever an
+        // offset is saved, because the backend merges it back in).
         finger: Array.isArray(key.finger)
           ? [...key.finger]
           : [0, 1, 0],
@@ -886,10 +947,23 @@ export function attach(sim) {
           ? [...key.approach]
           : [0, 0, -1],
       };
-      edit.rpy = [0, 0, 0];
     }
 
     return key.gripperPose;
+  }
+
+  /*
+  * Show the editor's gripper preview, but only while the viewer is paused on a
+  * pose the editor owns.  During playback MuJoCo teleports the robot every
+  * frame, so the captured baseline is stale and re-applying would fight the
+  * animation; a pose with no `position` would also collapse the translation to
+  * zero and snap the preview back to the baseline.
+  */
+  function applyPreviewPose(pose) {
+    if (state.previewEnabled === false) return;
+    if (sim.isPlaying || state.busy) return;
+    if (!Array.isArray(pose.position)) return;
+    sim.applyGripperPreviewPose(pose);
   }
 
   function formatVec(value, digits = 3) {
@@ -926,10 +1000,10 @@ export function attach(sim) {
     section.appendChild(title);
 
     /*
-    * Captura a posição original somente uma vez.
+    * Capture the original position only once.
     *
-    * Se já existir um edit.dpos salvo, remove esse deslocamento
-    * da posição atual para recuperar a posição original.
+    * If an edit.dpos value already exists, subtract it from the current
+    * position to recover the original position.
     */
     if (!Array.isArray(key.originalPos)) {
       const current = Array.isArray(key.pos)
@@ -948,8 +1022,8 @@ export function attach(sim) {
     const original = [...key.originalPos];
 
     /*
-    * Estado compartilhado dos três sliders.
-    * Não use uma cópia independente para cada callback.
+    * Shared state for the three sliders.
+    * Do not use an independent copy for each callback.
     */
     if (!Array.isArray(edit.dpos)) {
       edit.dpos = [0, 0, 0];
@@ -962,7 +1036,7 @@ export function attach(sim) {
     }
 
     /*
-    * Garante que a origem da pose também permaneça fixa.
+    * Keep the pose origin fixed as well.
     */
     if (!Array.isArray(gripperPose.originalPosition)) {
       gripperPose.originalPosition = [...original];
@@ -1010,8 +1084,8 @@ export function attach(sim) {
         valueText.textContent = `${offset.toFixed(3)} m`;
 
         /*
-        * Lê os deslocamentos atuais dos três sliders.
-        * Cada valor é absoluto em relação à pose original.
+        * Reads the current offsets from the three sliders.
+        * Each value is absolute relative to the original pose.
         */
         const dpos = Array.isArray(edit.dpos)
           ? [...edit.dpos]
@@ -1020,8 +1094,8 @@ export function attach(sim) {
         dpos[i] = offset;
 
         /*
-        * A posição nunca é incrementada sobre key.pos.
-        * Ela é sempre reconstruída a partir de originalPos.
+        * The position is never incremented on top of key.pos.
+        * It is always rebuilt from originalPos.
         */
         const nextPosition = original.map(
           (value, axis) => value + (dpos[axis] || 0)
@@ -1031,12 +1105,24 @@ export function attach(sim) {
         key.pos = [...nextPosition];
 
         /*
-        * Mantém a origem fixa e atualiza apenas a pose atual.
+        * Move the TCP keyframe circle in the viewer immediately, before
+        * the solver runs, so the user sees the new target position.
+        */
+        if (sim.setDevHold) sim.setDevHold(true);
+        if (sim.setKeyframeMarkerPos) {
+          sim.setKeyframeMarkerPos(nextPosition);
+        }
+
+        /*
+        * Keep the origin fixed and update only the current pose.
         */
         gripperPose.originalPosition = [...original];
         gripperPose.position = [...nextPosition];
 
-        sim.applyGripperPreviewPose(gripperPose);
+        // During solver playback, the MuJoCo state teleports each frame and
+        // the preview baseline can go stale. Only update the preview when the
+        // viewer is on hold / editor-driven.
+        applyPreviewPose(gripperPose);
 
         if (state.auto) {
           solveSoon(180);
@@ -1056,7 +1142,7 @@ export function attach(sim) {
   }
 
   /*
-  * Conversão de um vetor Three.js para MuJoCo.
+  * Converts a Three.js vector to MuJoCo.
   */
   function threeVectorToMujoco(v) {
     return [
@@ -1067,7 +1153,7 @@ export function attach(sim) {
   }
 
   /*
-  * Conversão de um vetor MuJoCo para Three.js.
+  * Converts a MuJoCo vector to Three.js.
   */
   function mujocoVectorToThree(v) {
     return new THREE.Vector3(
@@ -1101,9 +1187,9 @@ export function attach(sim) {
     const pose = ensureGripperPose(key, edit);
 
     /*
-    * A orientação original deve permanecer fixa.
-    * Nunca use pose.finger e pose.approach como base,
-    * pois eles já podem conter uma edição anterior.
+    * The original orientation must remain fixed.
+    * Never use pose.finger and pose.approach as a base,
+    * because they may already contain a previous edit.
     */
     const originalFinger = pose.originalFinger;
     const originalApproach = pose.originalApproach;
@@ -1125,24 +1211,24 @@ export function attach(sim) {
     }
 
     /*
-    * Converte os eixos originais para Three.js.
-    * No frame MuJoCo:
-    *   finger  = eixo Y
-    *   approach = eixo Z
+    * Convert the original axes to Three.js.
+    * In the MuJoCo frame:
+    *   finger  = Y axis
+    *   approach = Z axis
     */
     const originalY = mujocoVectorToThree(originalFinger);
     const originalZ = mujocoVectorToThree(originalApproach);
 
     /*
-    * Reconstrói o eixo X para formar o frame completo.
-    * A ordem é X, Y, Z, exatamente como no solver.
+    * Rebuild the X axis to form the complete frame.
+    * The order is X, Y, Z, exactly as in the solver.
     */
     const originalX = new THREE.Vector3()
       .crossVectors(originalY, originalZ)
       .normalize();
 
     /*
-    * Matriz da orientação original da ferramenta em Three.js.
+    * Matrix of the tool's original orientation in Three.js.
     */
     const baseFrame = new THREE.Matrix4().makeBasis(
       originalX,
@@ -1151,22 +1237,22 @@ export function attach(sim) {
     );
 
     /*
-    * RPY relativo à orientação original.
+    * RPY relative to the original orientation.
     */
     const deltaFrame = rpyDeltaMatrix(rpyDegrees);
 
     /*
-    * Rotação local:
+    * Local rotation:
     *
     * targetFrame = baseFrame * deltaFrame
     *
-    * Isso significa que roll, pitch e yaw são aplicados
-    * nos eixos locais da ferramenta, e não nos eixos globais.
+    * This means roll, pitch, and yaw are applied
+    * around the tool's local axes, not the global axes.
     */
     const targetFrame = baseFrame.clone().multiply(deltaFrame);
 
     /*
-    * Extrai os eixos resultantes.
+    * Extract the resulting axes.
     */
     const targetX = new THREE.Vector3();
     const targetY = new THREE.Vector3();
@@ -1183,34 +1269,42 @@ export function attach(sim) {
     targetZ.normalize();
 
     /*
-    * O solver recebe somente:
-    *   finger  = coluna Y
-    *   approach = coluna Z
+    * The solver only receives:
+    *   finger  = Y column
+    *   approach = Z column
     */
-    
-    const roll = THREE.MathUtils.degToRad(Number(rpyDegrees?.[0] || 0));
-    const pitch = THREE.MathUtils.degToRad(Number(rpyDegrees?.[1] || 0));
-    const yaw = THREE.MathUtils.degToRad(Number(rpyDegrees?.[2] || 0));
 
-    if (Number.isNaN(roll) || Number.isNaN(pitch) || Number.isNaN(yaw)) {
-      console.warn(
-        '[Gripper RPY] Valores inválidos de roll, pitch ou yaw.',
-        rpyDegrees
-      );
-    }
-    
+    /*
+    * Build the target frame from the finger and approach vectors,
+    * exactly as the solver does in sim_trajectories.py::frame().
+    *
+    * z = approach (unit)
+    * y = finger orthogonalized against approach
+    * x = cross(y, z)
+    *
+    * The deltaQuaternion is the rotation in global space that takes the
+    * base orientation to the target orientation:
+    *
+    *   deltaQuat = targetQuat * baseQuat⁻¹
+    *
+    * This is compatible with applyGripperPreviewPose, which applies:
+    *
+    *   newOrientation = deltaQuat * originalOrientation
+    */
+    const baseQuaternion = new THREE.Quaternion()
+      .setFromRotationMatrix(baseFrame);
+
+    const targetQuaternion = new THREE.Quaternion()
+      .setFromRotationMatrix(targetFrame);
+
+    const deltaQuaternion = targetQuaternion.clone()
+      .multiply(baseQuaternion.clone().invert());
+
     return {
       finger: threeVectorToMujoco(targetY),
       approach: threeVectorToMujoco(targetZ),
-      quaternion: new THREE.Quaternion()
-        .setFromRotationMatrix(targetFrame),
-      deltaQuaternion: new THREE.Quaternion()
-        .setFromEuler(
-          new THREE.Euler(
-            roll,
-            -yaw,
-            pitch,
-            'XYZ')),
+      quaternion: targetQuaternion,
+      deltaQuaternion,
     };
   }
 
@@ -1228,8 +1322,8 @@ export function attach(sim) {
     const pose = ensureGripperPose(key, edit);
 
     /*
-    * O valor armazenado em edit.rpy é sempre o offset em relação
-    * à orientação original da key.
+    * The value stored in edit.rpy is always the offset relative to the
+    * key's original orientation.
     */
     if (!Array.isArray(edit.rpy)) {
       edit.rpy = [0, 0, 0];
@@ -1240,14 +1334,15 @@ export function attach(sim) {
     }
 
     /*
-    * Mantém o estado da pose sincronizado com o estado persistido
-    * da edição.
+    * Keep the pose state synchronized with the persisted edit state.
     */
     pose.rpy = [...edit.rpy];
 
     pose.deltaQuaternion = gripperVectorsFromRPY(key, pose.rpy, edit).deltaQuaternion;
 
-    sim.applyGripperPreviewPose(pose);
+    // Re-assert the saved rotation on every rebuild, so a pose recreated after
+    // a solve shows the edit instead of dropping back to the original axes.
+    applyPreviewPose(pose);
 
     const axes = ['Rx', 'Ry', 'Rz'];
 
@@ -1291,9 +1386,9 @@ export function attach(sim) {
         valueText.textContent = `${value.toFixed(0)}°`;
 
         /*
-        * Lê sempre o estado atual de edit.rpy.
-        * Assim, alterar Pitch não apaga o Roll já alterado,
-        * e alterar Yaw não apaga os dois anteriores.
+        * Always read the current edit.rpy state.
+        * This way, changing Pitch does not erase the Roll already changed,
+        * and changing Yaw does not erase the other two values.
         */
         const rpy = Array.isArray(edit.rpy)
           ? [...edit.rpy]
@@ -1305,9 +1400,8 @@ export function attach(sim) {
         pose.rpy = [...rpy];
 
         /*
-        * Converte o offset RPY usando a orientação original
-        * preservada em key.gripperPose.originalFinger e
-        * key.gripperPose.originalApproach.
+        * Convert the RPY offset using the original orientation preserved in
+        * key.gripperPose.originalFinger and key.gripperPose.originalApproach.
         */
         const converted = gripperVectorsFromRPY(
           key,
@@ -1316,12 +1410,12 @@ export function attach(sim) {
         );
 
         /*
-        * Guarda também a orientação calculada para o preview.
+        * Also save the calculated orientation for the preview.
         */
         pose.quaternion = converted.quaternion;
         pose.deltaQuaternion = converted.deltaQuaternion;
 
-        sim.applyGripperPreviewPose(pose);
+        applyPreviewPose(pose);
 
       });
 
@@ -1335,9 +1429,9 @@ export function attach(sim) {
         valueText.textContent = `${value.toFixed(0)}°`;
 
         /*
-        * Lê sempre o estado atual de edit.rpy.
-        * Assim, alterar Pitch não apaga o Roll já alterado,
-        * e alterar Yaw não apaga os dois anteriores.
+        * Always read the current edit.rpy state.
+        * This way, changing Pitch does not erase the Roll already changed,
+        * and changing Yaw does not erase the other two values.
         */
         const rpy = Array.isArray(edit.rpy)
           ? [...edit.rpy]
@@ -1349,9 +1443,8 @@ export function attach(sim) {
         pose.rpy = [...rpy];
 
         /*
-        * Converte o offset RPY usando a orientação original
-        * preservada em key.gripperPose.originalFinger e
-        * key.gripperPose.originalApproach.
+        * Convert the RPY offset using the original orientation preserved in
+        * key.gripperPose.originalFinger and key.gripperPose.originalApproach.
         */
         const converted = gripperVectorsFromRPY(
           key,
@@ -1360,7 +1453,7 @@ export function attach(sim) {
         );
 
         /*
-        * Estes são os valores efetivamente enviados ao solver.
+        * These are the values actually sent to the solver.
         */
         key.finger = [...converted.finger];
         key.approach = [...converted.approach];
@@ -1372,21 +1465,12 @@ export function attach(sim) {
         pose.approach = [...converted.approach];
 
         /*
-        * Guarda também a orientação calculada para o preview.
+        * Also save the calculated orientation for the preview.
         */
         pose.quaternion = converted.quaternion;
         pose.deltaQuaternion = converted.deltaQuaternion;
 
-        console.log('[Gripper RPY] Converted vectors:', {
-          finger: pose.finger,
-          originalFinger: pose.originalFinger,
-          approach: pose.approach,
-          originalApproach: pose.originalApproach,
-          quaternion: pose.quaternion,
-          deltaQuaternion: pose.deltaQuaternion,
-        });
-
-        sim.applyGripperPreviewPose(pose);
+        applyPreviewPose(pose);
 
         if (state.auto) {
           solveSoon(180);

@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<robot name="macao">
+
+  <!-- Kinematic description extracted from public/sim/models/macao.xml.
+       The hand is a floating 6-DOF platform: three prismatic joints and
+       three revolute joints, all stacked on the same macao_hand body, form
+       the cuMotion c-space.  The finger chains are driven by equality
+       constraints in the MJCF and are intentionally omitted. -->
+
+  <link name="base_link"/>
+
+  <link name="macao_x"/>
+  <joint name="macao_x" type="prismatic">
+    <parent link="base_link"/>
+    <child link="macao_x"/>
+    <origin xyz="0.7 0 0.52" rpy="0 1.57079633 0"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-0.12" upper="0.12" effort="40" velocity="1"/>
+  </joint>
+
+  <link name="macao_y"/>
+  <joint name="macao_y" type="prismatic">
+    <parent link="macao_x"/>
+    <child link="macao_y"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-0.10" upper="0.10" effort="40" velocity="1"/>
+  </joint>
+
+  <link name="macao_z"/>
+  <joint name="macao_z" type="prismatic">
+    <parent link="macao_y"/>
+    <child link="macao_z"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-0.10" upper="0.10" effort="40" velocity="1"/>
+  </joint>
+
+  <link name="macao_roll"/>
+  <joint name="macao_roll" type="revolute">
+    <parent link="macao_z"/>
+    <child link="macao_roll"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-0.6" upper="0.6" effort="40" velocity="10"/>
+  </joint>
+
+  <link name="macao_pitch"/>
+  <joint name="macao_pitch" type="revolute">
+    <parent link="macao_roll"/>
+    <child link="macao_pitch"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-0.6" upper="0.6" effort="40" velocity="10"/>
+  </joint>
+
+  <link name="macao_hand"/>
+  <joint name="macao_yaw" type="revolute">
+    <parent link="macao_pitch"/>
+    <child link="macao_hand"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-0.8" upper="0.8" effort="40" velocity="10"/>
+  </joint>
+
+  <!-- HiveBoard TCP, matching the baked "tcp" site offset (0 0 0.11) on
+       macao_hand from the robot config in tools/build-sim-assets.py. -->
+  <link name="tcp"/>
+  <joint name="macao_tcp_joint" type="fixed">
+    <parent link="macao_hand"/>
+    <child link="tcp"/>
+    <origin xyz="0 0 0.11" rpy="0 0 0"/>
+  </joint>
+
+</robot>

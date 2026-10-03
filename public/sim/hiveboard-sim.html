@@ -579,10 +579,10 @@
         throw new Error('this browser cannot decompress the simulation assets');
       }
       const url = `${path}.gz` + (CACHE_TAG ? `?v=${CACHE_TAG}` : '');
-      // Model archives are generated together.  Revalidate each archive so a
+      // Model archives are generated together. Revalidate each archive so a
       // browser cannot combine a cached XML file with an older/partial mesh
       // archive after a rebuild (which MuJoCo reports as "at least 4
-      // vertices required").  Production builds still receive content-hash
+      // vertices required"). Production builds still receive content-hash
       // query strings from tools/stamp-cache.py.
       const resp = await fetch(url, { cache: 'no-store' });
       if (!resp.ok) throw new Error(`${path}.gz → HTTP ${resp.status}`);
@@ -613,7 +613,7 @@
 
       if (isGzip) {
         if (typeof DecompressionStream === 'undefined') {
-          throw new Error('Este navegador não suporta DecompressionStream');
+          throw new Error('This browser does not support DecompressionStream');
         }
 
         const stream = new Blob([buffer])
@@ -630,13 +630,13 @@
       try {
         return JSON.parse(text);
       } catch (error) {
-        console.error('Conteúdo recebido não é JSON:', {
+        console.error('Received content is not JSON:', {
           path,
           preview: text.slice(0, 200)
         });
 
         throw new Error(
-          `JSON inválido em ${path}. Primeiros caracteres: ${text.slice(0, 80)}`
+          `Invalid JSON in ${path}. First characters: ${text.slice(0, 80)}`
         );
       }
     }
@@ -870,14 +870,25 @@
     }
 
     function getGripperGroups() {
-      const names = ['hand', 'left_finger', 'right_finger'];
+      const candidates = {
+        // FR3 canonical names first; Spot uses different arm link names.
+        // Extend with per-robot gripper/body names for the trajectory editor
+        // preview.
+        hand:         ['hand',         'arm_link_wr1', 'moving_jaw_so101_v1', 'robotiq_base_link', 'macao_hand'],
+        left_finger:  ['left_finger',  'arm_link_fngr', 'gripper', 'moving_jaw_so101_v1', 'left_outer_knuckle', 'macao_thumb_body', 'macao_finger_body_0'],
+        // SO-101 has only a single moving jaw; reuse it for right_finger to avoid noisy warnings.
+        right_finger: ['right_finger', 'right_outer_knuckle', 'moving_jaw_so101_v1', 'macao_finger_body_1'],
+      };
 
       return Object.fromEntries(
-        names.map((name) => {
-          const id = Array.from({ length: mjModel.nbody }, (_, i) => i)
-            .find((i) => mjModel.body(i).name === name);
-
-          return [name, id !== undefined ? bodies[id] : null];
+        Object.entries(candidates).map(([role, names]) => {
+          let id;
+          for (const name of names) {
+            id = Array.from({ length: mjModel.nbody }, (_, i) => i)
+              .find((i) => mjModel.body(i).name === name);
+            if (id !== undefined) break;
+          }
+          return [role, id !== undefined ? bodies[id] : null];
         })
       );
     }
@@ -899,6 +910,9 @@
       gripperPreview.name = 'editor_gripper_preview';
       scene.add(gripperPreview);
 
+      // Note: this editor preview uses exactly 3 visual slots
+      // (hand/left_finger/right_finger). For robots with more gripper parts
+      // (e.g. Macao), we map representative bodies into these slots.
       for (const name of ['hand', 'left_finger', 'right_finger']) {
         const source = groups[name];
 
@@ -940,9 +954,9 @@
       return gripperPreview;
     }
 
-    function hideGripperPreview() {
+    function hideGripperPreview(value = true) {
       if (gripperPreview) {
-        gripperPreview.visible = false;
+        gripperPreview.visible = !value;
       }
     }
 
@@ -951,6 +965,9 @@
 
       const groups = getGripperGroups();
 
+      // Note: this editor preview uses exactly 3 visual slots
+      // (hand/left_finger/right_finger). For robots with more gripper parts
+      // (e.g. Macao), we map representative bodies into these slots.
       for (const name of ['hand', 'left_finger', 'right_finger']) {
         const source = groups[name];
         const clone = gripperPreview.getObjectByName(`preview_${name}`);
@@ -968,10 +985,28 @@
       gripperPreview.updateMatrixWorld(true);
 
       // Store the original transformation of each clone.
-      gripperPreview.originalGripperPose = {};
+      //
+      // Workaround for solve/play offset drift:
+      // captureGripperPreviewPose() is sometimes called after solving, but
+      // we want the preview's "original" baseline to stay anchored to the
+      // editor's notion of the key's original position (so slider offsets
+      // remain relative to that baseline).
+      //
+      // Therefore, if originalGripperPose already exists, we only keep
+      // existing per-body baselines and update the TCP pivot (below).
+      // If it doesn't exist yet, we initialize it from the current MuJoCo state.
+      if (!gripperPreview.originalGripperPose) {
+        gripperPreview.originalGripperPose = {};
+      }
 
+      // Note: this editor preview uses exactly 3 visual slots
+      // (hand/left_finger/right_finger). For robots with more gripper parts
+      // (e.g. Macao), we map representative bodies into these slots.
       for (const name of ['hand', 'left_finger', 'right_finger']) {
         const clone = gripperPreview.getObjectByName(`preview_${name}`);
+
+        // SO-101 and some grippers don't have a full left/right pair.
+        // That's fine — missing bodies simply won't render in that slot.
 
         if (!clone) continue;
 
@@ -993,19 +1028,31 @@
       if (handPose) {
         gripperPreview.originalHandPosition = handPose.position.clone();
         gripperPreview.originalHandQuaternion = handPose.quaternion.clone();
-
-        const tcpLocalPosition = new THREE.Vector3(
-          0,
-          0.1034,
-          0
+      }
+      
+      // Read the TCP world position directly from the MuJoCo site named "tcp".
+      // We always refresh the TCP pivot because it’s used as the rotation
+      // pivot during applyGripperPreviewPose().
+      //
+      // Workaround for solve/play: captureGripperPreviewPose() may be called
+      // after solving; refreshing tcpPosition is safe, but we keep any
+      // existing per-body baseline orientations/positions unless we are
+      // initializing for the first time.
+      const MJ_OBJ_SITE = 6; // mjtObj.mjOBJ_SITE
+      const tcpSiteId = mujoco.mj_name2id(
+        mjModel, MJ_OBJ_SITE, 'tcp'
+      );
+      if (tcpSiteId >= 0) {
+        const xpos = mjData.site_xpos;
+        const tcpWorldPosition = new THREE.Vector3(
+          xpos[tcpSiteId * 3 + 0],
+          xpos[tcpSiteId * 3 + 2],   // MuJoCo Z → Three.js Y
+          -xpos[tcpSiteId * 3 + 1],  // MuJoCo Y → Three.js -Z
         );
-
-        const tcpWorldPosition = tcpLocalPosition
-          .applyQuaternion(handPose.quaternion)
-          .add(handPose.position);
-
-        gripperPreview.originalGripperPose.tcpPosition =
-          tcpWorldPosition ? tcpWorldPosition.clone() : null;
+        gripperPreview.originalGripperPose.tcpPosition = tcpWorldPosition;
+      } else {
+        console.warn('[Gripper Preview] tcp site not found in model.');
+        gripperPreview.originalGripperPose.tcpPosition = null;
       }
     }
 
@@ -2062,6 +2109,10 @@
         devHold = false;
         devPose = null;
         devObjectPose = null;
+        hideGripperPreview();
+      }
+      else {
+        hideGripperPreview(false);
       }
       playing = !!value && !!task;
       playEl.textContent = playing ? 'Pause' : 'Play';
@@ -2123,7 +2174,11 @@
 
       syncBodies();
       if (task) {
-        pathMarker.position.copy(toThree(task.tcp[sampleIndex]));
+        // In edit mode with devHold active the XYZ sliders position the marker
+        // directly (via setKeyframeMarkerPos); don't clobber it here.
+        if (!devHold) {
+          pathMarker.position.copy(toThree(task.tcp[sampleIndex]));
+        }
       }
       if (++uiSkip >= 6) { uiSkip = 0; updateReadout(); syncControls(); }
       previewDemoStep(time);
@@ -2224,6 +2279,9 @@
               if(captureGripperPreviewPose) captureGripperPreviewPose();
 
             },
+            setDevHold(value) {
+              devHold = !!value;
+            },
             setEditorObjectPose(qpos) {
               if (!task || !Array.isArray(qpos)) return;
               devHold = true;
@@ -2243,6 +2301,13 @@
               syncBodies();
               if(captureGripperPreviewPose) captureGripperPreviewPose();
             },
+            // Move the TCP keyframe circle to a given MuJoCo-space position.
+            // Called by the XYZ offset sliders in edit.js so the marker tracks
+            // the edited key position before a solve completes.
+            setKeyframeMarkerPos(mjPos) {
+              if (!pathMarker || !Array.isArray(mjPos)) return;
+              pathMarker.position.copy(toThree(mjPos));
+            },
             setDraftTrajectory(key, traj) {
               if (!traj) return;
               traj.watch = traj.watch || '';
@@ -2256,6 +2321,7 @@
               updateReadout();
             },
             get robot() { return robot; },
+            get isPlaying() { return playing; },
             get task() { return task; },
             get previewItem() { return previewItem; },
             get trajectories() { return trajectories; },

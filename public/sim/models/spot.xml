@@ -145,70 +145,70 @@
     <geom name="stand_foot" type="box" rgba="0.44 0.48 0.55 1" size="0.17 0.17 0.01" pos="1.11 0 0.01" />
     <body name="body" childclass="spot" pos="0 0 0.462321" quat="1 0 0 0" gravcomp="1">
       <inertial pos="0.0063944 -9.81216e-05 0.000911379" mass="32.86" diaginertia="0.13144 0.13144 0.13144" />
-      <geom class="visual" material="BlackAbs" mesh="body_0" />
-      <geom class="visual" material="wrap" mesh="body_1" />
-      <geom class="collision" mesh="body_collision" />
+      <geom class="visual" quat="1 0 0 0" material="BlackAbs" mesh="body_0" />
+      <geom class="visual" quat="1 0 0 0" material="wrap" mesh="body_1" />
+      <geom class="collision" quat="1 0 0 0" mesh="body_collision" />
       <light name="tracking" pos="0 0 2" mode="trackcom" />
       <body name="fl_hip" pos="0.29785 0.055 0" quat="1 0 0 0" gravcomp="1">
         <inertial pos="-0.00537435 0.0128418 9.87523e-05" quat="0.5 0.5 -0.5 0.5" mass="1.68" diaginertia="0.00226544 0.00211474 0.00181296" />
-        <geom class="visual" material="BlackAbs" mesh="front_left_hip" />
+        <geom class="visual" quat="1 0 0 0" material="BlackAbs" mesh="front_left_hip" />
         <body name="fl_uleg" pos="0 0.1108 0" quat="0.867819 0 0.49688 0" gravcomp="1">
           <inertial pos="0.00514237 -0.00243237 -0.121009" mass="2.34" diaginertia="0.0275596 0.0273549 0.00284815" />
-          <geom class="visual" material="wrap" mesh="front_left_upper_leg_0" />
+          <geom class="visual" quat="1 0 0 0" material="wrap" mesh="front_left_upper_leg_0" />
           <geom class="visual" material="BlackAbs" mesh="front_left_upper_leg_1" />
           <geom class="collision" mesh="left_upper_leg_collision" />
           <body name="fl_lleg" pos="0.025 0 -0.32" quat="0.62161 0 -0.783327 0" gravcomp="1">
             <inertial pos="0.00225794 4.6076e-05 -0.180082" quat="0.707107 0 0 0.707107" mass="0.35" diaginertia="0.00405032 0.00399902 0.00014934" />
-            <geom class="visual" material="BlackAbs" mesh="front_left_lower_leg" />
-            <geom class="collision" mesh="left_lower_leg_collision" />
+            <geom class="visual" pos="0 0 0" quat="1 0 0 0" material="BlackAbs" mesh="front_left_lower_leg" />
+            <geom class="collision" pos="0 0 0" quat="1 0 0 0" mesh="left_lower_leg_collision" />
             <geom name="FL" class="foot" pos="0 0 -0.3365" />
           </body>
         </body>
       </body>
       <body name="fr_hip" pos="0.29785 -0.055 0" quat="1 0 0 0" gravcomp="1">
         <inertial pos="-0.00537435 -0.0128418 -9.87523e-05" quat="0.5 0.5 -0.5 0.5" mass="1.68" diaginertia="0.00226544 0.00211474 0.00181296" />
-        <geom class="visual" material="BlackAbs" mesh="front_right_hip" />
+        <geom class="visual" quat="1 0 0 0" material="BlackAbs" mesh="front_right_hip" />
         <body name="fr_uleg" pos="0 -0.1108 0" quat="0.867819 0 0.49688 0" gravcomp="1">
           <inertial pos="0.00514237 0.00243237 -0.121009" mass="2.34" diaginertia="0.0275596 0.0273549 0.00284815" />
-          <geom class="visual" material="wrap" mesh="front_right_upper_leg_0" />
+          <geom class="visual" pos="0 0 0" quat="1 0 0 0" material="wrap" mesh="front_right_upper_leg_0" />
           <geom class="visual" material="BlackAbs" mesh="front_right_upper_leg_1" />
-          <geom class="collision" mesh="right_upper_leg_collision" />
+          <geom class="collision" quat="1 0 0 0" mesh="right_upper_leg_collision" />
           <body name="fr_lleg" pos="0.025 0 -0.32" quat="0.62161 0 -0.783327 0" gravcomp="1">
             <inertial pos="0.00225794 4.6076e-05 -0.180082" quat="0.707107 0 0 0.707107" mass="0.35" diaginertia="0.00405032 0.00399902 0.00014934" />
-            <geom class="visual" material="BlackAbs" mesh="front_right_lower_leg" />
-            <geom class="collision" mesh="right_lower_leg_collision" />
+            <geom class="visual" pos="0 0 0" quat="1 0 0 0" material="BlackAbs" mesh="front_right_lower_leg" />
+            <geom class="collision" pos="0 0 0" quat="1 0 0 0" mesh="right_lower_leg_collision" />
             <geom name="FR" class="foot" pos="0 0 -0.3365" />
           </body>
         </body>
       </body>
       <body name="hl_hip" pos="-0.29785 0.055 0" quat="1 0 0 0" gravcomp="1">
         <inertial pos="0.00537435 0.0128418 -9.87523e-05" quat="0.5 0.5 -0.5 0.5" mass="1.68" diaginertia="0.00226544 0.00211474 0.00181296" />
-        <geom class="visual" material="BlackAbs" mesh="rear_left_hip" />
+        <geom class="visual" quat="1 0 0 0" material="BlackAbs" mesh="rear_left_hip" />
         <body name="hl_uleg" pos="0 0.1108 0" quat="0.867819 0 0.49688 0" gravcomp="1">
           <inertial pos="0.00514237 -0.00243237 -0.121009" mass="2.34" diaginertia="0.0275596 0.0273549 0.00284815" />
-          <geom class="visual" material="wrap" mesh="rear_left_upper_leg_0" />
+          <geom class="visual" pos="0 0 0" quat="1 0 0 0" material="wrap" mesh="rear_left_upper_leg_0" />
           <geom class="visual" material="BlackAbs" mesh="rear_left_upper_leg_1" />
           <geom class="collision" mesh="left_upper_leg_collision" />
           <body name="hl_lleg" pos="0.025 0 -0.32" quat="0.62161 0 -0.783327 0" gravcomp="1">
             <inertial pos="0.00225794 4.6076e-05 -0.180082" quat="0.707107 0 0 0.707107" mass="0.35" diaginertia="0.00405032 0.00399902 0.00014934" />
-            <geom class="visual" material="BlackAbs" mesh="rear_left_lower_leg" />
-            <geom class="collision" mesh="left_lower_leg_collision" />
+            <geom class="visual" pos="0 0 0" quat="1 0 0 0" material="BlackAbs" mesh="rear_left_lower_leg" />
+            <geom class="collision" pos="0 0 0" quat="1 0 0 0" mesh="left_lower_leg_collision" />
             <geom name="HL" class="foot" pos="0 0 -0.3365" />
           </body>
         </body>
       </body>
       <body name="hr_hip" pos="-0.29785 -0.055 0" quat="1 0 0 0" gravcomp="1">
         <inertial pos="0.00537435 -0.0128418 9.87523e-05" quat="0.5 0.5 -0.5 0.5" mass="1.68" diaginertia="0.00226544 0.00211474 0.00181296" />
-        <geom class="visual" material="BlackAbs" mesh="rear_right_hip" />
+        <geom class="visual" quat="1 0 0 0" material="BlackAbs" mesh="rear_right_hip" />
         <body name="hr_uleg" pos="0 -0.1108 0" quat="0.867819 0 0.49688 0" gravcomp="1">
           <inertial pos="0.00514237 0.00243237 -0.121009" mass="2.34" diaginertia="0.0275596 0.0273549 0.00284815" />
-          <geom class="visual" material="wrap" mesh="rear_right_upper_leg_0" />
+          <geom class="visual" pos="0 0 0" quat="1 0 0 0" material="wrap" mesh="rear_right_upper_leg_0" />
           <geom class="visual" material="BlackAbs" mesh="rear_right_upper_leg_1" />
-          <geom class="collision" mesh="right_upper_leg_collision" />
+          <geom class="collision" quat="1 0 0 0" mesh="right_upper_leg_collision" />
           <body name="hr_lleg" pos="0.025 0 -0.32" quat="0.62161 0 -0.783327 0" gravcomp="1">
             <inertial pos="0.00225794 4.6076e-05 -0.180082" quat="0.707107 0 0 0.707107" mass="0.35" diaginertia="0.00405032 0.00399902 0.00014934" />
-            <geom class="visual" material="BlackAbs" mesh="rear_left_lower_leg" />
-            <geom class="collision" mesh="right_lower_leg_collision" />
+            <geom class="visual" pos="0 0 0" quat="1 0 0 0" material="BlackAbs" mesh="rear_left_lower_leg" />
+            <geom class="collision" pos="0 0 0" quat="1 0 0 0" mesh="right_lower_leg_collision" />
             <geom name="HR" class="foot" pos="0 0 -0.3365" />
           </body>
         </body>
@@ -216,56 +216,56 @@
       <body name="arm_link_sh0" pos="0.292 0 0.188" gravcomp="1">
         <inertial pos="-0.0123727 -4.52114e-05 -0.021032" quat="0.707107 0.707107 0 0" mass="2.3364" diaginertia="0.0090143 0.00778748 0.0058351" />
         <joint name="arm_sh0" range="-2.61799 3.14159" />
-        <geom class="visual" rgba="0.1 0.1 0.1 1" material="BlackAbs" mesh="arm_link_sh0" />
-        <geom class="collision" mesh="arm_link_sh0_base_coll" />
-        <geom class="collision" mesh="arm_link_sh0_left_motor_coll" />
-        <geom class="collision" mesh="arm_link_sh0_right_motor_coll" />
+        <geom class="visual" quat="1 0 0 0" rgba="0.1 0.1 0.1 1" material="BlackAbs" mesh="arm_link_sh0" />
+        <geom class="collision" pos="0 0 0" quat="1 0 0 0" mesh="arm_link_sh0_base_coll" />
+        <geom class="collision" pos="0 0 0" quat="1 0 0 0" mesh="arm_link_sh0_left_motor_coll" />
+        <geom class="collision" pos="0 0 0" quat="1 0 0 0" mesh="arm_link_sh0_right_motor_coll" />
         <body name="arm_link_sh1" gravcomp="1">
           <inertial pos="2.41764e-05 2.41161e-06 -1.00591e-05" quat="0.5 0.5 -0.5 0.5" mass="0.2596" diaginertia="0.00020385 0.000202928 0.000170786" />
           <joint name="arm_sh1" range="-3.14159 0.523599" axis="0 1 0" />
-          <geom class="visual" material="wrap" mesh="arm_link_sh1_0" />
-          <geom class="visual" material="BlackAbs" mesh="arm_link_sh1_1" />
+          <geom class="visual" pos="0 0 0" quat="1 0 0 0" material="wrap" mesh="arm_link_sh1_0" />
+          <geom class="visual" pos="0 0 0" quat="1 0 0 0" material="BlackAbs" mesh="arm_link_sh1_1" />
           <body name="arm_link_hr0" gravcomp="1">
             <inertial pos="0.17047 -0.0019251 4.48389e-05" quat="0 0.707107 0 0.707107" mass="1e-06" diaginertia="1.16111e-08 1.14871e-08 6.31263e-10" />
-            <geom class="collision" mesh="arm_link_hr0_coll" />
+            <geom class="collision" pos="0 0 0" quat="1 0 0 0" mesh="arm_link_hr0_coll" />
             <body name="arm_link_el0" pos="0.3385 0 0" gravcomp="1">
               <inertial pos="0.0553741 0.000236034 0.048272" quat="0.5 0.5 0.5 0.5" mass="0.725" diaginertia="0.00200479 0.00197228 0.000821537" />
               <joint name="arm_el0" range="0 3.14159" axis="0 1 0" />
-              <geom class="visual" material="BlackAbs" mesh="arm_link_el0" />
-              <geom class="collision" mesh="arm_link_el0_coll" />
+              <geom class="visual" pos="0 0 0" quat="1 0 0 0" material="BlackAbs" mesh="arm_link_el0" />
+              <geom class="collision" pos="0 0 0" quat="1 0 0 0" mesh="arm_link_el0_coll" />
               <body name="arm_link_el1" pos="0.4033 0 0.075" gravcomp="1">
                 <inertial pos="-0.125784 -0.0136845 0.000101579" quat="0 0.707107 0 0.707107" mass="0.725" diaginertia="0.00451592 0.00440245 0.000625481" />
                 <joint name="arm_el1" range="-2.79253 2.79253" axis="1 0 0" />
-                <geom class="visual" material="wrap" mesh="arm_link_el1_0" />
-                <geom class="visual" material="BlackAbs" mesh="arm_link_el1_1" />
-                <geom class="collision" mesh="arm_link_el1_main_coll" />
-                <geom class="collision" mesh="arm_link_el1_lip_coll" />
+                <geom class="visual" pos="0 0 0" quat="1 0 0 0" material="wrap" mesh="arm_link_el1_0" />
+                <geom class="visual" pos="0 0 0" quat="1 0 0 0" material="BlackAbs" mesh="arm_link_el1_1" />
+                <geom class="collision" pos="0 0 0" quat="1 0 0 0" mesh="arm_link_el1_main_coll" />
+                <geom class="collision" pos="0 0 0" quat="1 0 0 0" mesh="arm_link_el1_lip_coll" />
                 <body name="arm_link_wr0" gravcomp="1">
                   <inertial pos="0.00821068 -0.012051 3.14348e-05" quat="0.5 0.5 -0.5 0.5" mass="0.98" diaginertia="0.00123549 0.000985132 0.000891615" />
                   <joint name="arm_wr0" range="-1.8326 1.8326" axis="0 1 0" />
-                  <geom class="visual" material="wrap" mesh="arm_link_wr0_0" />
-                  <geom class="visual" material="BlackAbs" mesh="arm_link_wr0_1" />
-                  <geom class="collision" mesh="arm_link_wr0_coll" />
+                  <geom class="visual" quat="1 0 0 0" material="wrap" mesh="arm_link_wr0_0" />
+                  <geom class="visual" quat="1 0 0 0" material="BlackAbs" mesh="arm_link_wr0_1" />
+                  <geom class="collision" quat="1 0 0 0" mesh="arm_link_wr0_coll" />
                   <body name="arm_link_wr1" gravcomp="1">
                     <inertial pos="0.125168 0.000101374 -0.013998" quat="0.5 0.5 0.5 0.5" mass="0.785" diaginertia="0.00176281 0.00168181 0.000767414" />
                     <joint name="arm_wr1" range="-2.87979 2.87979" axis="1 0 0" />
-                    <geom class="visual" material="wrap" mesh="arm_link_wr1_0" friction="2 0.05 0.0002" solimp="0.95 0.99 0.001" solref="0.005 1" />
-                    <geom class="visual" material="BlackAbs" mesh="arm_link_wr1_1" friction="2 0.05 0.0002" solimp="0.95 0.99 0.001" solref="0.005 1" />
-                    <geom class="collision" mesh="arm_link_wr1_coll" friction="2 0.05 0.0002" solimp="0.95 0.99 0.001" solref="0.005 1" />
-                    <geom class="collision" mesh="front_jaw_coll" friction="2 0.05 0.0002" solimp="0.95 0.99 0.001" solref="0.005 1" />
-                    <geom class="collision" mesh="middle_jaw_coll" friction="2 0.05 0.0002" solimp="0.95 0.99 0.001" solref="0.005 1" />
-                    <geom class="collision" mesh="jaw_tooth_coll" friction="2 0.05 0.0002" solimp="0.95 0.99 0.001" solref="0.005 1" />
+                    <geom class="visual" pos="0 0 0" quat="1 0 0 0" material="wrap" mesh="arm_link_wr1_0" friction="2 0.05 0.0002" solimp="0.95 0.99 0.001" solref="0.005 1" />
+                    <geom class="visual" pos="0 0 0" quat="1 0 0 0" material="BlackAbs" mesh="arm_link_wr1_1" friction="2 0.05 0.0002" solimp="0.95 0.99 0.001" solref="0.005 1" />
+                    <geom class="collision" pos="0 0 0" quat="1 0 0 0" mesh="arm_link_wr1_coll" friction="2 0.05 0.0002" solimp="0.95 0.99 0.001" solref="0.005 1" />
+                    <geom class="collision" pos="0 0 0" quat="1 0 0 0" mesh="front_jaw_coll" friction="2 0.05 0.0002" solimp="0.95 0.99 0.001" solref="0.005 1" />
+                    <geom class="collision" pos="0 0 0" quat="1 0 0 0" mesh="middle_jaw_coll" friction="2 0.05 0.0002" solimp="0.95 0.99 0.001" solref="0.005 1" />
+                    <geom class="collision" pos="0 0 0" quat="1 0 0 0" mesh="jaw_tooth_coll" friction="2 0.05 0.0002" solimp="0.95 0.99 0.001" solref="0.005 1" />
                     <body name="arm_link_fngr" pos="0.11745 0 0.01482" gravcomp="1">
                       <inertial pos="0.0478787 -0.000206768 -0.0162879" quat="0 0.707107 0 0.707107" mass="0.2" diaginertia="0.000391278 0.000300713 0.000143996" />
                       <joint name="arm_f1x" range="-1.57 0" axis="0 1 0" />
-                      <geom class="visual" material="wrap" mesh="arm_link_fngr_0" friction="2 0.05 0.0002" solimp="0.95 0.99 0.001" solref="0.005 1" />
-                      <geom class="visual" material="BlackAbs" mesh="arm_link_fngr_1" friction="2 0.05 0.0002" solimp="0.95 0.99 0.001" solref="0.005 1" />
-                      <geom class="collision" mesh="left_hinge_coll" friction="2 0.05 0.0002" solimp="0.95 0.99 0.001" solref="0.005 1" />
-                      <geom class="collision" mesh="left_finger_coll" friction="2 0.05 0.0002" solimp="0.95 0.99 0.001" solref="0.005 1" />
-                      <geom class="collision" mesh="left_tooth_coll" friction="2 0.05 0.0002" solimp="0.95 0.99 0.001" solref="0.005 1" />
-                      <geom class="collision" mesh="right_hinge_coll" friction="2 0.05 0.0002" solimp="0.95 0.99 0.001" solref="0.005 1" />
-                      <geom class="collision" mesh="right_finger_coll" friction="2 0.05 0.0002" solimp="0.95 0.99 0.001" solref="0.005 1" />
-                      <geom class="collision" mesh="right_tooth_coll" friction="2 0.05 0.0002" solimp="0.95 0.99 0.001" solref="0.005 1" />
+                      <geom class="visual" pos="0 0 0" quat="1 0 0 0" material="wrap" mesh="arm_link_fngr_0" friction="2 0.05 0.0002" solimp="0.95 0.99 0.001" solref="0.005 1" />
+                      <geom class="visual" pos="0 0 0" quat="1 0 0 0" material="BlackAbs" mesh="arm_link_fngr_1" friction="2 0.05 0.0002" solimp="0.95 0.99 0.001" solref="0.005 1" />
+                      <geom class="collision" pos="0 0 0" quat="1 0 0 0" mesh="left_hinge_coll" friction="2 0.05 0.0002" solimp="0.95 0.99 0.001" solref="0.005 1" />
+                      <geom class="collision" pos="0 0 0" quat="1 0 0 0" mesh="left_finger_coll" friction="2 0.05 0.0002" solimp="0.95 0.99 0.001" solref="0.005 1" />
+                      <geom class="collision" pos="0 0 0" quat="1 0 0 0" mesh="left_tooth_coll" friction="2 0.05 0.0002" solimp="0.95 0.99 0.001" solref="0.005 1" />
+                      <geom class="collision" pos="0 0 0" quat="1 0 0 0" mesh="right_hinge_coll" friction="2 0.05 0.0002" solimp="0.95 0.99 0.001" solref="0.005 1" />
+                      <geom class="collision" pos="0 0 0" quat="1 0 0 0" mesh="right_finger_coll" friction="2 0.05 0.0002" solimp="0.95 0.99 0.001" solref="0.005 1" />
+                      <geom class="collision" pos="0 0 0" quat="1 0 0 0" mesh="right_tooth_coll" friction="2 0.05 0.0002" solimp="0.95 0.99 0.001" solref="0.005 1" />
                     </body>
                     <site name="tcp" pos="0.198984 0.000566814 -0.037663" quat="0.448024 0.546678 0.542338 0.454189" size="0.005" group="4" />
                   </body>
@@ -351,7 +351,7 @@
           <geom pos="0 0 -0.0157571" quat="1 0 0 0" type="mesh" mesh="high-valve_Corpo1__1_" group="3" material="hb_accent" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="2" conaffinity="1" />
         </body>
       </body>
-      <body name="small-valve_valvula_gaveta" pos="0.0790621 0 0" quat="0.517698 -0.481652 0.481652 0.517698">
+      <body name="small-valve_valvula_gaveta" pos="0.0790621 0 0" quat="0.517697 -0.481654 0.481654 0.517697">
         <inertial pos="0 0 0.0345" quat="0.5 0.5 0.5 0.5" mass="0.531" diaginertia="0.000619637 0.000601061 0.000533771" />
         <geom pos="0 0.0740621 0" quat="0.707107 0.707107 0 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="small-valve_Mesh_1" material="hb_shell" />
         <geom pos="0 0.0740621 0" quat="0.707107 0.707107 0 0" type="mesh" mesh="small-valve_Mesh_1" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
@@ -373,8 +373,8 @@
         <body name="thread-m30_Base">
           <inertial pos="0 0 0.0325" quat="0 0.707107 0 0.707107" mass="0.4369" diaginertia="0.000494543 0.000436426 0.000365777" />
           <joint name="thread-m30_PrismaticJoint" type="slide" range="-0.0005 0.0005" actuatorfrcrange="-100 100" springref="0" stiffness="0" damping="5" armature="0.01" frictionloss="0.01" limited="true" />
-          <geom type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="thread-m30_Base_Corpo1" material="hb_accent" />
-          <geom type="mesh" mesh="thread-m30_Base_Corpo1" group="3" material="hb_accent" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="2" conaffinity="1" />
+          <geom quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="thread-m30_Base_Corpo1" material="hb_accent" />
+          <geom quat="1 0 0 0" type="mesh" mesh="thread-m30_Base_Corpo1" group="3" material="hb_accent" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="2" conaffinity="1" />
         </body>
         <body name="thread-m30_Nut" pos="0 0 0.015649">
           <joint name="thread-m30_RiseJoint" type="slide" axis="0 0 1" range="0 0.04" damping="1" stiffness="0" />
@@ -384,7 +384,7 @@
           <geom quat="0.97547 0 0 -0.220133" type="mesh" mesh="thread-m30_Nut_Corpo1" group="3" material="hb_accent" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="2" conaffinity="1" />
         </body>
       </body>
-      <body name="thread-m8_World" pos="0.0253536 0 0" quat="0.272267 0.962222 0 0">
+      <body name="thread-m8_World" pos="0.0253536 0 0" quat="0.272268 0.962222 0 0">
         <inertial pos="0 0 0.0225" quat="0 0.707107 0 0.707107" mass="0.3025" diaginertia="0.000342376 0.000246687 0.000197776" />
         <geom pos="-0.0253536 0 0" quat="0.707107 0 0.707107 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="thread-m8_M8_Screw_Base_Corpo1_Mesh" material="hb_shell" />
         <geom pos="-0.0253536 0 0" quat="0.707107 0 0.707107 0" type="mesh" mesh="thread-m8_M8_Screw_Base_Corpo1_Mesh" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
@@ -401,11 +401,11 @@
           </body>
         </body>
       </body>
-      <body name="peg-insertion_World" pos="-0 0 0" quat="0.00662952 0.707076 0.00662952 0.707076">
+      <body name="peg-insertion_World" pos="4.63305e-10 0 0" quat="0.00662952 0.707076 0.00662952 0.707076">
         <body name="peg-insertion_Base">
           <inertial pos="0 0 0.0075" quat="0 0.707107 0 0.707107" mass="0.1008" diaginertia="0.000114125 6.7105e-05 5.08014e-05" />
-          <geom type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="peg-insertion_Base_principal_Corpo1" material="hb_accent" />
-          <geom type="mesh" mesh="peg-insertion_Base_principal_Corpo1" group="3" material="hb_accent" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="2" conaffinity="1" />
+          <geom quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="peg-insertion_Base_principal_Corpo1" material="hb_accent" />
+          <geom quat="1 0 0 0" type="mesh" mesh="peg-insertion_Base_principal_Corpo1" group="3" material="hb_accent" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="2" conaffinity="1" />
         </body>
         <body name="peg-insertion_peg" pos="0 0 0">
           <joint name="peg-insertion_PrismaticJoint" type="slide" axis="0 0 1" range="0 0.04" damping="1" stiffness="0" pos="0 0 0" />
@@ -474,14 +474,14 @@
         <geom pos="0.013983 -0.03699 -0.011011" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="drawer_left_Guide_Cube" material="hb_shell" />
         <geom pos="0.024419 -0.03699 0.007061" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="drawer_left_Guide_Cube_01" material="hb_shell" />
         <geom pos="0.019104 -0.03699 -0.023485" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="drawer_left_Guide_Cube_02" material="hb_shell" />
-        <geom pos="0.03553 -0.03699 -0.016197" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="drawer_left_Guide_Cube_03" material="hb_shell" />
-        <geom pos="0.001747 -0.03699 -0.019452" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="drawer_left_Guide_Cube_04" material="hb_shell" />
+        <geom pos="0.03553 -0.03699 -0.016197" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="drawer_left_Guide_Cube_03" material="hb_shell" />
+        <geom pos="0.001747 -0.03699 -0.019452" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="drawer_left_Guide_Cube_04" material="hb_shell" />
         <geom pos="0.025516 -0.037173 -0.014515" quat="0.707107 0.707107 0 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="drawer_Cylinder" material="hb_shell" />
         <geom pos="0.013983 0.036913 -0.011011" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="drawer_right_Guide_Cube" material="hb_shell" />
         <geom pos="0.024419 0.036913 0.007061" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="drawer_right_Guide_Cube_01" material="hb_shell" />
         <geom pos="0.019104 0.036913 -0.023485" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="drawer_right_Guide_Cube_02" material="hb_shell" />
-        <geom pos="0.03553 0.036913 -0.016197" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="drawer_right_Guide_Cube_03" material="hb_shell" />
-        <geom pos="0.001747 0.036913 -0.019452" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="drawer_right_Guide_Cube_04" material="hb_shell" />
+        <geom pos="0.03553 0.036913 -0.016197" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="drawer_right_Guide_Cube_03" material="hb_shell" />
+        <geom pos="0.001747 0.036913 -0.019452" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="drawer_right_Guide_Cube_04" material="hb_shell" />
         <geom pos="0.025516 0.03711 -0.014515" quat="0.707107 0.707107 0 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="drawer_right_Guide_Cylinder_01" material="hb_shell" />
         <geom pos="0.019 0 0.022396" quat="0.707107 0 0.707107 0" type="mesh" mesh="drawer_simple_colliders_Cube" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
         <geom pos="0.019 0 -0.022839" quat="0.707107 0 0.707107 0" type="mesh" mesh="drawer_simple_colliders_Cube_01" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
@@ -489,14 +489,14 @@
         <geom pos="0.013983 -0.03699 -0.011011" quat="1 0 0 0" type="mesh" mesh="drawer_left_Guide_Cube" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
         <geom pos="0.024419 -0.03699 0.007061" quat="1 0 0 0" type="mesh" mesh="drawer_left_Guide_Cube_01" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
         <geom pos="0.019104 -0.03699 -0.023485" quat="1 0 0 0" type="mesh" mesh="drawer_left_Guide_Cube_02" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
-        <geom pos="0.03553 -0.03699 -0.016197" type="mesh" mesh="drawer_left_Guide_Cube_03" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
-        <geom pos="0.001747 -0.03699 -0.019452" type="mesh" mesh="drawer_left_Guide_Cube_04" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
+        <geom pos="0.03553 -0.03699 -0.016197" quat="1 0 0 0" type="mesh" mesh="drawer_left_Guide_Cube_03" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
+        <geom pos="0.001747 -0.03699 -0.019452" quat="1 0 0 0" type="mesh" mesh="drawer_left_Guide_Cube_04" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
         <geom pos="0.025516 -0.037173 -0.014515" quat="0.707107 0.707107 0 0" type="mesh" mesh="drawer_Cylinder" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
         <geom pos="0.013983 0.036913 -0.011011" quat="1 0 0 0" type="mesh" mesh="drawer_right_Guide_Cube" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
         <geom pos="0.024419 0.036913 0.007061" quat="1 0 0 0" type="mesh" mesh="drawer_right_Guide_Cube_01" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
         <geom pos="0.019104 0.036913 -0.023485" quat="1 0 0 0" type="mesh" mesh="drawer_right_Guide_Cube_02" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
-        <geom pos="0.03553 0.036913 -0.016197" type="mesh" mesh="drawer_right_Guide_Cube_03" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
-        <geom pos="0.001747 0.036913 -0.019452" type="mesh" mesh="drawer_right_Guide_Cube_04" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
+        <geom pos="0.03553 0.036913 -0.016197" quat="1 0 0 0" type="mesh" mesh="drawer_right_Guide_Cube_03" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
+        <geom pos="0.001747 0.036913 -0.019452" quat="1 0 0 0" type="mesh" mesh="drawer_right_Guide_Cube_04" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
         <geom pos="0.025516 0.03711 -0.014515" quat="0.707107 0.707107 0 0" type="mesh" mesh="drawer_right_Guide_Cylinder_01" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
         <body name="drawer_drawer" pos="0 0 0">
           <joint name="drawer_PrismaticJoint" type="slide" axis="1 0 0" range="0 0.05" damping="2" stiffness="0" pos="0 0 0" />
@@ -512,9 +512,9 @@
       </body>
       <body name="shock-absorber_Montagem_Principal" pos="0.063893 0 0" quat="0.707107 0 0.707107 0">
         <geom pos="0 0.016378 -0.048893" quat="-2.32051e-08 1 0 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="shock-absorber_MeshInstance_Corpo1" material="hb_shell" />
-        <geom pos="-0.035 0.016489 -0.063893" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="shock-absorber_MeshInstance_1_Corpo1" material="hb_shell" />
+        <geom pos="-0.035 0.016489 -0.063893" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="shock-absorber_MeshInstance_1_Corpo1" material="hb_shell" />
         <geom pos="0 0.016378 -0.048893" quat="-2.32051e-08 1 0 0" type="mesh" mesh="shock-absorber_MeshInstance_Corpo1" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
-        <geom pos="-0.035 0.016489 -0.063893" type="mesh" mesh="shock-absorber_MeshInstance_1_Corpo1" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
+        <geom pos="-0.035 0.016489 -0.063893" quat="1 0 0 0" type="mesh" mesh="shock-absorber_MeshInstance_1_Corpo1" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
         <body name="shock-absorber_rod" pos="0 0 0">
           <joint name="shock-absorber_PrismaticJoint" type="slide" axis="1 0 0" range="0 0.03" damping="2" stiffness="120" pos="0 0 0" />
           <geom pos="-0.045 0.016489 -0.042935" quat="0.707107 0 -0.707107 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="shock-absorber_Corpo3" material="hb_accent" />

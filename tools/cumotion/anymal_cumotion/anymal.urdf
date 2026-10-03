@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+<robot name="anymal_dynaarm">
+
+  <!-- Kinematic description of the DynaArm extracted from
+       public/sim/models/anymal.xml.  The quadruped's freejoint and leg
+       joints are intentionally omitted; the six DynaArm joints form the
+       cuMotion c-space.  Every joint axis is 0 0 1 in its body frame, and
+       each body frame is rotated by the body's MJCF quaternion (converted
+       to rpy).  The arm_mount body (identity pose) is folded into the
+       shoulder origin. -->
+
+  <link name="base_link"/>
+
+  <link name="dynaarm_shoulder"/>
+  <joint name="dynaarm_shoulder_rotation" type="revolute">
+    <parent link="base_link"/>
+    <child link="dynaarm_shoulder"/>
+    <origin xyz="0 0 0.1105" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-4.31238858" upper="4.31238858" effort="40" velocity="10"/>
+  </joint>
+
+  <link name="dynaarm_upperarm"/>
+  <joint name="dynaarm_shoulder_flexion" type="revolute">
+    <parent link="dynaarm_shoulder"/>
+    <child link="dynaarm_upperarm"/>
+    <origin xyz="0 0 0.047" rpy="1.57079633 0 1.57079633"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-1.72079621" upper="1.72079621" effort="40" velocity="10"/>
+  </joint>
+
+  <link name="dynaarm_elbow"/>
+  <joint name="dynaarm_elbow_flexion" type="revolute">
+    <parent link="dynaarm_upperarm"/>
+    <child link="dynaarm_elbow"/>
+    <origin xyz="0.4127 0 0" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="0" upper="3.09159234" effort="40" velocity="10"/>
+  </joint>
+
+  <link name="dynaarm_forearm"/>
+  <joint name="dynaarm_forearm_rotation" type="revolute">
+    <parent link="dynaarm_elbow"/>
+    <child link="dynaarm_forearm"/>
+    <origin xyz="0.0262 -0.0855 0" rpy="0 1.57079633 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-4.71238898" upper="4.71238898" effort="40" velocity="10"/>
+  </joint>
+
+  <link name="dynaarm_wrist_1"/>
+  <joint name="dynaarm_wrist_flexion" type="revolute">
+    <parent link="dynaarm_forearm"/>
+    <child link="dynaarm_wrist_1"/>
+    <origin xyz="0.0295 0 0.4207" rpy="0 -1.57079633 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-1.82079631" upper="1.82079631" effort="40" velocity="10"/>
+  </joint>
+
+  <link name="dynaarm_wrist_2"/>
+  <joint name="dynaarm_wrist_rotation" type="revolute">
+    <parent link="dynaarm_wrist_1"/>
+    <child link="dynaarm_wrist_2"/>
+    <origin xyz="0.117 0 0.0295" rpy="0 1.57079633 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-1.57079633" upper="4.71238898" effort="40" velocity="10"/>
+  </joint>
+
+  <!-- Flange plus the Robotiq 2F-140 base, both fixed. -->
+  <link name="dynaarm_flange"/>
+  <joint name="dynaarm_flange_joint" type="fixed">
+    <parent link="dynaarm_wrist_2"/>
+    <child link="dynaarm_flange"/>
+    <origin xyz="0 0 0.009" rpy="0 0 1.57079633"/>
+  </joint>
+
+  <link name="robotiq_base_link"/>
+  <joint name="robotiq_base_joint" type="fixed">
+    <parent link="dynaarm_flange"/>
+    <child link="robotiq_base_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- HiveBoard TCP, taken from the baked "tcp" site on robotiq_base_link. -->
+  <link name="tcp"/>
+  <joint name="robotiq_tcp_joint" type="fixed">
+    <parent link="robotiq_base_link"/>
+    <child link="tcp"/>
+    <origin xyz="0 0 0.2" rpy="0 0 0"/>
+  </joint>
+
+</robot>
