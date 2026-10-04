@@ -1049,7 +1049,16 @@ export function attach(sim) {
 
     const labels = ['X', 'Y', 'Z'];
 
+    const inputs = [];
+    const appliers = [];
+
     labels.forEach((label, i) => {
+      const cell = document.createElement('div');
+      cell.style.display = 'flex';
+      cell.style.flexDirection = 'column';
+      cell.style.gap = '3px';
+      cell.style.minWidth = '0';
+
       const field = document.createElement('label');
       field.style.display = 'flex';
       field.style.flexDirection = 'column';
@@ -1074,8 +1083,12 @@ export function attach(sim) {
       input.value = Number(edit.dpos[i] || 0).toFixed(3);
       input.title = `Cartesian ${label} offset in meters`;
 
-      input.addEventListener('input', () => {
-        const offset = parseFloat(input.value);
+      /*
+      * Shared apply path for the slider and the per-axis reset button.
+      * `value` is the ABSOLUTE offset from the original pose for this axis.
+      */
+      const applyOffset = (value) => {
+        const offset = Number(value);
 
         if (!Number.isFinite(offset)) {
           return;
@@ -1127,16 +1140,56 @@ export function attach(sim) {
         if (state.auto) {
           solveSoon(180);
         }
+      };
+
+      input.addEventListener('input', () => applyOffset(input.value));
+
+      /*
+      * Per-axis reset: zero this offset only.  The button sits NEXT TO the
+      * label (not inside it), so a click never forwards to the range input
+      * and nudges the slider.
+      */
+      const reset = document.createElement('button');
+      reset.type = 'button';
+      reset.className = 'reset';
+      reset.dataset.axis = label.toLowerCase();
+      reset.textContent = '↺';
+      reset.title = `Reset the ${label} offset to 0`;
+      reset.addEventListener('click', () => {
+        input.value = '0.000';
+        applyOffset(0);
       });
 
       field.appendChild(labelText);
       field.appendChild(input);
       field.appendChild(valueText);
 
-      grid.appendChild(field);
+      cell.appendChild(field);
+      cell.appendChild(reset);
+      grid.appendChild(cell);
+
+      inputs.push(input);
+      appliers.push(applyOffset);
+    });
+
+    /*
+    * Group reset: zero all three offsets in one pass.  solveSoon() is
+    * debounced, so the three applies still coalesce into a single solve.
+    */
+    const resetAll = document.createElement('button');
+    resetAll.type = 'button';
+    resetAll.className = 'reset-all';
+    resetAll.textContent = 'Reset position';
+    resetAll.title = 'Reset the X, Y and Z offsets to 0';
+    resetAll.addEventListener('click', () => {
+      appliers.forEach((apply, i) => {
+        inputs[i].value = '0.000';
+        apply(0);
+      });
     });
 
     section.appendChild(grid);
+    section.appendChild(resetAll);
 
     return section;
   }
@@ -1351,7 +1404,16 @@ export function attach(sim) {
     grid.style.gridTemplateRows = 'repeat(3, minmax(0, 1fr))';
     grid.style.gap = '8px';
 
+    const inputs = [];
+    const appliers = [];
+
     axes.forEach((axis, i) => {
+      const cell = document.createElement('div');
+      cell.style.display = 'flex';
+      cell.style.flexDirection = 'column';
+      cell.style.gap = '3px';
+      cell.style.minWidth = '0';
+
       const field = document.createElement('label');
       field.style.display = 'flex';
       field.style.flexDirection = 'column';
@@ -1376,14 +1438,20 @@ export function attach(sim) {
       input.value = Number(edit.rpy[i] || 0);
       input.title = `Gripper ${axis} orientation offset in degrees`;
 
-      input.addEventListener('input', () => {
-        const value = Number(input.value);
+      /*
+      * Shared apply path for the slider and the per-axis reset button.
+      * `commit` is true for the slider's `change` and for a reset: it is what
+      * writes the solver-bound finger/approach.  Dragging (the `input` event)
+      * only moves the preview.
+      */
+      const applyOrientation = (value, commit) => {
+        const numeric = Number(value);
 
-        if (!Number.isFinite(value)) {
+        if (!Number.isFinite(numeric)) {
           return;
         }
 
-        valueText.textContent = `${value.toFixed(0)}°`;
+        valueText.textContent = `${numeric.toFixed(0)}°`;
 
         /*
         * Always read the current edit.rpy state.
@@ -1394,7 +1462,7 @@ export function attach(sim) {
           ? [...edit.rpy]
           : [0, 0, 0];
 
-        rpy[i] = value;
+        rpy[i] = numeric;
 
         edit.rpy = [...rpy];
         pose.rpy = [...rpy];
@@ -1409,61 +1477,20 @@ export function attach(sim) {
           edit
         );
 
-        /*
-        * Also save the calculated orientation for the preview.
-        */
-        pose.quaternion = converted.quaternion;
-        pose.deltaQuaternion = converted.deltaQuaternion;
+        if (commit) {
+          /*
+          * These are the values actually sent to the solver.
+          */
+          key.finger = [...converted.finger];
+          key.approach = [...converted.approach];
 
-        applyPreviewPose(pose);
+          edit.finger = [...converted.finger];
+          edit.approach = [...converted.approach];
 
-      });
-
-      input.addEventListener('change', () => {
-        const value = Number(input.value);
-
-        if (!Number.isFinite(value)) {
-          return;
+          pose.finger = [...converted.finger];
+          pose.approach = [...converted.approach];
         }
 
-        valueText.textContent = `${value.toFixed(0)}°`;
-
-        /*
-        * Always read the current edit.rpy state.
-        * This way, changing Pitch does not erase the Roll already changed,
-        * and changing Yaw does not erase the other two values.
-        */
-        const rpy = Array.isArray(edit.rpy)
-          ? [...edit.rpy]
-          : [0, 0, 0];
-
-        rpy[i] = value;
-
-        edit.rpy = [...rpy];
-        pose.rpy = [...rpy];
-
-        /*
-        * Convert the RPY offset using the original orientation preserved in
-        * key.gripperPose.originalFinger and key.gripperPose.originalApproach.
-        */
-        const converted = gripperVectorsFromRPY(
-          key,
-          pose.rpy,
-          edit
-        );
-
-        /*
-        * These are the values actually sent to the solver.
-        */
-        key.finger = [...converted.finger];
-        key.approach = [...converted.approach];
-
-        edit.finger = [...converted.finger];
-        edit.approach = [...converted.approach];
-
-        pose.finger = [...converted.finger];
-        pose.approach = [...converted.approach];
-
         /*
         * Also save the calculated orientation for the preview.
         */
@@ -1472,18 +1499,59 @@ export function attach(sim) {
 
         applyPreviewPose(pose);
 
-        if (state.auto) {
+        if (commit && state.auto) {
           solveSoon(180);
         }
+      };
+
+      input.addEventListener('input', () => applyOrientation(input.value, false));
+      input.addEventListener('change', () => applyOrientation(input.value, true));
+
+      /*
+      * Per-axis reset: zero this rotation only, as a full commit so the
+      * solver gets the re-derived (original) finger/approach.
+      */
+      const reset = document.createElement('button');
+      reset.type = 'button';
+      reset.className = 'reset';
+      reset.dataset.axis = axis.toLowerCase();
+      reset.textContent = '↺';
+      reset.title = `Reset the ${axis} orientation offset to 0`;
+      reset.addEventListener('click', () => {
+        input.value = '0';
+        applyOrientation(0, true);
       });
 
       field.appendChild(label);
       field.appendChild(input);
       field.appendChild(valueText);
-      grid.appendChild(field);
+
+      cell.appendChild(field);
+      cell.appendChild(reset);
+      grid.appendChild(cell);
+
+      inputs.push(input);
+      appliers.push(applyOrientation);
+    });
+
+    /*
+    * Group reset: zero all three rotations in one pass.  solveSoon() is
+    * debounced, so the three commits still coalesce into a single solve.
+    */
+    const resetAll = document.createElement('button');
+    resetAll.type = 'button';
+    resetAll.className = 'reset-all';
+    resetAll.textContent = 'Reset orientation';
+    resetAll.title = 'Reset the Rx, Ry and Rz offsets to 0';
+    resetAll.addEventListener('click', () => {
+      appliers.forEach((apply, i) => {
+        inputs[i].value = '0';
+        apply(0, true);
+      });
     });
 
     section.appendChild(grid);
+    section.appendChild(resetAll);
     return section;
   }
 
@@ -1674,6 +1742,11 @@ export function attach(sim) {
         border: 1px solid #e2e8f0; background: #fff; color: #64748b; border-radius: 4px; }
       #traj-edit .power:hover:not(:disabled) { color: #b91c1c; border-color: #fca5a5; }
       #traj-edit .power:disabled { opacity: .3; cursor: default; }
+      #traj-edit .reset { align-self: flex-end; padding: 0; width: 18px; height: 18px;
+        line-height: 1; border: 1px solid #e2e8f0; background: #fff; color: #64748b;
+        border-radius: 4px; }
+      #traj-edit .reset:hover { color: #b45309; border-color: #fcd34d; }
+      #traj-edit .reset-all { margin-top: 6px; width: 100%; color: #475569; }
       #traj-edit input[type=number] { width: 100%; font: inherit; padding: 1px 3px;
         border: 1px solid #e2e8f0; border-radius: 4px; background: #fff; }
       #traj-edit .range-number { display: grid; grid-template-columns: minmax(0, 1fr) 5.5em;
