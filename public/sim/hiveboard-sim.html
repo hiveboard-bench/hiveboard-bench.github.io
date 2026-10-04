@@ -435,6 +435,10 @@
     let restGrip = 0;
     let devHold = false;
     let devPose = null;
+    let previewCapturePending = null;
+    let previewPose = null;      // last pose the editor asked the preview to show
+    let holdPose = null;         // qpos the editor is holding the robot at
+    let holdDofs = [];           // dofs to pin while held (everything but the module)
 
     let pathLine = null;
     let pathMarker = null;
@@ -984,20 +988,11 @@
 
       gripperPreview.updateMatrixWorld(true);
 
-      // Store the original transformation of each clone.
-      //
-      // Workaround for solve/play offset drift:
-      // captureGripperPreviewPose() is sometimes called after solving, but
-      // we want the preview's "original" baseline to stay anchored to the
-      // editor's notion of the key's original position (so slider offsets
-      // remain relative to that baseline).
-      //
-      // Therefore, if originalGripperPose already exists, we only keep
-      // existing per-body baselines and update the TCP pivot (below).
-      // If it doesn't exist yet, we initialize it from the current MuJoCo state.
-      if (!gripperPreview.originalGripperPose) {
-        gripperPreview.originalGripperPose = {};
-      }
+      // Offsets are measured from the pose BEFORE the pending edit, so the
+      // per-body baselines are derived below by undoing any delta the gripper
+      // has already been solved into.  That makes re-capturing idempotent and
+      // keeps the reference derived from the gripper's own finger/approach.
+      const poses = {};
 
       // Note: this editor preview uses exactly 3 visual slots
       // (hand/left_finger/right_finger). For robots with more gripper parts
@@ -1016,18 +1011,11 @@
 
         clone.matrixWorld.decompose(position, quaternion, scale);
 
-        gripperPreview.originalGripperPose[name] = {
+        poses[name] = {
           position: position.clone(),
           quaternion: quaternion.clone(),
           scale: scale.clone(),
         };
-      }
-
-      const handPose = gripperPreview.originalGripperPose.hand;
-
-      if (handPose) {
-        gripperPreview.originalHandPosition = handPose.position.clone();
-        gripperPreview.originalHandQuaternion = handPose.quaternion.clone();
       }
       
       // Read the TCP world position directly from the MuJoCo site named "tcp".
@@ -1042,17 +1030,114 @@
       const tcpSiteId = mujoco.mj_name2id(
         mjModel, MJ_OBJ_SITE, 'tcp'
       );
+      let tcpWorldPosition = null;
       if (tcpSiteId >= 0) {
         const xpos = mjData.site_xpos;
-        const tcpWorldPosition = new THREE.Vector3(
+        tcpWorldPosition = new THREE.Vector3(
           xpos[tcpSiteId * 3 + 0],
           xpos[tcpSiteId * 3 + 2],   // MuJoCo Z → Three.js Y
           -xpos[tcpSiteId * 3 + 1],  // MuJoCo Y → Three.js -Z
         );
-        gripperPreview.originalGripperPose.tcpPosition = tcpWorldPosition;
       } else {
         console.warn('[Gripper Preview] tcp site not found in model.');
-        gripperPreview.originalGripperPose.tcpPosition = null;
+      }
+
+      // Undo the pending edit so the stored baseline is the pose the offsets are
+      // measured FROM.  Without this, a capture taken after a solve bakes the
+      // rotation (and translation) into the reference and the preview applies it
+      // a second time -- the "preview is rotated" symptom.
+      const capturedDelta = previewPose && previewPose.deltaQuaternion
+        ? previewPose.deltaQuaternion.clone()
+        : null;
+      const unrotate = capturedDelta ? capturedDelta.clone().invert() : null;
+      const applied = previewPose
+        && Array.isArray(previewPose.position)
+        && Array.isArray(previewPose.originalPosition)
+        ? new THREE.Vector3(
+            previewPose.position[0] - previewPose.originalPosition[0],
+            previewPose.position[2] - previewPose.originalPosition[2],
+            -(previewPose.position[1] - previewPose.originalPosition[1]))
+        : null;
+
+      // The pivot the edit reached, minus the translation it already applied, is
+      // the pristine TCP the baseline geometry is measured about.
+      const pristinePivot = tcpWorldPosition && applied
+        ? tcpWorldPosition.clone().sub(applied)
+        : tcpWorldPosition;
+
+      gripperPreview.originalGripperPose = { tcpPosition: pristinePivot };
+
+      for (const name of ['hand', 'left_finger', 'right_finger']) {
+        const raw = poses[name];
+        if (!raw) continue;
+
+        const position = raw.position.clone();
+        let quaternion = raw.quaternion.clone();
+
+        if (applied) position.sub(applied);
+        if (unrotate && pristinePivot) {
+          const rel = position.clone().sub(pristinePivot).applyQuaternion(unrotate);
+          position.copy(pristinePivot).add(rel);
+          quaternion = unrotate.clone().multiply(quaternion);
+        }
+
+        gripperPreview.originalGripperPose[name] = {
+          position,
+          quaternion,
+          scale: raw.scale.clone(),
+        };
+      }
+
+      const handPose = gripperPreview.originalGripperPose.hand;
+
+      if (handPose) {
+        gripperPreview.originalHandPosition = handPose.position.clone();
+        gripperPreview.originalHandQuaternion = handPose.quaternion.clone();
+      }
+    }
+
+    // Deferred gripper-preview capture -----------------------------------
+    //
+    // teleportSample() drops the robot at the key's pose, but the arm is still
+    // under the physics loop.  Capturing the baseline on the same tick froze
+    // the preview where the robot WAS, while the arm went on to settle
+    // somewhere else.  So a capture is requested here and taken by
+    // settleGripperPreviewCapture() once the arm stops moving.
+    function requestGripperPreviewCapture() {
+      previewCapturePending = { frames: 0, last: null };
+    }
+
+    function cancelGripperPreviewCapture() {
+      previewCapturePending = null;
+    }
+
+    function settleGripperPreviewCapture() {
+      if (!previewCapturePending || !mjModel || !task) return;
+
+      const n = robot.arm;
+      const last = previewCapturePending.last;
+      let delta = Infinity;
+      if (last) {
+        delta = 0;
+        for (let i = 0; i < n; i++) {
+          delta = Math.max(delta, Math.abs(mjData.qpos[i] - last[i]));
+        }
+      }
+
+      const now = new Array(n);
+      for (let i = 0; i < n; i++) now[i] = mjData.qpos[i];
+      previewCapturePending.last = now;
+      previewCapturePending.frames++;
+
+      // Snapshot the first frame the arm holds still, or after ~half a second
+      // in case it never quite does.
+      if ((previewCapturePending.frames > 2 && delta < 1e-4)
+          || previewCapturePending.frames > 30) {
+        previewCapturePending = null;
+        captureGripperPreviewPose();
+        // The capture rebases the clones onto the robot's pose and freezes them
+        // (matrixAutoUpdate = false); put back the offset the editor is showing.
+        if (previewPose) applyGripperPreviewPose(previewPose);
       }
     }
 
@@ -1068,6 +1153,11 @@
 
     function applyGripperPreviewPose(pose) {
       if (!gripperPreview || !pose) return;
+
+      // Remember it so the deferred capture can re-apply it: capturing rebases
+      // the clones onto the robot's pose, which would otherwise drop whatever
+      // slider offset the editor had just applied.
+      previewPose = pose;
 
       const originalGripperPose =
         gripperPreview.originalGripperPose;
@@ -1477,13 +1567,27 @@
     function teleportSample() {
       if (!mjModel || !task) return;
       const saved = task.stateQpos?.[sampleIndex];
+      // stateQpos carries the module dofs at this sample (drawer travel, valve
+      // angle, ...).  The arm dofs in it are the settled result of the solve and
+      // disagree with the key the editor edits, so they are overwritten below.
       if (saved && saved.length === mjModel.nq) {
         mjData.qpos.set(saved);
-      } else {
-
-        for (let i = 0; i < robot.arm; i++) mjData.qpos[i] = task.qpos[sampleIndex][i];
       }
+      // Pin the arm — and the ctrl that servos it — to the key's own pose.
+      // Left as stateQpos the live PD controller pulls the arm to task.qpos over
+      // the next frames, which is the motion that stranded the preview.
+      const pose = task.qpos[sampleIndex];
+      for (let i = 0; i < robot.arm; i++) {
+        mjData.qpos[i] = pose[i];
+        mjData.ctrl[i] = pose[i];
+      }
+      if (gripQposIndex >= 0) mjData.qpos[gripQposIndex] = task.grip[sampleIndex];
+      if (spinIndex >= 0) mjData.qpos[spinIndex] = task.spin || 0;
+      if (gripCtrl >= 0) mjData.ctrl[gripCtrl] = task.grip[sampleIndex];
       mjData.qvel.fill(0);
+      // Remember the pose the editor is holding so animate() can pin the robot
+      // back to it after each physics step.
+      holdPose = Float64Array.from(mjData.qpos);
       mujoco.mj_forward(mjModel, mjData);
       syncBodies();
     }
@@ -1517,6 +1621,15 @@
           demoStateQposAddrs.push(mjModel.jnt_qposadr[jid]);
         }
       }
+      // Everything that is not the module is held still while the editor owns
+      // the pose.  The arm alone is not enough: FR3's jaw is two joints tied by
+      // an equality, and the second one keeps drifting under the step loop.
+      const moduleDofs = new Set(demoStateQposAddrs);
+      holdDofs = [];
+      for (let a = 0; a < mjModel.nq; a++) {
+        if (!moduleDofs.has(a)) holdDofs.push(a);
+      }
+      holdPose = null;
       previewItem = null;
       clearModulePreview();
       const catItem = TASK_CATALOGUE.find((t) => t.traj === key);
@@ -2109,6 +2222,8 @@
         devHold = false;
         devPose = null;
         devObjectPose = null;
+        cancelGripperPreviewCapture();
+        previewPose = null;
         hideGripperPreview();
       }
       else {
@@ -2172,7 +2287,27 @@
 
       if (applyDemoSample()) mujoco.mj_forward(mjModel, mjData);
 
+      // While the editor holds a key (paused + devHold) pin the robot to the
+      // pose being edited.  Otherwise the live PD controller — commanded to
+      // task.qpos, which is not the teleported pose — visibly servos the arm
+      // away from the snapshot, and the equality-coupled jaw keeps creeping.
+      if (!playing && devHold && task && holdPose) {
+        for (let i = 0; i < holdDofs.length; i++) {
+          const a = holdDofs[i];
+          mjData.qpos[a] = holdPose[a];
+          mjData.qvel[a] = 0;
+        }
+        if (devPose) {
+          for (let i = 0; i < robot.arm; i++) {
+            mjData.qpos[i] = devPose.qpos[i];
+            mjData.qvel[i] = 0;
+          }
+        }
+        mujoco.mj_forward(mjModel, mjData);
+      }
+
       syncBodies();
+      settleGripperPreviewCapture();
       if (task) {
         // In edit mode with devHold active the XYZ sliders position the marker
         // directly (via setKeyframeMarkerPos); don't clobber it here.
@@ -2264,7 +2399,10 @@
               sampleIndex = Math.max(0, Math.min(i, task.qpos.length - 1));
               subStep = 0;
               teleportSample();
-              if(!afterSolve) captureGripperPreviewPose();
+              // Arm for a deferred capture; settleGripperPreviewCapture() takes
+              // the snapshot once the arm stops moving.  Capturing inline froze
+              // the preview at the teleport pose while the arm was still settling.
+              if (!afterSolve) requestGripperPreviewCapture();
             },
             setEditorPose(qpos, grip) {
               if (!task || !Array.isArray(qpos)) return;
@@ -2273,7 +2411,12 @@
               devPose = { qpos, grip };
               devObjectPose = null;
               for (let i = 0; i < robot.arm; i++) mjData.qpos[i] = qpos[i];
+              if (gripQposIndex >= 0 && Number.isFinite(grip)) {
+                mjData.qpos[gripQposIndex] = grip;
+              }
+              if (spinIndex >= 0) mjData.qpos[spinIndex] = task.spin || 0;
               mjData.qvel.fill(0);
+              holdPose = Float64Array.from(mjData.qpos);
               mujoco.mj_forward(mjModel, mjData);
               syncBodies();
               if(captureGripperPreviewPose) captureGripperPreviewPose();

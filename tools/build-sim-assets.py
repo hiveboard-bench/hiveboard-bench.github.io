@@ -156,7 +156,9 @@ MODULES = [
                          "damping": "2", "stiffness": "0"}}},
     {"name": "shock-absorber",
      "urdf": "Shock Absorber/Shock_Absorber_Assembly.urdf",
-     "cell": 0, "align": LAY_FLAT,
+     "cell": 0,
+     # align: NONE (default) - the shock absorber mounts flat on board face,
+     # LAY_FLAT placed it entirely behind the board (negative X)
      "split": {"child": "rod", "meshes": ["Corpo3"],
                "joint": {"name": "PrismaticJoint", "type": "slide",
                          "axis": "1 0 0", "range": "0 0.03",
@@ -242,11 +244,9 @@ ROBOTS = [
         "stand": {"top": 0.90, "half": 0.17},
         "framing": "side",
         "ground": True,
-        # Keep the two gate valves available as separate scene modules.  The
-        # remaining centre-cell mechanisms are still supported by the board
-        # catalogue, but are not yet solved by this platform.
-        "skip": ["peg-insertion", "button-cover",
-                 "drawer", "shock-absorber"],
+        # Keep the two gate valves available as separate scene modules.
+        # peg-insertion requires precise approach alignment, saved for later.
+        "skip": ["peg-insertion"],
         # As on the FR3: the toggle is thrown by the gripper against live
         # collision, not replayed from an authored module motion.
         "physical": ["breaker"],
