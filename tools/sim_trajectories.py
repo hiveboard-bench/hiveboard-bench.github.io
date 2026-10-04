@@ -993,7 +993,10 @@ def button_task(model, data, cfg, spec):
     swing = float(model.jnt_range[hid][1] - data.qpos[model.jnt_qposadr[hid]])
     swing = math.copysign(min(abs(swing), 1.5) , swing) - spec.get("shy", 0.1)
 
-    edge = lid[((lid - hinge) @ unit(np.cross(hinge_axis, out))).argmax()]
+    # Pick the edge farthest from hinge toward the robot (in lid plane)
+    to_robot = unit(robot_base(model, data) - hinge)
+    in_lid_plane = unit(to_robot - hinge_axis * (to_robot @ hinge_axis))
+    edge = lid[((lid - hinge) @ in_lid_plane).argmax()]
     edge = edge - out * spec.get("bite", 0.006)
     lean = approach_for(cfg, hinge, robot_base(model, data))
     across = unit(hinge_axis)
@@ -1124,6 +1127,13 @@ TASKS = {
         finger=(0.0, 1.0, 0.0),
         label="Drawer",
         caption="Pinch the drawer front and draw it out of its case."),
+
+    "shock-absorber": bind(
+        draw_task, module="shock-absorber", body="shock-absorber_rod",
+        watch="PrismaticJoint", travel=0.02, inset=0.008,
+        finger=(0.0, 1.0, 0.0),
+        label="Shock absorber",
+        caption="Compress the shock absorber rod by pushing it down."),
 
 }
 EDITS_FILE = Path(__file__).with_name("traj_edits.json")
