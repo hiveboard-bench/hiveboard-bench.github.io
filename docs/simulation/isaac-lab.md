@@ -20,8 +20,6 @@ Use the dependencies specified by the repository's [`pyproject.toml`](https://gi
 
 The GPU workflows use CUDA dependencies. RTX video rendering requires compatible NVIDIA hardware. The player also accepts `--device cpu` for CPU runs, subject to the selected task and planner.
 
-The earlier Python 3.11, Isaac Sim 5.1.0, and Isaac Lab 2.3.2 instructions describe [commit `769d034`](https://github.com/EESC-LabRoM/isaaclab-hiveboard/tree/769d034d9b5bfd71e34310a5f6fd2b5c1628c6d9). Use that checkout to reproduce experiments from the earlier implementation.
-
 ## Installation
 
 Clone the repository and its pinned submodules:
@@ -72,26 +70,28 @@ uv run python scripts/generate_anymal_newton_usd.py --verify-only
 
 The ANYmal generator downloads robot and gripper assets when they are absent, so its first run requires internet access.
 
-## Available tasks
+## Registered environments {#available-tasks}
 
 Task IDs have the form `Isaac-HiveBoard-<Robot>-<Tool>-v0`. Robot tokens are case-sensitive: `Spot`, `Franka`, and `Anymal`.
 
-The table maps the benchmark terminology to the identifiers in [the task registry](https://github.com/EESC-LabRoM/isaaclab-hiveboard/blob/e00973501f1fa466b6aceba8a6c31dca2875065d/source/isaaclab_hiveboard/isaaclab_hiveboard/tasks/__init__.py). A check mark means that an environment is registered for that robot.
+The table maps the benchmark terminology to the identifiers in [the task registry](https://github.com/EESC-LabRoM/isaaclab-hiveboard/blob/e00973501f1fa466b6aceba8a6c31dca2875065d/source/isaaclab_hiveboard/isaaclab_hiveboard/tasks/__init__.py). **Registered** identifies an environment that can be selected by task ID.
+
+**Heuristic completion status: unverified for the combinations below.** The repository provides scripted command sequences, but no per-robot task-completion results for this revision. A working heuristic should be confirmed by a recorded physics run showing that the mechanism reaches its success state. Until those results are available, this table documents environment registration only.
 
 | Benchmark task | Tool token | Spot | Franka FR3 | ANYmal |
 |---|---|:---:|:---:|:---:|
-| Ball valve | `BallValve` | ✓ | ✓ | ✓ |
-| Gate valve (small) | `SmallValve` | ✓ | ✓ | ✓ |
-| Gate valve (large) | `HighTorqueValve` | ✓ | ✓ | ✓ |
-| Circuit breaker | `CircuitBreaker` | ✓ | ✓ | ✓ |
-| Button | `Button` | ✓ | ✓ | ✓ |
-| Lock and key | `Key` | ✓ | ✓ | ✓ |
-| Drawer | `Drawer` | ✓ | ✓ | ✓ |
-| Thread (M8) | `M8Thread` | ✓ | ✓ | ✓ |
-| Thread (M30) | `M30Thread` | ✓ | ✓ | ✓ |
-| Peg insertion | `PegInsertion` | ✓ | ✓ | ✓ |
-| Shock absorber | `ShockAbsorber` | ✓ | ✓ | ✓ |
-| Light bulb | `Lamp` | ✓ | ✓ | ✓ |
+| Ball valve | `BallValve` | Registered | Registered | Registered |
+| Gate valve (small) | `SmallValve` | Registered | Registered | Registered |
+| Gate valve (large) | `HighTorqueValve` | Registered | Registered | Registered |
+| Circuit breaker | `CircuitBreaker` | Registered | Registered | Registered |
+| Button | `Button` | Registered | Registered | Registered |
+| Lock and key | `Key` | Registered | Registered | Registered |
+| Drawer | `Drawer` | Registered | Registered | Registered |
+| Thread (M8) | `M8Thread` | Registered | Registered | Registered |
+| Thread (M30) | `M30Thread` | Registered | Registered | Registered |
+| Peg insertion | `PegInsertion` | Registered | Registered | Registered |
+| Shock absorber | `ShockAbsorber` | Registered | Registered | Registered |
+| Light bulb | `Lamp` | Registered | Registered | Registered |
 
 Each listed task except `Lamp` also has a `-Play-v0` variant. For example, the Franka ball-valve play environment is `Isaac-HiveBoard-Franka-BallValve-Play-v0`. The former `Franka-LeverValve` identifier is no longer registered.
 
