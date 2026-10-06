@@ -34,7 +34,7 @@ Inspect the joint axis, parent-child order, and initial pose. Compare the full m
 
 ## Simulation contact is unstable
 
-Begin with one environment and a conservative timestep. Inspect collision geometry, penetration at reset, solver settings, drive gains, and mass ratios. Treat the supplied physical properties as nominal rather than identified values.
+Begin with one environment and a conservative timestep. Inspect collision geometry, penetration at reset, solver settings, drive gains, and mass ratios. The supplied physical properties are nominal. Identify them for the printed mechanism when studying sim-to-real correspondence.
 
 ## An Isaac Lab asset cannot be found
 
@@ -44,14 +44,30 @@ The simulation repository uses Git submodules. From the repository root, initial
 git submodule update --init --recursive
 ```
 
-The `dependencies/HiveBoard`, `dependencies/curobo`, and `dependencies/duatic_dynaarm` directories should then contain their respective repositories.
+This initializes the pinned dependencies, including HiveBoard assets, Isaac Lab, cuRobo, and the DynaArm description. Newton USD files also need to be generated locally. Check them with:
+
+```bash
+uv run python scripts/generate_newton_usd.py --verify-only
+```
+
+Follow the [asset-generation instructions](/simulation/isaac-lab#generate-the-newton-assets) to create missing files. ANYmal has an additional robot-assembly generator. The `--skip-conversion` option cannot replace conversion on a fresh clone.
 
 ## An Isaac Lab task is not registered
 
-Run the environment-listing script inside the project environment:
+List all registered tasks without launching the simulator:
 
 ```bash
-uv run python scripts/list_envs.py
+uv run python scripts/record_all_envs.py --all --list
 ```
 
-Use the exact `Isaac-HiveBoard-*` identifier printed by the script. If imports fail, run `uv sync` from the repository root and continue using `uv run` for subsequent commands.
+Use the exact `Isaac-HiveBoard-*` identifier printed by the script. Robot tokens are case-sensitive, including `Anymal`. Light-bulb tasks use `Lamp-v0` and have no `Lamp-Play-v0` variant. The current Franka ball-valve task uses `Franka-BallValve`, replacing the earlier `Franka-LeverValve` identifier.
+
+If imports fail after updating the repository, run `git submodule update --init --recursive` and `uv sync --python 3.12` from its root. Continue using `uv run` for subsequent commands.
+
+## The command editor does not open in the browser
+
+Start the editor with an explicit port, for example `uv run python scripts/command_edit.py --port 9080`, and open `http://localhost:9080` on the computer running it. Use the address printed by the editor if a different port was selected. See [command editing](/simulation/workflows#edit-a-task-s-command-sequence) for the complete workflow.
+
+## A simulation recording is missing
+
+For batch recording, check `summary.json` and the per-task logs under `videos/environments/<timestamp>/`. Confirm that `ffmpeg` and `ffprobe` are on `PATH`. The default batch selection includes only `-Play` environments. Select a light-bulb task explicitly, or use `--all` to include all variants. See [batch recording](/simulation/workflows#record-several-environments).

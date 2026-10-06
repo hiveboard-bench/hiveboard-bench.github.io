@@ -60,7 +60,8 @@ export default defineConfig({
         text: 'Simulation',
         items: [
           { text: 'Simulation Assets', link: '/simulation/assets' },
-          { text: 'Isaac Lab Integration', link: '/simulation/isaac-lab' }
+          { text: 'Isaac Lab Integration', link: '/simulation/isaac-lab' },
+          { text: 'Simulation Workflows', link: '/simulation/workflows' }
         ]
       },
       {

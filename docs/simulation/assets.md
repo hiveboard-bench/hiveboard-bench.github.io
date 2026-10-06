@@ -16,8 +16,8 @@ Browse the [`Simulation/` directory](https://github.com/EESC-LabRoM/HiveBoard/tr
 | `Lamp/` | Light bulb |
 | `Peg Insertion/` | Peg insertion |
 | `Shock Absorber/` | Shock absorber |
-| `Threads/` | Thread (M8); Thread (M30) |
-| `Valves/` | Ball valve; Gate valve (small); Gate valve (large) |
+| `Threads/` | Thread (M8), Thread (M30) |
+| `Valves/` | Ball valve, Gate valve (small), Gate valve (large) |
 
 Folder names are retained for compatibility. The [terminology reference](/reference/terminology) maps older names to the task names used in the paper.
 
@@ -25,11 +25,11 @@ Folder names are retained for compatibility. The [terminology reference](/refere
 
 Depending on the mechanism, the simulation package provides:
 
-- visual meshes;
-- collision meshes;
-- revolute, continuous, and prismatic joints;
-- joint ranges and limits;
-- nominal mass and inertia; and
+- visual meshes
+- collision meshes
+- revolute, continuous, and prismatic joints
+- joint ranges and limits
+- nominal mass and inertia
 - URDF or USD exports.
 
 Threaded motion is represented by coupled rotational and translational joints where a native helical joint is unavailable. This reproduces the advance of a threaded component while keeping the asset portable across simulators.
@@ -40,8 +40,11 @@ Threaded motion is represented by coupled rotational and translational joints wh
 |---|---|
 | Load or visualize a mechanism in an existing stack | URDF or USD assets in the main repository |
 | Inspect kinematics or create a custom environment | Articulated asset plus your simulator's loader |
-| Train and evaluate policies in Isaac Lab | Dedicated Isaac Lab repository |
+| Run HiveBoard tasks with Isaac Lab and Newton | [Isaac Lab installation and task reference](/simulation/isaac-lab) |
+| Edit commands, record demonstrations, or train policies | [Simulation workflows](/simulation/workflows) |
 | Compare simulation with the printed board | Record model commit and locally identified physical parameters |
+
+The Isaac Lab implementation uses generated Newton USD files. Follow the [asset-generation steps](/simulation/isaac-lab#generate-the-newton-assets) after cloning the simulation repository. Its generated files are separate from the portable URDF/USD assets in the main HiveBoard repository.
 
 ## Align the physical and simulated board
 
@@ -55,21 +58,21 @@ The provided masses, inertias, friction values, and contact properties are nomin
 
 Printer calibration, filament, layer orientation, surface wear, sanding, and mechanism assembly can all change physical behavior. If close sim-to-real correspondence is required:
 
-1. print and assemble the target mechanism;
-2. measure its range and actuation resistance;
-3. identify the relevant simulation parameters;
-4. store the overrides separately from the original asset; and
+1. print and assemble the target mechanism
+2. measure its range and actuation resistance
+3. identify the relevant simulation parameters
+4. store the overrides separately from the original asset
 5. report both the asset commit and the identified values.
 
 ## Validation before use
 
 Before training or evaluation, check that:
 
-- every referenced mesh resolves;
-- the rest configuration has no unintended self-intersection;
-- joint axes and ranges match the physical mechanism;
-- collision geometry is sufficiently accurate for the task;
-- units and scale are correct; and
+- every referenced mesh resolves
+- the rest configuration has no unintended self-intersection
+- joint axes and ranges match the physical mechanism
+- collision geometry is sufficiently accurate for the task
+- units and scale are correct
 - a full actuation cycle completes without instability.
 
 A simulation experiment must define observations, actions, reset states, success checks, termination conditions, and evaluation seeds.
