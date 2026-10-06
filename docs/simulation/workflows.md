@@ -1,6 +1,6 @@
 # Simulation workflows
 
-These workflows use [the Newton-based Isaac Lab installation](/simulation/isaac-lab), checked at simulation commit [`e009735`](https://github.com/EESC-LabRoM/isaaclab-hiveboard/commit/e00973501f1fa466b6aceba8a6c31dca2875065d). Complete the dependency installation and USD generation first. Run commands from the simulation repository root.
+These workflows use [the Newton-based Isaac Lab installation](/simulation/isaac-lab), checked at simulation commit [`68fbd3f`](https://github.com/EESC-LabRoM/isaaclab-hiveboard/commit/68fbd3f63f0cb24dd36ffd3a601a9b25efa419fc). Complete the dependency installation and USD generation first. Run commands from the simulation repository root.
 
 ## Edit a task's command sequence
 
@@ -58,11 +58,11 @@ Preview the default selection:
 uv run python scripts/record_all_envs.py --list
 ```
 
-The default selection contains `-Play` environments. Add `--all` to include other variants. Since light-bulb environments have no `-Play` variant, select one explicitly or use `--all`.
+The default selection contains `-Play` environments, including the light-bulb tasks for all three robots. Add `--all` to include other variants. To record only the ANYmal light-bulb task:
 
 ```bash
 uv run python scripts/record_all_envs.py \
-  --task Isaac-HiveBoard-Anymal-Lamp-v0 --renderer newton
+  --task Isaac-HiveBoard-Anymal-Lamp-Play-v0 --renderer newton
 ```
 
 Filter by robot and inspect the commands before recording:
@@ -74,7 +74,7 @@ uv run python scripts/record_all_envs.py --match Franka --renderer newton
 
 The batch recorder defaults to RTX rendering. Select `--renderer newton` for rasterized output. Both `ffmpeg` and `ffprobe` must be on `PATH`. Frame rates are derived separately for each task to preserve simulated timing.
 
-Inspect the recordings and task outcomes before treating them as successful demonstrations.
+Inspect the recordings and task outcomes before treating them as successful demonstrations. For light bulb, check the [configured screw travel and success condition](/simulation/isaac-lab#light-bulb-success-condition).
 
 ## Record episodes for learning
 
@@ -86,7 +86,7 @@ The imitation-learning collector below uses its own recorder and HDF5 layout. Se
 
 ### Imitation learning
 
-The repository includes demonstration collection, behavior cloning, DAgger, and policy evaluation in [`scripts/imitation/`](https://github.com/EESC-LabRoM/isaaclab-hiveboard/tree/e00973501f1fa466b6aceba8a6c31dca2875065d/scripts/imitation).
+The repository includes demonstration collection, behavior cloning, DAgger, and policy evaluation in [`scripts/imitation/`](https://github.com/EESC-LabRoM/isaaclab-hiveboard/tree/68fbd3f63f0cb24dd36ffd3a601a9b25efa419fc/scripts/imitation).
 
 Install the additional dependencies:
 
@@ -96,7 +96,7 @@ uv sync --python 3.12 --extra imitation
 
 Use `uv run --extra imitation` for the following commands to keep the extra dependencies installed.
 
-The collector requires a `bc` observation group. Training also requires a registered `robomimic_bc_cfg_entry_point`. At the documented commit, these training configurations are registered for Spot light bulb, Spot ball valve, and ANYmal ball valve. Other registered simulation tasks need the corresponding learning configuration before using this pipeline.
+The collector requires a `bc` observation group. Training also requires a registered `robomimic_bc_cfg_entry_point`. At the documented commit, these training configurations are registered for Spot light bulb, Spot ball valve, and ANYmal ball valve. Use the base Spot `Lamp-v0` task for behavior-cloning training configuration lookup. Its new `Lamp-Play-v0` registration does not include that configuration entry. Other registered simulation tasks need the corresponding learning configuration before using this pipeline.
 
 Collect 50 successful Spot ball-valve demonstrations:
 
@@ -142,11 +142,11 @@ ANYmal RL environments are registered for these tasks:
 | Thread (M30) | `Isaac-HiveBoard-Anymal-M30Thread-RL-v0` |
 | Circuit breaker | `Isaac-HiveBoard-Anymal-CircuitBreaker-RL-v0` |
 
-Each has an `-RL-Play-v0` variant. The repository provides expert-bank generation, PPO teacher training, student training or distillation, and checkpoint evaluation in [`scripts/rl/`](https://github.com/EESC-LabRoM/isaaclab-hiveboard/tree/e00973501f1fa466b6aceba8a6c31dca2875065d/scripts/rl).
+Each has an `-RL-Play-v0` variant. The repository provides expert-bank generation, PPO teacher training, student training or distillation, and checkpoint evaluation in [`scripts/rl/`](https://github.com/EESC-LabRoM/isaaclab-hiveboard/tree/68fbd3f63f0cb24dd36ffd3a601a9b25efa419fc/scripts/rl).
 
-Follow the [`rl-*` recipes in the justfile](https://github.com/EESC-LabRoM/isaaclab-hiveboard/blob/e00973501f1fa466b6aceba8a6c31dca2875065d/justfile) for the full sequence. `RL_TOOL` selects `BallValve`, `SmallValve`, `M30Thread`, or `CircuitBreaker`. Inspect the selected task's expert-bank path, reset distribution, observation groups, and success condition before starting a run. The default training recipes use many parallel environments, so choose counts that fit the available GPU memory.
+Follow the [`rl-*` recipes in the justfile](https://github.com/EESC-LabRoM/isaaclab-hiveboard/blob/68fbd3f63f0cb24dd36ffd3a601a9b25efa419fc/justfile) for the full sequence. `RL_TOOL` selects `BallValve`, `SmallValve`, `M30Thread`, or `CircuitBreaker`. Inspect the selected task's expert-bank path, reset distribution, observation groups, and success condition before starting a run. The default training recipes use many parallel environments, so choose counts that fit the available GPU memory.
 
-**The RL success conditions can differ from the benchmark protocol.** At the documented commit, the [small gate-valve RL environment](https://github.com/EESC-LabRoM/isaaclab-hiveboard/blob/e00973501f1fa466b6aceba8a6c31dca2875065d/source/isaaclab_hiveboard/isaaclab_hiveboard/tasks/anymal/small_valve_rl/env.py) targets a quarter turn. The [benchmark task](/benchmark/tasks#small-gate-valve) requires one full stem turn. Report the configured goal with learning results and validate the complete benchmark motion before submitting a benchmark evaluation.
+**The RL success conditions can differ from the benchmark protocol.** At the documented commit, the [small gate-valve RL environment](https://github.com/EESC-LabRoM/isaaclab-hiveboard/blob/68fbd3f63f0cb24dd36ffd3a601a9b25efa419fc/source/isaaclab_hiveboard/isaaclab_hiveboard/tasks/anymal/small_valve_rl/env.py) targets a quarter turn. The [benchmark task](/benchmark/tasks#small-gate-valve) requires one full stem turn. Report the configured goal with learning results and validate the complete benchmark motion before submitting a benchmark evaluation.
 
 ## Simulation datasets and DataHive
 

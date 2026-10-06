@@ -2,11 +2,11 @@
 
 The [`EESC-LabRoM/isaaclab-hiveboard`](https://github.com/EESC-LabRoM/isaaclab-hiveboard) repository provides HiveBoard environments for Spot with arm, Franka FR3, and ANYmal with DynaArm. The current implementation uses Isaac Lab with **Newton MJWarp**. The standard simulation and recording workflows run without Isaac Sim.
 
-This guide follows `master` at commit [`f200826`](https://github.com/EESC-LabRoM/isaaclab-hiveboard/commit/f200826bba2c79b03e56e419eca0f28b216caeb8), checked on 6 October 2026. For command editing, datasets, and policy training, see [Simulation workflows](/simulation/workflows).
+This guide follows `master` at commit [`68fbd3f`](https://github.com/EESC-LabRoM/isaaclab-hiveboard/commit/68fbd3f63f0cb24dd36ffd3a601a9b25efa419fc), checked on 6 October 2026. For command editing, datasets, and policy training, see [Simulation workflows](/simulation/workflows).
 
 ## Requirements
 
-Use the dependencies specified by the repository's [`pyproject.toml`](https://github.com/EESC-LabRoM/isaaclab-hiveboard/blob/f200826bba2c79b03e56e419eca0f28b216caeb8/pyproject.toml) and Git submodules.
+Use the dependencies specified by the repository's [`pyproject.toml`](https://github.com/EESC-LabRoM/isaaclab-hiveboard/blob/68fbd3f63f0cb24dd36ffd3a601a9b25efa419fc/pyproject.toml) and Git submodules.
 
 | Component | Current configuration |
 |---|---|
@@ -74,9 +74,9 @@ The ANYmal generator downloads robot and gripper assets when they are absent, so
 
 Task IDs have the form `Isaac-HiveBoard-<Robot>-<Tool>-v0`. Robot tokens are case-sensitive: `Spot`, `Franka`, and `Anymal`.
 
-The table reports the heuristic status given in the [simulation README at commit `f200826`](https://github.com/EESC-LabRoM/isaaclab-hiveboard/blob/f200826bba2c79b03e56e419eca0f28b216caeb8/README.md#available-tasks).
+The table reports the heuristic status given in the [simulation README at commit `68fbd3f`](https://github.com/EESC-LabRoM/isaaclab-hiveboard/blob/68fbd3f63f0cb24dd36ffd3a601a9b25efa419fc/README.md#available-tasks).
 
-**✓**: working heuristic reported by the maintainers. **×**: no working heuristic currently reported. All listed robot–task combinations have registered environments. The symbols describe the supplied heuristic controllers.
+**✓**: working heuristic reported by the maintainers. **✗**: no working heuristic currently reported. All listed robot–task combinations have registered environments. The symbols describe the supplied heuristic controllers.
 
 | Benchmark task | Tool token | Spot | Franka FR3 | ANYmal |
 |---|---|:---:|:---:|:---:|
@@ -85,17 +85,17 @@ The table reports the heuristic status given in the [simulation README at commit
 | Gate valve (large) | `HighTorqueValve` | ✓ | ✓ | ✓ |
 | Circuit breaker | `CircuitBreaker` | ✓ | ✓ | ✓ |
 | Button | `Button` | ✓ | ✓ | ✓ |
-| Lock and key | `Key` | × | × | × |
-| Drawer | `Drawer` | × | × | × |
-| Thread (M8) | `M8Thread` | × | ✓ | ✓ |
-| Thread (M30) | `M30Thread` | × | ✓ | ✓ |
-| Peg insertion | `PegInsertion` | × | × | × |
-| Shock absorber | `ShockAbsorber` | × | × | × |
+| Lock and key | `Key` | ✗ | ✗ | ✗ |
+| Drawer | `Drawer` | ✗ | ✗ | ✗ |
+| Thread (M8) | `M8Thread` | ✗ | ✓ | ✓ |
+| Thread (M30) | `M30Thread` | ✗ | ✓ | ✓ |
+| Peg insertion | `PegInsertion` | ✗ | ✗ | ✗ |
+| Shock absorber | `ShockAbsorber` | ✗ | ✗ | ✗ |
 | Light bulb | `Lamp` | ✓ | ✓ | ✓ |
 
 These statuses apply to the supplied task configurations. They do not quantify success rates across randomized resets. For benchmark evaluations, check the configured motion and success condition against [How to perform each task](/benchmark/tasks).
 
-Each listed task except `Lamp` also has a `-Play-v0` variant. For example, the Franka ball-valve play environment is `Isaac-HiveBoard-Franka-BallValve-Play-v0`. The former `Franka-LeverValve` identifier is no longer registered.
+Each listed task has a `-Play-v0` variant, including `Lamp` for Spot, Franka, and ANYmal. For example, the Franka ball-valve play environment is `Isaac-HiveBoard-Franka-BallValve-Play-v0`. The former `Franka-LeverValve` identifier is no longer registered.
 
 List the registered environments without launching a simulation:
 
@@ -105,6 +105,12 @@ uv run python scripts/record_all_envs.py --all --list --match Franka
 ```
 
 The registry also includes `CuroboValve` planning examples, `BenchValve` joint-trajectory playback, diagnostic tasks, and [RL environments](/simulation/workflows#reinforcement-learning). Registration alone does not establish task success or compliance with every benchmark condition. In particular, the two physical ball-valve conditions require an explicit simulation configuration and validation of their resistance.
+
+### Light-bulb success condition
+
+The [light-bulb success check](https://github.com/EESC-LabRoM/isaaclab-hiveboard/blob/68fbd3f63f0cb24dd36ffd3a601a9b25efa419fc/source/isaaclab_hiveboard/isaaclab_hiveboard/mdp/terminations.py) requires the command sequence to finish and the bulb to reach the axial position specified by its total screw travel, with a 0.5 mm tolerance. The target is limited by the seated position.
+
+A short command sequence can therefore succeed with the bulb only partly threaded. For the [benchmark light-bulb task](/benchmark/tasks#light-bulb-and-socket), configure the full travel and check that the bulb is seated. Retain the command setup with the reported result.
 
 ## Run an environment
 
@@ -147,7 +153,7 @@ uv run python scripts/play.py \
 
 The `--duration` option changes the handling of the task's episode time limit. Use the task configuration and [benchmark protocol](/benchmark/protocol) to set evaluation timeouts.
 
-If `just` is installed, the repository provides shortcuts such as `just play Franka CircuitBreaker`. Use `play.py` directly for `Lamp`, which has no `-Play-v0` variant.
+If `just` is installed, the repository provides shortcuts such as `just play Franka CircuitBreaker` and `just play Franka Lamp`.
 
 ## Record an example video
 

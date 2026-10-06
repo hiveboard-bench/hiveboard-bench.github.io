@@ -60,7 +60,7 @@ List all registered tasks without launching the simulator:
 uv run python scripts/record_all_envs.py --all --list
 ```
 
-Use the exact `Isaac-HiveBoard-*` identifier printed by the script. Robot tokens are case-sensitive, including `Anymal`. Light-bulb tasks use `Lamp-v0` and have no `Lamp-Play-v0` variant. The current Franka ball-valve task uses `Franka-BallValve`, replacing the earlier `Franka-LeverValve` identifier.
+Use the exact `Isaac-HiveBoard-*` identifier printed by the script. Robot tokens are case-sensitive, including `Anymal`. Light-bulb tasks provide both `Lamp-v0` and `Lamp-Play-v0` variants for Spot, Franka, and ANYmal. The current Franka ball-valve task uses `Franka-BallValve`, replacing the earlier `Franka-LeverValve` identifier.
 
 If imports fail after updating the repository, run `git submodule update --init --recursive` and `uv sync --python 3.12` from its root. Continue using `uv run` for subsequent commands.
 
@@ -70,4 +70,4 @@ Start the editor with an explicit port, for example `uv run python scripts/comma
 
 ## A simulation recording is missing
 
-For batch recording, check `summary.json` and the per-task logs under `videos/environments/<timestamp>/`. Confirm that `ffmpeg` and `ffprobe` are on `PATH`. The default batch selection includes only `-Play` environments. Select a light-bulb task explicitly, or use `--all` to include all variants. See [batch recording](/simulation/workflows#record-several-environments).
+For batch recording, check `summary.json` and the per-task logs under `videos/environments/<timestamp>/`. Confirm that `ffmpeg` and `ffprobe` are on `PATH`. The default batch selection includes only `-Play` environments, including light bulb. Use `--task` to select one task explicitly, or `--all` to include all variants. See [batch recording](/simulation/workflows#record-several-environments).
