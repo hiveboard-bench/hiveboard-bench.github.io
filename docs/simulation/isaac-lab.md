@@ -2,17 +2,17 @@
 
 The [`EESC-LabRoM/isaaclab-hiveboard`](https://github.com/EESC-LabRoM/isaaclab-hiveboard) repository provides HiveBoard environments for Spot with arm, Franka FR3, and ANYmal with DynaArm. The current implementation uses Isaac Lab with **Newton MJWarp**. The standard simulation and recording workflows run without Isaac Sim.
 
-This guide follows `master` at commit [`e009735`](https://github.com/EESC-LabRoM/isaaclab-hiveboard/commit/e00973501f1fa466b6aceba8a6c31dca2875065d), checked on 6 October 2026. For command editing, datasets, and policy training, see [Simulation workflows](/simulation/workflows).
+This guide follows `master` at commit [`f200826`](https://github.com/EESC-LabRoM/isaaclab-hiveboard/commit/f200826bba2c79b03e56e419eca0f28b216caeb8), checked on 6 October 2026. For command editing, datasets, and policy training, see [Simulation workflows](/simulation/workflows).
 
 ## Requirements
 
-Use the dependencies specified by the repository's [`pyproject.toml`](https://github.com/EESC-LabRoM/isaaclab-hiveboard/blob/e00973501f1fa466b6aceba8a6c31dca2875065d/pyproject.toml) and Git submodules.
+Use the dependencies specified by the repository's [`pyproject.toml`](https://github.com/EESC-LabRoM/isaaclab-hiveboard/blob/f200826bba2c79b03e56e419eca0f28b216caeb8/pyproject.toml) and Git submodules.
 
 | Component | Current configuration |
 |---|---|
 | Python | 3.12 |
 | Isaac Lab | Source checkout in `dependencies/IsaacLab`, pinned to `78b12aed` |
-| Physics | Newton 1.6.0 with the `newton_mjwarp` preset |
+| Physics | Newton 1.6.1 with the `newton_mjwarp` preset |
 | Package manager | `uv` |
 | Motion planning | cuRobo from `dependencies/curobo`, included in the project dependencies |
 | Video encoding | `ffmpeg` and `ffprobe` on `PATH` |
@@ -70,28 +70,30 @@ uv run python scripts/generate_anymal_newton_usd.py --verify-only
 
 The ANYmal generator downloads robot and gripper assets when they are absent, so its first run requires internet access.
 
-## Registered environments {#available-tasks}
+## Heuristic task status {#available-tasks}
 
 Task IDs have the form `Isaac-HiveBoard-<Robot>-<Tool>-v0`. Robot tokens are case-sensitive: `Spot`, `Franka`, and `Anymal`.
 
-The table maps the benchmark terminology to the identifiers in [the task registry](https://github.com/EESC-LabRoM/isaaclab-hiveboard/blob/e00973501f1fa466b6aceba8a6c31dca2875065d/source/isaaclab_hiveboard/isaaclab_hiveboard/tasks/__init__.py). **Registered** identifies an environment that can be selected by task ID.
+The table reports the heuristic status given in the [simulation README at commit `f200826`](https://github.com/EESC-LabRoM/isaaclab-hiveboard/blob/f200826bba2c79b03e56e419eca0f28b216caeb8/README.md#available-tasks).
 
-**Heuristic completion status: unverified for the combinations below.** The repository provides scripted command sequences, but no per-robot task-completion results for this revision. A working heuristic should be confirmed by a recorded physics run showing that the mechanism reaches its success state. Until those results are available, this table documents environment registration only.
+**✓**: working heuristic reported by the maintainers. **×**: no working heuristic currently reported. All listed robot–task combinations have registered environments. The symbols describe the supplied heuristic controllers.
 
 | Benchmark task | Tool token | Spot | Franka FR3 | ANYmal |
 |---|---|:---:|:---:|:---:|
-| Ball valve | `BallValve` | Registered | Registered | Registered |
-| Gate valve (small) | `SmallValve` | Registered | Registered | Registered |
-| Gate valve (large) | `HighTorqueValve` | Registered | Registered | Registered |
-| Circuit breaker | `CircuitBreaker` | Registered | Registered | Registered |
-| Button | `Button` | Registered | Registered | Registered |
-| Lock and key | `Key` | Registered | Registered | Registered |
-| Drawer | `Drawer` | Registered | Registered | Registered |
-| Thread (M8) | `M8Thread` | Registered | Registered | Registered |
-| Thread (M30) | `M30Thread` | Registered | Registered | Registered |
-| Peg insertion | `PegInsertion` | Registered | Registered | Registered |
-| Shock absorber | `ShockAbsorber` | Registered | Registered | Registered |
-| Light bulb | `Lamp` | Registered | Registered | Registered |
+| Ball valve | `BallValve` | ✓ | ✓ | ✓ |
+| Gate valve (small) | `SmallValve` | ✓ | ✓ | ✓ |
+| Gate valve (large) | `HighTorqueValve` | ✓ | ✓ | ✓ |
+| Circuit breaker | `CircuitBreaker` | ✓ | ✓ | ✓ |
+| Button | `Button` | ✓ | ✓ | ✓ |
+| Lock and key | `Key` | × | × | × |
+| Drawer | `Drawer` | × | × | × |
+| Thread (M8) | `M8Thread` | × | ✓ | ✓ |
+| Thread (M30) | `M30Thread` | × | ✓ | ✓ |
+| Peg insertion | `PegInsertion` | × | × | × |
+| Shock absorber | `ShockAbsorber` | × | × | × |
+| Light bulb | `Lamp` | ✓ | ✓ | ✓ |
+
+These statuses apply to the supplied task configurations. They do not quantify success rates across randomized resets. For benchmark evaluations, check the configured motion and success condition against [How to perform each task](/benchmark/tasks).
 
 Each listed task except `Lamp` also has a `-Play-v0` variant. For example, the Franka ball-valve play environment is `Isaac-HiveBoard-Franka-BallValve-Play-v0`. The former `Franka-LeverValve` identifier is no longer registered.
 
@@ -114,11 +116,11 @@ uv run python scripts/play.py \
   physics=newton_mjwarp --visualizer newton
 ```
 
-For the Franka shock-absorber task with TCP tracking diagnostics:
+For the Franka circuit-breaker task with TCP tracking diagnostics:
 
 ```bash
 uv run python scripts/play.py \
-  --task Isaac-HiveBoard-Franka-ShockAbsorber-Play-v0 \
+  --task Isaac-HiveBoard-Franka-CircuitBreaker-Play-v0 \
   physics=newton_mjwarp --visualizer newton --pose-debug
 ```
 
@@ -145,7 +147,7 @@ uv run python scripts/play.py \
 
 The `--duration` option changes the handling of the task's episode time limit. Use the task configuration and [benchmark protocol](/benchmark/protocol) to set evaluation timeouts.
 
-If `just` is installed, the repository provides shortcuts such as `just play Franka ShockAbsorber`. Use `play.py` directly for `Lamp`, which has no `-Play-v0` variant.
+If `just` is installed, the repository provides shortcuts such as `just play Franka CircuitBreaker`. Use `play.py` directly for `Lamp`, which has no `-Play-v0` variant.
 
 ## Record an example video
 
