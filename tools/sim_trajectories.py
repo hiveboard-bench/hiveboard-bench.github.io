@@ -863,6 +863,70 @@ def draw_task(model, data, cfg, spec):
         "keys": keys,
     }
 
+def compress_task(model, data, cfg, spec):
+
+    OPEN, FIST = cfg["grip"]["open"], cfg["grip"][spec.get("pinch", "fist")]
+    module = spec["module"]
+    anchor, axis, _ = joint_frame(model, data, f"{module}_{spec['watch']}")
+    axis = unit(axis)
+    points = visual_points(model, data, spec["body"])
+
+    # The rod is coaxial with its joint and slides along it.  Work out which
+    # way the mesh sits relative to the joint so the free end can be pressed
+    # back down the axis.
+    out = axis if float(((points - anchor) @ axis).mean()) > 0 else -axis
+    push = -out
+    travel = spec["travel"]
+
+    # Press the assembly's free end, which is not always the joint's own body:
+    # a coil cut out to deform sits out in front of it.
+    whole = [points]
+    for bid in range(model.nbody):
+        name = model.body(bid).name or ""
+        if not name.startswith(f"{module}_") or name == spec["body"]:
+            continue
+        try:
+            whole.append(visual_points(model, data, name))
+        except ValueError:
+            continue
+    assembly = np.vstack(whole)
+    far = float((assembly @ out).max())
+    tip = assembly[(assembly @ out) > far - spec.get("band", 0.015)]
+    end = tip.mean(axis=0) - out * spec.get("inset", 0.004)
+
+    clear = out * cfg.get("clearance", 0.10)
+    lift = board_out(cfg) * cfg.get("clearance", 0.10)
+    across = unit(np.cross(out, board_out(cfg)))
+    hold = lambda pos, grip, secs, **extra: dict(
+        {"pos": pos, "finger": across, "approach": push, "grip": grip,
+         "secs": secs}, **extra)
+
+    keys = [
+        dict(home_key(model, data, cfg, OPEN), transit=True),
+        hold(end + clear, OPEN, 1.8, transit=True),
+        hold(end, OPEN, 1.1),
+        hold(end, FIST, 0.7),
+        hold(end + push * travel, FIST, spec.get("press_secs", 2.4)),
+        hold(end + push * travel, OPEN, 0.6),
+        hold(end + clear + lift, OPEN, 1.2, transit=True),
+        dict(home_key(model, data, cfg, OPEN), secs=1.8, transit=True),
+    ]
+    pressed = [0.0] * 4 + [travel] * 4
+
+    return {
+        "module": module,
+        "label": spec["label"],
+        "caption": spec["caption"],
+        "watch": f"{module}_{spec['watch']}",
+        "goal": travel,
+        "drive": {f"{module}_{spec['watch']}": pressed},
+        "holds": True,
+        "measure_from": 0,
+        "tolerance": spec.get("tolerance", 0.85),
+        "keys": keys,
+    }
+
+
 def build_keyframe_anchors(task, num_samples):
     anchors = [0]
     frame = 0
@@ -1129,11 +1193,11 @@ TASKS = {
         caption="Pinch the drawer front and draw it out of its case."),
 
     "shock-absorber": bind(
-        draw_task, module="shock-absorber", body="shock-absorber_rod",
-        watch="PrismaticJoint", travel=0.02, inset=0.008,
-        finger=(0.0, 1.0, 0.0),
+        compress_task, module="shock-absorber", body="shock-absorber_rod",
+        watch="PrismaticJoint", travel=0.03, inset=0.002, band=0.006,
+        pinch="fist",
         label="Shock absorber",
-        caption="Compress the shock absorber rod by pushing it down."),
+        caption="Press the rod home and hold the shock absorber compressed."),
 
 }
 EDITS_FILE = Path(__file__).with_name("traj_edits.json")

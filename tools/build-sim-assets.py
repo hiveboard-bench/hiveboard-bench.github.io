@@ -57,6 +57,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 REPO = Path(__file__).resolve().parent.parent
 OUT = REPO / "public/sim/models"
 CACHE = REPO / ".cache"
+# Per-robot module placement overrides written by the browser's Attachment
+# placement panel (see tools/traj_edit.py).  Read from the live tree, not the
+# staging copy `build()` swaps OUT to.
+PLACEMENT_FILE = REPO / "public/sim/models/module_placement.json"
 MENAGERIE_URL = "https://github.com/google-deepmind/mujoco_menagerie.git"
 
 DECIMATE_ABOVE = 3000
@@ -157,8 +161,18 @@ MODULES = [
     {"name": "shock-absorber",
      "urdf": "Shock Absorber/Shock_Absorber_Assembly.urdf",
      "cell": 0,
-     # align: NONE (default) - the shock absorber mounts flat on board face,
-     # LAY_FLAT placed it entirely behind the board (negative X)
+     # LAY_FLAT drops the assembly axis into the board plane, so the base plate
+     # seats in the centre cell with the rod lying across the panel.  The
+     # module is coaxial end to end, leaving cell_pose nothing to aim at: the
+     # explicit spin lays the rod out over the empty lower-left cell rather
+     # than clipping the valve beside it.
+     "align": LAY_FLAT,
+     "spin": math.radians(150),
+     # The coil is rigid, so on its own it would slide through the plate.  Cut
+     # it out by radius and hang it at its board-side end so the viewer can
+     # squash it along the joint axis, holding the far end still.
+     "deform": {"mesh": "Corpo3", "radius": 9.5,
+                "joint": "shock-absorber_PrismaticJoint"},
      "split": {"child": "rod", "meshes": ["Corpo3"],
                "joint": {"name": "PrismaticJoint", "type": "slide",
                          "axis": "1 0 0", "range": "0 0.03",
@@ -701,6 +715,152 @@ def cell_pose(cell, lift, reach):
     return (lift, y, z), (math.cos(half), math.sin(half), 0.0, 0.0)
 
 
+def load_placement():
+
+    if not PLACEMENT_FILE.exists():
+        return {}
+    try:
+        return json.loads(PLACEMENT_FILE.read_text(encoding="utf-8") or "{}")
+    except (json.JSONDecodeError, OSError) as err:
+        print(f"  ignoring {PLACEMENT_FILE.name}: {err}", file=sys.stderr)
+        return {}
+
+
+def board_axes(quat):
+
+    r = quat_matrix(np.asarray(quat, float))
+    normal = r @ np.array([1.0, 0.0, 0.0])
+    seed = np.array([0.0, 0.0, 1.0]) if abs(normal[1]) > 0.9 else np.array([0.0, 1.0, 0.0])
+    right = np.cross(seed, normal)
+    right = right / np.linalg.norm(right)
+    up = np.cross(normal, right)
+    return r, normal, right, up
+
+
+def placement_for(mod, overrides):
+
+    # The browser panel tunes [right, up, out] in metres, a spin about the
+    # board normal and a uniform scale -- as deltas on whatever the scene
+    # already shows, because that is how it moves the live module.  So a
+    # per-robot entry in module_placement.json is applied *on top of* the
+    # built-in defaults on the MODULES row rather than replacing them.
+    out = {"offset": [float(v) for v in mod.get("offset", (0.0, 0.0, 0.0))],
+           "spin": float(mod.get("spin", 0.0)),
+           "scale": float(mod.get("scale", 1.0))}
+    entry = (overrides or {}).get(mod["name"]) or {}
+    if entry.get("offset") is not None:
+        offset = [float(v) for v in entry["offset"]]
+        offset = (offset + [0.0, 0.0, 0.0])[:3]
+        out["offset"] = [a + b for a, b in zip(out["offset"], offset)]
+    if entry.get("spin") is not None:
+        out["spin"] += float(entry["spin"])
+    if entry.get("scale") is not None:
+        out["scale"] *= float(entry["scale"])
+    return out
+
+
+def cut_deform_mesh(prefix, geom, spec, tmp, meshes, mesh_elems, base):
+
+    # The shock absorber ships its stem, coil and tip as one OBJ, and a rigid
+    # body cannot shorten -- so it slides the whole lot into the plate.  Cut the
+    # mesh by distance from its axis: the coil becomes a body of its own hung
+    # at its in-board (board side) end, which the viewer squashes along the
+    # joint axis; the stem joins the fixed body and only the tip keeps sliding.
+    # Returns the descriptor the viewer needs, or None when there is no coil.
+    name = geom.get("mesh")
+    verts, faces = obj_read(meshes[name][0])
+    template = next(m for m in mesh_elems if m.get("name") == name)
+    v_scale = float((template.get("scale") or "1 1 1").split()[0])
+    pos = np.array([float(v) for v in (geom.get("pos") or "0 0 0").split()])
+    quat = [float(v) for v in (geom.get("quat") or "1 1 0 0").split()]
+    rot = quat_matrix(quat)
+    # Radius is measured against the mesh's own axis; "outboard" has to come
+    # from the module frame, where the joint axis is +x and the free end is
+    # the far -x side.
+    radius = np.hypot(verts[:, 0], verts[:, 1])
+    along = (verts * v_scale @ rot.T + pos)[:, 0]
+    coil_v = radius > spec["radius"]
+    if coil_v.sum() < 8:
+        return None
+    outer, inner = float(along[coil_v].min()), float(along[coil_v].max())
+    tri_r = radius[faces].mean(axis=1)
+    tri_x = along[faces].mean(axis=1)
+    # The coil's end flanges taper to a narrow centre, so radius alone leaves
+    # their discs behind as stray plates once the coil retracts; anything
+    # near-axis inside the coil's own span belongs to the coil.  Only what
+    # pokes out in front of it -- the eyelet the robot grips -- slides.
+    in_span = (tri_x >= outer) & (tri_x <= inner)
+    spring = (tri_r > spec["radius"]) | in_span
+    tip = ~spring & (tri_x < outer)
+    stem = ~(spring | tip)
+
+    for suffix, mask in (("Corpo3", tip), ("stem", stem), ("Spring", spring)):
+        if not mask.any():
+            continue
+        keep = np.unique(faces[mask].ravel())
+        remap = np.full(len(verts), -1, dtype=int)
+        remap[keep] = np.arange(len(keep))
+        path = tmp / f"{prefix}_{suffix}.obj"
+        obj_write(path, verts[keep], remap[faces[mask]])
+        meshes[f"{prefix}_{suffix}"] = (path, f"{prefix}_{suffix}.obj")
+
+    for suffix in ("stem", "Spring"):
+        if f"{prefix}_{suffix}" not in meshes:
+            continue
+        elem = ET.Element("mesh", dict(template.attrib))
+        elem.set("name", f"{prefix}_{suffix}")
+        elem.set("file", f"hb/{prefix}_{suffix}.obj")
+        mesh_elems.append(elem)
+
+    length = inner - outer
+
+    # The pieces leave the sliding body for a fixed one, but they are still the
+    # rod, so keep the accent the rod was painted with rather than the base's.
+    stem_geom = ET.Element("geom", dict(geom.attrib))
+    stem_geom.set("mesh", f"{prefix}_stem")
+    stem_geom.set("material", "hb_accent")
+    base.append(stem_geom)
+
+    # The body frame has to match the one the geom's offset is written in, or
+    # the offset lands twice and the coil floats off the stem.  The viewer
+    # pins the squash from "reach", so the body's origin can stay put.
+    spring_body = ET.SubElement(base, "body", {
+        "name": f"{prefix}_Spring", "pos": "0 0 0"})
+    spring_geom = ET.Element("geom", dict(geom.attrib))
+    spring_geom.set("mesh", f"{prefix}_Spring")
+    spring_geom.set("material", "hb_accent")
+    spring_geom.set("contype", "0")
+    spring_geom.set("conaffinity", "0")
+    spring_body.append(spring_geom)
+
+    # The coil body sits at the module origin, so the joint axis coordinate of
+    # its in-board end is exactly where the viewer has to pin the squash.
+    return {"body": f"{prefix}_Spring", "joint": spec["joint"],
+            "length": length, "reach": float(inner)}
+
+
+def scale_module(body, mesh_elems, meshes, scale):
+
+    # A MuJoCo body has no scale attribute, so shrink every geom offset and
+    # every mesh behind it about the body origin.  The renamed mesh assets keep
+    # a robot that scales the same module differently from clobbering the file.
+    suffix = "_s%d" % round(scale * 100)
+    rename = {}
+    for mesh in mesh_elems:
+        old = mesh.get("name")
+        meshes[old + suffix] = meshes.pop(old)
+        mesh.set("name", old + suffix)
+        size = [float(v) for v in (mesh.get("scale") or "1 1 1").split()]
+        mesh.set("scale", fmt([v * scale for v in size]))
+        rename[old] = old + suffix
+    for elem in body.iter():
+        if elem.get("mesh") in rename:
+            elem.set("mesh", rename[elem.get("mesh")])
+        if elem.tag in ("geom", "body") and elem is not body and elem.get("pos"):
+            pos = [float(v) for v in elem.get("pos").split()]
+            elem.set("pos", fmt([v * scale for v in pos]))
+
+
 def fmt(vals):
 
     return " ".join("%.6g" % v for v in vals)
@@ -725,9 +885,10 @@ def home_qpos(cfg, scene, path):
     return qpos
 
 
-def build_board(hiveboard: Path, cell_overrides=None):
+def build_board(hiveboard: Path, cell_overrides=None, placement=None,
+                board_quat=BOARD_QUAT):
 
-    meshes, elems, fragments = {}, [], []
+    meshes, elems, fragments, compress = {}, [], [], []
     with tempfile.TemporaryDirectory() as tmp:
         tmp = Path(tmp)
         panel_root, panel_meshes, _, _ = load_urdf(hiveboard / PANEL_URDF, tmp)
@@ -738,28 +899,56 @@ def build_board(hiveboard: Path, cell_overrides=None):
         elems += panel_elems
 
         for mod in MODULES:
+            place = placement_for(mod, placement)
             align = mod.get("align")
             root, mesh_dir, lift, reach = load_urdf(hiveboard / mod["urdf"], tmp,
                                                     align)
             body, mod_elems = adopt(root, mod["name"], mesh_dir, meshes,
                                     pose=mod.get("pose"), tune=mod.get("joints"))
+            if "deform" in mod:
+                target = f"{mod['name']}_{mod['deform']['mesh']}"
+                geom = next((g for g in body.findall("geom")
+                             if g.get("mesh") == target), None)
+                if geom is not None:
+                    made = cut_deform_mesh(mod["name"], geom, mod["deform"],
+                                           tmp, meshes, mod_elems, body)
+                    if made:
+                        compress.append(made)
             if "split" in mod:
                 split_body(body, mod["name"], mod["split"])
             if "add" in mod:
                 add_joints(body, mod["name"], mod["add"])
             if "turn" in mod:
                 turn_child(body, mod["name"], mod["turn"])
+            if place["scale"] != 1.0:
+                lift *= place["scale"]
+                scale_module(body, mod_elems, meshes, place["scale"])
             cell = (cell_overrides or {}).get(mod["name"], mod["cell"])
             pos, quat = cell_pose(cell, lift, reach)
             if align:
                 quat = matrix_quat(quat_matrix(quat) @ rpy_matrix(align))
+            if place["spin"]:
+                # Extra turn about the board normal, on top of the radial spin
+                # cell_pose derived from the module's reach.
+                quat = matrix_quat(rpy_matrix((place["spin"], 0.0, 0.0))
+                                   @ quat_matrix(quat))
+            pos = np.asarray(pos, float)
+            if any(place["offset"]):
+                # Panel offsets are [right, up, out] metres in the board's own
+                # frame; the body's pos is board-local, so bring the world
+                # delta back through the board rotation.
+                rot, normal, right, up = board_axes(board_quat)
+                offset = np.asarray(place["offset"], float)
+                pos = pos + rot.T @ (right * offset[0] + up * offset[1]
+                                     + normal * offset[2])
             body.set("pos", fmt(pos))
             body.set("quat", fmt(quat))
             fragments.append(body)
             elems += mod_elems
 
-    for name, (src, out_name) in meshes.items():
-        emit_mesh(src, OUT / "assets/hb", out_name)
+        # Cut meshes live in the staging directory, so emit while it is alive.
+        for name, (src, out_name) in meshes.items():
+            emit_mesh(src, OUT / "assets/hb", out_name)
 
     threads = [("lamp", "PrismaticJoint", "RevoluteJoint",
                 sim_trajectories.LAMP_PITCH)]
@@ -769,7 +958,8 @@ def build_board(hiveboard: Path, cell_overrides=None):
         "polycoef": "0 %.6g 0 0 0" % pitch,
         "solref": "0.01 1", "solimp": "0.95 0.999 0.001"})
         for name, slide, turn, pitch in threads]
-    return {"fragments": fragments, "meshes": elems, "equality": equality}
+    return {"fragments": fragments, "meshes": elems, "equality": equality,
+            "compress": compress}
 
 
 def fr3_parts(menagerie: Path):
@@ -1216,6 +1406,7 @@ def emit_robot(cfg, menagerie: Path, board, hiveboard: Path):
         "view": {"centre": [round(v, 4) for v in centre], "span": round(span, 4)},
         "framing": cfg.get("framing", "over"),
         "boardNormal": [round(v, 4) for v in board_normal(cfg)],
+        **({"compress": board.get("compress")} if board.get("compress") else {}),
         "tasks": list(tasks),
         **({"taskHome": cfg["task_home"]} if cfg.get("task_home") else {}),
     }
@@ -1299,11 +1490,22 @@ def emit_all(hiveboard, robot, keep_anymal, menagerie, isaaclab_repo, usd_cache,
     (OUT / "assets/fr3").mkdir(parents=True, exist_ok=True)
     (OUT / "assets/hb").mkdir(parents=True, exist_ok=True)
 
-    board = build_board(hiveboard)
+    # Placement overrides are per robot, so a robot that has any gets its own
+    # board build; everything else shares the default fragments.
+    placement = load_placement()
+    shared = {}
+
+    def board_for(cfg):
+        overrides = placement.get(cfg["name"])
+        if not overrides:
+            if "default" not in shared:
+                shared["default"] = build_board(hiveboard)
+            return shared["default"]
+        return build_board(hiveboard, cfg.get("module_cells"), overrides,
+                           cfg.get("board_quat", BOARD_FLAT))
 
     anymal_cfg = next(r for r in ROBOTS if r["name"] == "anymal")
-    refreshed_anymal = (refresh_existing_anymal(
-                            build_board(hiveboard, anymal_cfg.get("module_cells")))
+    refreshed_anymal = (refresh_existing_anymal(board_for(anymal_cfg))
                         if keep_anymal and (robot is None or robot == "anymal")
                         else None)
     catalogue = []
@@ -1326,7 +1528,7 @@ def emit_all(hiveboard, robot, keep_anymal, menagerie, isaaclab_repo, usd_cache,
                               "note": cfg["note"], "soon": True})
             print(f"  {cfg['name']:6s} (soon)")
             continue
-        catalogue.append(emit_robot(cfg, menagerie, board, hiveboard))
+        catalogue.append(emit_robot(cfg, menagerie, board_for(cfg), hiveboard))
     return catalogue
 
 

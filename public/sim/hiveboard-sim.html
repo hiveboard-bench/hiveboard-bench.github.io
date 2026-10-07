@@ -525,7 +525,12 @@
     let previewDemo = null;
     let previewToken = 0;
     let previewAdjust = { offset: [0, 0, 0], spin: 0, scale: 1 };
+    // What the built scene already carries for this module; the panel's numbers
+    // are absolute, so the live delta is adjust - baseline.
+    let previewBaseline = { offset: [0, 0, 0], spin: 0, scale: 1 };
     let committedPlacement = {};
+    let modulePlacement = {};   // module key -> rest pose of its board-side bodies
+    let compression = [];       // squashed bodies: {b, at, axis, base, reach, length}
     let savedViews = {};
     const PLACE_EDIT = new URLSearchParams(location.search).has('edit');
     const PLACE_API = new URLSearchParams(location.search).get('api')
@@ -745,6 +750,7 @@
       }
 
       demoCollisionState = null;
+      modulePlacement = {};
 
       bodyNames = [];
       for (let b = 0; b < mjModel.nbody; b++) {
@@ -1371,6 +1377,7 @@
         root.add(bodies[b]);
       }
       syncBodies();
+      compressPivots();
 
       boardCentre = new THREE.Vector3();
       let panels = 0;
@@ -1450,6 +1457,43 @@
         if (!(b in bodies)) continue;
         getPosition(mjData.xpos, b, bodies[b].position);
         getQuaternion(mjData.xquat, b, bodies[b].quaternion);
+      }
+      applyCompression();
+    }
+
+    // A module listed in the catalogue's "compress" squashes one of its bodies
+    // along the joint axis, pinned at the end the robot is *not* touching, so
+    // the spring shortens by exactly the joint displacement.  The pivot is
+    // measured off the rest geometry rather than assumed to be the body
+    // origin: what a build bakes into the compiled model is not always what
+    // the XML says.
+    function compressPivots() {
+      compression = [];
+      const specs = robot && robot.compress;
+      if (!specs || !mjModel) return;
+      for (const spec of specs) {
+        const b = bodyNames.indexOf(spec.body);
+        const jid = jointNames.indexOf(spec.joint);
+        if (b < 0 || jid < 0 || !bodies[b] || !spec.length) continue;
+        const ax = [mjData.xaxis[jid * 3], mjData.xaxis[jid * 3 + 1],
+                    mjData.xaxis[jid * 3 + 2]];
+        const axis = new THREE.Vector3(ax[0], ax[2], -ax[1]).normalize();
+        // The build says where the coil's fixed end sits along the joint axis,
+        // measured from the body's own origin.  Deriving it from the rendered
+        // vertices needed up-to-date world matrices and proved unreliable.
+        compression.push({ b, jid, at: mjModel.jnt_qposadr[jid], axis,
+                           reach: spec.reach || 0, length: spec.length });
+      }
+    }
+
+    function applyCompression() {
+      for (const spec of compression) {
+        const node = bodies[spec.b];
+        if (!node) continue;
+        const q = spec.at >= 0 ? mjData.qpos[spec.at] : 0;
+        const s = Math.max(0.05, (spec.length - q) / spec.length);
+        node.scale.set(s, 1, 1);
+        node.position.addScaledVector(spec.axis, (1 - s) * spec.reach);
       }
     }
 
@@ -1635,11 +1679,18 @@
       const catItem = TASK_CATALOGUE.find((t) => t.traj === key);
       const select = document.getElementById('task-select');
       if (select && catItem) select.value = catItem.key;
+      // In edit mode the placement panel follows the task's own module, so
+      // offsets are dialled in against the real bodies while it plays.
+      if (PLACE_EDIT && catItem && moduleRootBodies(catItem.module || catItem.key).length) {
+        previewItem = catItem;
+        previewAdjust = loadPreviewAdjust(catItem.key);
+        placeModulePreview();
+      }
 
       resetScene();
       setModuleVisibility(modulePrefix());
       setDemoCollisions(!!task.demo);
-      refreshViewPanel();
+      refreshPlacePanel();
       drawPath();
       if (dolly) frameTask();
       updateReadout();
@@ -1787,10 +1838,88 @@
       return { normal, right, up };
     }
 
+    function moduleRootBodies(key) {
+      const out = [];
+      if (!mjModel) return out;
+      const board = bodyNames.indexOf('hiveboard');
+      if (board < 0) return out;
+      for (let b = 1; b < mjModel.nbody; b++) {
+        if (mjModel.body_parentid[b] !== board) continue;
+        if ((bodyNames[b] || '').startsWith(`${key}_`)) out.push(b);
+      }
+      return out;
+    }
+
+    function moduleRest(key) {
+      if (modulePlacement[key]) return modulePlacement[key];
+      const roots = moduleRootBodies(key);
+      if (!roots.length) return null;
+      const pose = { board: bodyNames.indexOf('hiveboard'), roots: [] };
+      for (const b of roots) {
+        pose.roots.push({
+          id: b,
+          pos: [mjModel.body_pos[b * 3], mjModel.body_pos[b * 3 + 1],
+                mjModel.body_pos[b * 3 + 2]],
+          quat: [mjModel.body_quat[b * 4], mjModel.body_quat[b * 4 + 1],
+                 mjModel.body_quat[b * 4 + 2], mjModel.body_quat[b * 4 + 3]],
+        });
+      }
+      modulePlacement[key] = pose;
+      return pose;
+    }
+
+    // A module that is already in the compiled scene is moved for real, so the
+    // panel shows exactly what the build will bake into the scene.
+    function moveModuleInScene(key, adj) {
+      const pose = moduleRest(key);
+      if (!pose) return false;
+      // Panel offsets are [right, up, out] metres in MuJoCo axes, the same
+      // frame build-sim-assets.board_axes() uses; the bodies themselves live in
+      // the board's own frame, so bring the world delta back through it.
+      const normal = new THREE.Vector3(...(robot.boardNormal || [0, 0, 1])).normalize();
+      const seed = Math.abs(normal.y) > 0.9
+        ? new THREE.Vector3(0, 0, 1) : new THREE.Vector3(0, 1, 0);
+      const right = new THREE.Vector3().crossVectors(seed, normal).normalize();
+      const up = new THREE.Vector3().crossVectors(normal, right);
+      const off = adj.offset || [0, 0, 0];
+      const world = new THREE.Vector3()
+        .addScaledVector(right, off[0])
+        .addScaledVector(up, off[1])
+        .addScaledVector(normal, off[2]);
+      const m = mjData.xmat;
+      const i = pose.board * 9;
+      const toBoard = new THREE.Matrix3()
+        .set(m[i], m[i + 1], m[i + 2], m[i + 3], m[i + 4], m[i + 5],
+             m[i + 6], m[i + 7], m[i + 8]).transpose();
+      const local = world.applyMatrix3(toBoard);
+      const spin = new THREE.Quaternion().setFromAxisAngle(
+        new THREE.Vector3(1, 0, 0), adj.spin || 0);
+      for (const root of pose.roots) {
+        mjModel.body_pos[root.id * 3] = root.pos[0] + local.x;
+        mjModel.body_pos[root.id * 3 + 1] = root.pos[1] + local.y;
+        mjModel.body_pos[root.id * 3 + 2] = root.pos[2] + local.z;
+        const q = new THREE.Quaternion(root.quat[1], root.quat[2], root.quat[3],
+                                       root.quat[0]);
+        q.premultiply(spin);
+        mjModel.body_quat[root.id * 4] = q.w;
+        mjModel.body_quat[root.id * 4 + 1] = q.x;
+        mjModel.body_quat[root.id * 4 + 2] = q.y;
+        mjModel.body_quat[root.id * 4 + 3] = q.z;
+      }
+      mujoco.mj_forward(mjModel, mjData);
+      return true;
+    }
+
     function placeModulePreview() {
+      const adj = previewAdjust;
+      const key = previewItem ? (previewItem.module || previewItem.key) : null;
+      if (key && moveModuleInScene(key, placeDelta(adj, previewBaseline))) {
+        if (previewMesh) previewMesh.visible = false;
+        return;
+      }
+      if (previewMesh) previewMesh.visible = true;
       if (!previewMesh) return;
       const group = previewMesh;
-      const adj = previewAdjust;
       const { normal, right, up } = boardFrame();
       const anchor = boardAnchor();
 
@@ -1894,10 +2023,30 @@
 
       const src = (committedPlacement[robot?.name] || {})[key]
         || MODULE_PLACEMENT[key] || MODULE_PLACEMENT_DEFAULT;
-      return {
+      // Freeze where the scene already sits: the saved entry is baked into the
+      // module, so dialling the panel again must not re-apply it on top.
+      previewBaseline = {
         offset: [...(src.offset || [0, 0, 0])],
         spin: src.spin || 0,
         scale: src.scale || 1,
+      };
+      return {
+        offset: [...previewBaseline.offset],
+        spin: previewBaseline.spin,
+        scale: previewBaseline.scale,
+      };
+    }
+
+    // The live module already carries the baseline, so only the difference
+    // between the panel and it should be applied.
+    function placeDelta(adj, base) {
+
+      return {
+        offset: [adj.offset[0] - base.offset[0],
+                 adj.offset[1] - base.offset[1],
+                 adj.offset[2] - base.offset[2]],
+        spin: (adj.spin || 0) - (base.spin || 0),
+        scale: (adj.scale || 1) / (base.scale || 1),
       };
     }
 
@@ -2009,7 +2158,13 @@
 
       el.querySelector('#place-save').addEventListener('click', savePlacementForever);
       el.querySelector('#place-reset').addEventListener('click', () => {
-        previewAdjust = { offset: [0, 0, 0], spin: 0, scale: 1 };
+        // Back to where the scene already sits, not to zeros -- the built
+        // module is not necessarily at the default pose.
+        previewAdjust = {
+          offset: [...previewBaseline.offset],
+          spin: previewBaseline.spin,
+          scale: previewBaseline.scale,
+        };
         placeModulePreview();
         refreshPlacePanel();
       });
@@ -2020,7 +2175,9 @@
       refreshViewPanel();
       if (!placePanel) return;
 
-      const show = PLACE_EDIT && !!previewItem && (!task || task.armOnly);
+      // A solved module can be tuned too: the panel then moves the real bodies,
+      // so the task keeps playing while the offset is dialled in.
+      const show = PLACE_EDIT && !!previewItem;
       placePanel.el.hidden = !show;
       if (!show) return;
       placePanel.el.querySelector('.panel-title').textContent =
@@ -2076,7 +2233,11 @@
           case ']':          a.spin += Math.PI / 36; break;
           case '-': case '_': a.scale *= 0.98; break;
           case '=': case '+': a.scale *= 1.02; break;
-          case '0': previewAdjust = { offset: [0, 0, 0], spin: 0, scale: 1 }; break;
+          case '0': previewAdjust = {
+            offset: [...previewBaseline.offset],
+            spin: previewBaseline.spin,
+            scale: previewBaseline.scale,
+          }; break;
           default: handled = false;
         }
         if (!handled) return;
