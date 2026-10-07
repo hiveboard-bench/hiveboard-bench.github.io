@@ -23,6 +23,8 @@ The seven-cell honeycomb base accepts interchangeable attachments. Attachments c
 
 The protocol treats a platform as an end-effector plus the system that positions and commands it. This keeps the benchmark applicable to fixed-base manipulators, quadruped manipulators, wearable devices, prosthetic hands, and exoskeletons.
 
+The published physical validation covers six platforms: Spot with Spot Arm, LeRobot SO-101, ANYmal with DynaArm, the wearable Macao hand, Franka Research 3, and Alter-Ego with a Pisa/IIT SoftHand. Alter-Ego uses Cartesian teleoperation through a VR headset with the board mounted horizontally. See the [platform results on the project website](https://hiveboard-bench.github.io/#Results) for the per-condition outcomes.
+
 ### Simulation models
 
 The repository includes articulated assets with visual and collision meshes, joint limits, and nominal physical properties. These assets support inspection and integration in common robotics simulators; a separate repository contains the Isaac Lab implementation.
