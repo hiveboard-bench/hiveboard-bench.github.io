@@ -94,6 +94,8 @@
     <mesh name="shock-absorber_MeshInstance_Corpo1" file="hb/shock-absorber_MeshInstance_Corpo1.obj" scale="0.001 0.001 0.001" />
     <mesh name="shock-absorber_MeshInstance_1_Corpo1" file="hb/shock-absorber_MeshInstance_1_Corpo1.obj" scale="0.001 0.001 0.001" />
     <mesh name="shock-absorber_Corpo3" file="hb/shock-absorber_Corpo3.obj" scale="0.001 0.001 0.001" />
+    <mesh name="shock-absorber_stem" file="hb/shock-absorber_stem.obj" scale="0.001 0.001 0.001" />
+    <mesh name="shock-absorber_Spring" file="hb/shock-absorber_Spring.obj" scale="0.001 0.001 0.001" />
     <material name="macao_shell" rgba="0.08 0.09 0.11 1" />
     <material name="macao_base" rgba="0.7059 0.7804 0.3490 1" />
     <material name="macao_wrist" rgba="0.8196 0.3529 0.0118 1" />
@@ -445,11 +447,15 @@
         </body>
         <inertial pos="0 0 0" mass="0.4" diaginertia="1e-3 1e-3 1e-3" />
       </body>
-      <body name="shock-absorber_Montagem_Principal" pos="0.124449 0 0" quat="1 0 0 0">
+      <body name="shock-absorber_Montagem_Principal" pos="0.063893 0 0" quat="0.183013 0.683013 0.183013 0.683013">
         <geom pos="0 0.016378 -0.048893" quat="-2.32051e-08 1 0 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="shock-absorber_MeshInstance_Corpo1" material="hb_shell" />
         <geom pos="-0.035 0.016489 -0.063893" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="shock-absorber_MeshInstance_1_Corpo1" material="hb_shell" />
         <geom pos="0 0.016378 -0.048893" quat="-2.32051e-08 1 0 0" type="mesh" mesh="shock-absorber_MeshInstance_Corpo1" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
         <geom pos="-0.035 0.016489 -0.063893" quat="1 0 0 0" type="mesh" mesh="shock-absorber_MeshInstance_1_Corpo1" group="3" material="hb_shell" rgba="0 0 0 0" friction="1.6 0.02 0.001" contype="0" conaffinity="0" />
+        <geom pos="-0.045 0.016489 -0.042935" quat="0.707107 0 -0.707107 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="shock-absorber_stem" material="hb_accent" />
+        <body name="shock-absorber_Spring" pos="0 0 0">
+          <geom pos="-0.045 0.016489 -0.042935" quat="0.707107 0 -0.707107 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="shock-absorber_Spring" material="hb_accent" />
+        </body>
         <body name="shock-absorber_rod" pos="0 0 0">
           <joint name="shock-absorber_PrismaticJoint" type="slide" axis="1 0 0" range="0 0.03" damping="2" stiffness="120" pos="0 0 0" />
           <geom pos="-0.045 0.016489 -0.042935" quat="0.707107 0 -0.707107 0" type="mesh" contype="0" conaffinity="0" group="2" density="0" mesh="shock-absorber_Corpo3" material="hb_accent" />
@@ -489,6 +495,6 @@
     <joint joint1="thread-m8_PrismaticJoint" joint2="thread-m8_RevoluteJoint" polycoef="0 0.00125 0 0 0" solref="0.01 1" solimp="0.95 0.999 0.001" />
   </equality>
   <keyframe>
-    <key name="home" qpos="0 0 0 0 0 0 0 0.935983 -0.103018 -0.883751 -0.664904 -3.57167e-06 -0.372397 -0.384191 -0.0654846 -0.0577856 -6.83517e-05 -0.0275398 -0.0277705 -0.0252899 -0.0206167 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1.5708 0 0 0 0" />
+    <key name="home" qpos="0 0 0 0 0 0 0 0.933977 -0.0999475 -0.884746 -0.669299 -3.23835e-06 -0.508099 -0.480118 -0.0265617 -0.0633968 -0.000339156 -0.0309751 -0.0326787 -0.0285991 -0.0236027 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1.5708 0 0 0 0" />
   </keyframe>
 </mujoco>

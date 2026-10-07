@@ -31,16 +31,24 @@
   "view": {
    "centre": [
     0.2731,
-    0.0003,
+    0.0336,
     0.3752
    ],
-   "span": 1.1666
+   "span": 1.1832
   },
   "framing": "over",
   "boardNormal": [
    -0.0,
    0.0,
    1.0
+  ],
+  "compress": [
+   {
+    "body": "shock-absorber_Spring",
+    "joint": "shock-absorber_PrismaticJoint",
+    "length": 0.06209908469809835,
+    "reach": -0.04490096104969785
+   }
   ],
   "tasks": [
    "valve",
@@ -99,6 +107,14 @@
    0.0,
    0.0
   ],
+  "compress": [
+   {
+    "body": "shock-absorber_Spring",
+    "joint": "shock-absorber_PrismaticJoint",
+    "length": 0.06209908469809835,
+    "reach": -0.04490096104969785
+   }
+  ],
   "tasks": [
    "valve",
    "lamp",
@@ -146,6 +162,14 @@
    0.0,
    1.0
   ],
+  "compress": [
+   {
+    "body": "shock-absorber_Spring",
+    "joint": "shock-absorber_PrismaticJoint",
+    "length": 0.06209908469809835,
+    "reach": -0.04490096104969785
+   }
+  ],
   "tasks": [
    "valve",
    "breaker"
@@ -182,16 +206,24 @@
   "view": {
    "centre": [
     0.6312,
-    0.0203,
+    0.0204,
     0.5777
    ],
-   "span": 0.6123
+   "span": 0.6124
   },
   "framing": "side",
   "boardNormal": [
    -1.0,
    0.0,
    0.0
+  ],
+  "compress": [
+   {
+    "body": "shock-absorber_Spring",
+    "joint": "shock-absorber_PrismaticJoint",
+    "length": 0.06209908469809835,
+    "reach": -0.04490096104969785
+   }
   ],
   "tasks": [
    "valve",
@@ -204,7 +236,8 @@
    "peg-insertion",
    "button-cover",
    "key-lock",
-   "drawer"
+   "drawer",
+   "shock-absorber"
   ]
  }
 ]
