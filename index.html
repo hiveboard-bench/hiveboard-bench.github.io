@@ -1978,150 +1978,226 @@
           </div>
         </div>
 
-        <div class="carousel-wrapper" style="margin-bottom: 2rem;">
-          <div class="carousel-header">
-            <h3 class="carousel-title">Simulations</h3>
-            <div class="carousel-nav">
-              <div class="video-toggle-buttons">
-                <button class="toggle-btn active" data-filter="all">All</button>
-                <button class="toggle-btn" data-filter="orbit">Orbit</button>
-                <button class="toggle-btn" data-filter="front">Front</button>
+        <div class="isaac-lab-videos">
+          <h3 class="title is-4">Isaac Lab simulations</h3>
+          <p class="mb-5" style="color: #64748b;">
+            Simulated HiveBoard tasks with ANYmal D and Franka FR3.
+            <a class="protocol-link" href="./hivedocs/simulation/isaac-lab">Explore the Isaac Lab integration</a>.
+          </p>
+          <div class="carousel-wrapper">
+            <div class="carousel-header">
+              <h4 class="carousel-title">ANYmal D with DynaArm</h4>
+              <div class="carousel-nav">
+                <button type="button" class="nav-btn prev-btn" aria-label="Previous ANYmal D with DynaArm video"><i class="fas fa-chevron-left"></i></button>
+                <button type="button" class="nav-btn next-btn" aria-label="Next ANYmal D with DynaArm video"><i class="fas fa-chevron-right"></i></button>
               </div>
-              <button class="nav-btn prev-btn"><i class="fas fa-chevron-left"></i></button>
-              <button class="nav-btn next-btn"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            <div class="video-carousel">
+              <div class="video-item">
+                <div class="box video-placeholder" style="padding: 0; overflow: hidden; display: block; background: #000;">
+                  <video src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/anymal_d_isaac_ball_valve.mp4"
+                    data-poster="./assets/posters/anymal_d_isaac_ball_valve.webp"
+                    style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;"
+                    preload="none" playsinline muted aria-label="ANYmal D with DynaArm: Ball valve"></video>
+                  <button type="button" class="video-overlay" aria-label="Play ANYmal D with DynaArm: Ball valve"
+                    style="position: absolute; inset: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 0; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                    onclick="this.previousElementSibling.play();">
+                    <i class="fas fa-play-circle fa-3x mb-3" aria-hidden="true"></i>
+                    <span class="has-text-weight-medium">Ball valve</span>
+                  </button>
+                </div>
+              </div>
+              <div class="video-item">
+                <div class="box video-placeholder" style="padding: 0; overflow: hidden; display: block; background: #000;">
+                  <video src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/anymal_d_isaac_button.mp4"
+                    data-poster="./assets/posters/anymal_d_isaac_button.webp"
+                    style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;"
+                    preload="none" playsinline muted aria-label="ANYmal D with DynaArm: Button"></video>
+                  <button type="button" class="video-overlay" aria-label="Play ANYmal D with DynaArm: Button"
+                    style="position: absolute; inset: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 0; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                    onclick="this.previousElementSibling.play();">
+                    <i class="fas fa-play-circle fa-3x mb-3" aria-hidden="true"></i>
+                    <span class="has-text-weight-medium">Button</span>
+                  </button>
+                </div>
+              </div>
+              <div class="video-item">
+                <div class="box video-placeholder" style="padding: 0; overflow: hidden; display: block; background: #000;">
+                  <video src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/anymal_d_isaac_circuit.mp4"
+                    data-poster="./assets/posters/anymal_d_isaac_circuit.webp"
+                    style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;"
+                    preload="none" playsinline muted aria-label="ANYmal D with DynaArm: Circuit breaker"></video>
+                  <button type="button" class="video-overlay" aria-label="Play ANYmal D with DynaArm: Circuit breaker"
+                    style="position: absolute; inset: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 0; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                    onclick="this.previousElementSibling.play();">
+                    <i class="fas fa-play-circle fa-3x mb-3" aria-hidden="true"></i>
+                    <span class="has-text-weight-medium">Circuit breaker</span>
+                  </button>
+                </div>
+              </div>
+              <div class="video-item">
+                <div class="box video-placeholder" style="padding: 0; overflow: hidden; display: block; background: #000;">
+                  <video src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/anymal_d_isaac_lab_big_gate.mp4"
+                    data-poster="./assets/posters/anymal_d_isaac_lab_big_gate.webp"
+                    style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;"
+                    preload="none" playsinline muted aria-label="ANYmal D with DynaArm: Gate valve (large)"></video>
+                  <button type="button" class="video-overlay" aria-label="Play ANYmal D with DynaArm: Gate valve (large)"
+                    style="position: absolute; inset: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 0; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                    onclick="this.previousElementSibling.play();">
+                    <i class="fas fa-play-circle fa-3x mb-3" aria-hidden="true"></i>
+                    <span class="has-text-weight-medium">Gate valve (large)</span>
+                  </button>
+                </div>
+              </div>
+              <div class="video-item">
+                <div class="box video-placeholder" style="padding: 0; overflow: hidden; display: block; background: #000;">
+                  <video src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/anymal_d_isaac_lab_m30_thread.mp4"
+                    data-poster="./assets/posters/anymal_d_isaac_lab_m30_thread.webp"
+                    style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;"
+                    preload="none" playsinline muted aria-label="ANYmal D with DynaArm: M30 thread"></video>
+                  <button type="button" class="video-overlay" aria-label="Play ANYmal D with DynaArm: M30 thread"
+                    style="position: absolute; inset: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 0; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                    onclick="this.previousElementSibling.play();">
+                    <i class="fas fa-play-circle fa-3x mb-3" aria-hidden="true"></i>
+                    <span class="has-text-weight-medium">M30 thread</span>
+                  </button>
+                </div>
+              </div>
+              <div class="video-item">
+                <div class="box video-placeholder" style="padding: 0; overflow: hidden; display: block; background: #000;">
+                  <video src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/anymal_d_isaac_lab_m8_thread.mp4"
+                    data-poster="./assets/posters/anymal_d_isaac_lab_m8_thread.webp"
+                    style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;"
+                    preload="none" playsinline muted aria-label="ANYmal D with DynaArm: M8 thread"></video>
+                  <button type="button" class="video-overlay" aria-label="Play ANYmal D with DynaArm: M8 thread"
+                    style="position: absolute; inset: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 0; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                    onclick="this.previousElementSibling.play();">
+                    <i class="fas fa-play-circle fa-3x mb-3" aria-hidden="true"></i>
+                    <span class="has-text-weight-medium">M8 thread</span>
+                  </button>
+                </div>
+              </div>
+              <div class="video-item">
+                <div class="box video-placeholder" style="padding: 0; overflow: hidden; display: block; background: #000;">
+                  <video src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/anymal_d_isaac_small_gate_valve.mp4"
+                    data-poster="./assets/posters/anymal_d_isaac_small_gate_valve.webp"
+                    style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;"
+                    preload="none" playsinline muted aria-label="ANYmal D with DynaArm: Gate valve (small)"></video>
+                  <button type="button" class="video-overlay" aria-label="Play ANYmal D with DynaArm: Gate valve (small)"
+                    style="position: absolute; inset: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 0; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                    onclick="this.previousElementSibling.play();">
+                    <i class="fas fa-play-circle fa-3x mb-3" aria-hidden="true"></i>
+                    <span class="has-text-weight-medium">Gate valve (small)</span>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="video-carousel">
-            <div class="video-item" data-type="front">
-              <div class="box video-placeholder"
-                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
-                <video
-                  src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/sim_spot_big_gate.mp4#t=0.5" data-poster="./assets/posters/sim_spot_big_gate.webp"
-                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
-                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
-                <div class="video-overlay"
-                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
-                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
-                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
-                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
-                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Gate valve (large)</p>
-                </div>
+          <div class="carousel-wrapper">
+            <div class="carousel-header">
+              <h4 class="carousel-title">Franka FR3</h4>
+              <div class="carousel-nav">
+                <button type="button" class="nav-btn prev-btn" aria-label="Previous Franka FR3 video"><i class="fas fa-chevron-left"></i></button>
+                <button type="button" class="nav-btn next-btn" aria-label="Next Franka FR3 video"><i class="fas fa-chevron-right"></i></button>
               </div>
             </div>
-            <div class="video-item" data-type="orbit">
-              <div class="box video-placeholder"
-                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
-                <video
-                  src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/sim_spot_big_gate_orbit.mp4#t=0.5" data-poster="./assets/posters/sim_spot_big_gate_orbit.webp"
-                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
-                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
-                <div class="video-overlay"
-                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
-                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
-                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
-                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
-                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Gate valve (large) (orbit view)</p>
+            <div class="video-carousel">
+              <div class="video-item">
+                <div class="box video-placeholder" style="padding: 0; overflow: hidden; display: block; background: #000;">
+                  <video src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/fr3_isaac_ball_valve.mp4"
+                    data-poster="./assets/posters/fr3_isaac_ball_valve.webp"
+                    style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;"
+                    preload="none" playsinline muted aria-label="Franka FR3: Ball valve"></video>
+                  <button type="button" class="video-overlay" aria-label="Play Franka FR3: Ball valve"
+                    style="position: absolute; inset: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 0; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                    onclick="this.previousElementSibling.play();">
+                    <i class="fas fa-play-circle fa-3x mb-3" aria-hidden="true"></i>
+                    <span class="has-text-weight-medium">Ball valve</span>
+                  </button>
                 </div>
               </div>
-            </div>
-            <div class="video-item" data-type="front">
-              <div class="box video-placeholder"
-                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
-                <video
-                  src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/sim_spot_circuit_breaker.mp4#t=0.5" data-poster="./assets/posters/sim_spot_circuit_breaker.webp"
-                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
-                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
-                <div class="video-overlay"
-                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
-                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
-                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
-                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
-                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Circuit breaker</p>
+              <div class="video-item">
+                <div class="box video-placeholder" style="padding: 0; overflow: hidden; display: block; background: #000;">
+                  <video src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/fr3_isaac_big_gate_valve.mp4"
+                    data-poster="./assets/posters/fr3_isaac_big_gate_valve.webp"
+                    style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;"
+                    preload="none" playsinline muted aria-label="Franka FR3: Gate valve (large)"></video>
+                  <button type="button" class="video-overlay" aria-label="Play Franka FR3: Gate valve (large)"
+                    style="position: absolute; inset: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 0; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                    onclick="this.previousElementSibling.play();">
+                    <i class="fas fa-play-circle fa-3x mb-3" aria-hidden="true"></i>
+                    <span class="has-text-weight-medium">Gate valve (large)</span>
+                  </button>
                 </div>
               </div>
-            </div>
-            <div class="video-item" data-type="orbit">
-              <div class="box video-placeholder"
-                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
-                <video
-                  src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/sim_spot_circuit_breaker_orbit.mp4#t=0.5" data-poster="./assets/posters/sim_spot_circuit_breaker_orbit.webp"
-                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
-                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
-                <div class="video-overlay"
-                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
-                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
-                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
-                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
-                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Circuit breaker (Orbit)</p>
+              <div class="video-item">
+                <div class="box video-placeholder" style="padding: 0; overflow: hidden; display: block; background: #000;">
+                  <video src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/fr3_isaac_button.mp4"
+                    data-poster="./assets/posters/fr3_isaac_button.webp"
+                    style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;"
+                    preload="none" playsinline muted aria-label="Franka FR3: Button"></video>
+                  <button type="button" class="video-overlay" aria-label="Play Franka FR3: Button"
+                    style="position: absolute; inset: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 0; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                    onclick="this.previousElementSibling.play();">
+                    <i class="fas fa-play-circle fa-3x mb-3" aria-hidden="true"></i>
+                    <span class="has-text-weight-medium">Button</span>
+                  </button>
                 </div>
               </div>
-            </div>
-            <div class="video-item" data-type="front">
-              <div class="box video-placeholder"
-                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
-                <video
-                  src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/sim_spot_lever.mp4#t=0.5" data-poster="./assets/posters/sim_spot_lever.webp"
-                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
-                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
-                <div class="video-overlay"
-                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
-                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
-                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
-                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
-                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Ball valve</p>
+              <div class="video-item">
+                <div class="box video-placeholder" style="padding: 0; overflow: hidden; display: block; background: #000;">
+                  <video src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/fr3_isaac_circuit.mp4"
+                    data-poster="./assets/posters/fr3_isaac_circuit.webp"
+                    style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;"
+                    preload="none" playsinline muted aria-label="Franka FR3: Circuit breaker"></video>
+                  <button type="button" class="video-overlay" aria-label="Play Franka FR3: Circuit breaker"
+                    style="position: absolute; inset: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 0; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                    onclick="this.previousElementSibling.play();">
+                    <i class="fas fa-play-circle fa-3x mb-3" aria-hidden="true"></i>
+                    <span class="has-text-weight-medium">Circuit breaker</span>
+                  </button>
                 </div>
               </div>
-            </div>
-            <div class="video-item" data-type="front">
-              <div class="box video-placeholder"
-                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
-                <video
-                  src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/sim_spot_small_gate.mp4#t=0.5" data-poster="./assets/posters/sim_spot_small_gate.webp"
-                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
-                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
-                <div class="video-overlay"
-                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
-                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
-                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
-                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
-                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Gate valve (small)</p>
+              <div class="video-item">
+                <div class="box video-placeholder" style="padding: 0; overflow: hidden; display: block; background: #000;">
+                  <video src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/fr3_isaac_m30_thread.mp4"
+                    data-poster="./assets/posters/fr3_isaac_m30_thread.webp"
+                    style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;"
+                    preload="none" playsinline muted aria-label="Franka FR3: M30 thread"></video>
+                  <button type="button" class="video-overlay" aria-label="Play Franka FR3: M30 thread"
+                    style="position: absolute; inset: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 0; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                    onclick="this.previousElementSibling.play();">
+                    <i class="fas fa-play-circle fa-3x mb-3" aria-hidden="true"></i>
+                    <span class="has-text-weight-medium">M30 thread</span>
+                  </button>
                 </div>
               </div>
-            </div>
-            <div class="video-item" data-type="orbit">
-              <div class="box video-placeholder"
-                style="padding: 0; overflow: hidden; display: block; position: relative; background: #000;">
-                <video
-                  src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/sim_spot_small_gate_orbit.mp4#t=0.5" data-poster="./assets/posters/sim_spot_small_gate_orbit.webp"
-                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
-                  preload="none" playsinline muted disablepictureinpicture disableremoteplayback controlslist="nodownload novolume noremoteplayback noplaybackrate" oncontextmenu="return false;" ondragstart="return false;"
-                  onplay="this.nextElementSibling.style.opacity = '0'; this.nextElementSibling.style.pointerEvents = 'none';"
-                  onpause="if(this.ended){this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.pointerEvents='auto';}"></video>
-                <div class="video-overlay"
-                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
-                  onclick="this.previousElementSibling.play();" ontouchend="this.previousElementSibling.play();">
-                  <i class="fas fa-play-circle fa-3x mb-3" style="transition: transform 0.2s, color 0.2s;"
-                    onmouseover="this.style.color='#edaf19'; this.style.transform='scale(1.1)'"
-                    onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
-                  <p class="has-text-weight-medium" style="margin: 0;">Gate valve (small) (orbit view)</p>
+              <div class="video-item">
+                <div class="box video-placeholder" style="padding: 0; overflow: hidden; display: block; background: #000;">
+                  <video src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/fr3_isaac_m8_thread.mp4"
+                    data-poster="./assets/posters/fr3_isaac_m8_thread.webp"
+                    style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;"
+                    preload="none" playsinline muted aria-label="Franka FR3: M8 thread"></video>
+                  <button type="button" class="video-overlay" aria-label="Play Franka FR3: M8 thread"
+                    style="position: absolute; inset: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 0; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                    onclick="this.previousElementSibling.play();">
+                    <i class="fas fa-play-circle fa-3x mb-3" aria-hidden="true"></i>
+                    <span class="has-text-weight-medium">M8 thread</span>
+                  </button>
+                </div>
+              </div>
+              <div class="video-item">
+                <div class="box video-placeholder" style="padding: 0; overflow: hidden; display: block; background: #000;">
+                  <video src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/fr3_isaac_small_gate_valve.mp4"
+                    data-poster="./assets/posters/fr3_isaac_small_gate_valve.webp"
+                    style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;"
+                    preload="none" playsinline muted aria-label="Franka FR3: Gate valve (small)"></video>
+                  <button type="button" class="video-overlay" aria-label="Play Franka FR3: Gate valve (small)"
+                    style="position: absolute; inset: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 0; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                    onclick="this.previousElementSibling.play();">
+                    <i class="fas fa-play-circle fa-3x mb-3" aria-hidden="true"></i>
+                    <span class="has-text-weight-medium">Gate valve (small)</span>
+                  </button>
                 </div>
               </div>
             </div>

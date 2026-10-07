@@ -4,6 +4,37 @@ The [`EESC-LabRoM/isaaclab-hiveboard`](https://github.com/EESC-LabRoM/isaaclab-h
 
 This guide follows `master` at commit [`68fbd3f`](https://github.com/EESC-LabRoM/isaaclab-hiveboard/commit/68fbd3f63f0cb24dd36ffd3a601a9b25efa419fc), checked on 6 October 2026. For command editing, datasets, and policy training, see [Simulation workflows](/simulation/workflows).
 
+## Simulation videos
+
+Four examples from the [Isaac Lab video gallery](https://hiveboard-bench.github.io/#Videos), featuring two tasks each with ANYmal D and Franka FR3:
+
+<div class="simulation-video-grid">
+  <figure>
+    <video controls playsinline preload="none" poster="/images/anymal_d_isaac_ball_valve.webp" aria-label="ANYmal D operating a ball valve">
+      <source src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/anymal_d_isaac_ball_valve.mp4" type="video/mp4">
+    </video>
+    <figcaption>ANYmal D · Ball valve</figcaption>
+  </figure>
+  <figure>
+    <video controls playsinline preload="none" poster="/images/anymal_d_isaac_button.webp" aria-label="ANYmal D pressing a button">
+      <source src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/anymal_d_isaac_button.mp4" type="video/mp4">
+    </video>
+    <figcaption>ANYmal D · Button</figcaption>
+  </figure>
+  <figure>
+    <video controls playsinline preload="none" poster="/images/fr3_isaac_circuit.webp" aria-label="Franka FR3 operating a circuit breaker">
+      <source src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/fr3_isaac_circuit.mp4" type="video/mp4">
+    </video>
+    <figcaption>Franka FR3 · Circuit breaker</figcaption>
+  </figure>
+  <figure>
+    <video controls playsinline preload="none" poster="/images/fr3_isaac_big_gate_valve.webp" aria-label="Franka FR3 operating a large gate valve">
+      <source src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/fr3_isaac_big_gate_valve.mp4" type="video/mp4">
+    </video>
+    <figcaption>Franka FR3 · Gate valve (large)</figcaption>
+  </figure>
+</div>
+
 ## Requirements
 
 Use the dependencies specified by the repository's [`pyproject.toml`](https://github.com/EESC-LabRoM/isaaclab-hiveboard/blob/68fbd3f63f0cb24dd36ffd3a601a9b25efa419fc/pyproject.toml) and Git submodules.

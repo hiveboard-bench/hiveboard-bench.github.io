@@ -883,6 +883,12 @@ button:hover {
   margin-bottom: 0;
 }
 
+.isaac-lab-videos {
+  border-top: 1px solid #e2e8f0;
+  margin-top: 2.5rem;
+  padding-top: 2rem;
+}
+
 .carousel-header {
   display: flex;
   justify-content: space-between;
