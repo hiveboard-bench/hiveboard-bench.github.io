@@ -53,7 +53,7 @@ FFMPEG = ffmpeg_bin()
 def video_urls():
 
     html = open(INDEX, encoding="utf-8").read()
-    urls = sorted(set(re.findall(r'src="(https://[^"#]+\.(?:mp4|mov))(?:#[^"]*)?"', html, re.IGNORECASE)))
+    urls = sorted(set(re.findall(r'src="(https://[^"#]+\.mp4)(?:#[^"]*)?"', html)))
     if not urls:
         sys.exit("no video URLs found in " + INDEX)
     return urls
