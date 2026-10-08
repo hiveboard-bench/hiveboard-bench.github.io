@@ -1,6 +1,6 @@
 # Simulation workflows
 
-These workflows use [the Newton-based Isaac Lab installation](/simulation/isaac-lab), checked at simulation commit [`68fbd3f`](https://github.com/EESC-LabRoM/isaaclab-hiveboard/commit/68fbd3f63f0cb24dd36ffd3a601a9b25efa419fc). Complete the dependency installation and USD generation first. Run commands from the simulation repository root.
+These workflows use [the Newton-based Isaac Lab installation](/simulation/isaac-lab), checked at simulation commit [`1d7a042`](https://github.com/EESC-LabRoM/isaaclab-hiveboard/commit/1d7a0421154af19883eadc0e5d3b12eda2cb2a00). Complete the dependency installation and USD generation first. Run commands from the simulation repository root.
 
 ## Edit a task's command sequence
 
@@ -82,74 +82,38 @@ Inspect the recordings and task outcomes before treating them as successful demo
 
 When a task has a recorder configured, `play.py` writes HDF5 episodes and prints the output path. The standard recorder defaults to `logs/recorded_datasets/`. The player exports successful and unsuccessful episodes. Use `--no-dataset` when only visualization or video is needed.
 
-The imitation-learning collector below uses its own recorder and HDF5 layout. Select the recorder according to the downstream training code.
+Inspect outcome labels before selecting episodes for learning. Check the HDF5 schema against the intended training code.
 
-### Imitation learning
+## Policy training
 
-The repository includes demonstration collection, behavior cloning, DAgger, and policy evaluation in [`scripts/imitation/`](https://github.com/EESC-LabRoM/isaaclab-hiveboard/tree/68fbd3f63f0cb24dd36ffd3a601a9b25efa419fc/scripts/imitation).
+Reinforcement and imitation learning now live in [`EESC-LabRoM/hiveboard-rl`](https://github.com/EESC-LabRoM/hiveboard-rl), checked at commit [`34a11c8`](https://github.com/EESC-LabRoM/hiveboard-rl/commit/34a11c865923aedc3727eb019a8912401c241625). The core `isaaclab-hiveboard` repository provides environments, scripted controllers, command editing, and recording. Its former `scripts/rl/`, `scripts/imitation/`, and `imitation` dependency extra have been removed.
 
-Install the additional dependencies:
-
-```bash
-uv sync --python 3.12 --extra imitation
-```
-
-Use `uv run --extra imitation` for the following commands to keep the extra dependencies installed.
-
-The collector requires a `bc` observation group. Training also requires a registered `robomimic_bc_cfg_entry_point`. At the documented commit, these training configurations are registered for Spot light bulb, Spot ball valve, and ANYmal ball valve. Use the base Spot `Lamp-v0` task for behavior-cloning training configuration lookup. Its new `Lamp-Play-v0` registration does not include that configuration entry. Other registered simulation tasks need the corresponding learning configuration before using this pipeline.
-
-Collect 50 successful Spot ball-valve demonstrations:
+The learning repository installs its own pinned `isaaclab-hiveboard` submodule. With `just` and `uv` installed, start in a separate checkout:
 
 ```bash
-uv run --extra imitation python scripts/imitation/collect_demos.py \
-  --task Isaac-HiveBoard-Spot-BallValve-v0 \
-  --num_demos 50 --num_envs 1 \
-  --dataset_name spot_ball_valve_50
+git clone https://github.com/EESC-LabRoM/hiveboard-rl.git
+cd hiveboard-rl
+just setup
 ```
 
-The output is `logs/imitation/datasets/spot_ball_valve_50.hdf5`. The script refuses to overwrite an existing dataset. It stores observations at `data/demo_<i>/obs/<key>` and actions at `data/demo_<i>/actions`. Add `--keep_failed` to write rejected episodes to a separate file.
-
-The collector loads saved command setups using the same task lookup as the player. Pass `--setup FILE` to use a specific setup. Its option to skip saved setups is spelled `--no_setup`.
-
-Train a behavior-cloning policy:
-
-```bash
-uv run --extra imitation python scripts/imitation/train_bc.py \
-  --task Isaac-HiveBoard-Spot-BallValve-v0 \
-  --dataset logs/imitation/datasets/spot_ball_valve_50.hdf5
-```
-
-Training artifacts are written under `logs/imitation/runs/`. Evaluate a checkpoint by replacing the path below with the generated checkpoint:
-
-```bash
-uv run --extra imitation python scripts/imitation/eval_policy.py \
-  --task Isaac-HiveBoard-Spot-BallValve-v0 \
-  --checkpoint /path/to/checkpoint.pth --episodes 25
-```
-
-Use `--expert` in place of `--checkpoint` to evaluate the scripted controller. Check the actual observation fields before transferring a learned policy to a robot. Object states available from the simulator may require sensing or estimation on the physical setup.
-
-For DAgger options, see `scripts/imitation/dagger.py --help` through the same `uv run --extra imitation python` command.
+Generate USD assets inside `dependencies/isaaclab-hiveboard` using that checkout's generation recipes, or use `just sync-assets /path/to/isaaclab-hiveboard` to copy generated assets from a checkout matching the pinned core version. Then run `just list-envs` to inspect the combined core and learning registry. Keep the learning repository commit and its core submodule commit with experiment records.
 
 ### Reinforcement learning
 
-ANYmal RL environments are registered for these tasks:
+The learning package registers ANYmal `-RL-v0` and `-RL-Play-v0` tasks for `BallValve`, `SmallValve`, `M30Thread`, and `CircuitBreaker`.
 
-| Benchmark task | Training task ID |
-|---|---|
-| Ball valve | `Isaac-HiveBoard-Anymal-BallValve-RL-v0` |
-| Gate valve (small) | `Isaac-HiveBoard-Anymal-SmallValve-RL-v0` |
-| Thread (M30) | `Isaac-HiveBoard-Anymal-M30Thread-RL-v0` |
-| Circuit breaker | `Isaac-HiveBoard-Anymal-CircuitBreaker-RL-v0` |
+The maintainers identify **cuRobo trajectory bank → PPO student → evaluation** as the current working workflow. The bank supplies reset states, tracking rewards, and deviation terminations. The actor uses deployable observations; the critic also receives privileged simulator state.
 
-Each has an `-RL-Play-v0` variant. The repository provides expert-bank generation, PPO teacher training, student training or distillation, and checkpoint evaluation in [`scripts/rl/`](https://github.com/EESC-LabRoM/isaaclab-hiveboard/tree/68fbd3f63f0cb24dd36ffd3a601a9b25efa419fc/scripts/rl).
+Follow the [learning README](https://github.com/EESC-LabRoM/hiveboard-rl/blob/34a11c865923aedc3727eb019a8912401c241625/README.md#usage) and [justfile](https://github.com/EESC-LabRoM/hiveboard-rl/blob/34a11c865923aedc3727eb019a8912401c241625/justfile) for `rl-bank`, `rl-student-ppo`, `rl-eval`, and `rl-play`. Select the same `RL_TOOL` for bank generation, training, and evaluation. Set parallel environment counts to fit the available GPU memory.
 
-Follow the [`rl-*` recipes in the justfile](https://github.com/EESC-LabRoM/isaaclab-hiveboard/blob/68fbd3f63f0cb24dd36ffd3a601a9b25efa419fc/justfile) for the full sequence. `RL_TOOL` selects `BallValve`, `SmallValve`, `M30Thread`, or `CircuitBreaker`. Inspect the selected task's expert-bank path, reset distribution, observation groups, and success condition before starting a run. The default training recipes use many parallel environments, so choose counts that fit the available GPU memory.
+Inspect each task's success condition and reset distribution before training. Report the configured goal and validate the complete [benchmark motion](/benchmark/tasks) before submitting an evaluation.
 
-**The RL success conditions can differ from the benchmark protocol.** At the documented commit, the [small gate-valve RL environment](https://github.com/EESC-LabRoM/isaaclab-hiveboard/blob/68fbd3f63f0cb24dd36ffd3a601a9b25efa419fc/source/isaaclab_hiveboard/isaaclab_hiveboard/tasks/anymal/small_valve_rl/env.py) targets a quarter turn. The [benchmark task](/benchmark/tasks#small-gate-valve) requires one full stem turn. Report the configured goal with learning results and validate the complete benchmark motion before submitting a benchmark evaluation.
+### Imitation learning
+
+Behavior cloning, DAgger, teacher training, and student distillation remain alternative workflows in the learning repository. Its `il-collect`, `il-train`, `il-dagger`, and `il-eval` recipes use the imitation-learning scripts and their dataset layout. Follow the [learning repository instructions](https://github.com/EESC-LabRoM/hiveboard-rl/blob/34a11c865923aedc3727eb019a8912401c241625/README.md#usage) for these workflows; a core player recording is not automatically a compatible training dataset.
 
 ## Simulation datasets and DataHive
 
-Use [DataHive](/guides/datahive) for its recording integrations, episode annotations, validation, and dataset submission workflow. The simulation scripts above export their own HDF5 datasets. Using the same benchmark does not establish file-format compatibility. Check observation names, action units, coordinate frames, timestamps, and metadata before converting data between pipelines.
+Use [DataHive](/guides/datahive) for its recording integrations, episode annotations, validation, and dataset submission workflow. The simulation player exports its own HDF5 datasets. Using the same benchmark does not establish file-format compatibility. Check observation names, action units, coordinate frames, timestamps, and metadata before converting data between pipelines.
 
 A [learning-dataset contribution](/contribute/evaluations) has no fixed episode count. Include the simulator commit, task configuration, controller or policy, reset distribution, and outcome labels with simulated data. Keep this separate from a scored benchmark submission, which requires **13 conditions with five trials each**.

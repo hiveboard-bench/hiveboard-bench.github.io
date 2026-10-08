@@ -41,7 +41,7 @@ Threaded motion is represented by coupled rotational and translational joints wh
 | Load or visualize a mechanism in an existing stack | URDF or USD assets in the main repository |
 | Inspect kinematics or create a custom environment | Articulated asset plus your simulator's loader |
 | Run HiveBoard tasks with Isaac Lab and Newton | [Isaac Lab installation and task reference](/simulation/isaac-lab) |
-| Edit commands, record demonstrations, or train policies | [Simulation workflows](/simulation/workflows) |
+| Edit commands, record episodes, or find learning workflows | [Simulation workflows](/simulation/workflows) |
 | Compare simulation with the printed board | Record model commit and locally identified physical parameters |
 
 The Isaac Lab implementation uses generated Newton USD files. Follow the [asset-generation steps](/simulation/isaac-lab#generate-the-newton-assets) after cloning the simulation repository. Its generated files are separate from the portable URDF/USD assets in the main HiveBoard repository.

@@ -83,7 +83,7 @@ For a complete example to use as a base, see [`fr3_datahive`](https://github.com
 
 **Record physical trials with an external camera**, with the board, end-effector, and task state visible throughout. Include that camera in the profile when storing its recording with the DataHive episode. For simulation, record rendered camera observations and identify the simulator and configuration.
 
-For Isaac Lab simulation, see [Simulation workflows](/simulation/workflows) for command editing, episode recording, and policy training. Those scripts export their own HDF5 layouts. Check the data schema and metadata before converting their output into DataHive episodes.
+For Isaac Lab simulation, see [Simulation workflows](/simulation/workflows) for command editing and episode recording, plus links to the separate learning repository. The simulation player exports its own HDF5 layout. Check the data schema and metadata before converting its output into DataHive episodes.
 
 ### Check the recording setup first
 

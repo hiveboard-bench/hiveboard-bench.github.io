@@ -1,11 +1,12 @@
 # Repository map
 
-HiveBoard maintains separate repositories for benchmark assets, simulation, data collection, and the website.
+HiveBoard maintains separate repositories for benchmark assets, simulation, policy learning, data collection, and the website.
 
 | Repository | Role | Use it for |
 |---|---|---|
 | [`EESC-LabRoM/HiveBoard`](https://github.com/EESC-LabRoM/HiveBoard) | Benchmark assets | STL, CAD, URDF/USD, protocol, and trial templates |
-| [`EESC-LabRoM/isaaclab-hiveboard`](https://github.com/EESC-LabRoM/isaaclab-hiveboard) | Isaac Lab implementation | Environments, task configuration, training, and simulation evaluation |
+| [`EESC-LabRoM/isaaclab-hiveboard`](https://github.com/EESC-LabRoM/isaaclab-hiveboard) | Isaac Lab implementation | Environments, task configuration, scripted controllers, and simulation recording |
+| [`EESC-LabRoM/hiveboard-rl`](https://github.com/EESC-LabRoM/hiveboard-rl) | Policy learning | Reinforcement and imitation learning using a pinned Isaac Lab integration submodule |
 | [`hiveboard-bench/DataHive`](https://github.com/hiveboard-bench/DataHive) | Data collection toolkit | Recording integration, local Runner, episode annotation and validation, and Hugging Face upload; start with the [DataHive guide](/guides/datahive) |
 | [`hiveboard-bench/fr3_datahive`](https://github.com/hiveboard-bench/fr3_datahive) | Reference integration | Franka Research 3 example integration and Docker environment for DataHive |
 | [`hiveboard-bench/hiveboard-bench.github.io`](https://github.com/hiveboard-bench/hiveboard-bench.github.io) | Project website and documentation | Paper presentation, videos, results, interactive viewer, and `docs/` with the documentation and Evaluation Runner |
@@ -18,6 +19,7 @@ To avoid conflicting instructions:
 
 - physical geometry and the trial protocol belong to the main HiveBoard repository;
 - executable Isaac Lab details belong to the Isaac Lab repository;
+- policy training, expert banks, and learned-policy evaluation belong to `hiveboard-rl`;
 - DataHive's episode format, recording API, and collection tools belong to the DataHive repository;
 - the Franka Research 3 reference integration belongs to the `fr3_datahive` repository;
 - the project website presents the research; and
@@ -32,6 +34,7 @@ Record a release tag when available. Otherwise record a full commit hash for eve
 ```text
 HiveBoard assets: <release or commit>
 Isaac Lab integration: <release or commit>
+HiveBoard RL (if used): <release or commit, plus core submodule commit>
 DataHive (if used): <package version or commit>
 Documentation: <release or commit>
 ```
