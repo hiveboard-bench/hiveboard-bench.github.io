@@ -18,7 +18,7 @@ The physical validation covers six platforms, including Alter-Ego with a Pisa/II
 - [Data collection with DataHive](/guides/datahive)
 - [Simulation assets](/simulation/assets)
 
-The printable parts, CAD models, articulated assets, protocol, and trial templates are maintained in the [HiveBoard repository](https://github.com/hiveboard-bench/HiveBoard). The Isaac Lab environments are maintained in a [separate repository](https://github.com/EESC-LabRoM/isaaclab-hiveboard).
+The printable parts, CAD models, articulated assets, protocol, and trial templates are maintained in the [HiveBoard repository](https://github.com/hiveboard-bench/HiveBoard). The Isaac Lab environments are maintained in a [separate repository](https://github.com/hiveboard-bench/isaaclab-hiveboard).
 
 ## Open calls for contributions
 

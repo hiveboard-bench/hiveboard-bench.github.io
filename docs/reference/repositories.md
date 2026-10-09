@@ -5,7 +5,7 @@ HiveBoard maintains separate repositories for benchmark assets, simulation, poli
 | Repository | Role | Use it for |
 |---|---|---|
 | [`hiveboard-bench/HiveBoard`](https://github.com/hiveboard-bench/HiveBoard) | Benchmark assets | STL, CAD, URDF/USD, protocol, and trial templates |
-| [`EESC-LabRoM/isaaclab-hiveboard`](https://github.com/EESC-LabRoM/isaaclab-hiveboard) | Isaac Lab implementation | Environments, task configuration, scripted controllers, and simulation recording |
+| [`hiveboard-bench/isaaclab-hiveboard`](https://github.com/hiveboard-bench/isaaclab-hiveboard) | Isaac Lab implementation | Environments, task configuration, scripted controllers, and simulation recording |
 | [`EESC-LabRoM/hiveboard-rl`](https://github.com/EESC-LabRoM/hiveboard-rl) | Policy learning | Reinforcement and imitation learning using a pinned Isaac Lab integration submodule |
 | [`hiveboard-bench/DataHive`](https://github.com/hiveboard-bench/DataHive) | Data collection toolkit | Recording integration, local Runner, episode annotation and validation, and Hugging Face upload; start with the [DataHive guide](/guides/datahive) |
 | [`hiveboard-bench/fr3_datahive`](https://github.com/hiveboard-bench/fr3_datahive) | Reference integration | Franka Research 3 example integration and Docker environment for DataHive |

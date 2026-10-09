@@ -1,8 +1,8 @@
 # Isaac Lab integration
 
-The [`EESC-LabRoM/isaaclab-hiveboard`](https://github.com/EESC-LabRoM/isaaclab-hiveboard) repository provides HiveBoard environments for Spot with arm, Franka FR3, and ANYmal with DynaArm. The current implementation uses Isaac Lab with **Newton MJWarp**. The standard simulation and recording workflows run without Isaac Sim.
+The [`hiveboard-bench/isaaclab-hiveboard`](https://github.com/hiveboard-bench/isaaclab-hiveboard) repository provides HiveBoard environments for Spot with arm, Franka FR3, and ANYmal with DynaArm. The current implementation uses Isaac Lab with **Newton MJWarp**. The standard simulation and recording workflows run without Isaac Sim.
 
-This guide follows `master` at commit [`1d7a042`](https://github.com/EESC-LabRoM/isaaclab-hiveboard/commit/1d7a0421154af19883eadc0e5d3b12eda2cb2a00), checked on 8 October 2026. For command editing, episode recording, and the separate learning repository, see [Simulation workflows](/simulation/workflows).
+This guide follows `master` at commit [`1d7a042`](https://github.com/hiveboard-bench/isaaclab-hiveboard/commit/1d7a0421154af19883eadc0e5d3b12eda2cb2a00), checked on 8 October 2026. For command editing, episode recording, and the separate learning repository, see [Simulation workflows](/simulation/workflows).
 
 ## Simulation videos
 
@@ -68,7 +68,7 @@ Four examples from the [Isaac Lab video gallery](https://hiveboard-bench.github.
 
 ## Requirements
 
-Use the dependencies specified by the repository's [`pyproject.toml`](https://github.com/EESC-LabRoM/isaaclab-hiveboard/blob/1d7a0421154af19883eadc0e5d3b12eda2cb2a00/pyproject.toml) and Git submodules.
+Use the dependencies specified by the repository's [`pyproject.toml`](https://github.com/hiveboard-bench/isaaclab-hiveboard/blob/1d7a0421154af19883eadc0e5d3b12eda2cb2a00/pyproject.toml) and Git submodules.
 
 | Component | Current configuration |
 |---|---|
@@ -87,7 +87,7 @@ The GPU workflows use CUDA dependencies. RTX video rendering requires compatible
 Clone the repository and its pinned submodules:
 
 ```bash
-git clone --branch master --recurse-submodules https://github.com/EESC-LabRoM/isaaclab-hiveboard.git
+git clone --branch master --recurse-submodules https://github.com/hiveboard-bench/isaaclab-hiveboard.git
 cd isaaclab-hiveboard
 uv sync --python 3.12
 ```
@@ -146,7 +146,7 @@ The ANYmal generator downloads robot and gripper assets when they are absent, so
 
 Task IDs have the form `Isaac-HiveBoard-<Robot>-<Tool>-v0`. Robot tokens are case-sensitive: `Spot`, `Franka`, and `Anymal`.
 
-The table reports the heuristic status given in the [simulation README at commit `1d7a042`](https://github.com/EESC-LabRoM/isaaclab-hiveboard/blob/1d7a0421154af19883eadc0e5d3b12eda2cb2a00/README.md#available-tasks).
+The table reports the heuristic status given in the [simulation README at commit `1d7a042`](https://github.com/hiveboard-bench/isaaclab-hiveboard/blob/1d7a0421154af19883eadc0e5d3b12eda2cb2a00/README.md#available-tasks).
 
 **✓**: working heuristic reported by the maintainers. **✗**: no working heuristic currently reported. All listed robot–task combinations have registered environments. The symbols describe the supplied heuristic controllers.
 
@@ -180,19 +180,19 @@ The registry also includes `CuroboValve` planning examples, `BenchValve` joint-t
 
 ### Lock-and-key setup
 
-The [key scene](https://github.com/EESC-LabRoM/isaaclab-hiveboard/blob/1d7a0421154af19883eadc0e5d3b12eda2cb2a00/source/isaaclab_hiveboard/isaaclab_hiveboard/tasks/scenes/key.py) starts with the key rigidly attached to the robot's hand. The supplied sequence approaches the lock, inserts the key, and turns the plug. It does not evaluate picking up a loose key or retaining it through a frictional grasp.
+The [key scene](https://github.com/hiveboard-bench/isaaclab-hiveboard/blob/1d7a0421154af19883eadc0e5d3b12eda2cb2a00/source/isaaclab_hiveboard/isaaclab_hiveboard/tasks/scenes/key.py) starts with the key rigidly attached to the robot's hand. The supplied sequence approaches the lock, inserts the key, and turns the plug. It does not evaluate picking up a loose key or retaining it through a frictional grasp.
 
-The [success check](https://github.com/EESC-LabRoM/isaaclab-hiveboard/blob/1d7a0421154af19883eadc0e5d3b12eda2cb2a00/source/isaaclab_hiveboard/isaaclab_hiveboard/tasks/anymal/key/configs/terminations.py) requires the command sequence to finish and the plug angle to lie between 80° and 95°. Record the pre-held key condition with results and compare it with the [benchmark task](/benchmark/tasks).
+The [success check](https://github.com/hiveboard-bench/isaaclab-hiveboard/blob/1d7a0421154af19883eadc0e5d3b12eda2cb2a00/source/isaaclab_hiveboard/isaaclab_hiveboard/tasks/anymal/key/configs/terminations.py) requires the command sequence to finish and the plug angle to lie between 80° and 95°. Record the pre-held key condition with results and compare it with the [benchmark task](/benchmark/tasks).
 
 ### Drawer removal
 
-The Franka and ANYmal tasks use a free drawer box inside a kinematic housing. The box can slide out and detach through contact dynamics. Their [removal success check](https://github.com/EESC-LabRoM/isaaclab-hiveboard/blob/1d7a0421154af19883eadc0e5d3b12eda2cb2a00/source/isaaclab_hiveboard/isaaclab_hiveboard/tasks/anymal/drawer/slide.py) requires the command sequence to finish, at least 5 cm of outward displacement, and both drawer shafts to clear the housing guides. A removed drawer may fall after release without losing success solely because its height changes.
+The Franka and ANYmal tasks use a free drawer box inside a kinematic housing. The box can slide out and detach through contact dynamics. Their [removal success check](https://github.com/hiveboard-bench/isaaclab-hiveboard/blob/1d7a0421154af19883eadc0e5d3b12eda2cb2a00/source/isaaclab_hiveboard/isaaclab_hiveboard/tasks/anymal/drawer/slide.py) requires the command sequence to finish, at least 5 cm of outward displacement, and both drawer shafts to clear the housing guides. A removed drawer may fall after release without losing success solely because its height changes.
 
 Spot still has no working drawer heuristic reported. Its configured sliding success check differs from the removal check used by Franka and ANYmal.
 
 ### Light-bulb success condition
 
-The [light-bulb success check](https://github.com/EESC-LabRoM/isaaclab-hiveboard/blob/1d7a0421154af19883eadc0e5d3b12eda2cb2a00/source/isaaclab_hiveboard/isaaclab_hiveboard/mdp/terminations.py) requires the command sequence to finish and the bulb to reach the axial position specified by its total screw travel, with a 0.5 mm tolerance. The target is limited by the seated position.
+The [light-bulb success check](https://github.com/hiveboard-bench/isaaclab-hiveboard/blob/1d7a0421154af19883eadc0e5d3b12eda2cb2a00/source/isaaclab_hiveboard/isaaclab_hiveboard/mdp/terminations.py) requires the command sequence to finish and the bulb to reach the axial position specified by its total screw travel, with a 0.5 mm tolerance. The target is limited by the seated position.
 
 A short command sequence can therefore succeed with the bulb only partly threaded. For the [benchmark light-bulb task](/benchmark/tasks#light-bulb-and-socket), configure the full travel and check that the bulb is seated. Retain the command setup with the reported result.
 

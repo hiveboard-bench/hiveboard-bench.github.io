@@ -1,6 +1,6 @@
 # Simulation workflows
 
-These workflows use [the Newton-based Isaac Lab installation](/simulation/isaac-lab), checked at simulation commit [`1d7a042`](https://github.com/EESC-LabRoM/isaaclab-hiveboard/commit/1d7a0421154af19883eadc0e5d3b12eda2cb2a00). Complete the dependency installation and USD generation first. Run commands from the simulation repository root.
+These workflows use [the Newton-based Isaac Lab installation](/simulation/isaac-lab), checked at simulation commit [`1d7a042`](https://github.com/hiveboard-bench/isaaclab-hiveboard/commit/1d7a0421154af19883eadc0e5d3b12eda2cb2a00). Complete the dependency installation and USD generation first. Run commands from the simulation repository root.
 
 ## Edit a task's command sequence
 
