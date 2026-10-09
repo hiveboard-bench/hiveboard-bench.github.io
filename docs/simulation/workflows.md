@@ -1,6 +1,6 @@
 # Simulation workflows
 
-These workflows use [the Newton-based Isaac Lab installation](/simulation/isaac-lab), checked at simulation commit [`1d7a042`](https://github.com/EESC-LabRoM/isaaclab-hiveboard/commit/1d7a0421154af19883eadc0e5d3b12eda2cb2a00). Complete the dependency installation and USD generation first. Run commands from the simulation repository root.
+These workflows use [the Newton-based Isaac Lab installation](/simulation/isaac-lab), checked at simulation commit [`1d7a042`](https://github.com/hiveboard-bench/isaaclab-hiveboard/commit/1d7a0421154af19883eadc0e5d3b12eda2cb2a00). Complete the dependency installation and USD generation first. Run commands from the simulation repository root.
 
 ## Edit a task's command sequence
 
@@ -86,12 +86,12 @@ Inspect outcome labels before selecting episodes for learning. Check the HDF5 sc
 
 ## Policy training
 
-Reinforcement and imitation learning now live in [`EESC-LabRoM/hiveboard-rl`](https://github.com/EESC-LabRoM/hiveboard-rl), checked at commit [`34a11c8`](https://github.com/EESC-LabRoM/hiveboard-rl/commit/34a11c865923aedc3727eb019a8912401c241625). The core `isaaclab-hiveboard` repository provides environments, scripted controllers, command editing, and recording. Its former `scripts/rl/`, `scripts/imitation/`, and `imitation` dependency extra have been removed.
+Reinforcement and imitation learning now live in [`hiveboard-bench/hiveboard-rl`](https://github.com/hiveboard-bench/hiveboard-rl), checked at commit [`34a11c8`](https://github.com/hiveboard-bench/hiveboard-rl/commit/34a11c865923aedc3727eb019a8912401c241625). The core `isaaclab-hiveboard` repository provides environments, scripted controllers, command editing, and recording. Its former `scripts/rl/`, `scripts/imitation/`, and `imitation` dependency extra have been removed.
 
 The learning repository installs its own pinned `isaaclab-hiveboard` submodule. With `just` and `uv` installed, start in a separate checkout:
 
 ```bash
-git clone https://github.com/EESC-LabRoM/hiveboard-rl.git
+git clone https://github.com/hiveboard-bench/hiveboard-rl.git
 cd hiveboard-rl
 just setup
 ```
@@ -104,13 +104,13 @@ The learning package registers ANYmal `-RL-v0` and `-RL-Play-v0` tasks for `Ball
 
 The maintainers identify **cuRobo trajectory bank → PPO student → evaluation** as the current working workflow. The bank supplies reset states, tracking rewards, and deviation terminations. The actor uses deployable observations; the critic also receives privileged simulator state.
 
-Follow the [learning README](https://github.com/EESC-LabRoM/hiveboard-rl/blob/34a11c865923aedc3727eb019a8912401c241625/README.md#usage) and [justfile](https://github.com/EESC-LabRoM/hiveboard-rl/blob/34a11c865923aedc3727eb019a8912401c241625/justfile) for `rl-bank`, `rl-student-ppo`, `rl-eval`, and `rl-play`. Select the same `RL_TOOL` for bank generation, training, and evaluation. Set parallel environment counts to fit the available GPU memory.
+Follow the [learning README](https://github.com/hiveboard-bench/hiveboard-rl/blob/34a11c865923aedc3727eb019a8912401c241625/README.md#usage) and [justfile](https://github.com/hiveboard-bench/hiveboard-rl/blob/34a11c865923aedc3727eb019a8912401c241625/justfile) for `rl-bank`, `rl-student-ppo`, `rl-eval`, and `rl-play`. Select the same `RL_TOOL` for bank generation, training, and evaluation. Set parallel environment counts to fit the available GPU memory.
 
 Inspect each task's success condition and reset distribution before training. Report the configured goal and validate the complete [benchmark motion](/benchmark/tasks) before submitting an evaluation.
 
 ### Imitation learning
 
-Behavior cloning, DAgger, teacher training, and student distillation remain alternative workflows in the learning repository. Its `il-collect`, `il-train`, `il-dagger`, and `il-eval` recipes use the imitation-learning scripts and their dataset layout. Follow the [learning repository instructions](https://github.com/EESC-LabRoM/hiveboard-rl/blob/34a11c865923aedc3727eb019a8912401c241625/README.md#usage) for these workflows; a core player recording is not automatically a compatible training dataset.
+Behavior cloning, DAgger, teacher training, and student distillation remain alternative workflows in the learning repository. Its `il-collect`, `il-train`, `il-dagger`, and `il-eval` recipes use the imitation-learning scripts and their dataset layout. Follow the [learning repository instructions](https://github.com/hiveboard-bench/hiveboard-rl/blob/34a11c865923aedc3727eb019a8912401c241625/README.md#usage) for these workflows; a core player recording is not automatically a compatible training dataset.
 
 ## Simulation datasets and DataHive
 
