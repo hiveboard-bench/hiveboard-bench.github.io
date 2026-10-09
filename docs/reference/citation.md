@@ -17,12 +17,12 @@ If you use HiveBoard in research or a publication, cite the project paper. The c
              Becker, Marcelo},
   journal = {Under review},
   year    = {2026},
-  url     = {https://github.com/EESC-LabRoM/HiveBoard}
+  url     = {https://github.com/hiveboard-bench/HiveBoard}
 }
 ```
 
 ::: warning Check before publication
-The paper is under review and the citation metadata may change. Copy the current entry from the [main HiveBoard repository](https://github.com/EESC-LabRoM/HiveBoard) when preparing a manuscript.
+The paper is under review and the citation metadata may change. Copy the current entry from the [main HiveBoard repository](https://github.com/hiveboard-bench/HiveBoard) when preparing a manuscript.
 :::
 
 ## Report the benchmark version

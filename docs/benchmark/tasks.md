@@ -215,4 +215,4 @@ Record the last **completed** stage:
 
 For example, if the part is aligned but only partly inserted onto the pin when 180 s expires, record `outcome = timeout`, `stage_reached = 2`, and leave `completion_time_s` blank. Also record attempts, regrasps, strategy, and the dominant failure cause. See [trial logging](/benchmark/logging) for the field definitions.
 
-See the [source protocol](https://github.com/EESC-LabRoM/HiveBoard/blob/main/Documentation/PROTOCOL.md#5-per-attachment-success-criteria-and-timeouts) for success criteria and timeouts. The protocol does not specify a numeric insertion depth, holding duration, or loose-part pose. Document the starting pose and use the same setup for every trial.
+See the [source protocol](https://github.com/hiveboard-bench/HiveBoard/blob/main/Documentation/PROTOCOL.md#5-per-attachment-success-criteria-and-timeouts) for success criteria and timeouts. The protocol does not specify a numeric insertion depth, holding duration, or loose-part pose. Document the starting pose and use the same setup for every trial.

@@ -49,7 +49,7 @@ HiveBoard is intended to characterize task performance and failure modes. The va
 
 ## Repository files
 
-The current files are maintained in the [HiveBoard parts and protocol repository](https://github.com/EESC-LabRoM/HiveBoard):
+The current files are maintained in the [HiveBoard parts and protocol repository](https://github.com/hiveboard-bench/HiveBoard):
 
 - `STL/` — printable parts;
 - `CAD/` — editable source geometry;

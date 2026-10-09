@@ -20,7 +20,7 @@ export default defineConfig({
     nav: [
       { text: 'Contribute', link: '/contribute/' },
       { text: 'Project website', link: 'https://hiveboard-bench.github.io' },
-      { text: 'GitHub', link: 'https://github.com/EESC-LabRoM/HiveBoard' }
+      { text: 'GitHub', link: 'https://github.com/hiveboard-bench/HiveBoard' }
     ],
     sidebar: [
       {
@@ -86,7 +86,7 @@ export default defineConfig({
       }
     ],
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/EESC-LabRoM/HiveBoard' }
+      { icon: 'github', link: 'https://github.com/hiveboard-bench/HiveBoard' }
     ],
     footer: {
       message: 'HiveBoard documentation',

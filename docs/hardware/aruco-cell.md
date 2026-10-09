@@ -15,7 +15,7 @@ The cell is an optional accessory. Benchmark evaluations still contain **13 cond
 
 ## Files and materials
 
-Download the files from [`CAD/ArUco Cell/`](https://github.com/EESC-LabRoM/HiveBoard/tree/main/CAD/ArUco%20Cell).
+Download the files from [`CAD/ArUco Cell/`](https://github.com/hiveboard-bench/HiveBoard/tree/main/CAD/ArUco%20Cell).
 
 | File | Purpose | Filament |
 |---|---|---|
