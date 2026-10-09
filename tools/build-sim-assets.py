@@ -251,19 +251,6 @@ ROBOTS = [
         "tcp": ("robotiq_base_link", (0.0, 0.0, 0.20)),
     },
     {
-        "name": "macao", "label": "Macao hand", "note": "Platform D",
-        "arm": ["macao_x", "macao_y", "macao_z", "macao_roll", "macao_pitch", "macao_yaw"],
-        "grip": {"actuator": "macao_grip", "open": 0.0, "grasp": 0.8, "fist": 1.1},
-        "home": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-        "board": (0.85, 0.0, 0.55),
-        "board_quat": BOARD_UPRIGHT,
-        "stand": {"top": 0.55, "half": 0.17},
-        "framing": "side",
-        "mount": (0.70, 0.0, 0.52),
-        "tcp": ("macao_hand", (0.0, 0.0, 0.11)),
-        "skip": ["toggle", "button", "dial"],
-    },
-    {
         "name": "fr3",
         "label": "Franka FR3",
         "note": "Platform E",
@@ -800,131 +787,6 @@ def fr3_parts(menagerie: Path):
     return ET.fromstring(ARM_BODY), elems, [], extras
 
 
-def macao_parts(cfg):
-
-    src = REPO / "tools/assets/macao"
-    names = {
-        "forearm": "Short Forearm.stl",
-        "forearm_base": "Short Forearm Base Lid.stl",
-        "forearm_lid": "Short Forearm Arduino Cavity Lid.stl",
-        "palm_middle": "HandPalm Middle Segment.stl",
-        "palm_outer": "HandPalm Outer Segment.stl",
-        "palm_cover": "Palm Cover.stl",
-        "finger_base": "Finger Base.stl",
-        "finger_first": "Finger First Phalange.stl",
-        "finger_first_pad": "Finger First Pad.stl",
-        "finger_medial": "Finger Medial Phalange.stl",
-        "finger_medial_pad": "Finger Medial Pad.stl",
-        "finger_distal": "Finger Distal Phalange.stl",
-        "finger_distal_pad": "Finger Distal Pad.stl",
-    }
-    meshes = []
-
-    def add_mesh(name, filename):
-
-        out = emit_mesh(src / filename, OUT / "assets/macao", name=f"{name}.obj")
-        meshes.append(ET.Element("mesh", {
-            "name": name, "file": f"macao/{out}", "scale": "0.001 0.001 0.001"}))
-
-    for key, filename in names.items():
-        add_mesh(key, filename)
-
-    def visual(parent, mesh, material="macao_shell", pos=None, collision=False):
-
-        attrs = {
-            "type": "mesh", "mesh": mesh, "material": material,
-            "contype": "1" if collision else "0",
-            "conaffinity": "2" if collision else "0", "group": "2"}
-        if pos:
-            attrs["pos"] = pos
-        ET.SubElement(parent, "geom", attrs)
-
-    body = ET.Element("body", {"name": "macao_hand", "pos": fmt(cfg.get("mount", (0.15, 0.0, 0.52))),
-                                "quat": "0.707107 0 0.707107 0", "gravcomp": "1"})
-    for name, kind, axis, limits in (
-        ("macao_x", "slide", "1 0 0", "-0.12 0.12"),
-        ("macao_y", "slide", "0 1 0", "-0.10 0.10"),
-        ("macao_z", "slide", "0 0 1", "-0.10 0.10"),
-        ("macao_roll", "hinge", "1 0 0", "-0.6 0.6"),
-        ("macao_pitch", "hinge", "0 1 0", "-0.6 0.6"),
-        ("macao_yaw", "hinge", "0 0 1", "-0.8 0.8"),
-    ):
-        ET.SubElement(body, "joint", {"name": name, "type": kind, "axis": axis,
-                                       "range": limits, "damping": "2"})
-
-    shell = ET.SubElement(body, "body", {
-        "name": "macao_arm_wrist", "quat": "0 0 0 1"})
-
-    visual(shell, "forearm", "macao_wrist")
-    visual(shell, "forearm_base", "macao_base")
-    for key in ("palm_middle", "palm_outer", "palm_cover", "forearm_lid"):
-        visual(shell, key, "macao_shell")
-
-    finger_joints = []
-
-    def digit(parent, prefix, master=False):
-
-        visual(parent, "finger_base", collision=True)
-
-        proximal = ET.SubElement(parent, "body", {"name": f"{prefix}_proximal", "pos": "0 0 0.016"})
-        proximal_joint = "macao_grip" if master else f"{prefix}_prox_joint"
-        ET.SubElement(proximal, "joint", {"name": proximal_joint, "type": "hinge",
-                                           "axis": "-1 0 0", "range": "0 1.15", "damping": "0.35"})
-        finger_joints.append((proximal_joint, 1.0))
-        visual(proximal, "finger_first", pos="0 0 -0.016", collision=True)
-        visual(proximal, "finger_first_pad", "macao_pad", "0 0 -0.016", collision=True)
-
-        medial = ET.SubElement(proximal, "body", {"name": f"{prefix}_medial", "pos": "0 0 0.030"})
-        medial_joint = f"{prefix}_medial_joint"
-        ET.SubElement(medial, "joint", {"name": medial_joint, "type": "hinge",
-                                         "axis": "-1 0 0", "range": "0 1.0", "damping": "0.3"})
-        finger_joints.append((medial_joint, 0.78))
-        visual(medial, "finger_medial", pos="0 0 -0.046", collision=True)
-        visual(medial, "finger_medial_pad", "macao_pad", "0 0 -0.046", collision=True)
-
-        distal = ET.SubElement(medial, "body", {"name": f"{prefix}_distal", "pos": "0 0 0.0245"})
-        distal_joint = f"{prefix}_distal_joint"
-        ET.SubElement(distal, "joint", {"name": distal_joint, "type": "hinge",
-                                         "axis": "-1 0 0", "range": "0 0.9", "damping": "0.25"})
-        finger_joints.append((distal_joint, 0.65))
-        visual(distal, "finger_distal", pos="0 0 -0.0705", collision=True)
-        visual(distal, "finger_distal_pad", "macao_pad", "0 0 -0.0705", collision=True)
-
-    finger_height_offsets = (-0.02, -0.005, 0.005, -0.015)
-    for i, x in enumerate((-0.033, -0.011, 0.011, 0.033)):
-        mount = ET.SubElement(body, "body", {
-            "name": f"macao_finger_body_{i}",
-            "pos": f"{x} 0.01 {finger_height_offsets[i] + 0.04}"})
-        digit(mount, f"macao_finger_{i}", master=(i == 0))
-
-    thumb = ET.SubElement(body, "body", {
-        "name": "macao_thumb_body", "pos": "0.018 0.063 -0.005",
-        "quat": "0 0 0.573576 0.819152"})
-    digit(thumb, "macao_thumb")
-
-    materials = [
-        ET.Element("material", {"name": "macao_shell", "rgba": "0.08 0.09 0.11 1"}),
-        ET.Element("material", {"name": "macao_base", "rgba": "0.7059 0.7804 0.3490 1"}),
-        ET.Element("material", {"name": "macao_wrist", "rgba": "0.8196 0.3529 0.0118 1"}),
-        ET.Element("material", {"name": "macao_pad", "rgba": "0.82 0.84 0.86 1"}),
-    ]
-    actuators = ET.Element("actuator")
-    for joint in ("macao_x", "macao_y", "macao_z"):
-        ET.SubElement(actuators, "position", {"name": joint, "joint": joint, "kp": "900", "kv": "80"})
-    for joint in ("macao_roll", "macao_pitch", "macao_yaw"):
-        ET.SubElement(actuators, "position", {"name": joint, "joint": joint, "kp": "80", "kv": "18"})
-    ET.SubElement(actuators, "position", {"name": "macao_grip", "joint": finger_joints[0][0],
-                                           "kp": "30", "ctrlrange": "0 1.1"})
-
-    equality = ET.Element("equality")
-    for joint, ratio in finger_joints[1:]:
-        ET.SubElement(equality, "joint", {"joint1": joint, "joint2": finger_joints[0][0],
-                                           "polycoef": f"0 {ratio} 0 0 0", "solref": "0.005 1"})
-
-    for elem in body.iter("body"):
-        elem.set("gravcomp", "1")
-    return body, meshes, materials, {"actuator": actuators, "equality": equality}
-
 
 def robot_parts(cfg, menagerie: Path, workdir: Path):
     """Whatever this robot contributes to a scene: a body, meshes, actuators."""
@@ -933,8 +795,6 @@ def robot_parts(cfg, menagerie: Path, workdir: Path):
         return anymal_model.parts(
             OUT, cfg.get("isaaclab_repo") or REPO.parent.parent,
             cfg.get("usd_cache") or CACHE / "anymal-usd", decimate, obj_write)
-    if cfg["name"] == "macao":
-        return macao_parts(cfg)
     if "source" not in cfg:
         return fr3_parts(menagerie)
 
@@ -1071,9 +931,6 @@ def spin_address(model):
 
 
 def board_normal(cfg):
-
-    if cfg.get("name") == "macao":
-        return (-1.0, 0.0, 0.0)
     return tuple(quat_matrix(np.array(cfg.get("board_quat", BOARD_FLAT))) @ [1.0, 0, 0])
 
 

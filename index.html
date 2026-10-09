@@ -287,12 +287,12 @@
             functional mechanisms. A hexagonal honeycomb base accepts 12 interchangeable attachment designs modeled on
             industrial fittings and grouped into three skill categories &mdash; torque, precision, and composed assembly
             &mdash; all fully functional, printable on consumer-grade FDM printers, and released with articulated URDF
-            and USD models for direct import into common simulators. A cross-laboratory validation across five
-            manipulation systems, from quadruped &mdash; and fixed-base teleoperated arms and a legged manipulator driven
-            through virtual-reality devices to a wearable anthropomorphic prosthetic hand, all scored on the
-            13 evaluation conditions, including the ball valve with and without its friction ring, shows that six conditions were completed by every platform and two by none, that
-            the per-platform difficulty orderings correlate pairwise between 0.50 and 0.84, and that different
-            embodiments fail on different attachments for interpretable, hardware-specific reasons.
+            and USD models for direct import into common simulators. A cross-laboratory validation of six systems
+            spans quadruped and mobile manipulators, fixed-base arms, a VR-driven legged manipulator, and a wearable
+            prosthetic hand. Each system completed 65 trials across 13 conditions, including the ball valve with and
+            without its friction ring. Only the ring-fitted ball valve succeeded in every trial on all six platforms;
+            none completed peg insertion. Difficulty-ordering correlations range from 0.20 to 0.88, and the failure
+            causes reveal different limits across the systems.
           </p>
         </div>
       </div>
@@ -300,14 +300,14 @@
 
         <section class="section" id="Interactive-Image" style="position: relative; z-index: 10;">
       <div class="container is-max-desktop">
-        <div class="interactive-image-container"
-          style="position: relative; width: 100%; max-width: 250px; margin: 0 auto;">
-          <img src="./assets/Hiveboard4.webp" alt="HiveBoard Overview" width="500" height="518"
+        <div class="interactive-image-container platform-board-canvas"
+          style="position: relative; width: 100%; max-width: 760px; height: 540px; margin: 0 auto;">
+          <img src="./assets/Hiveboard4.webp" alt="HiveBoard with six surrounding robot platforms" width="500" height="518"
             fetchpriority="high" decoding="async"
-            style="width: 100%; height: auto; display: block;">
+            style="position: absolute; top: 110px; left: 50%; transform: translateX(-50%); width: 250px; height: auto; display: block;">
 
                     <div class="validation-container is-hidden-mobile"
-            style="position: absolute; top: -30%; left: -80%; width: 280px; cursor: pointer; text-align: center; z-index: 15;">
+            style="position: absolute; top: 55px; left: 5%; width: 260px; cursor: pointer; text-align: center; z-index: 15;">
             <picture style="display: block;">
               <source media="(min-width: 769px)" srcset="./assets/hand.webp" type="image/webp">
               <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
@@ -324,7 +324,7 @@
           </div>
 
                     <div class="validation-container is-hidden-mobile"
-            style="position: absolute; top: -30%; right: -80%; width: 230px; cursor: pointer; text-align: center; z-index: 15;">
+            style="position: absolute; top: 365px; left: calc(50% - 75px); width: 150px; cursor: pointer; text-align: center; z-index: 15;">
             <picture style="display: block;">
               <source media="(min-width: 769px)" srcset="./assets/s010.webp" type="image/webp">
               <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
@@ -341,7 +341,7 @@
           </div>
 
                     <div class="validation-container is-hidden-mobile"
-            style="position: absolute; top: 35%; right: -95%; width: 300px; cursor: pointer; text-align: center; z-index: 15;">
+            style="position: absolute; top: 235px; right: calc(50% - 380px); width: 300px; cursor: pointer; text-align: center; z-index: 15;">
             <picture style="display: block;">
               <source media="(min-width: 769px)" srcset="./assets/spot.webp" type="image/webp">
               <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
@@ -358,7 +358,7 @@
           </div>
 
                     <div class="validation-container is-hidden-mobile"
-            style="position: absolute; top: 20%; left: -98%; width: 300px; cursor: pointer; text-align: center; z-index: 15;">
+            style="position: absolute; top: 235px; left: calc(50% - 403px); width: 300px; cursor: pointer; text-align: center; z-index: 15;">
             <picture style="display: block;">
               <source media="(min-width: 769px)" srcset="./assets/anymal.webp" type="image/webp">
               <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
@@ -375,7 +375,31 @@
             </div>
           </div>
 
-                    <div class="hotspot" style="top: 17.7%; left: 48.6%;">
+          <div class="validation-container is-hidden-mobile"
+            style="position: absolute; top: -48px; left: calc(50% - 75px); width: 150px; cursor: pointer; text-align: center; z-index: 15;">
+            <img class="validation-img" src="./assets/fr3.png" alt="Franka Research 3 robotic arm" width="1211" height="1299"
+              loading="lazy" decoding="async"
+              style="width: 100%; height: auto; opacity: 0.48; transition: all 0.3s ease; object-fit: contain;">
+            <div class="validation-text"
+              style="opacity: 0; transform: translateY(5px); transition: all 0.3s ease; position: absolute; top: 100%; left: 50%; width: 220px; margin-left: -110px; background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); border: 1px solid #e2e8f0; font-size: 0.85rem; color: #475569; pointer-events: none; z-index: 20; text-align: left;">
+              <strong style="color: #0f172a; display: block; margin-bottom: 6px;">Validated with:</strong>
+              Franka Research 3 with a parallel-jaw gripper (Platform E)
+            </div>
+          </div>
+
+          <div class="validation-container is-hidden-mobile"
+            style="position: absolute; top: -5px; right: 15%; width: 160px; cursor: pointer; text-align: center; z-index: 15;">
+            <img class="validation-img" src="./assets/alter_ego.png" alt="Alter-Ego mobile manipulator with a five-finger hand" width="1024" height="1536"
+              loading="lazy" decoding="async"
+              style="width: 100%; height: auto; opacity: 0.48; transition: all 0.3s ease; object-fit: contain;">
+            <div class="validation-text"
+              style="opacity: 0; transform: translateY(5px); transition: all 0.3s ease; position: absolute; top: 100%; left: 50%; width: 220px; margin-left: -110px; background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); border: 1px solid #e2e8f0; font-size: 0.85rem; color: #475569; pointer-events: none; z-index: 20; text-align: left;">
+              <strong style="color: #0f172a; display: block; margin-bottom: 6px;">Validated with:</strong>
+              Alter-Ego mobile manipulator with a Pisa/IIT SoftHand (Platform F)
+            </div>
+          </div>
+
+                    <div class="hotspot hotspot-torque" style="top: 28.9%; left: 49.1%;">
             <div class="hotspot-dot"></div>
             <div class="hotspot-pulse"></div>
             <div class="hotspot-tooltip">
@@ -386,7 +410,7 @@
             </div>
           </div>
 
-                    <div class="hotspot" style="top: 68.7%; left: 80.2%;">
+                    <div class="hotspot hotspot-precision" style="top: 53.3%; left: 59.9%;">
             <div class="hotspot-dot"></div>
             <div class="hotspot-pulse"></div>
             <div class="hotspot-tooltip">
@@ -399,7 +423,7 @@
             </div>
           </div>
 
-                    <div class="hotspot" style="top: 66.3%; left: 19.4%;">
+                    <div class="hotspot hotspot-assembly" style="top: 52.2%; left: 39.9%;">
             <div class="hotspot-dot"></div>
             <div class="hotspot-pulse"></div>
             <div class="hotspot-tooltip">
@@ -591,95 +615,62 @@
         </p>
 
         <div class="columns is-multiline is-centered mt-4">
-                    <div class="column is-3-desktop is-6-tablet">
-            <div class="box"
-              style="height: 100%; display: flex; flex-direction: column; text-align: center; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); border: 1px solid #f1f5f9;">
-
-              <div
-                style="width: 48px; height: 48px; margin: 0 auto 1rem auto; border-radius: 12px; background: linear-gradient(135deg, rgba(237, 175, 25, 0.1), rgba(237, 175, 25, 0.25)); display: flex; align-items: center; justify-content: center; color: #edaf19;">
-                <i class="fas fa-cube fa-lg"></i>
+          <div class="column is-3-desktop is-6-tablet">
+            <div class="box" style="height: 100%; display: flex; flex-direction: column; text-align: center; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); border: 1px solid #f1f5f9;">
+              <div style="width: 48px; height: 48px; margin: 0 auto 1rem auto; border-radius: 12px; background: linear-gradient(135deg, rgba(237, 175, 25, 0.1), rgba(237, 175, 25, 0.25)); display: flex; align-items: center; justify-content: center; color: #edaf19;">
+                <i class="fas fa-cube fa-lg" aria-hidden="true"></i>
               </div>
-
-              <h4 class="title is-5" style="color: #0f172a; margin-bottom: 0.5rem;">MuJoCo</h4>
+              <h4 class="title is-5" style="color: #0f172a; margin-bottom: 0.5rem;">Newton</h4>
               <p style="font-size: 0.85rem; color: #64748b; flex-grow: 1; margin-bottom: 1.25rem; line-height: 1.5;">
-                Assets verified to load, with every joint articulating through its physical range and no
-                self-intersecting collision geometry at rest.
+                GPU-accelerated physics engine for robotics. HiveBoard’s URDF and USD assets can be used as the starting point for Newton scenes.
               </p>
-
-              <button class="button is-small is-fullwidth"
-                style="background-color: transparent; border: 1px solid #e2e8f0; color: #475569; font-weight: 600; border-radius: 6px; transition: all 0.2s; cursor: not-allowed;"
-                onmouseover="this.style.borderColor='#edaf19'; this.style.color='#edaf19'; this.innerHTML='(Soon)';"
-                onmouseout="this.style.borderColor='#e2e8f0'; this.style.color='#475569'; this.innerHTML='<i class=\'fas fa-play\' style=\'margin-right: 6px; font-size: 0.85em;\'></i> Test';"><i
-                  class="fas fa-play" style="margin-right: 6px; font-size: 0.85em;"></i> Test</button>
+              <a class="button is-small is-fullwidth sim-repo-link" href="https://github.com/EESC-LabRoM/isaaclab-hiveboard"
+                target="_blank" rel="noopener noreferrer"
+                style="background-color: transparent; border: 1px solid #e2e8f0; color: #475569; font-weight: 600; border-radius: 6px;">Test</a>
             </div>
           </div>
-
-                    <div class="column is-3-desktop is-6-tablet">
-            <div class="box"
-              style="height: 100%; display: flex; flex-direction: column; text-align: center; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); border: 1px solid #f1f5f9;">
-
-              <div
-                style="width: 48px; height: 48px; margin: 0 auto 1rem auto; border-radius: 12px; background: linear-gradient(135deg, rgba(237, 175, 25, 0.1), rgba(237, 175, 25, 0.25)); display: flex; align-items: center; justify-content: center; color: #edaf19;">
-                <i class="fab fa-python fa-lg"></i>
+          <div class="column is-3-desktop is-6-tablet">
+            <div class="box" style="height: 100%; display: flex; flex-direction: column; text-align: center; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); border: 1px solid #f1f5f9;">
+              <div style="width: 48px; height: 48px; margin: 0 auto 1rem auto; border-radius: 12px; background: linear-gradient(135deg, rgba(237, 175, 25, 0.1), rgba(237, 175, 25, 0.25)); display: flex; align-items: center; justify-content: center; color: #edaf19;">
+                <i class="fas fa-network-wired fa-lg" aria-hidden="true"></i>
               </div>
-
-              <h4 class="title is-5" style="color: #0f172a; margin-bottom: 0.5rem;">PyBullet</h4>
+              <h4 class="title is-5" style="color: #0f172a; margin-bottom: 0.5rem;">Isaac Lab</h4>
               <p style="font-size: 0.85rem; color: #64748b; flex-grow: 1; margin-bottom: 1.25rem; line-height: 1.5;">
-                URDF assets verified to load and articulate, ready for training and ablation of learning-based
-                manipulation policies.
+                Robot-learning framework built on Isaac Sim. HiveBoard environments and task examples are available in the project integration.
               </p>
-
-              <button class="button is-small is-fullwidth"
-                style="background-color: transparent; border: 1px solid #e2e8f0; color: #475569; font-weight: 600; border-radius: 6px; transition: all 0.2s; cursor: not-allowed;"
-                onmouseover="this.style.borderColor='#edaf19'; this.style.color='#edaf19'; this.innerHTML='(Soon)';"
-                onmouseout="this.style.borderColor='#e2e8f0'; this.style.color='#475569'; this.innerHTML='<i class=\'fas fa-play\' style=\'margin-right: 6px; font-size: 0.85em;\'></i> Test';"><i
-                  class="fas fa-play" style="margin-right: 6px; font-size: 0.85em;"></i> Test</button>
+              <a class="button is-small is-fullwidth sim-repo-link" href="https://github.com/EESC-LabRoM/isaaclab-hiveboard"
+                target="_blank" rel="noopener noreferrer"
+                style="background-color: transparent; border: 1px solid #e2e8f0; color: #475569; font-weight: 600; border-radius: 6px;">Test</a>
             </div>
           </div>
-
-                    <div class="column is-3-desktop is-6-tablet">
-            <div class="box"
-              style="height: 100%; display: flex; flex-direction: column; text-align: center; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); border: 1px solid #f1f5f9;">
-
-              <div
-                style="width: 48px; height: 48px; margin: 0 auto 1rem auto; border-radius: 12px; background: linear-gradient(135deg, rgba(237, 175, 25, 0.1), rgba(237, 175, 25, 0.25)); display: flex; align-items: center; justify-content: center; color: #edaf19;">
-                <i class="fas fa-microchip fa-lg"></i>
+          <div class="column is-3-desktop is-6-tablet">
+            <div class="box" style="height: 100%; display: flex; flex-direction: column; text-align: center; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); border: 1px solid #f1f5f9;">
+              <div style="width: 48px; height: 48px; margin: 0 auto 1rem auto; border-radius: 12px; background: linear-gradient(135deg, rgba(237, 175, 25, 0.1), rgba(237, 175, 25, 0.25)); display: flex; align-items: center; justify-content: center; color: #edaf19;">
+                <i class="fas fa-microchip fa-lg" aria-hidden="true"></i>
               </div>
-
               <h4 class="title is-5" style="color: #0f172a; margin-bottom: 0.5rem;">Isaac Sim</h4>
               <p style="font-size: 0.85rem; color: #64748b; flex-grow: 1; margin-bottom: 1.25rem; line-height: 1.5;">
-                USD assets verified to load, including the friction-ring configuration and the honeycomb base as a full
-                board or a single panel for scene composition.
+                USD assets for HiveBoard assemblies and the honeycomb base are available for composing and simulating scenes.
               </p>
-
               <button class="button is-small is-fullwidth"
-                style="background-color: transparent; border: 1px solid #e2e8f0; color: #475569; font-weight: 600; border-radius: 6px; transition: all 0.2s; cursor: not-allowed;"
-                onmouseover="this.style.borderColor='#edaf19'; this.style.color='#edaf19'; this.innerHTML='(Soon)';"
-                onmouseout="this.style.borderColor='#e2e8f0'; this.style.color='#475569'; this.innerHTML='<i class=\'fas fa-play\' style=\'margin-right: 6px; font-size: 0.85em;\'></i> Test';"><i
-                  class="fas fa-play" style="margin-right: 6px; font-size: 0.85em;"></i> Test</button>
+                style="background-color: transparent; border: 1px solid #e2e8f0; color: #475569; font-weight: 600; border-radius: 6px; cursor: not-allowed;"
+                onmouseover="this.style.borderColor='#edaf19'; this.style.color='#edaf19'; this.textContent='Coming Soon';"
+                onmouseout="this.style.borderColor='#e2e8f0'; this.style.color='#475569'; this.textContent='Test';">Test</button>
             </div>
           </div>
-
-                    <div class="column is-3-desktop is-6-tablet">
-            <div class="box"
-              style="height: 100%; display: flex; flex-direction: column; text-align: center; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); border: 1px solid #f1f5f9;">
-
-              <div
-                style="width: 48px; height: 48px; margin: 0 auto 1rem auto; border-radius: 12px; background: linear-gradient(135deg, rgba(237, 175, 25, 0.1), rgba(237, 175, 25, 0.25)); display: flex; align-items: center; justify-content: center; color: #edaf19;">
-                <i class="fas fa-network-wired fa-lg"></i>
+          <div class="column is-3-desktop is-6-tablet">
+            <div class="box" style="height: 100%; display: flex; flex-direction: column; text-align: center; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); border: 1px solid #f1f5f9;">
+              <div style="width: 48px; height: 48px; margin: 0 auto 1rem auto; border-radius: 12px; background: linear-gradient(135deg, rgba(237, 175, 25, 0.1), rgba(237, 175, 25, 0.25)); display: flex; align-items: center; justify-content: center; color: #edaf19;">
+                <i class="fas fa-hand-pointer fa-lg" aria-hidden="true"></i>
               </div>
-
-              <h4 class="title is-5" style="color: #0f172a; margin-bottom: 0.5rem;">ROS-based</h4>
+              <h4 class="title is-5" style="color: #0f172a; margin-bottom: 0.5rem;">ManiSkill</h4>
               <p style="font-size: 0.85rem; color: #64748b; flex-grow: 1; margin-bottom: 1.25rem; line-height: 1.5;">
-                The same URDF descriptions and OBJ visual and collision meshes import into standard ROS 2 and Gazebo
-                pipelines.
+                Robotics simulation and learning framework powered by SAPIEN. Use the released URDF and mesh assets to build custom HiveBoard task environments.
               </p>
-
               <button class="button is-small is-fullwidth"
-                style="background-color: transparent; border: 1px solid #e2e8f0; color: #475569; font-weight: 600; border-radius: 6px; transition: all 0.2s; cursor: not-allowed;"
-                onmouseover="this.style.borderColor='#edaf19'; this.style.color='#edaf19'; this.innerHTML='(Soon)';"
-                onmouseout="this.style.borderColor='#e2e8f0'; this.style.color='#475569'; this.innerHTML='<i class=\'fas fa-play\' style=\'margin-right: 6px; font-size: 0.85em;\'></i> Test';"><i
-                  class="fas fa-play" style="margin-right: 6px; font-size: 0.85em;"></i> Test</button>
+                style="background-color: transparent; border: 1px solid #e2e8f0; color: #475569; font-weight: 600; border-radius: 6px; cursor: not-allowed;"
+                onmouseover="this.style.borderColor='#edaf19'; this.style.color='#edaf19'; this.textContent='Coming Soon';"
+                onmouseout="this.style.borderColor='#e2e8f0'; this.style.color='#475569'; this.textContent='Test';">Test</button>
             </div>
           </div>
         </div>
@@ -813,8 +804,8 @@
           id: 'shock-absorber', pieceType: 'shock_absorber', name: 'Shock absorber', category: 'Composed assembly', realImg: './assets/modules/spring_setup.webp',
           modelImg: './assets/modules/spring_3d.webp',
           top: '-5%',
-          desc: 'A two-cell shock-absorber model in which two hexagonal end pieces are joined by a coil spring with a bolt running through the spring axis. It is the only attachment that occupies two adjacent cells of the honeycomb, and the task is to grasp the loose part of the shock absorber, align its hole with the pin, and insert the part fully onto the pin.',
-          params: [['Success criterion', 'All stages completed within the timeout'], ['Stages', '(1) Grasp the loose part, (2) align its hole with the pin, (3) insert the part fully onto the pin'], ['Timeout', '180 s'], ['Cells occupied', '2 adjacent cells'], ['Material', 'PLA, parts printed sideways']]
+          desc: 'A two-cell shock-absorber model in which two hexagonal end pieces are joined by a coil spring with a bolt running through the spring axis. It is the only attachment that occupies two adjacent cells of the honeycomb, and it combines axial grasping of a slender pin with alignment and insertion under spring load.',
+          params: [['Success criterion', 'All stages completed within the timeout'], ['Stages', '(1) Grasp the pin, (2) align with the hole, (3) insert fully'], ['Timeout', '180 s'], ['Cells occupied', '2 adjacent cells'], ['Material', 'PLA, parts printed sideways']]
         }
       ];
 
@@ -1055,7 +1046,7 @@
         <p class="has-text-justified mb-5" style="color: #94a3b8; line-height: 1.6;">
           Recorded trials from the cross-laboratory validation. Each laboratory printed the board from the released
           files and ran the same <a class="protocol-link" href="https://hiveboard-bench.github.io/hivedocs/benchmark/protocol">protocol</a> on its own hardware, so a single attachment can be compared across a
-          quadruped-mounted gripper, a legged manipulator commanded through virtual reality, a tabletop arm, and a
+          quadruped-mounted gripper, a legged manipulator, tabletop arms, the Alter-Ego mobile manipulator, and a
           prosthetic hand worn on an operator&rsquo;s forearm.
         </p>
         <div class="carousel-wrapper">
@@ -1778,7 +1769,7 @@
 
         <div class="carousel-wrapper">
           <div class="carousel-header">
-            <h3 class="carousel-title">Platform E &middot; Franka Robotics 3</h3>
+            <h3 class="carousel-title">Platform E &middot; Franka Research 3</h3>
             <div class="carousel-nav">
               <button class="nav-btn prev-btn"><i class="fas fa-chevron-left"></i></button>
               <button class="nav-btn next-btn"><i class="fas fa-chevron-right"></i></button>
@@ -1973,6 +1964,130 @@
                     onmouseout="this.style.color='white'; this.style.transform='scale(1)'"></i>
                   <p class="has-text-weight-medium" style="margin: 0;">Drawer</p>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="carousel-wrapper alter-ego-video-carousel">
+          <div class="carousel-header">
+            <h3 class="carousel-title">Platform F &middot; Alter-Ego with Pisa/IIT SoftHand</h3>
+            <div class="carousel-nav">
+              <button type="button" class="nav-btn prev-btn" aria-label="Previous Alter-Ego video"><i class="fas fa-chevron-left"></i></button>
+              <button type="button" class="nav-btn next-btn" aria-label="Next Alter-Ego video"><i class="fas fa-chevron-right"></i></button>
+            </div>
+          </div>
+          <div class="video-carousel">
+            <div class="video-item">
+              <div class="box video-placeholder" style="padding: 0; overflow: hidden; display: block; background: #000;">
+                <video src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/ALTER_EGO_ball_valve.MOV"
+                  data-poster="./assets/posters/ALTER_EGO_ball_valve.webp"
+                  style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;"
+                  preload="none" playsinline muted aria-label="Alter-Ego: Ball valve"></video>
+                <button type="button" class="video-overlay" aria-label="Play Alter-Ego: Ball valve"
+                  style="position: absolute; inset: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 0; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" aria-hidden="true"></i>
+                  <span class="has-text-weight-medium">Ball valve</span>
+                </button>
+              </div>
+            </div>
+            <div class="video-item">
+              <div class="box video-placeholder" style="padding: 0; overflow: hidden; display: block; background: #000;">
+                <video src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/ALTER_EGO_ring_ball_valve.MOV"
+                  data-poster="./assets/posters/ALTER_EGO_ring_ball_valve.webp"
+                  style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;"
+                  preload="none" playsinline muted aria-label="Alter-Ego: Ball valve + ring"></video>
+                <button type="button" class="video-overlay" aria-label="Play Alter-Ego: Ball valve + ring"
+                  style="position: absolute; inset: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 0; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" aria-hidden="true"></i>
+                  <span class="has-text-weight-medium">Ball valve + ring</span>
+                </button>
+              </div>
+            </div>
+            <div class="video-item">
+              <div class="box video-placeholder" style="padding: 0; overflow: hidden; display: block; background: #000;">
+                <video src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/ALTER_EGO_valve_gate_small.MOV"
+                  data-poster="./assets/posters/ALTER_EGO_valve_gate_small.webp"
+                  style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;"
+                  preload="none" playsinline muted aria-label="Alter-Ego: Gate valve (small)"></video>
+                <button type="button" class="video-overlay" aria-label="Play Alter-Ego: Gate valve (small)"
+                  style="position: absolute; inset: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 0; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" aria-hidden="true"></i>
+                  <span class="has-text-weight-medium">Gate valve (small)</span>
+                </button>
+              </div>
+            </div>
+            <div class="video-item">
+              <div class="box video-placeholder" style="padding: 0; overflow: hidden; display: block; background: #000;">
+                <video src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/ALTER_EGO_valve_gate_big.MOV"
+                  data-poster="./assets/posters/ALTER_EGO_valve_gate_big.webp"
+                  style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;"
+                  preload="none" playsinline muted aria-label="Alter-Ego: Gate valve (large)"></video>
+                <button type="button" class="video-overlay" aria-label="Play Alter-Ego: Gate valve (large)"
+                  style="position: absolute; inset: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 0; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" aria-hidden="true"></i>
+                  <span class="has-text-weight-medium">Gate valve (large)</span>
+                </button>
+              </div>
+            </div>
+            <div class="video-item">
+              <div class="box video-placeholder" style="padding: 0; overflow: hidden; display: block; background: #000;">
+                <video src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/ALTER_EGO_circuit_breaker.MOV"
+                  data-poster="./assets/posters/ALTER_EGO_circuit_breaker.webp"
+                  style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;"
+                  preload="none" playsinline muted aria-label="Alter-Ego: Circuit breaker"></video>
+                <button type="button" class="video-overlay" aria-label="Play Alter-Ego: Circuit breaker"
+                  style="position: absolute; inset: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 0; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" aria-hidden="true"></i>
+                  <span class="has-text-weight-medium">Circuit breaker</span>
+                </button>
+              </div>
+            </div>
+            <div class="video-item">
+              <div class="box video-placeholder" style="padding: 0; overflow: hidden; display: block; background: #000;">
+                <video src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/ALTER_EGO_thread_m8.MOV"
+                  data-poster="./assets/posters/ALTER_EGO_thread_m8.webp"
+                  style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;"
+                  preload="none" playsinline muted aria-label="Alter-Ego: Thread (M8)"></video>
+                <button type="button" class="video-overlay" aria-label="Play Alter-Ego: Thread (M8)"
+                  style="position: absolute; inset: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 0; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" aria-hidden="true"></i>
+                  <span class="has-text-weight-medium">Thread (M8)</span>
+                </button>
+              </div>
+            </div>
+            <div class="video-item">
+              <div class="box video-placeholder" style="padding: 0; overflow: hidden; display: block; background: #000;">
+                <video src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/ALTER_EGO_button.MOV"
+                  data-poster="./assets/posters/ALTER_EGO_button.webp"
+                  style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;"
+                  preload="none" playsinline muted aria-label="Alter-Ego: Button"></video>
+                <button type="button" class="video-overlay" aria-label="Play Alter-Ego: Button"
+                  style="position: absolute; inset: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 0; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" aria-hidden="true"></i>
+                  <span class="has-text-weight-medium">Button</span>
+                </button>
+              </div>
+            </div>
+            <div class="video-item">
+              <div class="box video-placeholder" style="padding: 0; overflow: hidden; display: block; background: #000;">
+                <video src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/ALTER_EGO_key.MOV"
+                  data-poster="./assets/posters/ALTER_EGO_key.webp"
+                  style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;"
+                  preload="none" playsinline muted aria-label="Alter-Ego: Lock and key"></video>
+                <button type="button" class="video-overlay" aria-label="Play Alter-Ego: Lock and key"
+                  style="position: absolute; inset: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 0; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; transition: opacity 0.2s; z-index: 2;"
+                  onclick="this.previousElementSibling.play();">
+                  <i class="fas fa-play-circle fa-3x mb-3" aria-hidden="true"></i>
+                  <span class="has-text-weight-medium">Lock and key</span>
+                </button>
               </div>
             </div>
           </div>
@@ -2441,16 +2556,16 @@
 
           @media (min-width: 769px) {
             .column.is-plat-col {
-              flex: 0 0 20%;
-              max-width: 20%;
+              flex: 0 0 16.6667%;
+              max-width: 16.6667%;
             }
           }
 
           .results-matrix {
             display: grid;
-            grid-template-columns: 190px repeat(5, minmax(92px, 1fr));
+            grid-template-columns: 190px repeat(6, minmax(92px, 1fr));
             gap: 6px;
-            min-width: 780px;
+            min-width: 900px;
           }
 
           .mx-scroll {
@@ -2782,7 +2897,7 @@
           </div>
           <div class="mx-legend">
             <span><span class="swatch" style="background: #edaf19;"></span>5/5 completed</span>
-            <span><span class="swatch" style="background: rgba(237,175,25,0.45);"></span>partial (4/5)</span>
+            <span><span class="swatch" style="background: rgba(237,175,25,0.45);"></span>partial (1&ndash;4/5)</span>
             <span><span class="swatch" style="background: #f1f5f9;"></span>0/5 &mdash; no success</span>
           </div>
         </div>
@@ -2801,34 +2916,32 @@
         <div class="columns is-multiline" id="takeaways">
           <div class="column is-4">
             <div class="box takeaway" style="height: 100%; box-shadow: 0 4px 15px rgba(0,0,0,0.02);"
-              data-highlight="6:A,7:A,8:A,11:A,12:A,6:C,7:C,8:C,11:C,12:C">
-              <h4 class="title is-6" style="color: #0f172a; margin-bottom: 0.5rem;">Same eight, same five</h4>
+              data-highlight="5:A,6:A,7:A,8:A,11:A,12:A,5:C,6:C,7:C,8:C,11:C,12:C">
+              <h4 class="title is-6" style="color: #0f172a; margin-bottom: 0.5rem;">Same seven, same six</h4>
               <p style="font-size: 0.85rem; color: #64748b; line-height: 1.5;">
                 A tablet-teleoperated quadruped arm and a VR-driven legged manipulator share no arm, gripper, or
-                interface, yet complete an identical set of eight conditions and fail on an identical five &mdash; for
+                interface, yet complete an identical set of seven conditions and fail on the same six &mdash; for
                 entirely different logged reasons.
               </p>
             </div>
           </div>
           <div class="column is-4">
             <div class="box takeaway" style="height: 100%; box-shadow: 0 4px 15px rgba(0,0,0,0.02);"
-              data-highlight="11:A,11:B,11:C,11:D,12:A,12:B,12:C,12:D">
-              <h4 class="title is-6" style="color: #0f172a; margin-bottom: 0.5rem;">A recess the wide jaws never
-                reach</h4>
+              data-highlight="11:A,11:B,11:C,11:D,11:E,11:F,12:A,12:B,12:C,12:D,12:E,12:F">
+              <h4 class="title is-6" style="color: #0f172a; margin-bottom: 0.5rem;">Assembly tasks separate the platforms</h4>
               <p style="font-size: 0.85rem; color: #64748b; line-height: 1.5;">
-                The drawer handle and the loose part of the shock absorber defeat both platforms on legged bases in every trial, and
-                are cleared by the two end-effectors slim enough to enter the recess: printed fingertips and a worn
-                hand.
+                The Spot Arm and ANYmal failed both the drawer and shock absorber in every trial. The SO-101 and
+                Macao completed both; the FR3 completed the shock absorber, and Alter-Ego completed one drawer trial.
               </p>
             </div>
           </div>
           <div class="column is-4">
             <div class="box takeaway" style="height: 100%; box-shadow: 0 4px 15px rgba(0,0,0,0.02);"
-              data-highlight="6:A,6:B,6:C,6:D,8:A,8:B,8:C,8:D">
-              <h4 class="title is-6" style="color: #0f172a; margin-bottom: 0.5rem;">The small threads stop everyone</h4>
+              data-highlight="6:A,6:B,6:C,6:D,6:E,6:F,8:A,8:B,8:C,8:D,8:E,8:F">
+              <h4 class="title is-6" style="color: #0f172a; margin-bottom: 0.5rem;">Alter-Ego turns the M8 thread</h4>
               <p style="font-size: 0.85rem; color: #64748b; line-height: 1.5;">
-                The M8 fastener and the free peg &mdash; the two smallest threaded parts in the library &mdash; are the
-                only conditions no platform solved: 0/5 in all eight cells, for four different recorded causes.
+                Alter-Ego completed the M8 fastener in 3/5 trials, the only platform to do so. Peg insertion
+                remained at 0/5 on all six platforms.
               </p>
             </div>
           </div>
@@ -2849,39 +2962,38 @@
           <div class="xp-panel" data-panel="order">
             <p class="mt-4" style="color: #475569; line-height: 1.7; font-size: 0.9rem;">
               Each platform ranks the 13 conditions by unsuccessful trials first and normalized median time second, and
-              the four orderings are then compared pairwise with a Spearman correlation. A high correlation means the
+              the six orderings are then compared pairwise with a Spearman correlation. A high correlation means the
               board is measuring properties of the tasks rather than idiosyncrasies of one system.
             </p>
             <div class="columns is-multiline mt-2">
               <div class="column is-3-tablet is-6-mobile rd-metric">
-                <span class="k">Mean, all six pairs</span>
+                <span class="k">Mean, all 15 pairs</span>
                 <span class="v">0.66</span>
                 <div class="rd-bar"><i style="width: 66%"></i></div>
-                <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 6px;">range 0.50 to 0.84</p>
+                <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 6px;">range 0.20 to 0.88</p>
               </div>
               <div class="column is-3-tablet is-6-mobile rd-metric">
                 <span class="k">Spot Arm &harr; ANYmal</span>
-                <span class="v">0.80</span>
-                <div class="rd-bar"><i style="width: 80%"></i></div>
+                <span class="v">0.84</span>
+                <div class="rd-bar"><i style="width: 84%"></i></div>
                 <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 6px;">the two legged bases</p>
               </div>
               <div class="column is-3-tablet is-6-mobile rd-metric">
                 <span class="k">Spot Arm &harr; Macao</span>
-                <span class="v">0.84</span>
-                <div class="rd-bar"><i style="width: 84%"></i></div>
+                <span class="v">0.88</span>
+                <div class="rd-bar"><i style="width: 88%"></i></div>
                 <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 6px;">highest pair in the study</p>
               </div>
               <div class="column is-3-tablet is-6-mobile rd-metric">
-                <span class="k">Excluding the SO-101</span>
-                <span class="v">0.81</span>
-                <div class="rd-bar"><i style="width: 81%"></i></div>
-                <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 6px;">mean over the other three</p>
+                <span class="k">Alter-Ego &harr; SO-101</span>
+                <span class="v">0.20</span>
+                <div class="rd-bar"><i style="width: 20%"></i></div>
+                <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 6px;">lowest pair in the study</p>
               </div>
             </div>
             <p style="color: #64748b; line-height: 1.6; font-size: 0.85rem;">
-              Every pair that includes the SO-101 falls between 0.50 and 0.51, and the divergence traces to exactly
-              three attachments: the drawer and the shock absorber, which its narrow printed fingertips reach and the
-              wider parallel jaws do not, and the small gate valve, which it alone failed.
+              Alter-Ego correlates most with ANYmal (0.86) and Macao (0.85). The SO-101 differs most from Alter-Ego;
+              its narrow fingertips complete the drawer and shock absorber, while it alone fails the small gate valve.
             </p>
           </div>
 
@@ -2895,9 +3007,9 @@
             <div class="columns is-multiline mt-2">
               <div class="column is-3-tablet is-6-mobile rd-metric">
                 <span class="k">A &middot; Spot Arm</span>
-                <span class="v">38%</span>
-                <div class="rd-bar"><i style="width: 38%"></i></div>
-                <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 6px;">3 of 8 completed</p>
+                <span class="v">43%</span>
+                <div class="rd-bar"><i style="width: 43%"></i></div>
+                <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 6px;">3 of 7 completed</p>
               </div>
               <div class="column is-3-tablet is-6-mobile rd-metric">
                 <span class="k">B &middot; SO-101</span>
@@ -2907,9 +3019,9 @@
               </div>
               <div class="column is-3-tablet is-6-mobile rd-metric">
                 <span class="k">C &middot; ANYmal</span>
-                <span class="v">63%</span>
-                <div class="rd-bar"><i style="width: 63%"></i></div>
-                <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 6px;">5 of 8 completed</p>
+                <span class="v">71%</span>
+                <div class="rd-bar"><i style="width: 71%"></i></div>
+                <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 6px;">5 of 7 completed</p>
               </div>
               <div class="column is-3-tablet is-6-mobile rd-metric">
                 <span class="k">D &middot; Macao hand</span>
@@ -2917,12 +3029,23 @@
                 <div class="rd-bar"><i style="width: 73%"></i></div>
                 <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 6px;">8 of 11 completed</p>
               </div>
+              <div class="column is-3-tablet is-6-mobile rd-metric">
+                <span class="k">E &middot; FR3</span>
+                <span class="v">33%</span>
+                <div class="rd-bar"><i style="width: 33%"></i></div>
+                <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 6px;">3 of 9 completed</p>
+              </div>
+              <div class="column is-3-tablet is-6-mobile rd-metric">
+                <span class="k">F &middot; Alter-Ego</span>
+                <span class="v">44%</span>
+                <div class="rd-bar"><i style="width: 44%"></i></div>
+                <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 6px;">4 of 9 completed; 2 used both</p>
+              </div>
             </div>
             <p style="color: #64748b; line-height: 1.6; font-size: 0.85rem;">
-              All platforms used the same strategy for five conditions: the ball valve in both configurations and the
-              button were driven non-prehensilely by all four platforms, since a lever and a momentary switch move under
-              a single push, while the light bulb and the lock were grasped by all four. Every recorded strategy for a precision task is prehensile &mdash; no platform in this study turned a threaded part without
-              first closing around it.
+              Platforms A to E pushed the ball valve in both configurations; Alter-Ego used both pushing and grasping
+              on the bare valve. Every platform grasped the key. Alter-Ego completed one M8 trial without an enclosing
+              grip, the only threaded-part success recorded with that strategy.
             </p>
           </div>
 
@@ -2942,6 +3065,7 @@
                     <th>C &middot; ANYmal</th>
                     <th>D &middot; Macao hand</th>
                     <th>E &middot; FR3</th>
+                    <th>F &middot; Alter-Ego</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -2952,14 +3076,16 @@
                     <td>0.15</td>
                     <td>0.03</td>
                     <td>0.24</td>
+                    <td>0.38</td>
                   </tr>
                   <tr>
                     <td><strong>Precision</strong></td>
-                    <td>0.23</td>
+                    <td>&mdash;</td>
                     <td>0.69</td>
-                    <td>0.16</td>
+                    <td>&mdash;</td>
                     <td>0.64</td>
                     <td>&mdash;</td>
+                    <td>0.82</td>
                   </tr>
                   <tr>
                     <td><strong>Composed assembly</strong></td>
@@ -2968,17 +3094,16 @@
                     <td>0.17</td>
                     <td>0.17</td>
                     <td>0.34</td>
+                    <td>0.59</td>
                   </tr>
                 </tbody>
               </table>
             </div>
             <p class="mt-4" style="color: #64748b; line-height: 1.6; font-size: 0.85rem;">
-              Precision separates the platforms furthest. The SO-101 and the Macao hand are the two systems that
-              accumulate rotation by releasing and reacquiring the part &mdash; 13.6 grasps per trial on the bulb for
-              the arm, 7.0 regrasps for the hand &mdash; and they are the two whose precision scores approach the
-              timeout. For Platforms A, B, and C the precision figure comes from the light bulb alone, the only
-              precision condition they completed. The reported SO-101 grasp count and Macao regrasp count use different
-              labels and should not be compared directly until the original counting conventions are checked.
+              Only Platforms B, D, and F completed a precision condition: the light bulb for B, the light bulb and
+              M30 fastener for D, and the M8 fastener for F. Alter-Ego was the slowest on the torque and assembly
+              conditions it completed. The SO-101 reported 13.6 grasps per light-bulb trial and Macao 7.0 regrasps;
+              those counts use different conventions and should not be compared directly.
             </p>
           </div>
         </div>
@@ -2996,11 +3121,12 @@
             <table class="table academic-table">
               <thead><tr><th>Platform</th><th>Successes</th><th>Conditions</th><th>Median slowdown</th><th>HiveScore</th></tr></thead>
               <tbody>
-                <tr><td><strong>A &middot; Spot Arm</strong></td><td>40/65</td><td>8</td><td>9.3&times; <span style="color:#94a3b8;">(6.4&ndash;12.8)</span></td><td><strong>7.0</strong> <span style="color:#94a3b8;">(6.6&ndash;7.3)</span></td></tr>
+                <tr><td><strong>A &middot; Spot Arm</strong></td><td>35/65</td><td>7</td><td>9.8&times; <span style="color:#94a3b8;">(6.6&ndash;12.8)</span></td><td><strong>5.8</strong> <span style="color:#94a3b8;">(5.4&ndash;6.1)</span></td></tr>
                 <tr><td><strong>B &middot; SO-101</strong></td><td>44/65</td><td>9</td><td>5.8&times; <span style="color:#94a3b8;">(3.8&ndash;19.3)</span></td><td><strong>12.0</strong> <span style="color:#94a3b8;">(11.3&ndash;12.6)</span></td></tr>
-                <tr><td><strong>C &middot; ANYmal</strong></td><td>40/65</td><td>8</td><td>6.0&times; <span style="color:#94a3b8;">(4.5&ndash;10.1)</span></td><td><strong>10.4</strong> <span style="color:#94a3b8;">(9.9&ndash;10.9)</span></td></tr>
+                <tr><td><strong>C &middot; ANYmal</strong></td><td>35/65</td><td>7</td><td>6.1&times; <span style="color:#94a3b8;">(4.6&ndash;10.1)</span></td><td><strong>8.7</strong> <span style="color:#94a3b8;">(8.2&ndash;9.2)</span></td></tr>
                 <tr><td><strong>D &middot; Macao hand</strong></td><td>53/65</td><td>11</td><td>1.6&times; <span style="color:#94a3b8;">(0.9&ndash;14.7)</span></td><td><strong>41.6</strong> <span style="color:#94a3b8;">(40.0&ndash;43.2)</span></td></tr>
                 <tr><td><strong>E &middot; FR3</strong></td><td>40/65</td><td>9</td><td>10.9&times; <span style="color:#94a3b8;">(8.3&ndash;19.1)</span></td><td><strong>5.7</strong> <span style="color:#94a3b8;">(5.4&ndash;6.0)</span></td></tr>
+                <tr><td><strong>F &middot; Alter-Ego</strong></td><td>34/65</td><td>9</td><td>16.6&times; <span style="color:#94a3b8;">(6.0&ndash;28.7)</span></td><td><strong>3.7</strong> <span style="color:#94a3b8;">(3.5&ndash;3.9)</span></td></tr>
               </tbody>
             </table>
           </div>
@@ -3016,8 +3142,8 @@
               categories</p>
           </div>
                     <div class="column is-3-tablet is-12-mobile stat-divider">
-                    <h3 class="title is-3 mb-1" style="font-weight: 700; color: #0f172a; letter-spacing: -0.5px;">325</h3>
-          <p style="font-size: 0.85rem; color: #475569; line-height: 1.4;">Recorded trials, 65 on each of the five
+                    <h3 class="title is-3 mb-1" style="font-weight: 700; color: #0f172a; letter-spacing: -0.5px;">390</h3>
+          <p style="font-size: 0.85rem; color: #475569; line-height: 1.4;">Recorded trials, 65 on each of the six
               platforms, under one fixed protocol</p>
           </div>
                     <div class="column is-3-tablet is-12-mobile stat-divider">
@@ -3041,7 +3167,8 @@
               { id: 'B', name: 'SO-101', full: 'LeRobot SO-101 (fixed base)', ee: 'Printed parallel-jaw gripper', ctrl: 'Leader-follower teleoperation' },
               { id: 'C', name: 'ANYmal', full: 'ANYbotics ANYmal, DynaArm', ee: 'Robotiq 2F-140 parallel-jaw gripper', ctrl: 'Virtual-reality devices (Meta Quest 3)' },
               { id: 'D', name: 'Macao hand', full: 'Macao anthropomorphic hand', ee: 'Worn five-finger hand, operator&rsquo;s own arm positions it', ctrl: 'Analog button grasp selection, worn on forearm' },
-              { id: 'E', name: 'FR3', full: 'Franka Robotics 3 (FR3)', ee: 'Franka Hand (parallel-jaw gripper)', ctrl: 'Teleoperation / policy execution' }
+              { id: 'E', name: 'FR3', full: 'Franka Research 3 (FR3)', ee: 'Franka Hand (parallel-jaw gripper)', ctrl: 'Gamepad teleoperation' },
+              { id: 'F', name: 'Alter-Ego', full: 'Alter-Ego mobile manipulator', ee: 'Pisa/IIT SoftHand', ctrl: 'Cartesian teleoperation (VR headset)' }
             ];
 
             const attachments = [
@@ -3051,7 +3178,8 @@
                 B: { s: 5, t: 9.0, a: 2.2, note: 'Driven by pushing with the closed gripper rather than grasping, the same strategy Platform A adopted.' },
                 C: { s: 5, t: 7.8, a: 1.0, note: 'Completed with a different arm, gripper, and control interface than Platform A, in comparable time.' },
                 D: { s: 5, t: 2.1, a: 1.0, note: 'Driven with the closed hand structure: the lever needs no grasp actuation at all, which makes this the hand&rsquo;s fastest class of task.' },
-                E: { s: 5, t: 14.1, a: 1.0 }
+                E: { s: 5, t: 14.1, a: 1.0 },
+                F: { s: 4, t: 17.5, a: 1.0, causes: { 'Control precision': 1 }, note: 'Four successes split evenly between pushing and grasping the lever; one trial reached the timeout.' }
               },
               {
                 n: 'Ball valve + ring', cat: 'Torque', timeout: 90, crit: 'Handle rotated 90° from closed to open with the ring fitted',
@@ -3059,15 +3187,17 @@
                 B: { s: 5, t: 9.0, a: 1.6, note: 'Identical median to the bare valve: the friction ring is the one accessory in the study that costs a platform nothing measurable.' },
                 C: { s: 5, t: 9.2, a: 1.0, note: 'The ring adds 1.4 s here, a smaller increment than the 6.4 s the same accessory costs Platform A.' },
                 D: { s: 5, t: 2.2, a: 1.0, note: 'Essentially unaffected by the friction ring: the added breakaway torque is absorbed by the operator&rsquo;s own arm.' },
-                E: { s: 5, t: 14.7, a: 1.0 }
+                E: { s: 5, t: 14.7, a: 1.0 },
+                F: { s: 5, t: 22.5, a: 1.0, note: 'The friction ring adds 5.1 s to the median time.' }
               },
               {
                 n: 'Gate valve (small)', cat: 'Torque', timeout: 90, crit: 'Stem rotated one full turn from the closed position',
                 A: { s: 5, t: 19.9, a: 1.0 },
-                B: { s: 0, causes: { 'Kinematic limit': 5 }, note: 'The only attachment in the study that one platform failed and the other three completed. The operator notes record an initial grasp used to release the stem and a final grasp used to push the valve clear of its seat, so the stem moved without ever completing a full turn inside the 90 s timeout.' },
+                B: { s: 0, causes: { 'Kinematic limit': 5 }, note: 'The only condition that one platform failed and every other platform completed. The stem moved without completing a full turn inside the 90 s timeout.' },
                 C: { s: 5, t: 23.1, a: 1.4, note: 'The longest completed task on this platform: the handwheel needs a full turn of the stem, held steady while the torso frame itself moves under the whole-body policy.' },
                 D: { s: 5, t: 2.7, a: 1.0, note: 'Operated with a tripod grasp on the handwheel &mdash; one of the few torque tasks where the hand actually closes on the part.' },
-                E: { s: 5, t: 34.2, a: 1.0 }
+                E: { s: 5, t: 34.2, a: 1.0 },
+                F: { s: 5, t: 65.7, a: 1.0, note: 'Completed without an enclosing grip in all five trials; the median is 28.7 times the human reference.' }
               },
               {
                 n: 'Gate valve (large)', cat: 'Torque', timeout: 120, crit: 'Stem rotated one full turn from the closed position',
@@ -3075,7 +3205,8 @@
                 B: { s: 5, t: 10.0, a: 4.4, note: 'The wider rim is exactly what the small valve lacks: completed on all five trials at a mean of 4.4 attempts, where the small gate valve failed on all five.' },
                 C: { s: 5, t: 16.8, a: 1.0, note: 'Completed by driving one jaw between the spokes of the handwheel instead of grasping around its rim as on Platform A.' },
                 D: { s: 5, t: 2.3, a: 1.0, note: 'Again required no grasp actuation: the larger handwheel can be turned by the closed hand structure.' },
-                E: { s: 5, t: 21.8, a: 1.0 }
+                E: { s: 5, t: 21.8, a: 1.0 },
+                F: { s: 4, t: 59.6, a: 1.0, causes: { 'Control precision': 1 }, note: 'Driven without an enclosing grip on successful trials; one trial failed at the timeout.' }
               },
               {
                 n: 'Circuit breaker', cat: 'Torque', timeout: 60, crit: 'Toggle moved from one state to the other and held',
@@ -3083,15 +3214,17 @@
                 B: { s: 4, t: 8.5, a: 2.8, causes: { 'Other': 1 }, note: 'The single failure came when the movable part of the breaker broke at the end of the motion &mdash; the only failure on this platform not attributed to a kinematic limit.' },
                 C: { s: 5, t: 6.7, a: 1.0, note: 'The fastest attachment on this platform.' },
                 D: { s: 5, t: 1.6, a: 1.0, note: 'The fastest cell in the entire study: the toggle is driven by the closed hand.' },
-                E: { s: 5, t: 13.8, a: 1.0 }
+                E: { s: 5, t: 13.8, a: 1.0 },
+                F: { s: 5, t: 8.7, a: 1.0, note: 'The fastest condition completed by this platform, driven without an enclosing grip.' }
               },
               {
                 n: 'Light bulb', cat: 'Precision', timeout: 120, crit: 'Bulb fully threaded until seated',
-                A: { s: 5, t: 27.3, a: 1.0 },
+                A: { s: 0, a: 1.0, causes: { 'Kinematic limit': 5 }, note: 'All five trials timed out without the bulb seated.' },
                 B: { s: 5, t: 83.0, a: 13.8, note: '13.8 attempts and 13.6 grasps per trial, the highest counts recorded anywhere in the study: accumulating rotation on this arm means releasing the bulb and reacquiring it, over and over.' },
-                C: { s: 5, t: 19.3, a: 2.2, note: 'The highest attempt count this platform recorded &mdash; regrasping is impractical here, and the logs show a single grasp per trial on ten of the thirteen conditions.' },
+                C: { s: 0, a: 2.2, causes: { 'Control precision': 5 }, note: 'All five trials timed out without aligning the bulb with its socket.' },
                 D: { s: 5, t: 52.1, a: 1.0, note: 'Completed on every trial with a power grasp, at a mean of 7.0 regrasps: limited wrist rotation on a worn device forces repeated grasp&ndash;rotate&ndash;release cycles.' },
-                E: { s: 0, a: 1.0, causes: { 'Kinematic limit': 5 }, note: 'The gripper did not bring the bulb into alignment with the socket before timeout.' }
+                E: { s: 0, a: 1.0, causes: { 'Kinematic limit': 5 }, note: 'The gripper did not bring the bulb into alignment with the socket before timeout.' },
+                F: { s: 0, a: 1.0, causes: { 'Kinematic limit': 4, 'Control precision': 1 }, note: 'No trial seated the bulb; three skipped trials are counted as unsuccessful.' }
               },
               {
                 n: 'Thread (M8)', cat: 'Precision', timeout: 120, crit: 'Bolt fully threaded along the available length',
@@ -3099,15 +3232,17 @@
                 B: { s: 0, causes: { 'Kinematic limit': 5 }, note: 'Reached the timeout on all five trials. Attempt counts were not logged for unsuccessful trials on this platform.' },
                 C: { s: 0, a: 1.0, causes: { 'Control precision': 5 }, note: 'The operator notes record that the bolt could not be brought into alignment with its socket before the timeout, so no trial ever reached the sustained rotation that ended the corresponding trials on Platform A.' },
                 D: { s: 0, a: 5.2, causes: { 'Force limit': 4, 'Other': 1 }, note: 'The achievable grip force on the small screw head is insufficient to hold it against thread friction, in the power, tripod, and fine pinch configurations alike (9.2 regrasps per trial). The fifth trial started the screw on the thread but did not seat it before the timeout.' },
-                E: { s: 0, causes: { 'Kinematic limit': 5 }, note: 'The gripper could not align the fastener with its socket before timeout; times and attempts were not logged for unsuccessful trials.' }
+                E: { s: 0, causes: { 'Kinematic limit': 5 }, note: 'The gripper could not align the fastener with its socket before timeout; times and attempts were not logged for unsuccessful trials.' },
+                F: { s: 3, t: 98.4, a: 1.4, causes: { 'Kinematic limit': 1, 'Perception': 1 }, note: 'The only platform to complete the M8 fastener; one success used a non-prehensile strategy.' }
               },
               {
                 n: 'Thread (M30)', cat: 'Precision', timeout: 120, crit: 'Bolt fully threaded along the available length',
                 A: { s: 0, a: 1.0, causes: { 'Kinematic limit': 5 }, note: 'Same wrist limitation as the M8 fastener: no workaround exists once sustained rotation is required.' },
                 B: { s: 0, causes: { 'Kinematic limit': 5 } },
                 C: { s: 0, a: 1.0, causes: { 'Control precision': 5 } },
-                D: { s: 4, t: 102.6, a: 2.2, causes: { 'Force limit': 1 }, note: 'The only cell in which any platform completed a threaded fastener. The larger head gives the hand something to hold: two successful trials threaded about three quarters of the length one-handed before friction stalled further advance, and the other two used two-handed operation.' },
-                E: { s: 0, causes: { 'Kinematic limit': 5 }, note: 'The gripper could not align the fastener with its socket before timeout; times and attempts were not logged for unsuccessful trials.' }
+                D: { s: 4, t: 102.6, a: 2.2, causes: { 'Force limit': 1 }, note: 'The only platform to complete the M30 fastener. The larger head gives the hand something to hold: two successful trials threaded about three quarters of the length one-handed before friction stalled further advance, and the other two used two-handed operation.' },
+                E: { s: 0, causes: { 'Kinematic limit': 5 }, note: 'The gripper could not align the fastener with its socket before timeout; times and attempts were not logged for unsuccessful trials.' },
+                F: { s: 0, a: 1.2, causes: { 'Control precision': 4, 'Kinematic limit': 1 }, note: 'All five trials failed; three skipped trials are counted as unsuccessful.' }
               },
               {
                 n: 'Peg insertion', cat: 'Precision', timeout: 120, crit: 'Free peg threaded into the empty socket until it seats',
@@ -3115,7 +3250,8 @@
                 B: { s: 0, causes: { 'Kinematic limit': 5 } },
                 C: { s: 0, a: 1.0, causes: { 'Control precision': 5 } },
                 D: { s: 0, a: 2.8, causes: { 'Control precision': 5 }, note: 'On three trials the hand never acquired the free peg; on the other two the peg started into the socket but could not be rotated further before the timeout. At 8 mm the pin is narrower than the M8 screw head, so it places the same demand on the hand.' },
-                E: { s: 0, causes: { 'Kinematic limit': 5 }, note: 'The gripper could not align the peg with the empty socket before timeout; times and attempts were not logged for unsuccessful trials.' }
+                E: { s: 0, causes: { 'Kinematic limit': 5 }, note: 'The gripper could not align the peg with the empty socket before timeout; times and attempts were not logged for unsuccessful trials.' },
+                F: { s: 0, a: 1.0, causes: { 'Kinematic limit': 5 }, note: 'No trial seated the peg; all five were marked skipped and counted as unsuccessful.' }
               },
               {
                 n: 'Button', cat: 'Composed assembly', timeout: 60, crit: 'All stages completed within the timeout',
@@ -3124,7 +3260,8 @@
                 B: { s: 5, t: 10.0, a: 3.2, st: [5, 5], note: 'Pushed with the closed gripper rather than grasped.' },
                 C: { s: 5, t: 13.3, a: 1.0, st: [5, 5] },
                 D: { s: 5, t: 3.0, a: 1.0, st: [5, 5], note: 'Completed without grasp actuation.' },
-                E: { s: 5, t: 23.1, a: 1.0, st: [5, 5] }
+                E: { s: 5, t: 23.1, a: 1.0, st: [5, 5] },
+                F: { s: 4, t: 38.2, a: 1.4, st: [5, 4], causes: { 'Force limit': 1 }, note: 'Two successful trials pushed the cover and two lifted it; the failure stopped after stage 1.' }
               },
               {
                 n: 'Lock and key', cat: 'Composed assembly', timeout: 180, crit: 'All stages completed within the timeout',
@@ -3133,7 +3270,8 @@
                 B: { s: 5, t: 15.0, a: 4.2, st: [5, 5, 5] },
                 C: { s: 5, t: 21.4, a: 1.0, st: [5, 5, 5] },
                 D: { s: 5, t: 15.1, a: 1.0, st: [5, 5, 5] },
-                E: { s: 4, t: 60.2, a: 1.0, st: [5, 5, 4], causes: { 'Slip': 1 }, note: 'Four trials reached the unlock state. One trial lost the key after insertion.' }
+                E: { s: 4, t: 60.2, a: 1.0, st: [5, 5, 4], causes: { 'Slip': 1 }, note: 'Four trials reached the unlock state. One trial lost the key after insertion.' },
+                F: { s: 3, t: 80.6, a: 1.4, st: [5, 3, 3], causes: { 'Grasp geometry': 1, 'Control precision': 1 }, note: 'Three trials completed the lock; both failures stopped at stage 1.' }
               },
               {
                 n: 'Drawer', cat: 'Composed assembly', timeout: 120, crit: 'All stages completed within the timeout',
@@ -3142,7 +3280,8 @@
                 B: { s: 5, t: 23.0, a: 5.4, st: [5, 5, 5], note: 'The narrow printed fingertips close around the recessed handle that the wider jaws of Platforms A and C cannot enter.' },
                 C: { s: 0, a: 1.0, st: [5, 0, 0], causes: { 'Control precision': 5 }, note: 'Reached stage 1 in all five trials, then failed to draw the drawer open. Jitter in the commanded motion damaged the printed drawer, which was replaced mid-session; these five trials are the only ones in the study logged under <em>other</em> in the outcome field.' },
                 D: { s: 5, t: 39.9, a: 1.6, st: [5, 5, 5], note: 'The fingers enter the recess where a parallel jaw cannot, at a mean of 3.4 regrasps on the handle.' },
-                E: { s: 1, t: 57.1, a: 1.0, st: [1, 1, 1], causes: { 'Grasp geometry': 4 }, note: 'One trial completed all three stages; four trials could not acquire the recessed handle.' }
+                E: { s: 1, t: 57.1, a: 1.0, st: [1, 1, 1], causes: { 'Grasp geometry': 4 }, note: 'One trial completed all three stages; four trials could not acquire the recessed handle.' },
+                F: { s: 1, t: 81.4, a: 1.0, st: [3, 1, 1], causes: { 'Kinematic limit': 3, 'Control precision': 1 }, note: 'One trial completed all three stages; three failures were kinematic limits.' }
               },
               {
                 n: 'Shock absorber', cat: 'Composed assembly', timeout: 180, crit: 'All stages completed within the timeout',
@@ -3151,16 +3290,18 @@
                 B: { s: 5, t: 16.0, a: 4.8, st: [5, 5, 5], note: 'Grasped the loose part at stage 1 and carried every remaining stage, on the attachment that both legged platforms failed outright.' },
                 C: { s: 0, a: 1.0, st: [5, 0, 0], causes: { 'Control precision': 5 }, note: 'The loose part was grasped in all five trials. Alignment of its hole with the pin was not completed.' },
                 D: { s: 4, t: 39.4, a: 1.2, st: [5, 5, 4], causes: { 'Force limit': 1 }, note: 'The failed trial reached stage 2, with the loose part aligned with the pin but not fully inserted onto it. On the successful trials the wearer&rsquo;s contralateral hand placed the loose part into the grasp, after which alignment and insertion onto the pin were performed with the device alone.' },
-                E: { s: 5, t: 29.2, a: 1.0, st: [5, 5, 5] }
+                E: { s: 5, t: 29.2, a: 1.0, st: [5, 5, 5] },
+                F: { s: 0, a: 1.0, st: [3, 0, 0], causes: { 'Control precision': 4, 'Kinematic limit': 1 }, note: 'The loose pin was grasped in three trials but never aligned with the hole.' }
               }
             ];
 
             const platSummary = {
-              A: { completed: 8, wins: 40, score: '7.0', scoreRange: '6.6&ndash;7.3', fastest: 'Ball valve, 10.5 s', slowest: 'Lock and key, 40.4 s', cause: 'All 25 failed trials split between 15 kinematic limits on the two threaded fasteners and the peg, and 10 grasp-geometry failures on the drawer and the shock absorber: a wrist that cannot sustain rotation about a fixed axis, and a jaw too wide for a recessed handle. The printed parts came through all 65 trials with no observable wear and no loss of press-fit tolerance.' },
-              B: { completed: 9, wins: 44, score: '12.0', scoreRange: '11.3&ndash;12.6', fastest: 'Circuit breaker, 8.5 s', slowest: 'Light bulb, 83.0 s', cause: 'Twenty of the 21 failed trials reached their timeout under a kinematic limit, on the small gate valve, the two threaded fasteners, and the peg: accumulating rotation on this arm requires releasing the part and reacquiring it. The remaining failure is the breaker toggle snapping at the end of one motion. This is the only platform whose difficulty ordering diverges from the rest, and the three attachments responsible are exactly the drawer, the shock absorber, and the small gate valve.' },
-              C: { completed: 8, wins: 40, score: '10.4', scoreRange: '9.9&ndash;10.9', fastest: 'Circuit breaker, 6.7 s', slowest: 'Gate valve (small), 23.1 s', cause: 'All 25 failed trials are recorded as control precision, attributed to an interface that commands end-effector twist relative to a torso frame the whole-body policy is itself moving. No kinematic limit, force limit, or grasp-geometry failure appears at all. The VR interface moves the end-effector faster than a tablet over gross motion, at the cost of rotation stability.' },
-              D: { completed: 11, wins: 53, score: '41.6', scoreRange: '40.0&ndash;43.2', fastest: 'Circuit breaker, 1.6 s', slowest: 'Thread (M30), 102.6 s', cause: 'Since the operator&rsquo;s arm supplies positioning, the difficulty lies in grasp acquisition and grip force rather than gross motion. Eleven of the twelve failed trials are force limits or control precision, and every one occurs on a part that must be held while it is turned. Grasp geometry &mdash; the cause behind every Platform A assembly failure &mdash; never appears once.' },
-              E: { completed: 9, wins: 40, fastest: 'Circuit breaker, 13.8 s', slowest: 'Lock and key, 60.2 s', score: '5.7', scoreRange: '5.4&ndash;6.0', cause: 'Twenty of the 25 failed trials are kinematic limits on the light bulb, the two threaded fasteners, and the peg. The remaining failures are four grasp-geometry failures on the drawer and one slip on the lock and key.' }
+              A: { completed: 7, wins: 35, score: '5.8', scoreRange: '5.4&ndash;6.1', fastest: 'Ball valve, 10.5 s', slowest: 'Lock and key, 40.4 s', cause: 'The 30 failed trials split between 20 kinematic limits on the light bulb, two threaded fasteners, and peg, and 10 grasp-geometry failures on the drawer and shock absorber. The printed parts showed no observable wear or loss of press-fit tolerance.' },
+              B: { completed: 9, wins: 44, score: '12.0', scoreRange: '11.3&ndash;12.6', fastest: 'Circuit breaker, 8.5 s', slowest: 'Light bulb, 83.0 s', cause: 'Twenty of the 21 failed trials were kinematic limits on the small gate valve, two threaded fasteners, and peg. The remaining failure was the breaker toggle breaking. Its difficulty ordering differs most from the other platforms on the drawer, shock absorber, and small gate valve.' },
+              C: { completed: 7, wins: 35, score: '8.7', scoreRange: '8.2&ndash;9.2', fastest: 'Circuit breaker, 6.7 s', slowest: 'Gate valve (small), 23.1 s', cause: 'All 30 failed trials are recorded as control precision. The VR interface commands end-effector motion relative to a torso frame that the whole-body policy is itself moving, complicating stable rotation and alignment.' },
+              D: { completed: 11, wins: 53, score: '41.6', scoreRange: '40.0&ndash;43.2', fastest: 'Circuit breaker, 1.6 s', slowest: 'Thread (M30), 102.6 s', cause: 'The wearer supplies positioning with their own arm. Eleven of the twelve failures were force limits or control precision; none was attributed to grasp geometry.' },
+              E: { completed: 9, wins: 40, score: '5.7', scoreRange: '5.4&ndash;6.0', fastest: 'Circuit breaker, 13.8 s', slowest: 'Lock and key, 60.2 s', cause: 'Twenty of the 25 failed trials were kinematic limits on the light bulb, two threaded fasteners, and peg. The remaining failures were four grasp-geometry failures on the drawer and one slip on the lock and key.' },
+              F: { completed: 9, wins: 34, score: '3.7', scoreRange: '3.5&ndash;3.9', fastest: 'Circuit breaker, 8.7 s', slowest: 'Thread (M8), 98.4 s', cause: 'The 31 failed trials include 15 kinematic limits and 13 control-precision failures, plus one each attributed to perception, force, and grasp geometry. Alter-Ego was the only platform to complete the M8 fastener (3/5).' }
             };
 
             const grid = document.getElementById('results-matrix');
@@ -3213,9 +3354,10 @@
               detail.innerHTML = `
                 <h3 class="title is-5" style="color: #0f172a;">Evaluation platforms</h3>
                 <p style="color: #64748b; line-height: 1.6; font-size: 0.9rem;">
-                  A quadruped-mounted arm under tablet teleoperation, a printed tabletop arm under leader&ndash;follower
-                  control, a legged manipulator commanded through virtual reality, an anthropomorphic hand worn on
-                  an operator&rsquo;s forearm, and the Franka Robotics 3 (FR3).
+                  A Spot Arm under tablet teleoperation, a printed SO-101 arm under leader&ndash;follower control,
+                  ANYmal with DynaArm under VR control, a Macao hand worn on the operator&rsquo;s forearm, a Franka
+                  Research 3 under gamepad teleoperation, and Alter-Ego with a Pisa/IIT SoftHand under Cartesian
+                  teleoperation.
                 </p>
                 <div class="columns is-multiline mt-2">
                   ${platforms.map(p => {
@@ -3307,7 +3449,7 @@
                   <div class="box mt-4" style="background-color: #f8fafc; border: 1px dashed #cbd5e1; box-shadow: none; border-radius: 8px; padding: 1.5rem; text-align: center;">
                     <p style="font-weight: 600; color: #475569; font-size: 1rem; margin-bottom: 0.25rem;">Results Coming Soon</p>
                     <p style="color: #64748b; font-size: 0.85rem; margin: 0;">
-                      Quantitative benchmark evaluation on the Franka Robotics 3 (FR3) is currently underway under the HiveBoard protocol. Video demonstrations can be viewed in the <a href="#Videos" style="color: #edaf19; text-decoration: underline; font-weight: 500;">Videos section</a>.
+                      Quantitative benchmark evaluation for this platform is in progress. Video demonstrations can be viewed in the <a href="#Videos" style="color: #edaf19; text-decoration: underline; font-weight: 500;">Videos section</a>.
                     </p>
                   </div>`;
                 return;
@@ -3900,7 +4042,16 @@
       if (!videos.length) return;
 
       const attach = (video) => {
-        video.poster = video.dataset.poster;
+        if (video.closest('.alter-ego-video-carousel')) {
+          const poster = document.createElement('img');
+          poster.className = 'alter-ego-poster';
+          poster.src = video.dataset.poster;
+          poster.alt = '';
+          video.parentElement.insertBefore(poster, video);
+          video.addEventListener('play', () => { poster.hidden = true; }, { once: true });
+        } else {
+          video.poster = video.dataset.poster;
+        }
         delete video.dataset.poster;
       };
 

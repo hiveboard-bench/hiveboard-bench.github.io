@@ -1445,7 +1445,7 @@
       if (!task) return null;
 
       return task.watch.replace(
-        /_(RevoluteJoint|PrismaticJoint|SlideJoint|HingeJoint|BallJoint)$/,
+        /_(RevoluteJoint|PrismaticJoint|SlideJoint|HingeJoint|BallJoint|RiseJoint)$/,
         ''
       );
     }
@@ -1934,7 +1934,8 @@
       const select = document.getElementById('task-select');
       if (select) select.value = item.key;
       resetScene();
-      setModuleVisibility(item.module || null);
+      setModuleVisibility(null);
+      setDemoCollisions(true);
       showModulePreview(item.key);
       updateReadout();
       hintEl.style.opacity = '0';
@@ -2033,7 +2034,7 @@
         // A platform with no trajectory yet is still worth showing -- you can
         // select it and look at the robot against the board -- so the gate is
         // only for the ones deliberately held back.
-        const isSoon = !!entry.soon || (!PLACE_EDIT && entry.name === 'macao');
+        const isSoon = !!entry.soon;
         const btn = document.createElement('button');
         btn.innerHTML = `${entry.label}<small>${isSoon ? 'coming soon' : entry.note}</small>`;
         btn.dataset.robot = entry.name;

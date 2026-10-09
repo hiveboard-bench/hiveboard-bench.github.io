@@ -1432,7 +1432,15 @@ def attempt(model, data, site, cfg, factory, spin, spin_adr, edits=None,
     apply_edits(task, edits)
 
     path = sample_path(task["keys"])
-    use_cumotion = CUMOTION_ENABLED and cfg.get("planner") == "cumotion"
+    # The Franka task trajectories rely on their sampled Cartesian approach
+    # paths. Planning directly between sparse joint-space keyframes cuts those
+    # paths and produces visibly incorrect motion (notably peg insertion).
+    # Keep cuMotion enabled for robots whose task paths have been validated.
+    use_cumotion = (
+        CUMOTION_ENABLED
+        and cfg.get("planner") == "cumotion"
+        and cfg.get("name") != "fr3"
+    )
     ik_indices = None
     if use_cumotion:
         anchors = build_keyframe_anchors(task, len(path))

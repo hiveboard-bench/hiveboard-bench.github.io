@@ -42,16 +42,29 @@ def main() -> None:
     namespace = runpy.run_path(str(TOOLS_ROOT / "build-sim-assets.py"))
     trajectory_builder = namespace["sim_trajectories"]
     robots = {robot["name"]: robot for robot in namespace["ROBOTS"]}
+    published = {
+        entry["name"]: set(entry.get("tasks", []))
+        for entry in catalogue
+    }
 
     failures = []
     for name in ("fr3", "spot"):
         scene = REPO_ROOT / "public" / "sim" / "models" / f"{name}.xml"
         results = trajectory_builder.build(scene, robots[name])
-        accepted = [module for module, result in results.items() if result.get("ok")]
-        rejected = [module for module, result in results.items() if not result.get("ok")]
-        print(f"{name}: {len(accepted)}/{len(results)} tasks pass MuJoCo replay")
-        if rejected:
-            failures.append((name, rejected))
+        accepted = {module for module, result in results.items() if result.get("ok")}
+        required = published[name] if name == "fr3" else {"valve", "lamp", "breaker"}
+        failed_required = sorted(required - accepted)
+        empty_paths = sorted(
+            module for module, result in results.items()
+            if not result.get("qpos") or not result.get("tcp")
+        )
+        previews = len(set(results) - accepted)
+        print(
+            f"{name}: {len(accepted)}/{len(results)} trajectories pass MuJoCo replay; "
+            f"{previews} best-effort previews remain available for editing"
+        )
+        if failed_required or empty_paths:
+            failures.append((name, failed_required, empty_paths))
 
     if failures:
         raise SystemExit(f"Tasks failed acceptance replay: {failures}")
