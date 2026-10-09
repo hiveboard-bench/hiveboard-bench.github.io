@@ -7,7 +7,7 @@
 This repository hosts the official project website for **HiveBoard: An Open, Modular, 3D-Printed Benchmark of Industrial Mechanisms for Robotic and Prosthetic Manipulation**.
 
 **Live Website:** [hiveboard-bench.github.io](https://hiveboard-bench.github.io)  
-**Main Project Repository:** [github.com/EESC-LabRoM/HiveBoard](https://github.com/EESC-LabRoM/HiveBoard)
+**Main Project Repository:** [github.com/hiveboard-bench/HiveBoard](https://github.com/hiveboard-bench/HiveBoard)
 
 
 ## Website Purpose

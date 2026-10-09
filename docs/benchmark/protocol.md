@@ -2,7 +2,7 @@
 
 This protocol characterizes robot-side performance across HiveBoard attachments. It is suitable for teleoperated arms, wearable interfaces, exoskeletons, and autonomous policies, provided that the control mode is held constant across the recorded trials being compared.
 
-The source protocol is available in [`Documentation/PROTOCOL.md`](https://github.com/EESC-LabRoM/HiveBoard/blob/main/Documentation/PROTOCOL.md). Submissions through this documentation require all 13 conditions, with five recorded trials per condition (65 trials).
+The source protocol is available in [`Documentation/PROTOCOL.md`](https://github.com/hiveboard-bench/HiveBoard/blob/main/Documentation/PROTOCOL.md). Submissions through this documentation require all 13 conditions, with five recorded trials per condition (65 trials).
 
 Before recording, open [How to perform each task](/benchmark/tasks). It lists the starting state, required actions, success criterion, timeout, and reset for every condition, including the [shock absorber](/benchmark/tasks#shock-absorber).
 

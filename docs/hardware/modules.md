@@ -53,4 +53,4 @@ The [ArUco cell](/hardware/aruco-cell) provides a visual reference for board loc
 
 ## Printable files
 
-The attachment folders and their components are available under [`STL/`](https://github.com/EESC-LabRoM/HiveBoard/tree/main/STL). The same high-level folder names are used under `CAD/` and `Simulation/` where the corresponding assets are available.
+The attachment folders and their components are available under [`STL/`](https://github.com/hiveboard-bench/HiveBoard/tree/main/STL). The same high-level folder names are used under `CAD/` and `Simulation/` where the corresponding assets are available.

@@ -2,7 +2,7 @@
 
 The main HiveBoard repository includes articulated digital assets for the physical mechanisms. Use these files when integrating HiveBoard into an existing simulator or robotics stack.
 
-Browse the [`Simulation/` directory](https://github.com/EESC-LabRoM/HiveBoard/tree/main/Simulation).
+Browse the [`Simulation/` directory](https://github.com/hiveboard-bench/HiveBoard/tree/main/Simulation).
 
 ## Available mechanism groups
 
