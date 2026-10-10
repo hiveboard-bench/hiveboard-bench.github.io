@@ -10,7 +10,7 @@ If you use HiveBoard in research or a publication, cite the project paper. The c
              de Lange, Rudy De-Xin and Negri, Juliano and Marsicano, Joao A. and
              Aléssio, João H. and van Halst, Victor and
              Elanjimattathil Vijayan, Aravind and Capezzuto, Gianluca and
-             Tommaselli, Felipe A. G. and Milazzo, Giuseppe and
+             Tommaselli, Felipe and Milazzo, Giuseppe and
              Ramírez Sánchez, Amy M. and Affonso, Francisco and Baptista, Rafael R. and van Berge, Meiko A. and
              Chowdhary, Girish and Bezerra, Ranulfo and
              Lahr, Gustavo J. G. and Ferrari Gerez, Lucas and Bicchi, Antonio and
