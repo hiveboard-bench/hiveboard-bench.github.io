@@ -57,7 +57,8 @@ const tasks = [
   {
     id: 'light_bulb', name: 'Light bulb', family: 'Precision', timeout: 120,
     image: '/images/tasks/lamp_3d.png',
-    video: `${VIDEO_BASE}/s010_light_bulb.mp4`, videoPlatform: 'Platform B · LeRobot SO-101',
+    video: `${VIDEO_BASE}/anymal_light_bulb.mp4`, videoPlatform: 'Platform C · ANYmal with DynaArm (VR)',
+    videoNotice: 'Unsuccessful trial: the robot did not fully thread the light bulb into the socket.',
     success: 'Thread the bulb into the socket until it is seated.',
     reset: 'Remove the bulb, restore the documented starting pose, and inspect the thread.'
   },
@@ -1003,6 +1004,7 @@ onUnmounted(() => {
             <button class="video-link" type="button" @click="openExampleVideo(currentTask)">
               Watch example trial <span>{{ currentTask.videoPlatform }}</span>
             </button>
+            <p v-if="currentTask.videoNotice" class="video-notice">{{ currentTask.videoNotice }}</p>
             <a href="https://hiveboard-bench.github.io/#Simulation-Compatibility" target="_blank" rel="noreferrer noopener">Open the interactive simulation ↗</a>
           </div>
         </div>
@@ -1239,6 +1241,7 @@ onUnmounted(() => {
           </div>
           <button class="video-close" type="button" aria-label="Close example video" @click="closeExampleVideo">Close</button>
         </header>
+        <p v-if="exampleVideoTask.videoNotice" class="video-caption">{{ exampleVideoTask.videoNotice }}</p>
         <video :key="exampleVideoTask.video" controls autoplay muted playsinline preload="metadata" controlslist="nodownload">
           <source :src="exampleVideoTask.video" :type="/\.mp4$/i.test(exampleVideoTask.video) ? 'video/mp4' : undefined">
           Your browser does not support HTML video.
@@ -1326,9 +1329,10 @@ button.compact { min-height: 36px; padding: .35rem .75rem; }
 .task-reference a { font-size: .84rem; font-weight: 600; }
 .task-reference a span { color: #57606a; font-size: .78rem; font-weight: 400; }
 .video-link { width: fit-content; padding: 0; border: 0; background: transparent; color: #23527c; font: inherit; font-size: .84rem; font-weight: 600; text-align: left; text-decoration: underline; }
+.video-notice { margin: 0; color: #7a271a; font-size: .84rem; line-height: 1.5; }
 .video-link span { color: #57606a; font-size: .78rem; font-weight: 400; }
 .video-modal-backdrop { position: fixed; z-index: 1000; inset: 0; display: flex; padding: 1.5rem; align-items: center; justify-content: center; background: rgba(13, 23, 33, .82); }
-.video-modal { overflow: hidden; width: min(960px, 100%); max-height: calc(100vh - 3rem); border: 1px solid #cfd5db; border-radius: 2px; background: #fff; box-shadow: 0 20px 60px rgba(0, 0, 0, .35); color: #24292f; }
+.video-modal { overflow: auto; width: min(960px, 100%); max-height: calc(100vh - 3rem); border: 1px solid #cfd5db; border-radius: 2px; background: #fff; box-shadow: 0 20px 60px rgba(0, 0, 0, .35); color: #24292f; }
 .video-modal header { display: flex; padding: .9rem 1rem; align-items: center; justify-content: space-between; gap: 1rem; }
 .video-modal header p { margin: 0 0 .15rem; color: #57606a; font-size: .76rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
 .video-modal header h2 { margin: 0; border: 0; font-size: 1.1rem; }
