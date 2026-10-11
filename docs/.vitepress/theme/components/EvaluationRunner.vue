@@ -57,7 +57,7 @@ const tasks = [
   {
     id: 'light_bulb', name: 'Light bulb', family: 'Precision', timeout: 120,
     image: '/images/tasks/lamp_3d.png',
-    video: `${VIDEO_BASE}/anymal_light_bulb.mp4`, videoPlatform: 'Platform C · ANYmal with DynaArm (VR)',
+    video: `${VIDEO_BASE}/macao_bulb_lamp.mp4`, videoPlatform: 'Platform D · Macao prosthetic hand',
     success: 'Thread the bulb into the socket until it is seated.',
     reset: 'Remove the bulb, restore the documented starting pose, and inspect the thread.'
   },
