@@ -15,21 +15,23 @@ Select a task below for its starting state, required actions, success criterion,
 | [Gate valve (large)](#large-gate-valve) | Rotate the stem one full turn from closed | 120 s |
 | [Circuit breaker](#circuit-breaker) | Move the toggle to the opposite state and hold it | 60 s |
 | [Light bulb](#light-bulb-and-socket) | Thread the bulb into the socket until seated | 120 s |
-| [Thread (M8)](#m8-threaded-fastener) | Thread the bolt along the available length | 120 s |
-| [Thread (M30)](#m30-threaded-fastener) | Thread the bolt along the available length | 120 s |
+| [Thread (M8)](#m8-threaded-fastener) | Align the nut with the screw and thread it along the available length | 120 s |
+| [Thread (M30)](#m30-threaded-fastener) | Align the nut with the screw and thread it along the available length | 120 s |
 | [Peg insertion](#threaded-peg-insertion) | Align and thread the free peg into the socket until seated | 120 s |
 | [Button](#covered-button) | Open the cover, then press the button until actuation | 60 s |
 | [Lock and key](#lock-and-key) | Grasp the key, insert it vertically, and rotate to unlock | 180 s |
-| [Drawer](#sliding-drawer) | Grasp the handle, pull open, then push closed | 120 s |
+| [Drawer](#sliding-drawer) | Grasp the drawer, align it with its housing, and insert it fully | 120 s |
 | [Shock absorber](#shock-absorber) | Grasp the loose part, align its hole with the pin, and insert the part fully onto the pin | 180 s |
 
 Task names follow Table 2 of the paper. See [Terminology](/reference/terminology) to match them to trial IDs and older file names.
 
 ## Before every trial
 
-Fully seat the attachment and restore the starting state described below. For loose parts, document their starting pose and use the same pose between trials. Where initial thread engagement is part of the setup, document and restore that engagement; this guide does not introduce a new number of starting turns.
+Fully seat the attachment and restore the starting state described below. For loose parts, document their starting pose and use the same pose between trials. For Thread (M8) and Thread (M30), start with the nut completely removed from the fixed screw. Alignment and initial thread engagement are part of the task.
 
 Start the end-effector from the same neutral pose for the platform. Record the complete physical trial with an external camera. Start timing with the first commanded task motion; when using the [Evaluation Runner](/benchmark/evaluation-runner), begin that motion when the countdown reaches zero. Stop at success, a safety stop, or the timeout.
+
+The timed sequence includes the initial approach and grasp. For the key, drawer, and shock absorber, grasping remains stage 1. For the bulb, nuts, and peg, picking up the loose part is also included in the trial time.
 
 For familiarization, outcome labels, and handling broken or displaced parts, follow the [evaluation protocol](/benchmark/protocol). Example videos remain available in the runner.
 
@@ -111,11 +113,11 @@ Task ID: `thread_m8`
 
 | Step | Instruction |
 |---|---|
-| Starting state | Bolt at the documented initial thread engagement; thread clear. |
-| Action | Rotate the bolt to advance it along the thread. |
-| Success | The bolt is fully threaded along the available length. |
+| Starting state | Nut completely removed from the fixed screw, with no thread engagement. Document the nut's starting pose and keep it consistent across trials. |
+| Action | Align the nut with the screw, engage the thread, and rotate the nut along the available length. |
+| Success | The nut is fully threaded along the available length of the screw. |
 | Timeout | 120 s. |
-| Reset | Return the bolt to its initial engagement and inspect the thread. |
+| Reset | Fully unthread and remove the nut, restore its starting pose, and inspect both threads. |
 
 ## Thread (M30) {#m30-threaded-fastener}
 
@@ -123,11 +125,13 @@ Task ID: `thread_m30`
 
 | Step | Instruction |
 |---|---|
-| Starting state | Bolt at the documented initial thread engagement; thread clear. |
-| Action | Rotate the bolt to advance it along the thread. |
-| Success | The bolt is fully threaded along the available length. |
+| Starting state | Nut completely removed from the fixed screw, with no thread engagement. Document the nut's starting pose and keep it consistent across trials. |
+| Action | Align the nut with the screw, engage the thread, and rotate the nut along the available length. |
+| Success | The nut is fully threaded along the available length of the screw. |
 | Timeout | 120 s. |
-| Reset | Return the bolt to its initial engagement and inspect the thread. |
+| Reset | Fully unthread and remove the nut, restore its starting pose, and inspect both threads. |
+
+The runner's M8 and M30 images show the assembled mechanism, with the nut on the screw. These images do not define the required starting state. Begin each new trial with the nut completely clear of the screw. Identify earlier trials that began with the nut engaged when reporting results.
 
 ## Peg insertion {#threaded-peg-insertion}
 
@@ -178,15 +182,17 @@ Task ID: `drawer`
 
 | Step | Instruction |
 |---|---|
-| Starting state | Drawer fully closed. |
-| Stage 1 | Grasp the handle. |
-| Stage 2 | Pull the drawer open. |
-| Stage 3 | Push the drawer closed again. |
-| Success | The drawer has been opened and then closed after grasping the handle. |
-| Timeout | 120 s for the complete sequence. |
-| Reset | Return the drawer to the fully closed position. |
+| Starting state | Drawer completely removed from its housing and placed in its documented starting pose. Housing fixed to the board and empty. |
+| Stage 1 | Grasp the drawer. |
+| Stage 2 | Align the drawer with the housing opening. |
+| Stage 3 | Insert the drawer fully into the housing. |
+| Success | The drawer is correctly seated in the fully inserted position. |
+| Timeout | 120 s, including the initial approach and grasp. |
+| Reset | Remove the drawer completely from its housing and restore its documented starting pose. |
 
-Record the last completed stage: `0`, `1`, `2`, or `3`. Opening the drawer without closing it is stage `2`, not full success.
+Record the last completed stage: `0`, `1`, `2`, or `3`. Record `2` if the drawer is aligned but only partly inserted. Full success requires complete insertion. The task ends with the drawer inserted.
+
+Identify earlier trials that used an open-and-close sequence in `notes` when reporting results.
 
 ## Shock absorber
 

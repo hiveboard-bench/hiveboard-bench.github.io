@@ -66,15 +66,19 @@ const tasks = [
     id: 'thread_m8', name: 'Thread (M8)', family: 'Precision', timeout: 120,
     image: '/images/tasks/m8_3d.png',
     video: `${VIDEO_BASE}/s010_m8_exp5.mp4`, videoPlatform: 'Platform B · LeRobot SO-101',
-    success: 'Thread the bolt along the available length.',
-    reset: 'Return the bolt to the documented initial engagement and check that the thread is clear.'
+    start: 'Nut completely removed from the fixed screw, with no thread engagement.',
+    imageNotice: 'Assembled view. Start the trial with the nut completely removed from the screw.',
+    success: 'Align the nut with the screw and thread it along the available length.',
+    reset: 'Fully unthread and remove the nut, restore its documented starting pose, and inspect both threads.'
   },
   {
     id: 'thread_m30', name: 'Thread (M30)', family: 'Precision', timeout: 120,
     image: '/images/tasks/m30_3d.png',
     video: `${VIDEO_BASE}/s010_m30_exp5.mp4`, videoPlatform: 'Platform B · LeRobot SO-101',
-    success: 'Thread the bolt along the available length.',
-    reset: 'Return the bolt to the documented initial engagement and check that the thread is clear.'
+    start: 'Nut completely removed from the fixed screw, with no thread engagement.',
+    imageNotice: 'Assembled view. Start the trial with the nut completely removed from the screw.',
+    success: 'Align the nut with the screw and thread it along the available length.',
+    reset: 'Fully unthread and remove the nut, restore its documented starting pose, and inspect both threads.'
   },
   {
     id: 'peg_insertion', name: 'Peg insertion', family: 'Precision', timeout: 120,
@@ -103,9 +107,10 @@ const tasks = [
     id: 'drawer', name: 'Drawer', family: 'Composed assembly', timeout: 120,
     image: '/images/tasks/box_3d.png',
     video: `${VIDEO_BASE}/macao_box.mp4`, videoPlatform: 'Platform D · Macao prosthetic hand',
-    success: 'Grasp the handle, pull the drawer open, and push it closed.',
-    reset: 'Return the drawer to the fully closed initial position.',
-    stages: ['Grasp handle', 'Pull open', 'Push closed']
+    start: 'Drawer completely removed from its housing and placed in its documented starting pose. Housing empty.',
+    success: 'Grasp the drawer, align it with its housing, and insert it fully until correctly seated.',
+    reset: 'Remove the drawer completely from its housing and restore its documented starting pose.',
+    stages: ['Grasp drawer', 'Align with housing', 'Insert fully']
   },
   {
     id: 'shock_absorber', name: 'Shock absorber', family: 'Composed assembly', timeout: 180,
@@ -564,10 +569,12 @@ function buildRecordingInstructions() {
 Submission ID: \`${ensureSubmissionId()}\`
 
 1. ${session.evaluation_mode === 'simulation' ? 'Start a screen recording of the simulation before starting the runner countdown.' : 'Start the external camera before starting the runner countdown.'}
-2. Record the complete trial without cuts.
+2. Record the complete trial without cuts, including the initial approach and grasp. Begin the approach when the runner countdown reaches zero.
 3. Keep the HiveBoard, robot and end-effector, and final task state visible.
 4. Save one MP4 file for each row in \`trials.csv\`.
 5. Rename each file exactly as listed below and place it in the package's \`videos/\` directory before submission.
+
+For Thread (M8) and Thread (M30), show the nut completely removed from the screw before the trial begins. The runner's reference image shows the assembled mechanism. For Drawer, show the drawer completely removed from its housing before the trial begins.
 
 | Trial | Condition | Required filename |
 | ---: | --- | --- |
@@ -995,7 +1002,9 @@ onUnmounted(() => {
       <div class="trial-layout">
         <div class="task-reference">
           <img :src="withBase(currentTask.image)" :alt="`${currentTask.name} reference render`">
+          <p v-if="currentTask.imageNotice" class="video-notice">{{ currentTask.imageNotice }}</p>
           <dl>
+            <div v-if="currentTask.start"><dt>Start</dt><dd>{{ currentTask.start }}</dd></div>
             <div><dt>Success</dt><dd>{{ currentTask.success }}</dd></div>
             <div v-if="currentTask.stages"><dt>Stages</dt><dd>{{ currentTask.stages.join(' → ') }}</dd></div>
             <div><dt>Reset</dt><dd>{{ currentTask.reset }}</dd></div>
@@ -1013,7 +1022,7 @@ onUnmounted(() => {
           <p v-if="timerState === 'countdown'" class="countdown-label">Starting in</p>
           <div v-if="timerState === 'countdown'" class="countdown" aria-live="assertive">{{ countdown }}</div>
           <div v-else class="stopwatch" aria-live="polite">{{ displayTime }}</div>
-          <p v-if="timerState === 'idle'">Begin the task when the countdown reaches zero.</p>
+          <p v-if="timerState === 'idle'">Begin the initial approach and grasp when the countdown reaches zero. The initial grasp is included in the trial time.</p>
           <p v-else-if="timerState === 'running'">Timer running · automatic timeout at {{ currentTask.timeout }} seconds</p>
           <p v-else-if="timerState === 'form'">Enter the trial outcome.</p>
 

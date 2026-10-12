@@ -44,9 +44,23 @@ For each platform and evaluation condition:
 4. Stop timing when the success criterion is met, a safety event occurs, or the timeout expires.
 5. Reset the mechanism and neutral pose before the next trial.
 
+Timing includes the initial approach and grasp. Grasping remains stage 1 for Lock and key, Drawer, and Shock absorber. Picking up the loose bulb, nut, or peg is also included in the trial time.
+
 Run the ball valve as two separate blocks: five trials without a friction ring and five with the ring fitted.
 
 Do not tune parameters or change the control mode between recorded trials in the same condition. A restarted approach within a trial counts as another attempt. Count a regrasp only when the end-effector releases the part and grasps it again. The initial grasp is not a regrasp. Attempts and regrasps are separate counts; neither starts a new trial.
+
+## Thread-task starting state
+
+For Thread (M8) and Thread (M30), the nut must start completely removed from the fixed screw. Alignment and initial thread engagement are part of the task. Fully remove the nut again before each trial. The runner's images show the assembled mechanism with the nut on the screw. They do not define the starting state.
+
+Record the starting configuration in `platform.md`. Identify any earlier trials that began with the nut already engaged, since their completion times exclude part of the task.
+
+## Drawer starting state and sequence
+
+Start with the drawer completely removed from its housing and placed in its documented starting pose. The housing stays fixed to the board. Grasp the drawer, align it with the housing opening, and insert it fully until correctly seated. The 120 s timeout includes the initial approach and grasp. Remove the drawer completely before the next trial.
+
+The stages are (1) grasp the drawer, (2) align it with the housing, and (3) insert it fully. Identify earlier trials that used an open-and-close sequence in `notes` when reporting results.
 
 ## Outcomes
 

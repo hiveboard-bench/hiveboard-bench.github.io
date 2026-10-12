@@ -33,6 +33,12 @@ Do not change `trial_id` or `attachment_id`. Fill the remaining columns while ru
 | `strategy` | `prehensile` or `non_prehensile` |
 | `notes` | Deviations, adjustments, damage, or other concise observations |
 
+## Timing and starting state
+
+Include the initial approach and grasp in `completion_time_s`. For the key, drawer, and shock absorber, grasping is stage 1. Start from the documented neutral pose and begin moving when the runner countdown reaches zero. During manual logging, start timing with the first commanded approach motion.
+
+For Thread (M8) and Thread (M30), start with the nut completely removed from the fixed screw. Include picking up the nut, alignment, and initial thread engagement in the trial time. Record any earlier trials with an already engaged nut in `notes` and describe their starting configuration in `platform.md`.
+
 ## Counting conventions
 
 ### Attempts
