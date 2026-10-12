@@ -56,6 +56,12 @@ For Thread (M8) and Thread (M30), the nut must start completely removed from the
 
 Record the starting configuration in `platform.md`. Identify any earlier trials that began with the nut already engaged, since their completion times exclude part of the task.
 
+## Drawer starting state and sequence
+
+Start with the drawer completely removed from its housing and placed in its documented starting pose. The housing stays fixed to the board. Grasp the drawer, align it with the housing opening, and insert it fully until correctly seated. The 120 s timeout includes the initial approach and grasp. Remove the drawer completely before the next trial.
+
+The stages are (1) grasp the drawer, (2) align it with the housing, and (3) insert it fully. Identify earlier trials that used an open-and-close sequence in `notes` when reporting results.
+
 ## Outcomes
 
 Use exactly one of these values:

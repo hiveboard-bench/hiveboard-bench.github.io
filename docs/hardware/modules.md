@@ -42,7 +42,7 @@ These tasks are scored by the last completed stage as well as by full success.
 |---|---|---|---|---|---:|
 | `button` | Button | Open cover | Press button | — | 60 s |
 | `lock` | Lock and key | Grasp key | Insert key vertically | Rotate to unlock | 180 s |
-| `drawer` | Drawer | Grasp handle | Pull open | Push closed | 120 s |
+| `drawer` | Drawer | Grasp drawer | Align with housing | Insert fully | 120 s |
 | `shock_absorber` | Shock absorber | Grasp loose part | Align its hole with the pin | Insert part fully onto pin | 180 s |
 
 Grasping is stage 1 for Lock and key, Drawer, and Shock absorber, and is included in the trial time. Start timing with the initial approach.

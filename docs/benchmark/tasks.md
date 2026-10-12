@@ -20,7 +20,7 @@ Select a task below for its starting state, required actions, success criterion,
 | [Peg insertion](#threaded-peg-insertion) | Align and thread the free peg into the socket until seated | 120 s |
 | [Button](#covered-button) | Open the cover, then press the button until actuation | 60 s |
 | [Lock and key](#lock-and-key) | Grasp the key, insert it vertically, and rotate to unlock | 180 s |
-| [Drawer](#sliding-drawer) | Grasp the handle, pull open, then push closed | 120 s |
+| [Drawer](#sliding-drawer) | Grasp the drawer, align it with its housing, and insert it fully | 120 s |
 | [Shock absorber](#shock-absorber) | Grasp the loose part, align its hole with the pin, and insert the part fully onto the pin | 180 s |
 
 Task names follow Table 2 of the paper. See [Terminology](/reference/terminology) to match them to trial IDs and older file names.
@@ -182,15 +182,17 @@ Task ID: `drawer`
 
 | Step | Instruction |
 |---|---|
-| Starting state | Drawer fully closed. |
-| Stage 1 | Grasp the handle. |
-| Stage 2 | Pull the drawer open. |
-| Stage 3 | Push the drawer closed again. |
-| Success | The drawer has been opened and then closed after grasping the handle. |
-| Timeout | 120 s for the complete sequence. |
-| Reset | Return the drawer to the fully closed position. |
+| Starting state | Drawer completely removed from its housing and placed in its documented starting pose. Housing fixed to the board and empty. |
+| Stage 1 | Grasp the drawer. |
+| Stage 2 | Align the drawer with the housing opening. |
+| Stage 3 | Insert the drawer fully into the housing. |
+| Success | The drawer is correctly seated in the fully inserted position. |
+| Timeout | 120 s, including the initial approach and grasp. |
+| Reset | Remove the drawer completely from its housing and restore its documented starting pose. |
 
-Record the last completed stage: `0`, `1`, `2`, or `3`. Opening the drawer without closing it is stage `2`, not full success.
+Record the last completed stage: `0`, `1`, `2`, or `3`. Record `2` if the drawer is aligned but only partly inserted. Full success requires complete insertion. The task ends with the drawer inserted.
+
+Identify earlier trials that used an open-and-close sequence in `notes` when reporting results.
 
 ## Shock absorber
 

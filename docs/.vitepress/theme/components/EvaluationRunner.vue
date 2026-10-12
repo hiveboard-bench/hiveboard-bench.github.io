@@ -107,9 +107,10 @@ const tasks = [
     id: 'drawer', name: 'Drawer', family: 'Composed assembly', timeout: 120,
     image: '/images/tasks/box_3d.png',
     video: `${VIDEO_BASE}/macao_box.mp4`, videoPlatform: 'Platform D · Macao prosthetic hand',
-    success: 'Grasp the handle, pull the drawer open, and push it closed.',
-    reset: 'Return the drawer to the fully closed initial position.',
-    stages: ['Grasp handle', 'Pull open', 'Push closed']
+    start: 'Drawer completely removed from its housing and placed in its documented starting pose. Housing empty.',
+    success: 'Grasp the drawer, align it with its housing, and insert it fully until correctly seated.',
+    reset: 'Remove the drawer completely from its housing and restore its documented starting pose.',
+    stages: ['Grasp drawer', 'Align with housing', 'Insert fully']
   },
   {
     id: 'shock_absorber', name: 'Shock absorber', family: 'Composed assembly', timeout: 180,
@@ -573,7 +574,7 @@ Submission ID: \`${ensureSubmissionId()}\`
 4. Save one MP4 file for each row in \`trials.csv\`.
 5. Rename each file exactly as listed below and place it in the package's \`videos/\` directory before submission.
 
-For Thread (M8) and Thread (M30), show the nut completely removed from the screw before the trial begins. The runner's reference image shows the assembled mechanism.
+For Thread (M8) and Thread (M30), show the nut completely removed from the screw before the trial begins. The runner's reference image shows the assembled mechanism. For Drawer, show the drawer completely removed from its housing before the trial begins.
 
 | Trial | Condition | Required filename |
 | ---: | --- | --- |
