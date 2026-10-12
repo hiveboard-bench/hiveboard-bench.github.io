@@ -28,8 +28,8 @@ The gate-valve criterion is one complete stem rotation, not full travel. The num
 | ID | Attachment | Required outcome | Timeout |
 |---|---|---|---:|
 | `light_bulb` | Light bulb | Thread the bulb until it is seated | 120 s |
-| `thread_m8` | Thread (M8) | Thread the bolt along the available length | 120 s |
-| `thread_m30` | Thread (M30) | Thread the bolt along the available length | 120 s |
+| `thread_m8` | Thread (M8) | Align the separate nut with the screw and thread it along the available length | 120 s |
+| `thread_m30` | Thread (M30) | Align the separate nut with the screw and thread it along the available length | 120 s |
 | `peg_insertion` | Peg insertion | Thread the free peg into the empty socket until seated | 120 s |
 
 The peg task uses a threaded 8 mm pin. It is not a clearance-fit insertion task.
@@ -44,6 +44,8 @@ These tasks are scored by the last completed stage as well as by full success.
 | `lock` | Lock and key | Grasp key | Insert key vertically | Rotate to unlock | 180 s |
 | `drawer` | Drawer | Grasp handle | Pull open | Push closed | 120 s |
 | `shock_absorber` | Shock absorber | Grasp loose part | Align its hole with the pin | Insert part fully onto pin | 180 s |
+
+Grasping is stage 1 for Lock and key, Drawer, and Shock absorber, and is included in the trial time. Start timing with the initial approach.
 
 Record `0` when no stage is completed. A full success reaches the final stage listed for the attachment.
 

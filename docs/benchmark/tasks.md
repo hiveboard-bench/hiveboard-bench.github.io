@@ -15,8 +15,8 @@ Select a task below for its starting state, required actions, success criterion,
 | [Gate valve (large)](#large-gate-valve) | Rotate the stem one full turn from closed | 120 s |
 | [Circuit breaker](#circuit-breaker) | Move the toggle to the opposite state and hold it | 60 s |
 | [Light bulb](#light-bulb-and-socket) | Thread the bulb into the socket until seated | 120 s |
-| [Thread (M8)](#m8-threaded-fastener) | Thread the bolt along the available length | 120 s |
-| [Thread (M30)](#m30-threaded-fastener) | Thread the bolt along the available length | 120 s |
+| [Thread (M8)](#m8-threaded-fastener) | Align the nut with the screw and thread it along the available length | 120 s |
+| [Thread (M30)](#m30-threaded-fastener) | Align the nut with the screw and thread it along the available length | 120 s |
 | [Peg insertion](#threaded-peg-insertion) | Align and thread the free peg into the socket until seated | 120 s |
 | [Button](#covered-button) | Open the cover, then press the button until actuation | 60 s |
 | [Lock and key](#lock-and-key) | Grasp the key, insert it vertically, and rotate to unlock | 180 s |
@@ -27,9 +27,11 @@ Task names follow Table 2 of the paper. See [Terminology](/reference/terminology
 
 ## Before every trial
 
-Fully seat the attachment and restore the starting state described below. For loose parts, document their starting pose and use the same pose between trials. Where initial thread engagement is part of the setup, document and restore that engagement; this guide does not introduce a new number of starting turns.
+Fully seat the attachment and restore the starting state described below. For loose parts, document their starting pose and use the same pose between trials. For Thread (M8) and Thread (M30), start with the nut completely removed from the fixed screw. Alignment and initial thread engagement are part of the task.
 
 Start the end-effector from the same neutral pose for the platform. Record the complete physical trial with an external camera. Start timing with the first commanded task motion; when using the [Evaluation Runner](/benchmark/evaluation-runner), begin that motion when the countdown reaches zero. Stop at success, a safety stop, or the timeout.
+
+The timed sequence includes the initial approach and grasp. For the key, drawer, and shock absorber, grasping remains stage 1. For the bulb, nuts, and peg, picking up the loose part is also included in the trial time.
 
 For familiarization, outcome labels, and handling broken or displaced parts, follow the [evaluation protocol](/benchmark/protocol). Example videos remain available in the runner.
 
@@ -111,11 +113,11 @@ Task ID: `thread_m8`
 
 | Step | Instruction |
 |---|---|
-| Starting state | Bolt at the documented initial thread engagement; thread clear. |
-| Action | Rotate the bolt to advance it along the thread. |
-| Success | The bolt is fully threaded along the available length. |
+| Starting state | Nut completely removed from the fixed screw, with no thread engagement. Document the nut's starting pose and keep it consistent across trials. |
+| Action | Align the nut with the screw, engage the thread, and rotate the nut along the available length. |
+| Success | The nut is fully threaded along the available length of the screw. |
 | Timeout | 120 s. |
-| Reset | Return the bolt to its initial engagement and inspect the thread. |
+| Reset | Fully unthread and remove the nut, restore its starting pose, and inspect both threads. |
 
 ## Thread (M30) {#m30-threaded-fastener}
 
@@ -123,11 +125,13 @@ Task ID: `thread_m30`
 
 | Step | Instruction |
 |---|---|
-| Starting state | Bolt at the documented initial thread engagement; thread clear. |
-| Action | Rotate the bolt to advance it along the thread. |
-| Success | The bolt is fully threaded along the available length. |
+| Starting state | Nut completely removed from the fixed screw, with no thread engagement. Document the nut's starting pose and keep it consistent across trials. |
+| Action | Align the nut with the screw, engage the thread, and rotate the nut along the available length. |
+| Success | The nut is fully threaded along the available length of the screw. |
 | Timeout | 120 s. |
-| Reset | Return the bolt to its initial engagement and inspect the thread. |
+| Reset | Fully unthread and remove the nut, restore its starting pose, and inspect both threads. |
+
+The runner's M8 and M30 images show the assembled mechanism, with the nut on the screw. These images do not define the required starting state. Begin each new trial with the nut completely clear of the screw. Identify earlier trials that began with the nut engaged when reporting results.
 
 ## Peg insertion {#threaded-peg-insertion}
 
