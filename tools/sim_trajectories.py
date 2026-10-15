@@ -410,6 +410,438 @@ def valve_push_task(model, data, cfg):
     }
 
 
+def grip_address(model, cfg):
+
+    """The qpos address of the joint the grip actuator drives."""
+
+    aid = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_ACTUATOR,
+                            cfg["grip"]["actuator"])
+    jid = int(model.actuator_trnid[aid][0])
+    return int(model.jnt_qposadr[jid])
+
+
+def at_grip(model, data, cfg, value):
+
+    """Set the jaw to ``value`` and return what it was.
+
+    Paired with a restore by the caller.  The jaws are rigid relative to the
+    wrist, so anything measured against them depends only on how far the jaw is
+    open -- never on the arm pose -- but the caller must not leave the model
+    mid-grasp for whoever runs next.
+    """
+
+    adr = grip_address(model, cfg)
+    was = float(data.qpos[adr])
+    data.qpos[adr] = value
+    mujoco.mj_forward(model, data)
+    return was
+
+
+def jaw_moving_body(model, cfg):
+
+    """The jaw body the grip actuator actually drives.
+
+    ``cfg["jaws"]`` lists both jaws, and the order differs between robots --
+    spot's is (finger, fixed jaw), so it cannot be unpacked positionally.
+    """
+
+    aid = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_ACTUATOR,
+                            cfg["grip"]["actuator"])
+    jid = int(model.actuator_trnid[aid][0])
+    return model.body(int(model.jnt_bodyid[jid])).name
+
+
+def jaw_geoms(model, cfg):
+
+    """The collision geoms of the two jaws, as (fixed, moving).
+
+    Collision geoms are the ones that touch an object; the group-2 meshes are
+    only the shell drawn over them.
+    """
+
+    moving_body = jaw_moving_body(model, cfg)
+    fixed_body = next(name for name in cfg["jaws"] if name != moving_body)
+
+    def collision(name):
+        bid = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_BODY, name)
+        return [g for g in range(model.ngeom)
+                if model.geom_bodyid[g] == bid and model.geom_group[g] != 2]
+
+    return collision(fixed_body), collision(moving_body)
+
+
+def geom_gap(model, data, cfg, a, b, value):
+
+    """Surface distance between two jaw geoms at a grip value."""
+
+    was = at_grip(model, data, cfg, value)
+    gap = float(mujoco.mj_geomDistance(model, data, a, b, 1.0, None))
+    data.qpos[grip_address(model, cfg)] = was
+    mujoco.mj_forward(model, data)
+    return gap
+
+
+def jaw_mouth(model, data, cfg):
+
+    """The geom pair a round head rests on: the pair that *touches* when shut.
+
+    This is the pair to size a *round* object against, and it is not the
+    narrowest clearance between the jaws.  A stepped jaw has a recessed step
+    behind its tooth -- spot measures 85 mm across that step and 113 mm between
+    the tooth and the opposing finger -- and a head wide enough to reach the
+    tooth never touches the step at all.  Sizing against the step refuses heads
+    that in fact fit: it refused the 111 mm gate-valve wheel, which fits the
+    113 mm mouth with 2 mm to spare and is graspable by hand.
+    """
+
+    fixed, moving = jaw_geoms(model, cfg)
+    opened, closed = float(cfg["grip"]["open"]), float(cfg["grip"]["grasp"])
+    best = None
+    for a in fixed:
+        for b in moving:
+            if geom_gap(model, data, cfg, a, b, closed) > 0.002:
+                continue      # this pair never actually touches when shut
+            span = geom_gap(model, data, cfg, a, b, opened)
+            if best is None or span > best[0]:
+                best = (span, a, b)
+    if best is None:
+        raise ValueError(
+            "no jaw geom pair closes to contact -- the mouth cannot be found")
+    return best[1], best[2]
+
+
+def jaw_axes(model, data, cfg):
+
+    """The jaw's real closing and forward axes, expressed in the tcp frame.
+
+    The task frame convention says the tcp frame's Y closes the jaws and Z
+    advances them, but a built robot is not obliged to honour it: spot's site is
+    rotated about 26 deg off its own jaws.  A task that sets ``finger`` to the
+    direction it wants the jaws to close therefore closes them somewhere else,
+    and whatever it lined up ends up beside the fingers rather than between
+    them -- which reads as a grip that closes on nothing.
+    """
+
+    opened, closed = float(cfg["grip"]["open"]), float(cfg["grip"]["grasp"])
+    _, before = jaw_faces(model, data, cfg, opened)
+    _, after = jaw_faces(model, data, cfg, closed)
+    travel = after - before
+    closing = unit(travel[np.argsort(np.linalg.norm(travel, axis=1))[-400:]]
+                   .mean(axis=0))
+    pivot = data.xpos[mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_BODY,
+                                        jaw_moving_body(model, cfg))]
+    ahead = unit(after.mean(axis=0) - pivot)
+    ahead = unit(ahead - closing * (ahead @ closing))
+    sid = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_SITE, "tcp")
+    rot = data.site_xmat[sid].reshape(3, 3)
+    return rot.T @ closing, rot.T @ ahead
+
+
+def jaw_frame(model, data, cfg, value):
+
+    """The jaw's grasp frame, expressed in the tcp frame: (axes, origin).
+
+    ``axes`` has columns [X, closing, forward] -- the jaw's *real* axes -- and
+    ``origin`` is the midpoint of the two contact surfaces at ``value``.
+
+    Together they are the rigid transform from the jaw to the site: a point at
+    ``p`` in jaw coordinates sits at ``origin + axes @ p`` in the site frame.
+    That transform is the whole point.  Driving the site itself to an object's
+    centre instead puts whatever the site happens to sit on at the centre --
+    and on spot the site sits on the fixed lower jaw, so aiming it at a head
+    drives the fixed jaw into the head.
+    """
+
+    closing, forward = jaw_axes(model, data, cfg)
+    side = unit(np.cross(closing, forward))
+    fixed, moving = jaw_faces(model, data, cfg, value)
+    gaps = np.linalg.norm(moving[:, None, :] - fixed[None, :, :], axis=2)
+    near = np.dstack(np.unravel_index(np.argsort(gaps, axis=None)[:25],
+                                      gaps.shape))[0]
+    middle = 0.5 * (moving[near[:, 0]] + fixed[near[:, 1]]).mean(axis=0)
+    sid = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_SITE, "tcp")
+    rot = data.site_xmat[sid].reshape(3, 3)
+    return (np.column_stack([side, closing, forward]),
+            rot.T @ (middle - data.site_xpos[sid]))
+
+
+def jaw_fixed_face(model, data, cfg, value):
+
+    """The fixed jaw's contact point, in the tcp frame, at a grip value.
+
+    The jaws close between the fixed jaw's face and the moving finger.  On spot
+    the tcp site sits on the fixed jaw, so the useful instruction is not "put
+    the site on the object" but "put the *fixed face* on the object" -- the
+    lower side of it -- and let the finger come down on the far side.
+    """
+
+    fixed, moving = jaw_faces(model, data, cfg, value)
+    gaps = np.linalg.norm(moving[:, None, :] - fixed[None, :, :], axis=2)
+    near = np.dstack(np.unravel_index(np.argsort(gaps, axis=None)[:25],
+                                      gaps.shape))[0]
+    point = fixed[near[:, 1]].mean(axis=0)
+    sid = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_SITE, "tcp")
+    rot = data.site_xmat[sid].reshape(3, 3)
+    return rot.T @ (point - data.site_xpos[sid])
+
+
+def jaw_faces(model, data, cfg, value):
+
+    """The two grasp faces at a grip value, as vertex clouds: (fixed, moving)."""
+
+    a, b = jaw_mouth(model, data, cfg)
+    was = at_grip(model, data, cfg, value)
+    faces = []
+    for g in (a, b):
+        mesh = model.geom_dataid[g]
+        adr, num = model.mesh_vertadr[mesh], model.mesh_vertnum[mesh]
+        verts = model.mesh_vert[adr:adr + num] @ data.geom_xmat[g].reshape(3, 3).T
+        faces.append(verts + data.geom_xpos[g])
+    data.qpos[grip_address(model, cfg)] = was
+    mujoco.mj_forward(model, data)
+    return faces
+
+
+def jaw_gap(model, data, cfg, value):
+
+    """The jaw's opening at a grip value, measured on the mouth pair."""
+
+    a, b = jaw_mouth(model, data, cfg)
+    return geom_gap(model, data, cfg, a, b, value)
+
+
+def grip_for_gap(model, data, cfg, want):
+
+    """The grip value whose jaw gap is ``want`` metres.
+
+    A parallel jaw is usually assumed to open by roughly its control value, but
+    here only one finger swings, so the gap is a non-linear function of the
+    control and has to be solved for.  The two ends are named for what they do
+    rather than for their numeric order, because the control values are not
+    monotone across robots -- spot opens towards -1.5 and closes towards 0.
+    """
+
+    opened = float(cfg["grip"]["open"])
+    closed = float(cfg["grip"]["grasp"])
+    for _ in range(28):
+        mid = 0.5 * (opened + closed)
+        if jaw_gap(model, data, cfg, mid) < want:
+            closed = mid          # too shut -- the answer is on the open side
+        else:
+            opened = mid
+    return 0.5 * (opened + closed)
+
+
+def about(vec, angle, axis):
+
+    """``vec`` rotated by ``angle`` radians about ``axis``."""
+
+    quat = np.zeros(4)
+    mujoco.mju_axisAngle2Quat(quat, axis, angle)
+    out = np.zeros(3)
+    mujoco.mju_rotVecQuat(out, vec, quat)
+    return out
+
+
+def head_task(model, data, cfg, spec):
+
+    """Turn a wheel or valve head by straddling it, rather than pinching its rim.
+
+    ``rim_task`` takes a bite out of the rim, which needs the jaws to find a
+    feature only a few millimetres wide.  An arm whose jaw opens wider than the
+    head itself can do better: close across the head, so the grip is a straddle
+    rather than a pinch and nothing has to be located to better than the jaw's
+    own thickness.
+
+    Only possible when the jaw out-opens the head.  Measured on spot: jaw
+    85.4 mm against 65.6 mm for the small gate valve's wheel and 76.9 mm for the
+    large one's body -- but the large valve's own wheel is 110.7 mm, wider than
+    the jaw, and it stands between the robot and everything behind it.
+    """
+
+    OPEN = cfg["grip"]["open"]
+    module = spec["module"]
+    anchor, axis, _ = joint_frame(model, data, f"{module}_{spec['turn']}")
+    axis = unit(axis)
+    out = board_out(cfg)
+    head = visual_points(model, data, spec.get("head_body", spec["body"]))
+
+    # The approach and the closing axis have to be chosen together: the jaws
+    # must reach the head, and the closing axis must be perpendicular to
+    # however they got there.  Approaching along the valve axis is the default;
+    # "side" comes in radially instead, which avoids the board sitting right
+    # behind the wheel.
+    lean = approach_for(cfg, anchor, robot_base(model, data))
+    if spec.get("head_approach", cfg.get("head_approach")) == "side":
+        radial = anchor - robot_base(model, data)
+        radial = radial - axis * (radial @ axis)
+        if np.linalg.norm(radial) > 1e-6:
+            lean = unit(radial)
+
+    # Close across the head's narrowest width, over every direction the approach
+    # leaves usable rather than only the valve's own plane.  That restriction
+    # was wrong: the narrow side of a handwheel is across its *thickness*, not
+    # across its face, and a jaw that cannot span the 110 mm wheel can often
+    # span the 85 mm it is thick -- which is the difference between a head grasp
+    # on the large gate valve and no head grasp at all.
+    # Search the plane the valve turns in, where a head's span is its diameter.
+    # Widening this to every direction perpendicular to the approach was tried
+    # and is wrong: it can land on a narrow section -- the stem behind the wheel
+    # measures 57 mm against the wheel's 66 mm -- and sizing the grip against
+    # that over-closes the jaws on the head.
+    rel = head - anchor
+    flat = rel - np.outer(rel @ axis, axis)
+    u, v = plane_basis(axis, [0.0, 0.0, 1.0])
+    width, face = None, None
+    for step in range(0, 180, 2):
+        ang = math.radians(step)
+        d = u * math.cos(ang) + v * math.sin(ang)
+        span = float((flat @ d).max() - (flat @ d).min())
+        if width is None or span < width:
+            width, face = span, d
+
+    # Close to just inside the head so the jaws press on it rather than stop
+    # short.  This is the number a full close would destroy: `grasp` is 0.0,
+    # which would drive the fingers through the body.
+    bite = cfg.get("head_bite", 0.004)
+    opened = jaw_gap(model, data, cfg, OPEN)
+    if width - bite > opened:
+        # Wider than the throat, so the jaws cannot get around it.  Fail loudly:
+        # a head held this way is only pressed against, and the fixed jaw ends
+        # up inside it -- which reads as a pass while being a jam.
+        raise ValueError(
+            f"{module} head is {width * 1000:.1f} mm across but the jaw throat "
+            f"is only {opened * 1000:.1f} mm -- pick a body that fits, or pinch "
+            f"the rim instead")
+    grip = grip_for_gap(model, data, cfg, width - bite)
+
+    # Where the head's centre comes from is settled below, once the closing
+    # direction has a sign: the placement has to use the same reference the grip
+    # was sized against, and that depends on the sign.
+
+    turn = spec["sign"] * wrist_turn(model, cfg, spec["cap"])
+    # Approach from the front, in two moves: first out to the head's height but
+    # well clear of the board, where the descent from home costs nothing, then
+    # straight in along the board normal.  Stepping off by a little is not
+    # enough -- the arm sweeps down through the valve on the way from home and
+    # grazes it, because home sits well above the board.
+    clear = out * cfg.get("head_standoff", 0.20)
+    afar = clear + out * cfg.get("head_approach_out", 0.30)
+    turn_by = lambda vec, ang: about(vec, ang, axis)
+    jaw_rot, jaw_origin = jaw_frame(model, data, cfg, grip)
+    fixed_face = jaw_fixed_face(model, data, cfg, grip)
+
+    # `closing` (from jaw_axes) runs from the finger *towards* the fixed jaw, so
+    # the fixed jaw sits at the high end of this axis.  For the fixed jaw to be
+    # the lower one -- it is the lower jaw, and the finger has to come down onto
+    # the head -- the axis must point *down* in the world.  The opposite sign
+    # grips the head upside down and is what the arm was doing.
+    if float(face[2]) > 0.0:
+        face = -face
+
+    # The jaw's mouth centre goes on the midpoint of the head's *extent* along
+    # that closing axis -- the same measurement the grip was sized against.
+    # Using the head's mean instead is a different reference, and on these valves
+    # the two sit 53 mm and 34 mm apart, which is exactly why each valve passed
+    # on a different placement while they disagreed.
+    # Two candidate references for the head's centre, and they do not agree:
+    # the *extent* midpoint along the closing axis is what the grip is sized
+    # against (and what the small gate valve solves on), while the *mean* is
+    # what the large one solves on.  They sit 53 mm and 34 mm apart.  Rather
+    # than leave one valve broken, the reference is named per module; deriving a
+    # single rule for both is still open (see TASKS_PLAN.md).
+    # The head's lowest point in the world.  What goes there is the fixed jaw's
+    # *contact face*, not the tcp -- the tcp sits about 15 mm back from that face
+    # on the same jaw, so placing the tcp here buries the face in the head.  With
+    # the face on the head's bottom the fixed jaw is underneath the head and the
+    # finger closes down onto the far side.
+    centre = head[int(np.argmin(head @ np.array([0.0, 0.0, 1.0])))]
+
+    # Turn the head in steps rather than in one sweep.  A straddle has to rotate
+    # *with* the wheel, so a single arc rolls the wrist through the whole turn
+    # and runs it into its stop part way -- spot's arm_wr0 gives up at 105 deg
+    # against a 172 deg turn, which is what blocked the gate valves.  Instead
+    # the hand turns one step, opens, swings back to the configuration it
+    # started from -- which the released wheel does not follow -- and grips
+    # again.  Every step leaves the arm exactly where the last one began, so
+    # nothing accumulates and the wheel advances one step per cycle.
+    steps = max(1, int(math.ceil(abs(turn) / cfg.get("head_step", 1.0))))
+    step = turn / steps
+    lift = out * cfg.get("head_lift", 0.03)
+
+    def key(ang, secs, grip_value, offset=None, **extra):
+        """A keyframe with the tcp on the head, turned by ``ang``.
+
+        The site itself is driven to the head, with no correction for where the
+        jaws actually meet.  Correcting for that is a second measured quantity
+        to get right, and on a jaw whose throat is awkward to measure it is
+        easier to place the site and let the jaws fall where they fall.
+        """
+        point = anchor + turn_by(centre - anchor, ang)
+        if offset is not None:
+            point = point + offset
+        pointing = turn_by(face, ang)
+        leaning = turn_by(lean, ang)
+        # Aim and place through the jaw frame, in one transform.  `want` is the
+        # jaw frame asked for in the world; mapping it back through the jaw's
+        # own frame in the site gives the site pose that puts the *jaws* where
+        # we asked -- which is not where the site would have gone on its own.
+        want = np.column_stack([unit(np.cross(pointing, leaning)),
+                                pointing, leaning])
+        rot = want @ jaw_rot.T
+        finger = rot @ np.array([0.0, 1.0, 0.0])
+        approach = rot @ np.array([0.0, 0.0, 1.0])
+        # The jaw's mouth midpoint goes to the head's centre, with the closing
+        # direction signed so the fixed jaw is the lower one.
+        # The fixed jaw's contact face lands on the head's lowest point.
+        pos = point - rot @ fixed_face
+        return dict({"pos": pos, "finger": finger,
+                     "approach": approach, "grip": grip_value, "secs": secs},
+                    **extra)
+
+    def arc(angle, grip_value, secs):
+        return {"arc": {"anchor": anchor, "axis": axis, "angle": angle,
+                        "hold_approach": cfg.get("tilt", 0) > 1.0},
+                "approach": lean, "grip": grip_value, "secs": secs}
+
+    keys = [
+        dict(home_key(model, data, cfg, OPEN), transit=True),
+        key(0.0, 1.8, OPEN, offset=afar, transit=True),    # down, clear of the board
+        key(0.0, 0.9, OPEN, offset=clear, transit=True),   # in to the standoff
+        key(0.0, 1.1, OPEN),                               # onto the head
+        key(0.0, 0.8, grip),
+    ]
+    wheel = [0.0] * 5
+    for cycle in range(steps):
+        keys += [
+            arc(step, grip, cfg.get("head_turn_secs", 1.6)),
+            key(step, 0.5, OPEN, offset=lift),      # release, clear the wheel
+            arc(-step, OPEN, cfg.get("head_reset_secs", 1.6)),
+            key(0.0, 0.5, OPEN),                    # back on the head
+            key(0.0, 0.5, grip),
+        ]
+        # The wheel keeps what it gained: the release is not a reversal.
+        wheel += [step * (cycle + 1)] * 5
+
+    keys += [key(0.0, 0.6, OPEN),
+             key(0.0, 0.9, OPEN, offset=clear, transit=True),
+             key(0.0, 1.2, OPEN, offset=afar, transit=True),  # out, then home
+             dict(home_key(model, data, cfg, OPEN), secs=1.8, transit=True)]
+    wheel += [turn] * 4
+
+    return {
+        "module": module,
+        "label": spec["label"],
+        "caption": spec["caption"],
+        "watch": f"{module}_{spec['watch']}",
+        "goal": turn,
+        "holds": True,
+        "drive": {f"{module}_{spec['turn']}": wheel},
+        "tolerance": spec.get("tolerance", 0.85),
+        "keys": keys,
+    }
+
+
 def lamp_task(model, data, cfg):
 
     OPEN, GRASP, FIST = (cfg["grip"][k] for k in ("open", "grasp", "fist"))
@@ -1120,6 +1552,41 @@ def button_task(model, data, cfg, spec):
     }
 
 
+HIGH_VALVE = dict(
+    module="high-valve", body="high-valve_nut",
+    # The handwheel is 110.7 mm across and the jaw's throat is 85 mm, so the
+    # wheel cannot be straddled -- only pressed against.  The valve *base* is
+    # 76.9 mm and does fit, so that is the head to take.
+    head_body="high-valve_nut",
+    turn="RevoluteJoint", watch="RevoluteJoint", sign=1.0, cap=3.0,
+    rim=0.8, bite=0.006,
+    label="Gate valve (large)",
+    caption="Pinch the handwheel rim and wind it round a full turn.")
+
+SMALL_VALVE = dict(
+    module="small-valve", body="small-valve_eixo_trans",
+    turn="RevoluteJoint", watch="RevoluteJoint", sign=1.0, cap=5.2,
+    rim=0.8, bite=0.005,
+    label="Gate valve (small)",
+    pinch="fist",
+    wrist_only=True,
+    caption="Hold the little handwheel firmly and turn the wrist through one full turn.")
+
+
+def high_valve_for(cfg):
+
+    """Straddle the whole handwheel when the robot asks for it, else pinch the rim."""
+
+    factory = head_task if "high-valve" in cfg.get("head_grasp", ()) else rim_task
+    return bind(factory, **HIGH_VALVE)
+
+
+def small_valve_for(cfg):
+
+    factory = head_task if "small-valve" in cfg.get("head_grasp", ()) else rim_task
+    return bind(factory, **SMALL_VALVE)
+
+
 def valve_for(cfg):
 
     return valve_push_task if cfg.get("strategy") == "push" else valve_task
@@ -1138,21 +1605,9 @@ TASKS = {
     "lamp": lamp_task,
     "breaker": breaker_task,
 
-    "high-valve": bind(
-        rim_task, module="high-valve", body="high-valve_nut",
-        turn="RevoluteJoint", watch="RevoluteJoint", sign=1.0, cap=3.0,
-        rim=0.8, bite=0.006,
-        label="Gate valve (large)",
-        caption="Pinch the handwheel rim and wind it round a full turn."),
+    "high-valve": high_valve_for,
 
-    "small-valve": bind(
-        rim_task, module="small-valve", body="small-valve_eixo_trans",
-        turn="RevoluteJoint", watch="RevoluteJoint", sign=1.0, cap=5.2,
-        rim=0.8, bite=0.005,
-        label="Gate valve (small)",
-        pinch="fist",
-        wrist_only=True,
-        caption="Hold the little handwheel firmly and turn the wrist through one full turn."),
+    "small-valve": small_valve_for,
 
     "thread-m30": bind(
         twist_task, module="thread-m30", body="thread-m30_Nut",
@@ -1465,6 +1920,42 @@ def clamped_joints(span):
 
     return sorted(span or {})
 
+
+def movement_quality(swing, goal, deadband=0.06):
+
+    """How cleanly the module joint travelled to its goal, as a fraction.
+
+    ``ok`` only asks whether the joint *got* there: a trace that saws back and
+    forth still passes on its maximum, because reaching the goal is all the
+    completion test looks at.  This measures the other half -- the distance the
+    joint gave back on the way -- so a jagged approach is visible instead of
+    passing silently.
+
+    Only the leg up to the goal counts: a task that returns retreats on purpose,
+    and counting that would punish correct behaviour.  Retracements smaller than
+    ``deadband`` of the goal are ignored, because the replayed trace carries
+    solver jitter that would otherwise swamp a small goal -- a 1 mm target
+    accumulating a tenth of a millimetre per sample reads as thousands of
+    percent before this filter.
+    """
+
+    swing = np.asarray(swing, dtype=float)
+    if len(swing) < 2 or abs(goal) < 1e-9:
+        return 0.0
+    progress = swing * (1.0 if goal > 0 else -1.0)
+    leg = progress[:int(progress.argmax()) + 1]
+    if len(leg) < 2:
+        return 0.0
+    band = deadband * abs(goal)
+    high, given = leg[0], 0.0
+    for value in leg:
+        if value > high:
+            high = value
+        elif high - value > band:
+            given += high - value
+            high = value
+    return float(given / abs(goal))
+
 def build_ik_indices(task, anchors):
     indices = {0}
 
@@ -1584,6 +2075,13 @@ def attempt(model, data, site, cfg, factory, spin, spin_adr, edits=None,
                 "original_samples": original_samples, "original_grips": original_grips,
                 "spin": spin, "left": 0.0,
                 "why": f"out of reach: fingertips off by {worst * 1000:.0f} mm"}
+    # The site error is advisory, not a verdict.  It measures where the tcp
+    # *site* ended up, and spot's site sits well behind the point the fingers
+    # meet: a trajectory can miss the site by tens of millimetres and still have
+    # the jaws squarely on the object -- which is what the replay below shows
+    # either way.  Discarding those outright threw away working tasks.
+    reach = float(worst)
+    loose = reach > task.get("ik_tolerance", 0.005)
 
     return result
 
@@ -1651,6 +2149,7 @@ def evaluate_samples(model, cfg, task, samples, spin, edits, worst,
         ok = abs(float(swing[-1])) >= 0.9 * abs(task["goal"])
 
     past = clamped_joints(span)
+    jagged = movement_quality(swing, task["goal"])
 
     unit_name = "mm" if task["watch"].endswith("PrismaticJoint") else "rad"
     scale = 1000.0 if unit_name == "mm" else 1.0
@@ -1661,11 +2160,17 @@ def evaluate_samples(model, cfg, task, samples, spin, edits, worst,
         "states": states, "original_samples": original_samples,
         "original_states": original_states, "object_addresses": object_addresses,
         "original_grips": original_grips, "spin": spin,
+        "jagged": round(jagged, 4),
+        "reach": round(reach * 1000.0, 2),
         "left": round(float(swing[-1]), 4),
         "why": (f"{len(samples):4d} samples ({len(samples) / RATE:4.1f}s)  "
-                f"ik error {worst * 1000:4.1f} mm  "
+                f"tcp site {worst * 1000:4.1f} mm  "
                 f"{task['watch'].split('_', 1)[1]} reached {reached * scale:+.2f} "
                 f"of {task['goal'] * scale:+.2f} {unit_name}{ending}"
+                + ("  [site missed -- judged on what the module did]"
+                   if loose else "")
+                + (f"  [path reverses {jagged * 100:.0f}% of the goal]"
+                   if jagged > 0.25 else "")
                 + (f"  [clamped to travel: {', '.join(past)}]" if past else "")),
     }
 
@@ -1753,7 +2258,13 @@ def package(model, site, cfg, result):
         "rate": RATE,
         "watch": task["watch"],
         "goal": task["goal"],
+        # Where the tcp site ended up, in mm.  Advisory: the verdict comes from
+        # what the module actually did.
+        "reach": result.get("reach", 0.0),
         "left": result["left"],
+        # How much of the goal the module joint gave back on the way, as a
+        # fraction.  `ok` ignores it -- this is what a jagged trace looks like.
+        "jagged": result.get("jagged", 0.0),
         "ok": bool(result.get("ok")),
         "spin": round(result["spin"], 5),
         "demo": bool(task.get("demo") or task.get("drive")),

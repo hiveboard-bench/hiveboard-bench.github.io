@@ -193,6 +193,17 @@ ROBOTS = [
         "arm": ["arm_sh0", "arm_sh1", "arm_el0", "arm_el1", "arm_wr0", "arm_wr1"],
         "grip": {"actuator": "arm_f1x", "open": -1.5, "grasp": 0.0, "fist": 0.0},
         "jaws": ("arm_link_fngr", "arm_link_wr1"),
+        # Measured, deliberately NOT applied: the shipped spot_arm.xml tcp site
+        # sits on the fixed jaw 35.2 mm behind the point where the fingers
+        # actually meet, and its Y axis is 32.2 deg off the real closing
+        # direction.  Applying either correction globally was tried on
+        # 2026-10-07 and is a net regression -- it repairs the marginal
+        # high-valve and improves small-valve/shock-absorber, but the other
+        # tasks' authored geometry compensates for the offset, so valve,
+        # thread-m8 and button-cover break.  A corrected site is
+        # ("arm_link_wr1", (0.234232, -0.000367, -0.038808)) with quat
+        # (0.584221, -0.397745, 0.398354, -0.584636) for Y=closing,
+        # Z=forward.  Use it per-task, not per-robot.
         "stow": True,
         "home": [0.0, -1.9, 2.0, 0.0, -0.6, 0.0],
         "board": (1.08, 0.0, 0.70),
@@ -200,16 +211,28 @@ ROBOTS = [
         "stand": {"top": 0.70, "half": 0.17},
         "grip_depth": 0.95,
         "framing": "side",
-        # Spot keeps the three original modules; the swappable centre cell
-        # stays coming soon.  It works them for real rather than
-        # demonstrating them, so its modules stay collidable and move only as
-        # far as the arm actually pushes them.
-        "skip": SWAP_CELL,
+        # Spot keeps the three fixed modules; the centre cell is lifted in
+        # stages (see TASKS_PLAN.md, Sprint 1).  S1.1 (drawer, shock-absorber,
+        # key-lock, high-valve) is parked pending design work; S1.2 solved
+        # small-valve; S1.3 enables the precision trio here.  Spot works its
+        # modules for real rather than demonstrating them, so they stay
+        # collidable and move only as far as the arm actually pushes them.
+        "skip": [],
         "scripted": False,
         "lamp_standoff": 0.01,
         "lamp_wind": 1.5,
         "lamp_approach": 0.25,
         "lamp_demo": True,
+        # The gate valves keep their rim pinch.  A whole-head straddle was
+        # implemented and measured for spot, and neither valve can take it:
+        # the large valve's handwheel is 110.7 mm, wider than the 85.4 mm jaw,
+        # and it stands between the robot and everything behind it; the small
+        # valve's wheel does fit (65.6 mm, closing to 61.6 mm) but the straddle
+        # pose is out of reach -- the rim pinch reaches the same wheel, so it
+        # is the orientation that fails, not the location.  See
+        # sim_trajectories.head_task, which other robots can opt into via
+        # "head_grasp".
+        "head_grasp": ["high-valve", "small-valve"],
         "valve_grasp": 0.015,
         "valve_shy": -0.04,
     },
@@ -1347,7 +1370,12 @@ def emit_robot(cfg, menagerie: Path, board, hiveboard: Path):
         drop_to_floor(cfg, scene, path, body)
 
     if "tcp" in cfg:
-        tcp_body, tcp_pos, tcp_quat = (*cfg["tcp"], (1, 0, 0, 0))
+        # Two forms: (body, pos) keeps the frame the site is declared with, and
+        # (body, pos, quat) also sets its orientation.  The orientation matters
+        # when the shipped site's axes do not line up with the jaws, because
+        # every task reads `finger` as the site's Y and `approach` as its Z.
+        tcp_body, tcp_pos = cfg["tcp"][0], cfg["tcp"][1]
+        tcp_quat = cfg["tcp"][2] if len(cfg["tcp"]) > 2 else (1, 0, 0, 0)
     else:
         tcp_body, tcp_pos, tcp_quat = jaw_centre(cfg, path)
     for elem in scene.iter("body"):
@@ -1411,6 +1439,56 @@ def emit_robot(cfg, menagerie: Path, board, hiveboard: Path):
     }
 
 
+def swap_in(live_out, staging, tries=6, delay=0.5):
+
+    """Replace ``live_out`` with ``staging``, never leaving the site empty.
+
+    The build used to delete ``live_out`` and then rename staging over it.  On
+    Windows a rename fails while any process holds a handle inside the tree --
+    Vite watching ``public/`` is enough -- so that ordering could delete the
+    live models and then fail, shipping a site with no models at all.
+
+    Moving the live tree aside first makes every failure recoverable: the
+    rename either succeeds, or the backup goes straight back.  Both renames
+    retry, because the lock is usually transient (an editor, an indexer, a
+    dev server mid-reload).
+    """
+
+    import time
+
+    backup = live_out.with_name(live_out.name + ".previous")
+
+    def attempt(fn):
+        """Run ``fn``, retrying through a transient Windows file lock."""
+        for n in range(tries):
+            try:
+                fn()
+                return True
+            except PermissionError:
+                if n == tries - 1:
+                    return False
+                time.sleep(delay)
+        return False
+
+    shutil.rmtree(backup, ignore_errors=True)
+
+    # Move the live tree aside first.  If this cannot be done the live models
+    # are still exactly where they were, so the failure costs nothing.
+    if live_out.exists() and not attempt(lambda: live_out.rename(backup)):
+        raise PermissionError(
+            f"could not move {live_out} aside -- nothing was changed. "
+            f"Stop anything watching it (e.g. npm run dev) and re-run.")
+
+    if not attempt(lambda: staging.rename(live_out)):
+        if not live_out.exists() and backup.exists():
+            backup.rename(live_out)  # put the last good build back
+        raise PermissionError(
+            f"could not move {staging} into place -- the previous build is "
+            f"back in {live_out}.  Stop anything watching it and re-run.")
+
+    shutil.rmtree(backup, ignore_errors=True)
+
+
 def build(hiveboard: Path, robot=None, isaaclab_repo=None, usd_cache=None):
     global OUT
 
@@ -1457,16 +1535,7 @@ def build(hiveboard: Path, robot=None, isaaclab_repo=None, usd_cache=None):
     if robot is None:
         vendor()
     OUT = live_out
-    shutil.rmtree(live_out, ignore_errors=True)
-    import time
-    for _ in range(5):
-        try:
-            staging.rename(live_out)
-            break
-        except PermissionError:
-            time.sleep(0.5)
-    else:
-        staging.rename(live_out)
+    swap_in(live_out, staging)
 
 
 def emit_all(hiveboard, robot, keep_anymal, menagerie, isaaclab_repo, usd_cache, source_root):

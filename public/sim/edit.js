@@ -1603,15 +1603,28 @@ export function attach(sim) {
           if (state.draftMode) solveSoon(260);
         }));
         row.appendChild(num(key.grip, 0.05, (v) => {
+          // Write the value onto the local key BEFORE editFor().  num()
+          // re-renders the whole list synchronously, and render() rebuilds
+          // every box from state.keys -- which the pending solve has not
+          // refreshed yet.  Without this the box snaps back to the old value
+          // for as long as the solve takes, which reads as a rejected edit.
+          key.grip = v;
           editFor(key.index).grip = v;
-          if (state.draftMode) { key.grip = v; solveSoon(260); }
+          if (state.draftMode) solveSoon(260);
         }));
         if (key.kind === 'arc') {
 
-          row.appendChild(num(key.angle, 0.05, (v) => { editFor(key.index).angle = v; }));
+          // Same write-back as secs and grip above: without it the angle and
+          // rise boxes keep showing the pre-edit values until /solve answers.
+          row.appendChild(num(key.angle, 0.05, (v) => {
+            key.angle = v;
+            editFor(key.index).angle = v;
+          }));
 
-          row.appendChild(num(Math.round(key.rise * 1e5) / 100, 1,
-                              (v) => { editFor(key.index).rise = v / 1000; }));
+          row.appendChild(num(Math.round(key.rise * 1e5) / 100, 1, (v) => {
+            key.rise = v / 1000;
+            editFor(key.index).rise = v / 1000;
+          }));
         } else {
           const moved = document.createElement('span');
           moved.className = 'moved';

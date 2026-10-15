@@ -118,7 +118,16 @@
   "tasks": [
    "valve",
    "lamp",
-   "breaker"
+   "breaker",
+   "high-valve",
+   "small-valve",
+   "thread-m30",
+   "thread-m8",
+   "peg-insertion",
+   "button-cover",
+   "key-lock",
+   "drawer",
+   "shock-absorber"
   ]
  },
  {
