@@ -1,71 +1,5 @@
 [
  {
-  "name": "fr3",
-  "label": "Franka FR3",
-  "note": "reference arm",
-  "scene": "fr3.xml",
-  "traj": "fr3.traj.json",
-  "arm": 7,
-  "grip": {
-   "actuator": "gripper",
-   "open": 0.034,
-   "grasp": 0.002,
-   "fist": 0.0
-  },
-  "home": [
-   0.0,
-   -0.0881,
-   0.0,
-   -2.1491,
-   0.0,
-   2.0611,
-   0.79
-  ],
-  "gripIndex": 7,
-  "spinIndex": -1,
-  "board": [
-   0.52,
-   0.0,
-   0.2
-  ],
-  "view": {
-   "centre": [
-    0.2731,
-    0.0336,
-    0.3752
-   ],
-   "span": 1.1832
-  },
-  "framing": "over",
-  "boardNormal": [
-   -0.0,
-   0.0,
-   1.0
-  ],
-  "compress": [
-   {
-    "body": "shock-absorber_Spring",
-    "joint": "shock-absorber_PrismaticJoint",
-    "length": 0.06209908469809835,
-    "reach": -0.04490096104969785
-   }
-  ],
-  "tasks": [
-   "valve",
-   "lamp",
-   "breaker",
-   "high-valve",
-   "small-valve",
-   "thread-m30",
-   "thread-m8",
-   "peg-insertion",
-   "button-cover",
-   "key-lock",
-   "drawer",
-   "shock-absorber"
-  ]
- },
- {
   "name": "spot",
   "label": "Spot + Spot Arm",
   "note": "Platform A",
@@ -225,6 +159,72 @@
    -1.0,
    0.0,
    0.0
+  ],
+  "compress": [
+   {
+    "body": "shock-absorber_Spring",
+    "joint": "shock-absorber_PrismaticJoint",
+    "length": 0.06209908469809835,
+    "reach": -0.04490096104969785
+   }
+  ],
+  "tasks": [
+   "valve",
+   "lamp",
+   "breaker",
+   "high-valve",
+   "small-valve",
+   "thread-m30",
+   "thread-m8",
+   "peg-insertion",
+   "button-cover",
+   "key-lock",
+   "drawer",
+   "shock-absorber"
+  ]
+ },
+ {
+  "name": "fr3",
+  "label": "Franka FR3",
+  "note": "Platform E",
+  "scene": "fr3.xml",
+  "traj": "fr3.traj.json",
+  "arm": 7,
+  "grip": {
+   "actuator": "gripper",
+   "open": 0.034,
+   "grasp": 0.002,
+   "fist": 0.0
+  },
+  "home": [
+   0.0,
+   -0.0881,
+   0.0,
+   -2.1491,
+   0.0,
+   2.0611,
+   0.79
+  ],
+  "gripIndex": 7,
+  "spinIndex": -1,
+  "board": [
+   0.52,
+   0.0,
+   0.2
+  ],
+  "view": {
+   "centre": [
+    0.2731,
+    0.0336,
+    0.3752
+   ],
+   "span": 1.1832
+  },
+  "framing": "over",
+  "boardNormal": [
+   -0.0,
+   0.0,
+   1.0
   ],
   "compress": [
    {

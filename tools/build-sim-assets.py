@@ -312,7 +312,7 @@ ROBOTS = [
         "grip": {"actuator": "gripper", "open": 0.034, "grasp": 0.002, "fist": 0.0},
         "home": [0.0, -0.0881, 0.0, -2.1491, 0.0, 2.0611, 0.79],
         # held back for now; both show as coming soon
-        "skip": ["drawer", "button-cover"],
+        "skip": [],
         # the breaker is thrown for real, not demonstrated
         "physical": ["breaker"],
         # the bulb has to leave its socket, not clear it by a further tenth

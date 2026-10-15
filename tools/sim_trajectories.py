@@ -2075,13 +2075,7 @@ def attempt(model, data, site, cfg, factory, spin, spin_adr, edits=None,
                 "original_samples": original_samples, "original_grips": original_grips,
                 "spin": spin, "left": 0.0,
                 "why": f"out of reach: fingertips off by {worst * 1000:.0f} mm"}
-    # The site error is advisory, not a verdict.  It measures where the tcp
-    # *site* ended up, and spot's site sits well behind the point the fingers
-    # meet: a trajectory can miss the site by tens of millimetres and still have
-    # the jaws squarely on the object -- which is what the replay below shows
-    # either way.  Discarding those outright threw away working tasks.
-    reach = float(worst)
-    loose = reach > task.get("ik_tolerance", 0.005)
+
 
     return result
 
@@ -2142,6 +2136,14 @@ def evaluate_samples(model, cfg, task, samples, spin, edits, worst,
     measured = swing[start:]
     reached = measured.max() if task["goal"] > 0 else measured.min()
     ok = abs(reached) >= abs(task["goal"]) * task.get("tolerance", 0.85)
+
+    # The site error is advisory, not a verdict.  It measures where the tcp
+    # *site* ended up, and spot's site sits well behind the point the fingers
+    # meet: a trajectory can miss the site by tens of millimetres and still have
+    # the jaws squarely on the object -- which is what the replay below shows
+    # either way.  Discarding those outright threw away working tasks.
+    reach = float(worst)
+    loose = reach > task.get("ik_tolerance", 0.005)
 
     if ok and task.get("returns"):
         ok = abs(float(swing[-1])) <= 0.12 * abs(task["goal"])
