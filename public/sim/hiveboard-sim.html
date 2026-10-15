@@ -1639,10 +1639,14 @@
     function modulePrefix() {
       if (!task) return null;
 
-      return task.watch.replace(
-        /_(RevoluteJoint|PrismaticJoint|SlideJoint|HingeJoint|BallJoint)$/,
-        ''
-      );
+      // Resolve the prefix the way setModuleVisibility, moduleCollisions and
+      // moduleRootBodies already do, instead of stripping a fixed list of joint
+      // name suffixes.  That list missed thread-m30: its translating joint is the
+      // custom "RiseJoint" that tools/build-sim-assets.py adds, so its watch reads
+      // "thread-m30_RiseJoint", the stripped value matched no module prefix, and
+      // every M30 body was hidden -- the mesh vanished from every scene.
+      const watch = task.watch || '';
+      return MODULE_PREFIXES.find((p) => watch.startsWith(`${p}_`)) || null;
     }
 
     function taskKey() {
