@@ -7,6 +7,19 @@
   <title>HiveBoard</title>
   <meta name="description" content="An open, modular, 3D-printed benchmark of industrial mechanisms for robotic and prosthetic manipulation." />
   <link rel="canonical" href="https://hiveboard-bench.github.io/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="HiveBoard" />
+  <meta property="og:title" content="HiveBoard" />
+  <meta property="og:description" content="An open, modular, 3D-printed benchmark of industrial mechanisms for robotic and prosthetic manipulation." />
+  <meta property="og:url" content="https://hiveboard-bench.github.io/" />
+  <meta property="og:image" content="https://hiveboard-bench.github.io/assets/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="HiveBoard: hexagonal modular benchmark board" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="HiveBoard" />
+  <meta name="twitter:description" content="An open, modular, 3D-printed benchmark of industrial mechanisms for robotic and prosthetic manipulation." />
+  <meta name="twitter:image" content="https://hiveboard-bench.github.io/assets/og-image.png" />
   <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
   <link rel="icon" type="image/x-icon" href="./favicon.ico" sizes="any">
   <link rel="apple-touch-icon" href="./assets/favicon.png">
@@ -301,13 +314,13 @@
         <section class="section" id="Interactive-Image" style="position: relative; z-index: 10;">
       <div class="container is-max-desktop">
         <div class="interactive-image-container platform-board-canvas"
-          style="position: relative; width: 100%; max-width: 760px; height: 540px; margin: 0 auto;">
-          <img src="./assets/Hiveboard4.webp" alt="HiveBoard with six surrounding robot platforms" width="500" height="518"
+          style="position: relative; width: 100%; max-width: 860px; height: 600px; margin: 0 auto;">
+          <img src="./assets/Hiveboard4.webp" alt="HiveBoard with eight surrounding robot platforms" width="500" height="518"
             fetchpriority="high" decoding="async"
-            style="position: absolute; top: 110px; left: 50%; transform: translateX(-50%); width: 250px; height: auto; display: block;">
+            style="position: absolute; top: 160px; left: 50%; transform: translateX(-50%); width: 250px; height: auto; display: block;">
 
                     <div class="validation-container is-hidden-mobile"
-            style="position: absolute; top: 55px; left: 5%; width: 260px; cursor: pointer; text-align: center; z-index: 15;">
+            style="position: absolute; top: 220px; left: calc(50% - 365px); width: 250px; cursor: pointer; text-align: center; z-index: 15;">
             <picture style="display: block;">
               <source media="(min-width: 769px)" srcset="./assets/hand.webp" type="image/webp">
               <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
@@ -324,7 +337,7 @@
           </div>
 
                     <div class="validation-container is-hidden-mobile"
-            style="position: absolute; top: 365px; left: calc(50% - 75px); width: 150px; cursor: pointer; text-align: center; z-index: 15;">
+            style="position: absolute; top: 430px; left: calc(50% - 65px); width: 140px; cursor: pointer; text-align: center; z-index: 15;">
             <picture style="display: block;">
               <source media="(min-width: 769px)" srcset="./assets/s010.webp" type="image/webp">
               <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
@@ -341,7 +354,7 @@
           </div>
 
                     <div class="validation-container is-hidden-mobile"
-            style="position: absolute; top: 235px; right: calc(50% - 380px); width: 300px; cursor: pointer; text-align: center; z-index: 15;">
+            style="position: absolute; top: 370px; left: calc(50% + 90px); width: 280px; cursor: pointer; text-align: center; z-index: 15;">
             <picture style="display: block;">
               <source media="(min-width: 769px)" srcset="./assets/spot.webp" type="image/webp">
               <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
@@ -358,7 +371,7 @@
           </div>
 
                     <div class="validation-container is-hidden-mobile"
-            style="position: absolute; top: 235px; left: calc(50% - 403px); width: 300px; cursor: pointer; text-align: center; z-index: 15;">
+            style="position: absolute; top: 350px; left: calc(50% - 363px); width: 290px; cursor: pointer; text-align: center; z-index: 15;">
             <picture style="display: block;">
               <source media="(min-width: 769px)" srcset="./assets/anymal.webp" type="image/webp">
               <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
@@ -376,7 +389,7 @@
           </div>
 
           <div class="validation-container is-hidden-mobile"
-            style="position: absolute; top: -48px; left: calc(50% - 75px); width: 150px; cursor: pointer; text-align: center; z-index: 15;">
+            style="position: absolute; top: -5px; left: calc(50% - 70px); width: 140px; cursor: pointer; text-align: center; z-index: 15;">
             <img class="validation-img" src="./assets/fr3.png" alt="Franka Research 3 robotic arm" width="1211" height="1299"
               loading="lazy" decoding="async"
               style="width: 100%; height: auto; opacity: 0.48; transition: all 0.3s ease; object-fit: contain;">
@@ -387,8 +400,8 @@
             </div>
           </div>
 
-          <div class="validation-container is-hidden-mobile"
-            style="position: absolute; top: -5px; right: 15%; width: 160px; cursor: pointer; text-align: center; z-index: 15;">
+          <div class="validation-container alter-ego-platform is-hidden-mobile"
+            style="position: absolute; top: 15px; left: calc(50% + 105px); width: 150px; cursor: pointer; text-align: center; z-index: 15;">
             <img class="validation-img" src="./assets/alter_ego.png" alt="Alter-Ego mobile manipulator with a five-finger hand" width="1024" height="1536"
               loading="lazy" decoding="async"
               style="width: 100%; height: auto; opacity: 0.48; transition: all 0.3s ease; object-fit: contain;">
@@ -399,7 +412,39 @@
             </div>
           </div>
 
-                    <div class="hotspot hotspot-torque" style="top: 28.9%; left: 49.1%;">
+          <div class="validation-container is-hidden-mobile"
+            style="position: absolute; top: 0px; left: calc(50% - 250px); width: 160px; cursor: pointer; text-align: center; z-index: 15;">
+            <picture style="display: block;">
+              <source media="(min-width: 769px)" srcset="./assets/ur20.webp" type="image/webp">
+              <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                alt="UR20 arm with a Robotiq 2F-140 gripper" class="validation-img" width="370" height="466"
+                loading="lazy" decoding="async"
+                style="width: 100%; height: auto; opacity: 0.4; transition: all 0.3s ease; object-fit: contain;">
+            </picture>
+            <div class="validation-text"
+              style="opacity: 0; transform: translateY(5px); transition: all 0.3s ease; position: absolute; top: 100%; left: 50%; width: 220px; margin-left: -110px; background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); border: 1px solid #e2e8f0; font-size: 0.85rem; color: #475569; pointer-events: none; z-index: 20; text-align: left;">
+              <strong style="color: #0f172a; display: block; margin-bottom: 6px;">Validated with:</strong>
+              UR20 with a Robotiq 2F-140 gripper (Platform H)
+            </div>
+          </div>
+
+          <div class="validation-container softhand-platform is-hidden-mobile"
+            style="position: absolute; top: 190px; left: calc(50% + 125px); width: 250px; cursor: pointer; text-align: center; z-index: 15;">
+            <picture style="display: block;">
+              <source media="(min-width: 769px)" srcset="./assets/softhand.webp" type="image/webp">
+              <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                alt="Prosthetic User with SoftHand Pro" class="validation-img" width="600" height="448"
+                loading="lazy" decoding="async"
+                style="width: 100%; height: auto; opacity: 0.4; transition: all 0.3s ease; object-fit: contain; transform: rotate(-35deg);">
+            </picture>
+            <div class="validation-text"
+              style="opacity: 0; transform: translateY(5px); transition: all 0.3s ease; position: absolute; top: 100%; left: 50%; width: 220px; margin-left: -110px; background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); border: 1px solid #e2e8f0; font-size: 0.85rem; color: #475569; pointer-events: none; z-index: 20; text-align: left;">
+              <strong style="color: #0f172a; display: block; margin-bottom: 6px;">Validated with:</strong>
+              Prosthetic User with SoftHand Pro (Platform G)
+            </div>
+          </div>
+
+                    <div class="hotspot hotspot-torque" style="top: 206px; left: calc(50% - 7px);">
             <div class="hotspot-dot"></div>
             <div class="hotspot-pulse"></div>
             <div class="hotspot-tooltip">
@@ -410,7 +455,7 @@
             </div>
           </div>
 
-                    <div class="hotspot hotspot-precision" style="top: 53.3%; left: 59.9%;">
+                    <div class="hotspot hotspot-precision" style="top: 338px; left: calc(50% + 75px);">
             <div class="hotspot-dot"></div>
             <div class="hotspot-pulse"></div>
             <div class="hotspot-tooltip">
@@ -423,7 +468,7 @@
             </div>
           </div>
 
-                    <div class="hotspot hotspot-assembly" style="top: 52.2%; left: 39.9%;">
+                    <div class="hotspot hotspot-assembly" style="top: 332px; left: calc(50% - 77px);">
             <div class="hotspot-dot"></div>
             <div class="hotspot-pulse"></div>
             <div class="hotspot-tooltip">
@@ -2096,44 +2141,44 @@
 
         <div class="carousel-wrapper video-gallery-extra rotated-video-carousel softhand-video-carousel">
           <div class="carousel-header">
-            <h3 class="carousel-title">Platform G &middot; SoftHand Pro</h3>
+            <h3 class="carousel-title">Platform G &middot; Prosthetic User with SoftHand Pro</h3>
             <div class="carousel-nav">
-              <button type="button" class="nav-btn prev-btn" aria-label="Previous SoftHand Pro video"><i class="fas fa-chevron-left"></i></button>
-              <button type="button" class="nav-btn next-btn" aria-label="Next SoftHand Pro video"><i class="fas fa-chevron-right"></i></button>
+              <button type="button" class="nav-btn prev-btn" aria-label="Previous Prosthetic User with SoftHand Pro video"><i class="fas fa-chevron-left"></i></button>
+              <button type="button" class="nav-btn next-btn" aria-label="Next Prosthetic User with SoftHand Pro video"><i class="fas fa-chevron-right"></i></button>
             </div>
           </div>
           <div class="video-carousel">
             <div class="video-item"><div class="box video-placeholder" style="padding: 0; overflow: hidden; display: block; background: #000;">
-              <video src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/softhandpro_ballvalve.mp4" data-poster="./assets/posters/softhandpro_ballvalve.webp" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;" preload="none" playsinline muted aria-label="SoftHand Pro: Ball valve"></video>
-              <button type="button" class="video-overlay" aria-label="Play SoftHand Pro: Ball valve" style="position: absolute; inset: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 0; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; z-index: 2;" onclick="this.previousElementSibling.play();"><i class="fas fa-play-circle fa-3x mb-3" aria-hidden="true"></i><span class="has-text-weight-medium">Ball valve</span></button>
+              <video src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/softhandpro_ballvalve.mp4" data-poster="./assets/posters/softhandpro_ballvalve.webp" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;" preload="none" playsinline muted aria-label="Prosthetic User with SoftHand Pro: Ball valve"></video>
+              <button type="button" class="video-overlay" aria-label="Play Prosthetic User with SoftHand Pro: Ball valve" style="position: absolute; inset: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 0; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; z-index: 2;" onclick="this.previousElementSibling.play();"><i class="fas fa-play-circle fa-3x mb-3" aria-hidden="true"></i><span class="has-text-weight-medium">Ball valve</span></button>
             </div></div>
             <div class="video-item"><div class="box video-placeholder" style="padding: 0; overflow: hidden; display: block; background: #000;">
-              <video src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/softhandpro_ballvalve_ring.mp4" data-poster="./assets/posters/softhandpro_ballvalve_ring.webp" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;" preload="none" playsinline muted aria-label="SoftHand Pro: Ball valve with ring"></video>
-              <button type="button" class="video-overlay" aria-label="Play SoftHand Pro: Ball valve with ring" style="position: absolute; inset: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 0; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; z-index: 2;" onclick="this.previousElementSibling.play();"><i class="fas fa-play-circle fa-3x mb-3" aria-hidden="true"></i><span class="has-text-weight-medium">Ball valve + ring</span></button>
+              <video src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/softhandpro_ballvalve_ring.mp4" data-poster="./assets/posters/softhandpro_ballvalve_ring.webp" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;" preload="none" playsinline muted aria-label="Prosthetic User with SoftHand Pro: Ball valve with ring"></video>
+              <button type="button" class="video-overlay" aria-label="Play Prosthetic User with SoftHand Pro: Ball valve with ring" style="position: absolute; inset: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 0; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; z-index: 2;" onclick="this.previousElementSibling.play();"><i class="fas fa-play-circle fa-3x mb-3" aria-hidden="true"></i><span class="has-text-weight-medium">Ball valve + ring</span></button>
             </div></div>
             <div class="video-item"><div class="box video-placeholder" style="padding: 0; overflow: hidden; display: block; background: #000;">
-              <video src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/softhandpro_valve_gate_small.mp4" data-poster="./assets/posters/softhandpro_valve_gate_small.webp" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;" preload="none" playsinline muted aria-label="SoftHand Pro: Small gate valve"></video>
-              <button type="button" class="video-overlay" aria-label="Play SoftHand Pro: Small gate valve" style="position: absolute; inset: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 0; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; z-index: 2;" onclick="this.previousElementSibling.play();"><i class="fas fa-play-circle fa-3x mb-3" aria-hidden="true"></i><span class="has-text-weight-medium">Gate valve (small)</span></button>
+              <video src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/softhandpro_valve_gate_small.mp4" data-poster="./assets/posters/softhandpro_valve_gate_small.webp" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;" preload="none" playsinline muted aria-label="Prosthetic User with SoftHand Pro: Small gate valve"></video>
+              <button type="button" class="video-overlay" aria-label="Play Prosthetic User with SoftHand Pro: Small gate valve" style="position: absolute; inset: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 0; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; z-index: 2;" onclick="this.previousElementSibling.play();"><i class="fas fa-play-circle fa-3x mb-3" aria-hidden="true"></i><span class="has-text-weight-medium">Gate valve (small)</span></button>
             </div></div>
             <div class="video-item"><div class="box video-placeholder" style="padding: 0; overflow: hidden; display: block; background: #000;">
-              <video src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/softhandpro_valve_gate_large.mp4" data-poster="./assets/posters/softhandpro_valve_gate_large.webp" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;" preload="none" playsinline muted aria-label="SoftHand Pro: Large gate valve"></video>
-              <button type="button" class="video-overlay" aria-label="Play SoftHand Pro: Large gate valve" style="position: absolute; inset: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 0; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; z-index: 2;" onclick="this.previousElementSibling.play();"><i class="fas fa-play-circle fa-3x mb-3" aria-hidden="true"></i><span class="has-text-weight-medium">Gate valve (large)</span></button>
+              <video src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/softhandpro_valve_gate_large.mp4" data-poster="./assets/posters/softhandpro_valve_gate_large.webp" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;" preload="none" playsinline muted aria-label="Prosthetic User with SoftHand Pro: Large gate valve"></video>
+              <button type="button" class="video-overlay" aria-label="Play Prosthetic User with SoftHand Pro: Large gate valve" style="position: absolute; inset: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 0; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; z-index: 2;" onclick="this.previousElementSibling.play();"><i class="fas fa-play-circle fa-3x mb-3" aria-hidden="true"></i><span class="has-text-weight-medium">Gate valve (large)</span></button>
             </div></div>
             <div class="video-item"><div class="box video-placeholder" style="padding: 0; overflow: hidden; display: block; background: #000;">
-              <video src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/softhandpro_circuit_breaker.mp4" data-poster="./assets/posters/softhandpro_circuit_breaker.webp" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;" preload="none" playsinline muted aria-label="SoftHand Pro: Circuit breaker"></video>
-              <button type="button" class="video-overlay" aria-label="Play SoftHand Pro: Circuit breaker" style="position: absolute; inset: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 0; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; z-index: 2;" onclick="this.previousElementSibling.play();"><i class="fas fa-play-circle fa-3x mb-3" aria-hidden="true"></i><span class="has-text-weight-medium">Circuit breaker</span></button>
+              <video src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/softhandpro_circuit_breaker.mp4" data-poster="./assets/posters/softhandpro_circuit_breaker.webp" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;" preload="none" playsinline muted aria-label="Prosthetic User with SoftHand Pro: Circuit breaker"></video>
+              <button type="button" class="video-overlay" aria-label="Play Prosthetic User with SoftHand Pro: Circuit breaker" style="position: absolute; inset: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 0; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; z-index: 2;" onclick="this.previousElementSibling.play();"><i class="fas fa-play-circle fa-3x mb-3" aria-hidden="true"></i><span class="has-text-weight-medium">Circuit breaker</span></button>
             </div></div>
             <div class="video-item"><div class="box video-placeholder" style="padding: 0; overflow: hidden; display: block; background: #000;">
-              <video src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/softhandpro_button.mp4" data-poster="./assets/posters/softhandpro_button.webp" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;" preload="none" playsinline muted aria-label="SoftHand Pro: Button"></video>
-              <button type="button" class="video-overlay" aria-label="Play SoftHand Pro: Button" style="position: absolute; inset: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 0; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; z-index: 2;" onclick="this.previousElementSibling.play();"><i class="fas fa-play-circle fa-3x mb-3" aria-hidden="true"></i><span class="has-text-weight-medium">Button</span></button>
+              <video src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/softhandpro_button.mp4" data-poster="./assets/posters/softhandpro_button.webp" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;" preload="none" playsinline muted aria-label="Prosthetic User with SoftHand Pro: Button"></video>
+              <button type="button" class="video-overlay" aria-label="Play Prosthetic User with SoftHand Pro: Button" style="position: absolute; inset: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 0; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; z-index: 2;" onclick="this.previousElementSibling.play();"><i class="fas fa-play-circle fa-3x mb-3" aria-hidden="true"></i><span class="has-text-weight-medium">Button</span></button>
             </div></div>
             <div class="video-item"><div class="box video-placeholder" style="padding: 0; overflow: hidden; display: block; background: #000;">
-              <video src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/softhandpro_drawer.mp4" data-poster="./assets/posters/softhandpro_drawer.webp" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;" preload="none" playsinline muted aria-label="SoftHand Pro: Drawer"></video>
-              <button type="button" class="video-overlay" aria-label="Play SoftHand Pro: Drawer" style="position: absolute; inset: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 0; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; z-index: 2;" onclick="this.previousElementSibling.play();"><i class="fas fa-play-circle fa-3x mb-3" aria-hidden="true"></i><span class="has-text-weight-medium">Drawer</span></button>
+              <video src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/softhandpro_drawer.mp4" data-poster="./assets/posters/softhandpro_drawer.webp" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;" preload="none" playsinline muted aria-label="Prosthetic User with SoftHand Pro: Drawer"></video>
+              <button type="button" class="video-overlay" aria-label="Play Prosthetic User with SoftHand Pro: Drawer" style="position: absolute; inset: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 0; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; z-index: 2;" onclick="this.previousElementSibling.play();"><i class="fas fa-play-circle fa-3x mb-3" aria-hidden="true"></i><span class="has-text-weight-medium">Drawer</span></button>
             </div></div>
             <div class="video-item"><div class="box video-placeholder" style="padding: 0; overflow: hidden; display: block; background: #000;">
-              <video src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/softhandpro_shock_absorber.mp4" data-poster="./assets/posters/softhandpro_shock_absorber.webp" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;" preload="none" playsinline muted aria-label="SoftHand Pro: Shock absorber"></video>
-              <button type="button" class="video-overlay" aria-label="Play SoftHand Pro: Shock absorber" style="position: absolute; inset: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 0; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; z-index: 2;" onclick="this.previousElementSibling.play();"><i class="fas fa-play-circle fa-3x mb-3" aria-hidden="true"></i><span class="has-text-weight-medium">Shock absorber</span></button>
+              <video src="https://github.com/hiveboard-bench/hiveboard-bench.github.io/releases/download/v1.0-v1.0-videos/softhandpro_shock_absorber.mp4" data-poster="./assets/posters/softhandpro_shock_absorber.webp" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;" preload="none" playsinline muted aria-label="Prosthetic User with SoftHand Pro: Shock absorber"></video>
+              <button type="button" class="video-overlay" aria-label="Play Prosthetic User with SoftHand Pro: Shock absorber" style="position: absolute; inset: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 0; background: rgba(0, 0, 0, 0.6); color: white; cursor: pointer; z-index: 2;" onclick="this.previousElementSibling.play();"><i class="fas fa-play-circle fa-3x mb-3" aria-hidden="true"></i><span class="has-text-weight-medium">Shock absorber</span></button>
             </div></div>
           </div>
         </div>
@@ -3177,7 +3222,7 @@
                 <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 6px;">4 of 9 completed; 2 used both</p>
               </div>
               <div class="column is-3-tablet is-6-mobile rd-metric">
-                <span class="k">G &middot; SoftHand Pro</span>
+                <span class="k">G &middot; Prosthetic User with SoftHand Pro</span>
                 <span class="v">67%</span>
                 <div class="rd-bar"><i style="width: 67%"></i></div>
                 <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 6px;">8 of 12 completed</p>
@@ -3213,7 +3258,7 @@
                     <th>D &middot; Macao hand</th>
                     <th>E &middot; FR3</th>
                     <th>F &middot; Alter-Ego</th>
-                    <th>G &middot; SoftHand Pro</th>
+                    <th>G &middot; Prosthetic User with SoftHand Pro</th>
                     <th>H &middot; UR20</th>
                   </tr>
                 </thead>
@@ -3281,7 +3326,7 @@
                 <tr><td><strong>D &middot; Macao hand</strong></td><td>53/65</td><td>11</td><td>1.6&times; <span style="color:#94a3b8;">(0.9&ndash;14.7)</span></td><td><strong>41.6</strong> <span style="color:#94a3b8;">(40.0&ndash;43.2)</span></td></tr>
                 <tr><td><strong>E &middot; FR3</strong></td><td>40/65</td><td>9</td><td>10.9&times; <span style="color:#94a3b8;">(8.3&ndash;19.1)</span></td><td><strong>5.7</strong> <span style="color:#94a3b8;">(5.4&ndash;6.0)</span></td></tr>
                 <tr><td><strong>F &middot; Alter-Ego</strong></td><td>34/65</td><td>9</td><td>16.6&times; <span style="color:#94a3b8;">(6.0&ndash;28.7)</span></td><td><strong>3.7</strong> <span style="color:#94a3b8;">(3.5&ndash;3.9)</span></td></tr>
-                <tr><td><strong>G &middot; SoftHand Pro</strong></td><td>60/65</td><td>12</td><td>1.6&times; <span style="color:#94a3b8;">(0.9&ndash;11.7)</span></td><td><strong>51.1</strong> <span style="color:#94a3b8;">(50.5&ndash;52.3)</span></td></tr>
+                <tr><td><strong>G &middot; Prosthetic User with SoftHand Pro</strong></td><td>60/65</td><td>12</td><td>1.6&times; <span style="color:#94a3b8;">(0.9&ndash;11.7)</span></td><td><strong>51.1</strong> <span style="color:#94a3b8;">(50.5&ndash;52.3)</span></td></tr>
                 <tr><td><strong>H &middot; UR20</strong></td><td>50/65</td><td>12</td><td>7.6&times; <span style="color:#94a3b8;">(4.6&ndash;20.9)</span></td><td><strong>9.7</strong> <span style="color:#94a3b8;">(9.6&ndash;10.0)</span></td></tr>
               </tbody>
             </table>
@@ -3325,7 +3370,7 @@
               { id: 'D', name: 'Macao hand', full: 'Macao anthropomorphic hand', ee: 'Worn five-finger hand, operator&rsquo;s own arm positions it', ctrl: 'Analog button grasp selection, worn on forearm' },
               { id: 'E', name: 'FR3', full: 'Franka Research 3 (FR3)', ee: 'Franka Hand (parallel-jaw gripper)', ctrl: 'Gamepad teleoperation' },
               { id: 'F', name: 'Alter-Ego', full: 'Alter-Ego mobile manipulator', ee: 'Pisa/IIT SoftHand', ctrl: 'Cartesian teleoperation (VR headset)' },
-              { id: 'G', name: 'SoftHand Pro', full: 'SoftHand Pro prosthesis', ee: '19-joint Pisa/IIT SoftHand Pro', ctrl: 'Myoelectric control (two surface EMG sensors)' },
+              { id: 'G', name: 'Prosthetic User with SoftHand Pro', full: 'Prosthetic User with SoftHand Pro', ee: '19-joint Pisa/IIT SoftHand Pro', ctrl: 'Myoelectric control (two surface EMG sensors)' },
               { id: 'H', name: 'UR20', full: 'Universal Robots UR20', ee: 'Robotiq 2F-140 parallel-jaw gripper', ctrl: 'Gamepad teleoperation (Cartesian velocity)' }
             ];
 

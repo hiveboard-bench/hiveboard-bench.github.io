@@ -1748,9 +1748,18 @@ video::-webkit-media-controls-picture-in-picture-button {
 
 
 
-/* Six-platform validation collage around the HiveBoard. */
+/* Eight-platform validation ring around the HiveBoard. */
 .platform-board-canvas {
-  height: 540px;
+  height: 600px;
+}
+
+/* Shrink the eight-platform ring when the canvas is narrower than its 860px layout. */
+@media screen and (min-width: 769px) and (max-width: 940px) {
+  .platform-board-canvas {
+    transform: scale(0.86);
+    transform-origin: top center;
+    margin-bottom: -84px !important;
+  }
 }
 
 @media (max-width: 768px) {
