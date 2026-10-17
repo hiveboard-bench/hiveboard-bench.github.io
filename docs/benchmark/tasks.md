@@ -47,6 +47,8 @@ Task ID: `valve_ball`
 | Timeout | 60 s. |
 | Reset | Return the handle to closed and check attachment seating. |
 
+The [360° variant](/hardware/ball-valve-360) allows overshoot without reaching a quarter-turn stop during development. The task target remains 90°. Record which variant is used and mark the initial and target orientations.
+
 ## Ball valve + ring {#ball-valve-with-friction-ring}
 
 Task ID: `valve_ball_ring`

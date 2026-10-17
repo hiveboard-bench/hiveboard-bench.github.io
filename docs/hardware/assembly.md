@@ -34,6 +34,8 @@ Engage the part by hand without axial forcing. It should advance smoothly while 
 
 Assemble the ball valve without a ring first. The ring configuration is evaluated as a separate condition and should only be fitted for the corresponding trial block.
 
+For controller development, the [360° variant](/hardware/ball-valve-360) permits continued lever rotation beyond 90°. Check a full revolution by hand and keep the swept path clear. Record the variant and any ring in the setup description. The quarter-turn task target remains unchanged.
+
 ### Button {#covered-button}
 
 Confirm that the cover opens freely and that the button returns after it is pressed. Both stages must remain visually distinguishable.
@@ -52,7 +54,7 @@ Confirm that the loose part of the shock absorber can be grasped, aligned with t
 
 ## Optional ArUco cell
 
-The [ArUco cell](/hardware/aruco-cell) provides a camera-visible reference for board localization. Fit the black insert into the white base and optionally glue the mating surfaces. Mount it in an available cell with a clear camera view, leaving the task cells and robot approach unobstructed. Record its position and orientation relative to the board.
+The [ArUco cells](/hardware/aruco-cell) provide camera-visible references for board localization. IDs 0 and 1 share the same mounting geometry. Use a unique ID for each cell in view. Fit the black insert into the white base and optionally glue the mating surfaces. Mount it in an available cell with a clear camera view, leaving the task cells and robot approach unobstructed. Record its position and orientation relative to the board.
 
 ## Mount the board
 

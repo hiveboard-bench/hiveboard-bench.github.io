@@ -24,6 +24,12 @@ Before recording, open [How to perform each task](/benchmark/tasks). It lists th
 6. Create `platform.md` with the end-effector, control interface or policy, mounting orientation, control mode, and relevant calibration notes.
 7. Record the printer, material, print settings, and post-processing. The runner includes these fields in `platform.md`.
 
+## Optional hardware variants
+
+[ArUco cells with IDs 0 and 1](/hardware/aruco-cell) can be used for board localization. Record each ID and marker-to-board transform with the setup.
+
+The [360° ball-valve variant](/hardware/ball-valve-360) is available for learning-based methods and controller debugging. It permits continued rotation beyond the quarter-turn target. The Ball valve success criterion remains 90° from closed to open. Mark the initial and target orientations, and record `ball_valve_360`, the asset commit, and any friction ring in `platform.md`. In the runner, use **Calibration notes** for these details. Identify the hardware variant when comparing results. These additions introduce no new scored conditions.
+
 ## Optional dataset collection
 
 We encourage labs to record robot states, executed commands, and camera streams during evaluation using [DataHive](/guides/datahive). Test the recording setup before the scored trials and link each episode to its benchmark trial record. Dataset collection is optional and does not change the task criteria, timing, or requirement for 65 trials. The [DataHive guide](/guides/datahive#collect-during-a-benchmark-evaluation) explains how to prepare both submissions; the [learning-dataset call](/contribute/evaluations) also accepts larger collections and task subsets outside a formal evaluation.
