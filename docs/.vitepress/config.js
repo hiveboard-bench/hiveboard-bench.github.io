@@ -37,7 +37,8 @@ export default defineConfig({
           { text: '3D Printing', link: '/hardware/printing' },
           { text: 'Assembly and Mounting', link: '/hardware/assembly' },
           { text: 'Attachment Reference', link: '/hardware/modules' },
-          { text: 'ArUco Cell', link: '/hardware/aruco-cell' }
+          { text: 'ArUco Cell', link: '/hardware/aruco-cell' },
+          { text: 'Ball Valve — 360° Variant', link: '/hardware/ball-valve-360' }
         ]
       },
       {

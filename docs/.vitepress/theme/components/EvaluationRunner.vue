@@ -1014,6 +1014,7 @@ onUnmounted(() => {
               Watch example trial <span>{{ currentTask.videoPlatform }}</span>
             </button>
             <p v-if="currentTask.videoNotice" class="video-notice">{{ currentTask.videoNotice }}</p>
+            <a v-if="['valve_ball', 'valve_ball_ring'].includes(currentTask.id)" :href="withBase('/hardware/ball-valve-360')">Using the 360° valve variant? Record it in Calibration notes.</a>
             <a href="https://hiveboard-bench.github.io/#Simulation-Compatibility" target="_blank" rel="noreferrer noopener">Open the interactive simulation ↗</a>
           </div>
         </div>

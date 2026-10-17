@@ -48,9 +48,13 @@ The Isaac Lab implementation uses generated Newton USD files. Follow the [asset-
 
 ## Align the physical and simulated board
 
-Use the optional [ArUco cell](/hardware/aruco-cell) as a visual reference for board pose. The guide covers marker detection, camera calibration, and the marker-to-board transform. Its assembly mesh is provided as OBJ/MTL under `CAD/ArUco Cell/`. For a metre-based simulator, multiply the exported coordinates by 0.01 and verify the 0.0881 m overall width.
+Use the optional [ArUco cell](/hardware/aruco-cell) as a visual reference for board pose. The guide covers marker detection, camera calibration, and the marker-to-board transform. ID 0 and ID 1 assembly meshes are provided as OBJ/MTL under `CAD/ArUco Cell/`, with ID 1 in the `ID1/` subdirectory. For a metre-based simulator, multiply OBJ coordinates by 0.01 and verify the 0.0881 m overall width. ID 1 also has a USDZ export with declared millimetre units. Respect that metadata when importing it. Associate each detected ID with its own marker-to-board transform.
 
 Place the mesh relative to the board using the measured transform. Check alignment at known board points before comparing physical and simulated trajectories.
+
+## Optional 360° valve model
+
+The [360° ball-valve variant](/hardware/ball-valve-360) is provided as OBJ/MTL and USDZ under `CAD/Valves/Lever Valve/Ball Valve 360/`. Its USDZ contains geometry and materials, with no physics joints or rigid-body configuration. Integrating it requires defining and validating joint motion, collision geometry, mass, and friction. The existing articulated valve assets and Isaac Lab environments remain separate from this export.
 
 ## Physical parameters
 

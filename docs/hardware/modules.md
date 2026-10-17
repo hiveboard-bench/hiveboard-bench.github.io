@@ -49,9 +49,13 @@ Grasping is stage 1 for Lock and key, Drawer, and Shock absorber, and is include
 
 Record `0` when no stage is completed. A full success reaches the final stage listed for the attachment.
 
-## Optional accessory
+## Optional hardware
 
-The [ArUco cell](/hardware/aruco-cell) provides a visual reference for board localization and physical-to-simulation alignment. It adds no scored task or evaluation condition.
+[ArUco cells with IDs 0 and 1](/hardware/aruco-cell) provide visual references for board localization and physical-to-simulation alignment. Use unique IDs when installing multiple cells and record each marker-to-board transform.
+
+The [360° ball-valve variant](/hardware/ball-valve-360) allows continued rotation past the quarter-turn target to reduce damage from overshoot during training and controller debugging. Record the variant in the experiment metadata. The standard Ball valve task target remains 90°.
+
+These additions introduce no new scored conditions.
 
 ## Printable files
 

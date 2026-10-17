@@ -93,7 +93,11 @@ Record and validate a short pilot episode before starting the collection. Preser
 
 ### Optional board localization
 
-The [ArUco cell](/hardware/aruco-cell) can provide a visual reference for board pose during collection. Retain the camera calibration, measured marker size, marker-to-board transform, and timestamped images used for detection. Store any estimated poses with their frame conventions and timestamps. Marker detection and pose estimation are part of the lab's recording integration. Keep calibration records with the session metadata and agree on supplemental files with the organizers where needed.
+The [ArUco cells](/hardware/aruco-cell), available with IDs 0 and 1, can provide visual references for board pose during collection. Use unique IDs and associate each ID with its own marker-to-board transform. Retain the camera calibration, measured marker size, marker-to-board transform, and timestamped images used for detection. Store any estimated poses with their frame conventions and timestamps. Marker detection and pose estimation are part of the lab's recording integration. Keep calibration records with the session metadata and agree on supplemental files with the organizers where needed.
+
+### Valve variant for controller development
+
+The [360° ball-valve variant](/hardware/ball-valve-360) allows continued rotation beyond the usual quarter turn, reducing damage from overshoot during learning and debugging. Record `ball_valve_360`, the asset commit, any friction ring, and the episode's initial and target orientations in the dataset metadata. The benchmark Ball valve target remains 90°. Describe training tasks with a full-turn target separately.
 
 ## Annotate and validate
 

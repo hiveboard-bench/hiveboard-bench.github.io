@@ -6,16 +6,20 @@ description: Print and assemble the HiveBoard ArUco cell for board localization,
 
 The ArUco cell provides a visual reference for locating HiveBoard in camera images. Its estimated pose can be used to place the board in a robot coordinate frame or align a simulated scene with a physical setup.
 
+Cells with **marker IDs 0 and 1** are available with the same mounting geometry. Use different IDs for multiple cells in the same scene and record each cell's position relative to the board.
+
 The cell is an optional accessory. Benchmark evaluations still contain **13 conditions with five trials each**.
 
 <figure class="doc-image">
   <img src="/images/aruco-cell-assembly.png" alt="CAD view of the ArUco cell, with a white hexagonal base and black marker insert" width="530">
-  <figcaption>Assembly model. The white base and black insert are printed separately and fitted together.</figcaption>
+  <figcaption>ID 0 assembly model. The white base and black insert are printed separately and fitted together.</figcaption>
 </figure>
 
 ## Files and materials
 
 Download the files from [`CAD/ArUco Cell/`](https://github.com/hiveboard-bench/HiveBoard/tree/main/CAD/ArUco%20Cell).
+
+### ID 0
 
 | File | Purpose | Filament |
 |---|---|---|
@@ -23,11 +27,23 @@ Download the files from [`CAD/ArUco Cell/`](https://github.com/hiveboard-bench/H
 | `aruco_cell_marker_black.obj` | Black marker insert | Black PLA |
 | `aruco_cell_assembly.obj` | Reference model showing both parts in position | — |
 
-Keep each OBJ beside its matching MTL file. MTL files specify display colors. Select the filament separately in the slicer. Print the base and insert as separate parts.
+### ID 1
+
+Download from [`CAD/ArUco Cell/ID1/`](https://github.com/hiveboard-bench/HiveBoard/tree/main/CAD/ArUco%20Cell/ID1).
+
+| File | Purpose | Filament |
+|---|---|---|
+| `aruco_cell_id1_base_white.obj` | Hexagonal base and white marker regions | White PLA |
+| `aruco_cell_id1_marker_black.obj` | Black marker insert | Black PLA |
+| `aruco_cell_id1_assembly.obj` | Assembled reference | — |
+| `aruco_cell_id1_assembly.mtl` | Shared display materials for all three OBJs | — |
+| `aruco_cell_id1_assembly.usdz` | Packaged assembly with original USD materials | — |
+
+The ID 1 component files were extracted from the supplied assembly without changing their geometry. Keep each OBJ beside its referenced MTL file. ID 1 uses one shared MTL for all three OBJs. Select the filament separately in the slicer and print the base and insert as separate parts. The supplied USDZ retains its original materials, so the marker insert may display as gray. Print it in black PLA.
 
 ## Dimensions and import scale
 
-The OBJ coordinates correspond to centimetres. Set the import units or scale explicitly.
+For both IDs, the OBJ coordinates correspond to centimetres. Set the import units or scale explicitly.
 
 | Quantity | Value |
 |---|---|
@@ -37,7 +53,9 @@ The OBJ coordinates correspond to centimetres. Set the import units or scale exp
 | Import into a millimetre-based application | Multiply coordinates by 10 |
 | Import into a metre-based simulator | Multiply coordinates by 0.01 |
 
-Apply the same scale to both parts. Confirm the assembled width before printing. For pose estimation, measure the printed marker from the outer edges of its black square. Use that measured side length in the detector.
+The ID 1 USDZ declares millimetre units (`metersPerUnit = 0.001`) and has the same physical dimensions. Import it using that metadata.
+
+Apply the same scale to both OBJ parts. Confirm the assembled width before printing. For pose estimation, measure the printed marker from the outer edges of its black square. Use that measured side length in the detector.
 
 ## Print and assemble
 
@@ -55,14 +73,14 @@ Check that the cell remains fixed during manipulation. Recheck its pose relative
 | Parameter | Setting |
 |---|---|
 | OpenCV dictionary | `DICT_4X4_50` |
-| Marker ID | `0` |
+| Marker IDs | `0` and `1`, selected to match the printed cell |
 | Marker side length | Measured outer black-square side, in the units used for pose estimation |
 
-The marker was created with [chev.me/arucogen](https://chev.me/arucogen/) using **4×4 (50, 100, 250, 1000)** and **ID 0**. This ID has the same pattern in the four standard OpenCV 4×4 dictionaries. Use `DICT_4X4_50` for a consistent detector configuration.
+The marker was created with [chev.me/arucogen](https://chev.me/arucogen/) using **4×4 (50, 100, 250, 1000)** with **IDs 0 and 1**. Both IDs have the same respective patterns in the four standard OpenCV 4×4 dictionaries. Use `DICT_4X4_50` for a consistent detector configuration.
 
-Calibrate the camera at the resolution used for detection and retain its intrinsic parameters and distortion coefficients. Verify detection of ID 0 on the printed cell at the intended working distance and viewing angles. Check that the marker remains visible under the experiment's lighting conditions.
+Calibrate the camera at the resolution used for detection and retain its intrinsic parameters and distortion coefficients. Verify detection of the intended ID on each printed cell at the intended working distance and viewing angles. Check that the marker remains visible under the experiment's lighting conditions.
 
-Pose estimation also requires the marker's position and orientation relative to the chosen board frame. To express the board pose in robot coordinates, obtain the camera pose in that coordinate frame. For a moving camera, use the camera pose corresponding to the image timestamp.
+Pose estimation also requires each marker's position and orientation relative to the chosen board frame. Associate each detected ID with its own marker-to-board transform. Keep IDs unique within the camera's view. To express the board pose in robot coordinates, obtain the camera pose in that coordinate frame. For a moving camera, use the camera pose corresponding to the image timestamp.
 
 See the [OpenCV ArUco documentation](https://docs.opencv.org/4.x/d5/dae/tutorial_aruco_detection.html) for detection and pose estimation.
 
@@ -78,8 +96,8 @@ When using the cell during [DataHive collection](/guides/datahive), retain:
 
 - the camera images and timestamps used for detection;
 - camera intrinsics, distortion coefficients, and camera-to-robot calibration when used;
-- the dictionary, marker ID, and measured marker side length;
-- the marker-to-board transform and coordinate-frame definitions;
+- the dictionary, ID, and measured marker side length of each cell;
+- each marker-to-board transform, indexed by marker ID, and the coordinate-frame definitions;
 - any estimated poses, with their timestamps and detection failures.
 
 Keep these calibration records with the session metadata. Agree on supplemental files with the organizers if they fall outside the current DataHive episode format. Installing DataHive does not configure marker detection or board-pose estimation.
