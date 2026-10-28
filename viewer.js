@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { DragControls } from 'three/examples/jsm/controls/DragControls.js';
 import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js';
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x0f172a);
@@ -190,6 +191,8 @@ const pieceInfoData = {
     lamp: { title: "Light bulb", desc: "Fully printed bulb and socket. The bulb must be threaded until seated, combining continuous rotation about the thread axis with translation along it.", specs: { "Category": "Precision", "Timeout": "120 s", "Print": "Vertical, 25% infill" } },
     drawer: { title: "Drawer", desc: "Drawer with a recessed handle, scored in three stages: grasp the handle, pull open, push closed. Fingers can enter the recess where parallel jaws cannot.", specs: { "Category": "Composed assembly", "Timeout": "120 s", "Stages": "3" } },
     shock_absorber: { title: "Shock absorber", desc: "Two hexagonal end pieces joined by a coil spring with a bolt running through the spring axis. It is the only attachment that occupies two adjacent cells of the board.", specs: { "Category": "Composed assembly", "Timeout": "180 s", "Stages": "3" } },
+    aruco_0: { title: "ArUco cell (ID 0)", desc: "Optional visual reference for locating the board in camera images. The white base and black marker insert fit into one honeycomb cell.", specs: { "Category": "Localization", "Marker ID": "0" } },
+    aruco_1: { title: "ArUco cell (ID 1)", desc: "Optional visual reference for locating the board in camera images. Use a separate marker-to-board transform for each ID.", specs: { "Category": "Localization", "Marker ID": "1" } },
     honeycomb_l: { title: "Honeycomb base (large)", desc: "The seven-cell hexagonal base: one central cell surrounded by six outer cells, each an open frame that accepts an attachment through a press-fit interface, with no fasteners required.", specs: { "Category": "Base", "Cells": "7", "Print": "Single piece, 20% infill" } },
     honeycomb_m: { title: "Honeycomb base (medium)", desc: "A reduced version of the honeycomb base for smaller printers and smaller evaluation scenes. It uses the same press-fit interface, so every attachment is interchangeable across board sizes.", specs: { "Category": "Base", "Print": "Single piece, 20% infill" } },
     honeycomb_s: { title: "Honeycomb base (small)", desc: "The most compact honeycomb base, for printers with a limited build volume. Multiple base units can be combined when an attachment occupies more than one cell or a richer scene is needed.", specs: { "Category": "Base", "Print": "Single piece, 20% infill" } }
@@ -365,6 +368,54 @@ const compositePieces = {
 };
 
 function loadPiece(type, linkId = null) {
+    if (type === 'aruco_0' || type === 'aruco_1') {
+        const slot = validSlots.find(candidate => !loadedMeshes.some(mesh => {
+            if (mesh.userData.type.startsWith('honeycomb')) return false;
+            const position = mesh.userData.targetSnap || mesh.position;
+            return Math.hypot(position.x - candidate.x, position.y - candidate.y) < 1;
+        }));
+        if (!slot) {
+            showError("The board is full! Clear the scene or change to a larger board to add more pieces.");
+            return;
+        }
+
+        loadingOverlay.style.display = 'block';
+        const path = type === 'aruco_0'
+            ? './models/aruco/aruco_cell_assembly.obj'
+            : './models/aruco/aruco_cell_id1_assembly.obj';
+        fetch(path).then(response => {
+            if (!response.ok) throw new Error(`${response.status} while loading ${path}`);
+            return response.text();
+        }).then(source => {
+            const assembly = new OBJLoader().parse(source);
+            const innerGroup = new THREE.Group();
+            assembly.traverse(child => {
+                if (!child.isMesh) return;
+                const isMarker = child.name.includes('marker_black');
+                const mesh = new THREE.Mesh(child.geometry, (isMarker ? materials.black_plastic : materials.honeycomb).clone());
+                mesh.castShadow = true;
+                mesh.receiveShadow = true;
+                mesh.userData.isBase = true;
+                innerGroup.add(mesh);
+            });
+            if (innerGroup.children.length !== 2) throw new Error(`Unexpected ArUco assembly: ${path}`);
+
+            const wrapper = new THREE.Group();
+            wrapper.add(innerGroup);
+            wrapper.position.set(slot.x, slot.y, 0.5);
+            wrapper.userData.type = type;
+            scene.add(wrapper);
+            loadedMeshes.push(wrapper);
+            draggableObjects.push(wrapper);
+            loadingOverlay.style.display = 'none';
+        }).catch(error => {
+            console.error(error);
+            loadingOverlay.style.display = 'none';
+            showError('Could not load the ArUco cell. Please try again.');
+        });
+        return;
+    }
+
     if (type === 'shock_absorber') {
         const largePieces = ['high_torque_valve', 'small_valve', 'ball_valve', 'shock_absorber_base1', 'shock_absorber_base2'];
         const hasLargePiece = loadedMeshes.some(m => largePieces.includes(m.userData.type));

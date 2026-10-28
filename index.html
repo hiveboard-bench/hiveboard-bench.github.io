@@ -718,10 +718,9 @@
               <p style="font-size: 0.85rem; color: #64748b; flex-grow: 1; margin-bottom: 1.25rem; line-height: 1.5;">
                 Robotics simulation and learning framework powered by SAPIEN. Use the released URDF and mesh assets to build custom HiveBoard task environments.
               </p>
-              <button class="button is-small is-fullwidth"
-                style="background-color: transparent; border: 1px solid #e2e8f0; color: #475569; font-weight: 600; border-radius: 6px; cursor: not-allowed;"
-                onmouseover="this.style.borderColor='#edaf19'; this.style.color='#edaf19'; this.textContent='Coming Soon';"
-                onmouseout="this.style.borderColor='#e2e8f0'; this.style.color='#475569'; this.textContent='Test';">Test</button>
+              <a class="button is-small is-fullwidth sim-repo-link" href="https://github.com/hiveboard-bench/maniskill-hiveboard"
+                target="_blank" rel="noopener noreferrer"
+                style="background-color: transparent; border: 1px solid #e2e8f0; color: #475569; font-weight: 600; border-radius: 6px;">Test</a>
             </div>
           </div>
         </div>
@@ -752,11 +751,7 @@
             Pick a platform and a task, and the arm runs a fixed trajectory for it against a seven-cell board,
             the swappable centre cell holding whichever attachment the task calls for.
             <strong style="color: #64748b; font-weight: 600;">These are demonstrations, not benchmark runs &mdash;
-            they do not follow the evaluation protocol.</strong> They are here to show what each task looks like:
-            most replay an authored attachment motion alongside the arm rather than manipulating it through contact,
-            and only a few &mdash; the circuit breaker, and the ball valve on Spot and the SO-101 &mdash; are driven
-            by the arm for real. Every trajectory is solved offline against the actual scene, so a platform lists
-            only the tasks it could reach; the rest show as coming soon, which is why the lists differ. Robot models from
+            they do not follow the evaluation protocol.</strong> Robot models from
             <a href="https://github.com/google-deepmind/mujoco_menagerie" target="_blank" rel="noopener"
               style="color: #94a3b8; text-decoration: underline;">mujoco_menagerie</a> (Apache-2.0); interactive simulator interface based on <a href="https://younghyopark.me/tune-to-learn/" target="_blank" rel="noopener noreferrer"
               style="color: #94a3b8; text-decoration: underline;">Tune to Learn</a>; board and
@@ -3802,6 +3797,20 @@
           annotate, and record HiveBoard manipulation episodes.
         </p>
 
+        <div class="datahive-stats" aria-label="HiveBoard recorded dataset totals">
+          <span class="datahive-stats-heading">Recorded data <small>October 2026</small></span>
+          <div class="datahive-stat">
+            <span class="datahive-stat-label">Real robot</span>
+            <span class="datahive-stat-value">2.5 <small>hours</small></span>
+            <span class="datahive-stat-episodes">447 episodes</span>
+          </div>
+          <div class="datahive-stat">
+            <span class="datahive-stat-label">Simulation</span>
+            <span class="datahive-stat-value">25.9 <small>hours</small></span>
+            <span class="datahive-stat-episodes">1,950 episodes</span>
+          </div>
+        </div>
+
         <div class="box mb-0"
           style="background-color: #fafafa; border: 1px solid #cbd5e1; box-shadow: none; border-radius: 8px; padding: 2rem;">
           <div class="columns is-vcentered">
@@ -4197,8 +4206,7 @@
         </div>
 
         <p style="font-size: 0.85rem; color: var(--text-color); opacity: 0.7; margin-bottom: 1rem; line-height: 1.7;">
-          Select any task below to automatically add and snap its components into an available slot on the honeycomb
-          board.
+          Select a task or optional ArUco cell below to add it to an available slot on the honeycomb board.
         </p>
 
         <div class="pieces-list"
@@ -4232,6 +4240,14 @@
             <button class="add-piece" data-type="key">Lock and key</button>
             <button class="add-piece" data-type="drawer">Drawer</button>
             <button class="add-piece" data-type="shock_absorber">Shock absorber</button>
+          </div>
+
+          <h3
+            style="margin-top: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.3rem; margin-bottom: 0.2rem; font-size: 0.9rem; opacity: 0.8;">
+            Localization</h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+            <button class="add-piece" data-type="aruco_0">ArUco cell (ID 0)</button>
+            <button class="add-piece" data-type="aruco_1">ArUco cell (ID 1)</button>
           </div>
         </div>
       </div>
