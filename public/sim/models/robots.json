@@ -41,10 +41,27 @@
    0.0,
    0.0
   ],
+  "compress": [
+   {
+    "body": "shock-absorber_Spring",
+    "joint": "shock-absorber_PrismaticJoint",
+    "length": 0.06209908469809835,
+    "reach": -0.04490096104969785
+   }
+  ],
   "tasks": [
    "valve",
    "lamp",
-   "breaker"
+   "breaker",
+   "high-valve",
+   "small-valve",
+   "thread-m30",
+   "thread-m8",
+   "peg-insertion",
+   "button-cover",
+   "key-lock",
+   "drawer",
+   "shock-absorber"
   ]
  },
  {
@@ -88,28 +105,36 @@
    0.0,
    1.0
   ],
+  "compress": [
+   {
+    "body": "shock-absorber_Spring",
+    "joint": "shock-absorber_PrismaticJoint",
+    "length": 0.06209908469809835,
+    "reach": -0.04490096104969785
+   }
+  ],
   "tasks": [
    "valve",
    "breaker"
   ]
  },
  {
-  "name": "anymal",
-  "label": "ANYmal-D + DynaArm + 2F-140",
-  "note": "Platform C",
-  "scene": "anymal.xml",
-  "traj": "anymal.traj.json",
+  "name": "macao",
+  "label": "Macao hand",
+  "note": "Platform D",
+  "scene": "macao.xml",
+  "traj": "macao.traj.json",
   "arm": 6,
   "grip": {
-   "actuator": "finger_joint",
+   "actuator": "macao_grip",
    "open": 0.0,
-   "grasp": 0.65,
-   "fist": 0.7
+   "grasp": 0.8,
+   "fist": 1.1
   },
   "home": [
    0.0,
-   -0.7,
-   1.4,
+   0.0,
+   0.0,
    0.0,
    0.0,
    0.0
@@ -117,23 +142,31 @@
   "gripIndex": 6,
   "spinIndex": -1,
   "board": [
-   0.82,
+   0.85,
    0.0,
-   0.9
+   0.55
   ],
   "view": {
    "centre": [
-    0.1456,
-    0.0,
-    0.9209
+    0.6312,
+    0.0204,
+    0.5777
    ],
-   "span": 2.3822
+   "span": 0.6124
   },
   "framing": "side",
   "boardNormal": [
    -1.0,
    0.0,
    0.0
+  ],
+  "compress": [
+   {
+    "body": "shock-absorber_Spring",
+    "joint": "shock-absorber_PrismaticJoint",
+    "length": 0.06209908469809835,
+    "reach": -0.04490096104969785
+   }
   ],
   "tasks": [
    "valve",
@@ -143,7 +176,11 @@
    "small-valve",
    "thread-m30",
    "thread-m8",
-   "key-lock"
+   "peg-insertion",
+   "button-cover",
+   "key-lock",
+   "drawer",
+   "shock-absorber"
   ]
  },
  {
@@ -178,16 +215,24 @@
   "view": {
    "centre": [
     0.2731,
-    0.0003,
+    0.0336,
     0.3752
    ],
-   "span": 1.1666
+   "span": 1.1832
   },
   "framing": "over",
   "boardNormal": [
    -0.0,
    0.0,
    1.0
+  ],
+  "compress": [
+   {
+    "body": "shock-absorber_Spring",
+    "joint": "shock-absorber_PrismaticJoint",
+    "length": 0.06209908469809835,
+    "reach": -0.04490096104969785
+   }
   ],
   "tasks": [
    "valve",
@@ -198,7 +243,10 @@
    "thread-m30",
    "thread-m8",
    "peg-insertion",
-   "key-lock"
+   "button-cover",
+   "key-lock",
+   "drawer",
+   "shock-absorber"
   ]
  }
 ]

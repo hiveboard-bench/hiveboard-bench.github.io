@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<robot name="so101">
+
+  <!-- Kinematic description extracted from public/sim/models/so101.xml.
+       The five arm joints form the cuMotion c-space; the gripper joint is
+       retained as a non-c-space joint.  Every joint inherits the MuJoCo
+       hinge default axis 0 0 1 in its body frame, and each body frame is
+       rotated by the body's MJCF quaternion (converted to rpy). -->
+
+  <link name="base_link"/>
+
+  <link name="shoulder"/>
+  <joint name="shoulder_pan" type="revolute">
+    <parent link="base_link"/>
+    <child link="shoulder"/>
+    <origin xyz="0.0388353 0 0.0624" rpy="0 0 3.14159265"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-1.91986" upper="1.91986" effort="2.94" velocity="10"/>
+  </joint>
+
+  <link name="upper_arm"/>
+  <joint name="shoulder_lift" type="revolute">
+    <parent link="shoulder"/>
+    <child link="upper_arm"/>
+    <origin xyz="-0.0303992 -0.0182778 -0.0542" rpy="-1.57079633 1.57079633 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-1.74533" upper="1.74533" effort="2.94" velocity="10"/>
+  </joint>
+
+  <link name="lower_arm"/>
+  <joint name="elbow_flex" type="revolute">
+    <parent link="upper_arm"/>
+    <child link="lower_arm"/>
+    <origin xyz="-0.11257 -0.028 0" rpy="0 0 1.57079633"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-1.69" upper="1.69" effort="2.94" velocity="10"/>
+  </joint>
+
+  <link name="wrist"/>
+  <joint name="wrist_flex" type="revolute">
+    <parent link="lower_arm"/>
+    <child link="wrist"/>
+    <origin xyz="-0.1349 0.0052 0" rpy="0 0 -1.57079633"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-1.65806" upper="1.65806" effort="2.94" velocity="10"/>
+  </joint>
+
+  <link name="gripper"/>
+  <joint name="wrist_roll" type="revolute">
+    <parent link="wrist"/>
+    <child link="gripper"/>
+    <origin xyz="0 -0.0611 0.0181" rpy="0 0.048648 1.57079633"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-2.74385" upper="2.84121" effort="2.94" velocity="10"/>
+  </joint>
+
+  <!-- Moving jaw, kept outside the c-space like the Spot gripper joint. -->
+  <link name="moving_jaw_so101_v1"/>
+  <joint name="gripper" type="revolute">
+    <parent link="gripper"/>
+    <child link="moving_jaw_so101_v1"/>
+    <origin xyz="0.0202 0.0188 -0.0234" rpy="1.57079633 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-0.174533" upper="1.74533" effort="2.94" velocity="10"/>
+  </joint>
+
+  <!-- HiveBoard TCP, taken from the baked "tcp" site on the gripper body. -->
+  <link name="tcp"/>
+  <joint name="gripper_tcp_joint" type="fixed">
+    <parent link="gripper"/>
+    <child link="tcp"/>
+    <origin xyz="-0.00594334 -0.000120988 -0.0792052" rpy="-1.5452 0.0751 1.5708"/>
+  </joint>
+
+</robot>
