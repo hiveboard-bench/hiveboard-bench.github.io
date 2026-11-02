@@ -1066,14 +1066,9 @@ export function attach(sim) {
       field.style.minWidth = '0';
 
       const labelText = document.createElement('span');
-      labelText.textContent = `${label} offset`;
+      labelText.textContent = `${label} offset (m)`;
       labelText.style.fontSize = '12px';
       labelText.style.fontWeight = '600';
-
-      const valueText = document.createElement('span');
-      valueText.textContent = `${Number(edit.dpos[i] || 0).toFixed(3)} m`;
-      valueText.style.fontSize = '12px';
-      valueText.style.opacity = '0.75';
 
       const input = document.createElement('input');
       input.type = 'range';
@@ -1084,17 +1079,40 @@ export function attach(sim) {
       input.title = `Cartesian ${label} offset in meters`;
 
       /*
+      * Editable numeric twin of the slider, same as the gripper opening
+      * control: the field is the readout AND a way to type an exact value.
+      */
+      const number = document.createElement('input');
+      number.type = 'number';
+      number.min = '-0.100';
+      number.max = '0.100';
+      number.step = '0.001';
+      number.value = Number(edit.dpos[i] || 0).toFixed(3);
+      number.title = `Cartesian ${label} offset in meters`;
+
+      const control = document.createElement('div');
+      control.className = 'range-number stacked';
+      control.append(input, number);
+
+      /*
       * Shared apply path for the slider and the per-axis reset button.
       * `value` is the ABSOLUTE offset from the original pose for this axis.
       */
       const applyOffset = (value) => {
-        const offset = Number(value);
+        const parsed = Number(value);
 
-        if (!Number.isFinite(offset)) {
+        if (!Number.isFinite(parsed)) {
           return;
         }
 
-        valueText.textContent = `${offset.toFixed(3)} m`;
+        /*
+        * Typing can go past the slider's ends; clamp so the slider and the
+        * solver always see the same in-range value.
+        */
+        const offset = Math.min(0.1, Math.max(-0.1, parsed));
+
+        input.value = offset.toFixed(3);
+        number.value = offset.toFixed(3);
 
         /*
         * Reads the current offsets from the three sliders.
@@ -1143,6 +1161,7 @@ export function attach(sim) {
       };
 
       input.addEventListener('input', () => applyOffset(input.value));
+      number.addEventListener('change', () => applyOffset(number.value));
 
       /*
       * Per-axis reset: zero this offset only.  The button sits NEXT TO the
@@ -1157,12 +1176,12 @@ export function attach(sim) {
       reset.title = `Reset the ${label} offset to 0`;
       reset.addEventListener('click', () => {
         input.value = '0.000';
+        number.value = '0.000';
         applyOffset(0);
       });
 
       field.appendChild(labelText);
-      field.appendChild(input);
-      field.appendChild(valueText);
+      field.appendChild(control);
 
       cell.appendChild(field);
       cell.appendChild(reset);
@@ -1421,14 +1440,9 @@ export function attach(sim) {
       field.style.minWidth = '0';
 
       const label = document.createElement('span');
-      label.textContent = `${axis} offset`;
+      label.textContent = `${axis} offset (°)`;
       label.style.fontSize = '12px';
       label.style.fontWeight = '600';
-
-      const valueText = document.createElement('span');
-      valueText.textContent = `${Number(edit.rpy[i] || 0).toFixed(0)}°`;
-      valueText.style.fontSize = '12px';
-      valueText.style.opacity = '0.75';
 
       const input = document.createElement('input');
       input.type = 'range';
@@ -1439,19 +1453,42 @@ export function attach(sim) {
       input.title = `Gripper ${axis} orientation offset in degrees`;
 
       /*
+      * Editable numeric twin of the slider, same as the gripper opening
+      * control: the field is the readout AND a way to type an exact value.
+      */
+      const number = document.createElement('input');
+      number.type = 'number';
+      number.min = '-180';
+      number.max = '180';
+      number.step = '1';
+      number.value = Number(edit.rpy[i] || 0);
+      number.title = `Gripper ${axis} orientation offset in degrees`;
+
+      const control = document.createElement('div');
+      control.className = 'range-number';
+      control.append(input, number);
+
+      /*
       * Shared apply path for the slider and the per-axis reset button.
       * `commit` is true for the slider's `change` and for a reset: it is what
       * writes the solver-bound finger/approach.  Dragging (the `input` event)
       * only moves the preview.
       */
       const applyOrientation = (value, commit) => {
-        const numeric = Number(value);
+        const parsed = Number(value);
 
-        if (!Number.isFinite(numeric)) {
+        if (!Number.isFinite(parsed)) {
           return;
         }
 
-        valueText.textContent = `${numeric.toFixed(0)}°`;
+        /*
+        * Typing can go past the slider's ends; clamp so the slider and the
+        * solver always see the same in-range value.
+        */
+        const numeric = Math.min(180, Math.max(-180, parsed));
+
+        input.value = String(numeric);
+        number.value = String(numeric);
 
         /*
         * Always read the current edit.rpy state.
@@ -1506,6 +1543,7 @@ export function attach(sim) {
 
       input.addEventListener('input', () => applyOrientation(input.value, false));
       input.addEventListener('change', () => applyOrientation(input.value, true));
+      number.addEventListener('change', () => applyOrientation(number.value, true));
 
       /*
       * Per-axis reset: zero this rotation only, as a full commit so the
@@ -1519,12 +1557,12 @@ export function attach(sim) {
       reset.title = `Reset the ${axis} orientation offset to 0`;
       reset.addEventListener('click', () => {
         input.value = '0';
+        number.value = '0';
         applyOrientation(0, true);
       });
 
       field.appendChild(label);
-      field.appendChild(input);
-      field.appendChild(valueText);
+      field.appendChild(control);
 
       cell.appendChild(field);
       cell.appendChild(reset);
@@ -1764,6 +1802,7 @@ export function attach(sim) {
         border: 1px solid #e2e8f0; border-radius: 4px; background: #fff; }
       #traj-edit .range-number { display: grid; grid-template-columns: minmax(0, 1fr) 5.5em;
         gap: 5px; align-items: center; }
+      #traj-edit .range-number.stacked { grid-template-columns: minmax(0, 1fr); gap: 3px; }
       #traj-edit .detail { margin: 6px 0; color: #475569; min-height: 16px; }
       #traj-edit .status { margin: 6px 0; min-height: 30px; color: #475569; }
       #traj-edit .buttons { display: flex; gap: 6px; flex-wrap: wrap; }

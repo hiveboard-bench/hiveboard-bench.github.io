@@ -223,6 +223,9 @@ ROBOTS = [
         "lamp_wind": 1.5,
         "lamp_approach": 0.25,
         "lamp_demo": True,
+        # The drawer front sits recessed behind its casing, so the jaws cannot
+        # seat on it.  Demonstrate the slide instead, like the lamp above.
+        "drawer_demo": True,
         # The gate valves keep their rim pinch.  A whole-head straddle was
         # implemented and measured for spot, and neither valve can take it:
         # the large valve's handwheel is 110.7 mm, wider than the 85.4 mm jaw,
@@ -1586,6 +1589,14 @@ def emit_all(hiveboard, robot, keep_anymal, menagerie, isaaclab_repo, usd_cache,
     catalogue = []
 
     for cfg in ROBOTS:
+        if robot and robot != "anymal" and cfg["name"] == "anymal":
+            # A partial rebuild of another robot never touches ANYmal: its
+            # committed scene, meshes and catalogue entry stay as they are.
+            # The optional DynaArm USD check below must not run here, or every
+            # `--robot <other>` build aborts on checkouts without that asset.
+            if "anymal" in existing:
+                catalogue.append(existing["anymal"])
+            continue
         if cfg["name"] == "anymal" and keep_anymal:
             if refreshed_anymal:
                 updated = refreshed_anymal[0]

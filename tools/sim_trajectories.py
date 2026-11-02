@@ -1266,6 +1266,31 @@ def draw_task(model, data, cfg, spec):
         {"pos": pos, "finger": finger, "approach": lean, "grip": grip,
          "secs": secs}, **extra)
 
+    if module == "drawer" and cfg.get("drawer_demo"):
+        # The casing reaches further toward the robot than the drawer front,
+        # so no jaw can seat on it.  Demonstrate the drawer instead: the arm
+        # follows the front while the prismatic joint is driven, and the
+        # drawer is left open at the end of the clip.
+        return {
+            "module": module,
+            "label": spec["label"],
+            "caption": "Leave the drawer, slide it out and hold it open.",
+            "watch": f"{module}_{spec['watch']}",
+            "goal": 0.0,
+            "demo": True,
+            "tolerance": 0.0,
+            "ik_tolerance": 1.0,
+            "drive": {f"{module}_{spec['watch']}": [0.0] * 3 + [travel] * 3},
+            "keys": [
+                dict(home_key(model, data, cfg, OPEN), transit=True),
+                hold(seat + clear, OPEN, 1.8, transit=True),
+                hold(seat, OPEN, 1.2),
+                hold(seat + axis * travel, OPEN, spec.get("draw_secs", 2.4)),
+                hold(seat + axis * travel + clear, OPEN, 1.2, transit=True),
+                dict(home_key(model, data, cfg, OPEN), secs=1.8, transit=True),
+            ],
+        }
+
     keys = [
         dict(home_key(model, data, cfg, OPEN), transit=True),
         hold(seat + clear, OPEN, 1.8, transit=True),
