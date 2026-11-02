@@ -2,7 +2,7 @@
 
 The main HiveBoard repository includes articulated digital assets for the physical mechanisms. Use these files when integrating HiveBoard into an existing simulator or robotics stack.
 
-Browse the [`Simulation/` directory](https://github.com/EESC-LabRoM/HiveBoard/tree/main/Simulation).
+Browse the [`Simulation/` directory](https://github.com/hiveboard-bench/HiveBoard/tree/main/Simulation).
 
 ## Available mechanism groups
 
@@ -16,8 +16,8 @@ Browse the [`Simulation/` directory](https://github.com/EESC-LabRoM/HiveBoard/tr
 | `Lamp/` | Light bulb |
 | `Peg Insertion/` | Peg insertion |
 | `Shock Absorber/` | Shock absorber |
-| `Threads/` | Thread (M8); Thread (M30) |
-| `Valves/` | Ball valve; Gate valve (small); Gate valve (large) |
+| `Threads/` | Thread (M8), Thread (M30) |
+| `Valves/` | Ball valve, Gate valve (small), Gate valve (large) |
 
 Folder names are retained for compatibility. The [terminology reference](/reference/terminology) maps older names to the task names used in the paper.
 
@@ -25,11 +25,11 @@ Folder names are retained for compatibility. The [terminology reference](/refere
 
 Depending on the mechanism, the simulation package provides:
 
-- visual meshes;
-- collision meshes;
-- revolute, continuous, and prismatic joints;
-- joint ranges and limits;
-- nominal mass and inertia; and
+- visual meshes
+- collision meshes
+- revolute, continuous, and prismatic joints
+- joint ranges and limits
+- nominal mass and inertia
 - URDF or USD exports.
 
 Threaded motion is represented by coupled rotational and translational joints where a native helical joint is unavailable. This reproduces the advance of a threaded component while keeping the asset portable across simulators.
@@ -40,14 +40,21 @@ Threaded motion is represented by coupled rotational and translational joints wh
 |---|---|
 | Load or visualize a mechanism in an existing stack | URDF or USD assets in the main repository |
 | Inspect kinematics or create a custom environment | Articulated asset plus your simulator's loader |
-| Train and evaluate policies in Isaac Lab | Dedicated Isaac Lab repository |
+| Run HiveBoard tasks with Isaac Lab and Newton | [Isaac Lab installation and task reference](/simulation/isaac-lab) |
+| Edit commands, record episodes, or find learning workflows | [Simulation workflows](/simulation/workflows) |
 | Compare simulation with the printed board | Record model commit and locally identified physical parameters |
+
+The Isaac Lab implementation uses generated Newton USD files. Follow the [asset-generation steps](/simulation/isaac-lab#generate-the-newton-assets) after cloning the simulation repository. Its generated files are separate from the portable URDF/USD assets in the main HiveBoard repository.
 
 ## Align the physical and simulated board
 
-Use the optional [ArUco cell](/hardware/aruco-cell) as a visual reference for board pose. The guide covers marker detection, camera calibration, and the marker-to-board transform. Its assembly mesh is provided as OBJ/MTL under `CAD/ArUco Cell/`. For a metre-based simulator, multiply the exported coordinates by 0.01 and verify the 0.0881 m overall width.
+Use the optional [ArUco cell](/hardware/aruco-cell) as a visual reference for board pose. The guide covers marker detection, camera calibration, and the marker-to-board transform. ID 0 and ID 1 assembly meshes are provided as OBJ/MTL under `CAD/ArUco Cell/`, with ID 1 in the `ID1/` subdirectory. For a metre-based simulator, multiply OBJ coordinates by 0.01 and verify the 0.0881 m overall width. ID 1 also has a USDZ export with declared millimetre units. Respect that metadata when importing it. Associate each detected ID with its own marker-to-board transform.
 
 Place the mesh relative to the board using the measured transform. Check alignment at known board points before comparing physical and simulated trajectories.
+
+## Optional 360° valve model
+
+The [360° ball-valve variant](/hardware/ball-valve-360) is provided as OBJ/MTL and USDZ under `CAD/Valves/Lever Valve/Ball Valve 360/`. Its USDZ contains geometry and materials, with no physics joints or rigid-body configuration. Integrating it requires defining and validating joint motion, collision geometry, mass, and friction. The existing articulated valve assets and Isaac Lab environments remain separate from this export.
 
 ## Physical parameters
 
@@ -55,21 +62,21 @@ The provided masses, inertias, friction values, and contact properties are nomin
 
 Printer calibration, filament, layer orientation, surface wear, sanding, and mechanism assembly can all change physical behavior. If close sim-to-real correspondence is required:
 
-1. print and assemble the target mechanism;
-2. measure its range and actuation resistance;
-3. identify the relevant simulation parameters;
-4. store the overrides separately from the original asset; and
+1. print and assemble the target mechanism
+2. measure its range and actuation resistance
+3. identify the relevant simulation parameters
+4. store the overrides separately from the original asset
 5. report both the asset commit and the identified values.
 
 ## Validation before use
 
 Before training or evaluation, check that:
 
-- every referenced mesh resolves;
-- the rest configuration has no unintended self-intersection;
-- joint axes and ranges match the physical mechanism;
-- collision geometry is sufficiently accurate for the task;
-- units and scale are correct; and
+- every referenced mesh resolves
+- the rest configuration has no unintended self-intersection
+- joint axes and ranges match the physical mechanism
+- collision geometry is sufficiently accurate for the task
+- units and scale are correct
 - a full actuation cycle completes without instability.
 
 A simulation experiment must define observations, actions, reset states, success checks, termination conditions, and evaluation seeds.

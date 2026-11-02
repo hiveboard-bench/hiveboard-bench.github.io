@@ -2,7 +2,7 @@
 
 This protocol characterizes robot-side performance across HiveBoard attachments. It is suitable for teleoperated arms, wearable interfaces, exoskeletons, and autonomous policies, provided that the control mode is held constant across the recorded trials being compared.
 
-The source protocol is available in [`Documentation/PROTOCOL.md`](https://github.com/EESC-LabRoM/HiveBoard/blob/main/Documentation/PROTOCOL.md). Submissions through this documentation require all 13 conditions, with five recorded trials per condition (65 trials).
+The source protocol is available in [`Documentation/PROTOCOL.md`](https://github.com/hiveboard-bench/HiveBoard/blob/main/Documentation/PROTOCOL.md). Submissions through this documentation require all 13 conditions, with five recorded trials per condition (65 trials).
 
 Before recording, open [How to perform each task](/benchmark/tasks). It lists the starting state, required actions, success criterion, timeout, and reset for every condition, including the [shock absorber](/benchmark/tasks#shock-absorber).
 
@@ -24,6 +24,12 @@ Before recording, open [How to perform each task](/benchmark/tasks). It lists th
 6. Create `platform.md` with the end-effector, control interface or policy, mounting orientation, control mode, and relevant calibration notes.
 7. Record the printer, material, print settings, and post-processing. The runner includes these fields in `platform.md`.
 
+## Optional hardware variants
+
+[ArUco cells with IDs 0 and 1](/hardware/aruco-cell) can be used for board localization. Record each ID and marker-to-board transform with the setup.
+
+The [360° ball-valve variant](/hardware/ball-valve-360) is available for learning-based methods and controller debugging. It permits continued rotation beyond the quarter-turn target. The Ball valve success criterion remains 90° from closed to open. Mark the initial and target orientations, and record `ball_valve_360`, the asset commit, and any friction ring in `platform.md`. In the runner, use **Calibration notes** for these details. Identify the hardware variant when comparing results. These additions introduce no new scored conditions.
+
 ## Optional dataset collection
 
 We encourage labs to record robot states, executed commands, and camera streams during evaluation using [DataHive](/guides/datahive). Test the recording setup before the scored trials and link each episode to its benchmark trial record. Dataset collection is optional and does not change the task criteria, timing, or requirement for 65 trials. The [DataHive guide](/guides/datahive#collect-during-a-benchmark-evaluation) explains how to prepare both submissions; the [learning-dataset call](/contribute/evaluations) also accepts larger collections and task subsets outside a formal evaluation.
@@ -44,9 +50,23 @@ For each platform and evaluation condition:
 4. Stop timing when the success criterion is met, a safety event occurs, or the timeout expires.
 5. Reset the mechanism and neutral pose before the next trial.
 
+Timing includes the initial approach and grasp. Grasping remains stage 1 for Lock and key, Drawer, and Shock absorber. Picking up the loose bulb, nut, or peg is also included in the trial time.
+
 Run the ball valve as two separate blocks: five trials without a friction ring and five with the ring fitted.
 
 Do not tune parameters or change the control mode between recorded trials in the same condition. A restarted approach within a trial counts as another attempt. Count a regrasp only when the end-effector releases the part and grasps it again. The initial grasp is not a regrasp. Attempts and regrasps are separate counts; neither starts a new trial.
+
+## Thread-task starting state
+
+For Thread (M8) and Thread (M30), the nut must start completely removed from the fixed screw. Alignment and initial thread engagement are part of the task. Fully remove the nut again before each trial. The runner's images show the assembled mechanism with the nut on the screw. They do not define the starting state.
+
+Record the starting configuration in `platform.md`. Identify any earlier trials that began with the nut already engaged, since their completion times exclude part of the task.
+
+## Drawer starting state and sequence
+
+Start with the drawer completely removed from its housing and placed in its documented starting pose. The housing stays fixed to the board. Grasp the drawer, align it with the housing opening, and insert it fully until correctly seated. The 120 s timeout includes the initial approach and grasp. Remove the drawer completely before the next trial.
+
+The stages are (1) grasp the drawer, (2) align it with the housing, and (3) insert it fully. Identify earlier trials that used an open-and-close sequence in `notes` when reporting results.
 
 ## Outcomes
 

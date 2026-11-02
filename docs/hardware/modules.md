@@ -28,8 +28,8 @@ The gate-valve criterion is one complete stem rotation, not full travel. The num
 | ID | Attachment | Required outcome | Timeout |
 |---|---|---|---:|
 | `light_bulb` | Light bulb | Thread the bulb until it is seated | 120 s |
-| `thread_m8` | Thread (M8) | Thread the bolt along the available length | 120 s |
-| `thread_m30` | Thread (M30) | Thread the bolt along the available length | 120 s |
+| `thread_m8` | Thread (M8) | Align the separate nut with the screw and thread it along the available length | 120 s |
+| `thread_m30` | Thread (M30) | Align the separate nut with the screw and thread it along the available length | 120 s |
 | `peg_insertion` | Peg insertion | Thread the free peg into the empty socket until seated | 120 s |
 
 The peg task uses a threaded 8 mm pin. It is not a clearance-fit insertion task.
@@ -42,15 +42,21 @@ These tasks are scored by the last completed stage as well as by full success.
 |---|---|---|---|---|---:|
 | `button` | Button | Open cover | Press button | — | 60 s |
 | `lock` | Lock and key | Grasp key | Insert key vertically | Rotate to unlock | 180 s |
-| `drawer` | Drawer | Grasp handle | Pull open | Push closed | 120 s |
+| `drawer` | Drawer | Grasp drawer | Align with housing | Insert fully | 120 s |
 | `shock_absorber` | Shock absorber | Grasp loose part | Align its hole with the pin | Insert part fully onto pin | 180 s |
+
+Grasping is stage 1 for Lock and key, Drawer, and Shock absorber, and is included in the trial time. Start timing with the initial approach.
 
 Record `0` when no stage is completed. A full success reaches the final stage listed for the attachment.
 
-## Optional accessory
+## Optional hardware
 
-The [ArUco cell](/hardware/aruco-cell) provides a visual reference for board localization and physical-to-simulation alignment. It adds no scored task or evaluation condition.
+[ArUco cells with IDs 0 and 1](/hardware/aruco-cell) provide visual references for board localization and physical-to-simulation alignment. Use unique IDs when installing multiple cells and record each marker-to-board transform.
+
+The [360° ball-valve variant](/hardware/ball-valve-360) allows continued rotation past the quarter-turn target to reduce damage from overshoot during training and controller debugging. Record the variant in the experiment metadata. The standard Ball valve task target remains 90°.
+
+These additions introduce no new scored conditions.
 
 ## Printable files
 
-The attachment folders and their components are available under [`STL/`](https://github.com/EESC-LabRoM/HiveBoard/tree/main/STL). The same high-level folder names are used under `CAD/` and `Simulation/` where the corresponding assets are available.
+The attachment folders and their components are available under [`STL/`](https://github.com/hiveboard-bench/HiveBoard/tree/main/STL). The same high-level folder names are used under `CAD/` and `Simulation/` where the corresponding assets are available.

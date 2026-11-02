@@ -6,23 +6,36 @@ If you use HiveBoard in research or a publication, cite the project paper. The c
 @article{hiveboard2026,
   title   = {HiveBoard: An Open, Modular, 3D-Printed Benchmark of Industrial
              Mechanisms for Robotic and Prosthetic Manipulation},
-  author  = {Godoy, Ricardo V. and de Souza, Enzo F. and Angarola, Matheus P. and
-             de Lange, Rudy De-Xin and Negri, Juliano and Marsicano, Joao A. and
-             Aléssio, João H. and van Halst, Victor and
-             Elanjimattathil Vijayan, Aravind and Capezzuto, Gianluca and
-             Tommaselli, Felipe A. G. and Milazzo, Giuseppe and
-             Ramírez Sánchez, Amy M. and Affonso, Francisco and Baptista, Rafael R. and van Berge, Meiko A. and
-             Chowdhary, Girish and Bezerra, Ranulfo and
-             Lahr, Gustavo J. G. and Ferrari Gerez, Lucas and Bicchi, Antonio and
+  author  = {Godoy, Ricardo V. and
+             de Souza, Enzo F. and
+             Angarola, Matheus P. and
+             Negri, Juliano and
+             Aléssio, João H. and
+             van Halst, Victor and
+             Milazzo, Giuseppe and
+             Capezzuto, Gianluca and
+             Tommaselli, Felipe and
+             Affonso, Francisco and
+             Marsicano, João A. and
+             de Lange, Rudy De-Xin and
+             Elanjimattathil Vijayan, Aravind and
+             Ramírez Sánchez, Amy M. and
+             Baptista, Rafael R. and
+             van Berge, Meiko A. and
+             Chowdhary, Girish and
+             Bezerra, Ranulfo and
+             Lahr, Gustavo J. G. and
+             Ferrari Gerez, Lucas and
+             Bicchi, Antonio and
              Becker, Marcelo},
   journal = {Under review},
   year    = {2026},
-  url     = {https://github.com/EESC-LabRoM/HiveBoard}
+  url     = {https://github.com/hiveboard-bench/HiveBoard}
 }
 ```
 
 ::: warning Check before publication
-The paper is under review and the citation metadata may change. Copy the current entry from the [main HiveBoard repository](https://github.com/EESC-LabRoM/HiveBoard) when preparing a manuscript.
+The paper is under review and the citation metadata may change. Copy the current entry from the [main HiveBoard repository](https://github.com/hiveboard-bench/HiveBoard) when preparing a manuscript.
 :::
 
 ## Report the benchmark version

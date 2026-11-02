@@ -58,6 +58,7 @@ const tasks = [
     id: 'light_bulb', name: 'Light bulb', family: 'Precision', timeout: 120,
     image: '/images/tasks/lamp_3d.png',
     video: `${VIDEO_BASE}/anymal_light_bulb.mp4`, videoPlatform: 'Platform C · ANYmal with DynaArm (VR)',
+    videoNotice: 'Unsuccessful trial: the robot did not fully thread the light bulb into the socket.',
     success: 'Thread the bulb into the socket until it is seated.',
     reset: 'Remove the bulb, restore the documented starting pose, and inspect the thread.'
   },
@@ -65,15 +66,19 @@ const tasks = [
     id: 'thread_m8', name: 'Thread (M8)', family: 'Precision', timeout: 120,
     image: '/images/tasks/m8_3d.png',
     video: `${VIDEO_BASE}/s010_m8_exp5.mp4`, videoPlatform: 'Platform B · LeRobot SO-101',
-    success: 'Thread the bolt along the available length.',
-    reset: 'Return the bolt to the documented initial engagement and check that the thread is clear.'
+    start: 'Nut completely removed from the fixed screw, with no thread engagement.',
+    imageNotice: 'Assembled view. Start the trial with the nut completely removed from the screw.',
+    success: 'Align the nut with the screw and thread it along the available length.',
+    reset: 'Fully unthread and remove the nut, restore its documented starting pose, and inspect both threads.'
   },
   {
     id: 'thread_m30', name: 'Thread (M30)', family: 'Precision', timeout: 120,
     image: '/images/tasks/m30_3d.png',
     video: `${VIDEO_BASE}/s010_m30_exp5.mp4`, videoPlatform: 'Platform B · LeRobot SO-101',
-    success: 'Thread the bolt along the available length.',
-    reset: 'Return the bolt to the documented initial engagement and check that the thread is clear.'
+    start: 'Nut completely removed from the fixed screw, with no thread engagement.',
+    imageNotice: 'Assembled view. Start the trial with the nut completely removed from the screw.',
+    success: 'Align the nut with the screw and thread it along the available length.',
+    reset: 'Fully unthread and remove the nut, restore its documented starting pose, and inspect both threads.'
   },
   {
     id: 'peg_insertion', name: 'Peg insertion', family: 'Precision', timeout: 120,
@@ -102,9 +107,10 @@ const tasks = [
     id: 'drawer', name: 'Drawer', family: 'Composed assembly', timeout: 120,
     image: '/images/tasks/box_3d.png',
     video: `${VIDEO_BASE}/macao_box.mp4`, videoPlatform: 'Platform D · Macao prosthetic hand',
-    success: 'Grasp the handle, pull the drawer open, and push it closed.',
-    reset: 'Return the drawer to the fully closed initial position.',
-    stages: ['Grasp handle', 'Pull open', 'Push closed']
+    start: 'Drawer completely removed from its housing and placed in its documented starting pose. Housing empty.',
+    success: 'Grasp the drawer, align it with its housing, and insert it fully until correctly seated.',
+    reset: 'Remove the drawer completely from its housing and restore its documented starting pose.',
+    stages: ['Grasp drawer', 'Align with housing', 'Insert fully']
   },
   {
     id: 'shock_absorber', name: 'Shock absorber', family: 'Composed assembly', timeout: 180,
@@ -563,10 +569,12 @@ function buildRecordingInstructions() {
 Submission ID: \`${ensureSubmissionId()}\`
 
 1. ${session.evaluation_mode === 'simulation' ? 'Start a screen recording of the simulation before starting the runner countdown.' : 'Start the external camera before starting the runner countdown.'}
-2. Record the complete trial without cuts.
+2. Record the complete trial without cuts, including the initial approach and grasp. Begin the approach when the runner countdown reaches zero.
 3. Keep the HiveBoard, robot and end-effector, and final task state visible.
 4. Save one MP4 file for each row in \`trials.csv\`.
 5. Rename each file exactly as listed below and place it in the package's \`videos/\` directory before submission.
+
+For Thread (M8) and Thread (M30), show the nut completely removed from the screw before the trial begins. The runner's reference image shows the assembled mechanism. For Drawer, show the drawer completely removed from its housing before the trial begins.
 
 | Trial | Condition | Required filename |
 | ---: | --- | --- |
@@ -994,7 +1002,9 @@ onUnmounted(() => {
       <div class="trial-layout">
         <div class="task-reference">
           <img :src="withBase(currentTask.image)" :alt="`${currentTask.name} reference render`">
+          <p v-if="currentTask.imageNotice" class="video-notice">{{ currentTask.imageNotice }}</p>
           <dl>
+            <div v-if="currentTask.start"><dt>Start</dt><dd>{{ currentTask.start }}</dd></div>
             <div><dt>Success</dt><dd>{{ currentTask.success }}</dd></div>
             <div v-if="currentTask.stages"><dt>Stages</dt><dd>{{ currentTask.stages.join(' → ') }}</dd></div>
             <div><dt>Reset</dt><dd>{{ currentTask.reset }}</dd></div>
@@ -1003,6 +1013,8 @@ onUnmounted(() => {
             <button class="video-link" type="button" @click="openExampleVideo(currentTask)">
               Watch example trial <span>{{ currentTask.videoPlatform }}</span>
             </button>
+            <p v-if="currentTask.videoNotice" class="video-notice">{{ currentTask.videoNotice }}</p>
+            <a v-if="['valve_ball', 'valve_ball_ring'].includes(currentTask.id)" :href="withBase('/hardware/ball-valve-360')">Using the 360° valve variant? Record it in Calibration notes.</a>
             <a href="https://hiveboard-bench.github.io/#Simulation-Compatibility" target="_blank" rel="noreferrer noopener">Open the interactive simulation ↗</a>
           </div>
         </div>
@@ -1011,7 +1023,7 @@ onUnmounted(() => {
           <p v-if="timerState === 'countdown'" class="countdown-label">Starting in</p>
           <div v-if="timerState === 'countdown'" class="countdown" aria-live="assertive">{{ countdown }}</div>
           <div v-else class="stopwatch" aria-live="polite">{{ displayTime }}</div>
-          <p v-if="timerState === 'idle'">Begin the task when the countdown reaches zero.</p>
+          <p v-if="timerState === 'idle'">Begin the initial approach and grasp when the countdown reaches zero. The initial grasp is included in the trial time.</p>
           <p v-else-if="timerState === 'running'">Timer running · automatic timeout at {{ currentTask.timeout }} seconds</p>
           <p v-else-if="timerState === 'form'">Enter the trial outcome.</p>
 
@@ -1239,6 +1251,7 @@ onUnmounted(() => {
           </div>
           <button class="video-close" type="button" aria-label="Close example video" @click="closeExampleVideo">Close</button>
         </header>
+        <p v-if="exampleVideoTask.videoNotice" class="video-caption">{{ exampleVideoTask.videoNotice }}</p>
         <video :key="exampleVideoTask.video" controls autoplay muted playsinline preload="metadata" controlslist="nodownload">
           <source :src="exampleVideoTask.video" :type="/\.mp4$/i.test(exampleVideoTask.video) ? 'video/mp4' : undefined">
           Your browser does not support HTML video.
@@ -1326,9 +1339,10 @@ button.compact { min-height: 36px; padding: .35rem .75rem; }
 .task-reference a { font-size: .84rem; font-weight: 600; }
 .task-reference a span { color: #57606a; font-size: .78rem; font-weight: 400; }
 .video-link { width: fit-content; padding: 0; border: 0; background: transparent; color: #23527c; font: inherit; font-size: .84rem; font-weight: 600; text-align: left; text-decoration: underline; }
+.video-notice { margin: 0; color: #7a271a; font-size: .84rem; line-height: 1.5; }
 .video-link span { color: #57606a; font-size: .78rem; font-weight: 400; }
 .video-modal-backdrop { position: fixed; z-index: 1000; inset: 0; display: flex; padding: 1.5rem; align-items: center; justify-content: center; background: rgba(13, 23, 33, .82); }
-.video-modal { overflow: hidden; width: min(960px, 100%); max-height: calc(100vh - 3rem); border: 1px solid #cfd5db; border-radius: 2px; background: #fff; box-shadow: 0 20px 60px rgba(0, 0, 0, .35); color: #24292f; }
+.video-modal { overflow: auto; width: min(960px, 100%); max-height: calc(100vh - 3rem); border: 1px solid #cfd5db; border-radius: 2px; background: #fff; box-shadow: 0 20px 60px rgba(0, 0, 0, .35); color: #24292f; }
 .video-modal header { display: flex; padding: .9rem 1rem; align-items: center; justify-content: space-between; gap: 1rem; }
 .video-modal header p { margin: 0 0 .15rem; color: #57606a; font-size: .76rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
 .video-modal header h2 { margin: 0; border: 0; font-size: 1.1rem; }

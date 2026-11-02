@@ -20,7 +20,7 @@ export default defineConfig({
     nav: [
       { text: 'Contribute', link: '/contribute/' },
       { text: 'Project website', link: 'https://hiveboard-bench.github.io' },
-      { text: 'GitHub', link: 'https://github.com/EESC-LabRoM/HiveBoard' }
+      { text: 'GitHub', link: 'https://github.com/hiveboard-bench/HiveBoard' }
     ],
     sidebar: [
       {
@@ -37,7 +37,8 @@ export default defineConfig({
           { text: '3D Printing', link: '/hardware/printing' },
           { text: 'Assembly and Mounting', link: '/hardware/assembly' },
           { text: 'Attachment Reference', link: '/hardware/modules' },
-          { text: 'ArUco Cell', link: '/hardware/aruco-cell' }
+          { text: 'ArUco Cell', link: '/hardware/aruco-cell' },
+          { text: 'Ball Valve — 360° Variant', link: '/hardware/ball-valve-360' }
         ]
       },
       {
@@ -60,7 +61,8 @@ export default defineConfig({
         text: 'Simulation',
         items: [
           { text: 'Simulation Assets', link: '/simulation/assets' },
-          { text: 'Isaac Lab Integration', link: '/simulation/isaac-lab' }
+          { text: 'Isaac Lab Integration', link: '/simulation/isaac-lab' },
+          { text: 'Simulation Workflows', link: '/simulation/workflows' }
         ]
       },
       {
@@ -85,7 +87,7 @@ export default defineConfig({
       }
     ],
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/EESC-LabRoM/HiveBoard' }
+      { icon: 'github', link: 'https://github.com/hiveboard-bench/HiveBoard' }
     ],
     footer: {
       message: 'HiveBoard documentation',

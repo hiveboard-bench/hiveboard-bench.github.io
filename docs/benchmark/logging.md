@@ -5,8 +5,8 @@ Use the supplied spreadsheet during experiments and the CSV for scripts or data 
 The [Evaluation Runner](/benchmark/evaluation-runner) provides a guided timer and produces the same CSV format directly in the browser. It can also save transferable sessions, validate a complete evaluation, and generate the final submission package.
 
 <ul class="doc-links">
-  <li><a href="https://github.com/EESC-LabRoM/HiveBoard/raw/main/Documentation/trials.xlsx"><strong>Download the XLSX template</strong></a> — for manual entry, with all trial rows pre-populated.</li>
-  <li><a href="https://github.com/EESC-LabRoM/HiveBoard/raw/main/Documentation/trials.csv"><strong>Download the CSV template</strong></a> — for scripts, version control, and automated validation.</li>
+  <li><a href="https://github.com/hiveboard-bench/HiveBoard/raw/main/Documentation/trials.xlsx"><strong>Download the XLSX template</strong></a> — for manual entry, with all trial rows pre-populated.</li>
+  <li><a href="https://github.com/hiveboard-bench/HiveBoard/raw/main/Documentation/trials.csv"><strong>Download the CSV template</strong></a> — for scripts, version control, and automated validation.</li>
 </ul>
 
 Use the [task-name and identifier table](/reference/terminology#task-names-and-identifiers) to match each record to its task.
@@ -32,6 +32,12 @@ Do not change `trial_id` or `attachment_id`. Fill the remaining columns while ru
 | `stage_reached` | Last completed stage, only for composed assembly tasks |
 | `strategy` | `prehensile` or `non_prehensile` |
 | `notes` | Deviations, adjustments, damage, or other concise observations |
+
+## Timing and starting state
+
+Include the initial approach and grasp in `completion_time_s`. For the key, drawer, and shock absorber, grasping is stage 1. Start from the documented neutral pose and begin moving when the runner countdown reaches zero. During manual logging, start timing with the first commanded approach motion.
+
+For Thread (M8) and Thread (M30), start with the nut completely removed from the fixed screw. Include picking up the nut, alignment, and initial thread engagement in the trial time. Record any earlier trials with an already engaged nut in `notes` and describe their starting configuration in `platform.md`.
 
 ## Counting conventions
 
@@ -71,4 +77,4 @@ trial_id,lab_id,platform_id,attachment_id,date,outcome,failure_cause,completion_
 | Blank stage on a failed composed assembly task | Record the last completed stage, including `0` |
 | Replacing a damaged-part trial with a clean rerun | Preserve the trial and explain the event in `notes` |
 
-See the [column-by-column instructions](https://github.com/EESC-LabRoM/HiveBoard/blob/main/Documentation/HOW_TO_FILL_TRIALS.md) for the full reference.
+See the [column-by-column instructions](https://github.com/hiveboard-bench/HiveBoard/blob/main/Documentation/HOW_TO_FILL_TRIALS.md) for the full reference.

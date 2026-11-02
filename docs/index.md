@@ -2,7 +2,7 @@
 
 HiveBoard is an open, modular, fully 3D-printable benchmark for manipulation of functional mechanisms. Its interchangeable attachments cover rotational, threaded, insertion, linear, and multi-stage tasks. The same board and protocol can be used with robot grippers, dexterous hands, teleoperated systems, and worn prosthetic hands.
 
-For the paper, demonstration videos, and reported results, see the [HiveBoard project website](https://hiveboard-bench.github.io).
+The physical validation covers six platforms, including Alter-Ego with a Pisa/IIT SoftHand. For the paper, demonstration videos, and per-condition results, see the [HiveBoard project website](https://hiveboard-bench.github.io).
 
 ## Documentation
 
@@ -18,7 +18,7 @@ For the paper, demonstration videos, and reported results, see the [HiveBoard pr
 - [Data collection with DataHive](/guides/datahive)
 - [Simulation assets](/simulation/assets)
 
-The printable parts, CAD models, articulated assets, protocol, and trial templates are maintained in the [HiveBoard repository](https://github.com/EESC-LabRoM/HiveBoard). The Isaac Lab environments are maintained in a [separate repository](https://github.com/EESC-LabRoM/isaaclab-hiveboard).
+The printable parts, CAD models, articulated assets, protocol, and trial templates are maintained in the [HiveBoard repository](https://github.com/hiveboard-bench/HiveBoard). The Isaac Lab environments are maintained in a [separate repository](https://github.com/hiveboard-bench/isaaclab-hiveboard).
 
 ## Open calls for contributions
 
@@ -42,7 +42,7 @@ If you use HiveBoard in your research, please cite the project paper:
              de Lange, Rudy De-Xin and Negri, Juliano and Marsicano, Joao A. and others},
   journal = {Under review},
   year    = {2026},
-  url     = {https://github.com/EESC-LabRoM/HiveBoard}
+  url     = {https://github.com/hiveboard-bench/HiveBoard}
 }
 ```
 

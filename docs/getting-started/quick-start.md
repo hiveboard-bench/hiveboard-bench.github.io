@@ -31,7 +31,8 @@ For a dataset contribution, there is no fixed episode count or requirement to co
 ## Work in simulation
 
 - **Articulated assets:** use the URDF or USD files from the main repository in your own simulator or robotics stack.
-- **Isaac Lab environment:** use the dedicated repository to train and evaluate policies in Isaac Lab.
+- **Isaac Lab environments:** follow the [installation and task reference](/simulation/isaac-lab) to run Spot, Franka FR3, and ANYmal tasks with Newton. The current setup uses Python 3.12 and generated USD assets.
+- **Simulation data and policies:** use [Simulation workflows](/simulation/workflows) to edit command sequences, record episodes, and train or evaluate policies.
 
 Read [Simulation assets](/simulation/assets) before selecting the implementation. The physical and simulation parameters should be reported separately because friction, contact, and press-fit behavior vary between printed instances.
 

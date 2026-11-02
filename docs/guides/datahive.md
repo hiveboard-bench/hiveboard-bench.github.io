@@ -83,6 +83,8 @@ For a complete example to use as a base, see [`fr3_datahive`](https://github.com
 
 **Record physical trials with an external camera**, with the board, end-effector, and task state visible throughout. Include that camera in the profile when storing its recording with the DataHive episode. For simulation, record rendered camera observations and identify the simulator and configuration.
 
+For Isaac Lab simulation, see [Simulation workflows](/simulation/workflows) for command editing and episode recording, plus links to the separate learning repository. The simulation player exports its own HDF5 layout. Check the data schema and metadata before converting its output into DataHive episodes.
+
 ### Check the recording setup first
 
 DataHive currently expects aligned state and command arrays in HDF5, a proprioception rate of at least 100 Hz, and one MP4 per configured camera. Its video checks require matching camera resolution, frame rate, and frame count; each image dimension must be 180–1280 pixels, and video duration must match the episode within 0.5 seconds. Check the upstream format reference when choosing acquisition settings.
@@ -91,7 +93,11 @@ Record and validate a short pilot episode before starting the collection. Preser
 
 ### Optional board localization
 
-The [ArUco cell](/hardware/aruco-cell) can provide a visual reference for board pose during collection. Retain the camera calibration, measured marker size, marker-to-board transform, and timestamped images used for detection. Store any estimated poses with their frame conventions and timestamps. Marker detection and pose estimation are part of the lab's recording integration. Keep calibration records with the session metadata and agree on supplemental files with the organizers where needed.
+The [ArUco cells](/hardware/aruco-cell), available with IDs 0 and 1, can provide visual references for board pose during collection. Use unique IDs and associate each ID with its own marker-to-board transform. Retain the camera calibration, measured marker size, marker-to-board transform, and timestamped images used for detection. Store any estimated poses with their frame conventions and timestamps. Marker detection and pose estimation are part of the lab's recording integration. Keep calibration records with the session metadata and agree on supplemental files with the organizers where needed.
+
+### Valve variant for controller development
+
+The [360° ball-valve variant](/hardware/ball-valve-360) allows continued rotation beyond the usual quarter turn, reducing damage from overshoot during learning and debugging. Record `ball_valve_360`, the asset commit, any friction ring, and the episode's initial and target orientations in the dataset metadata. The benchmark Ball valve target remains 90°. Describe training tasks with a full-turn target separately.
 
 ## Annotate and validate
 
@@ -112,7 +118,7 @@ Use the [task definitions](/benchmark/tasks) and [counting conventions](/benchma
 1. Test recording and synchronization before the scored trials. Keep familiarization and training episodes identifiable and separate from the evaluation set.
 2. Follow the [evaluation protocol](/benchmark/protocol), including all 13 conditions, five trials per condition, fixed control settings, neutral starting poses, resets, and task timeouts. Use the required separate blocks for the two ball-valve configurations.
 3. Record the same trial's states, commands, and camera streams. Maintain an index linking its DataHive session and episode IDs to the benchmark `trial_id` and `attachment_id`; session trial numbers may follow a different order from the benchmark template.
-4. Time the benchmark trial from the first commanded task motion until success, a safety stop, or timeout. Save a completion time only for successful trials. A recording may include time before or after the task, so its total duration is not automatically the benchmark completion time.
+4. Time the benchmark trial from the first commanded approach motion until success, a safety stop, or timeout. Include the initial grasp. For Thread (M8) and Thread (M30), the nut must start completely removed from the fixed screw, so alignment and initial thread engagement are included. Save a completion time only for successful trials. A recording may include time before or after the task, so its total duration is not automatically the benchmark completion time.
 5. Prepare the benchmark log and [submission package](/benchmark/results) separately from the learning dataset. Report every scored trial, including failures, and retain the external-camera recording for each one.
 
 DataHive's `trials.csv` contains extra annotation fields and is **not a drop-in replacement for the benchmark CSV**. For the benchmark submission, use the website Evaluation Runner or transfer the scored results into the [benchmark template](/benchmark/logging), preserving its condition-to-trial mapping and filling all required counts and stages. Keep a correspondence to the original episode IDs. Do not copy DataHive's operator and annotator names into the public benchmark files.
