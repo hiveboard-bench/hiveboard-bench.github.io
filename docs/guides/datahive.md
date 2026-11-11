@@ -6,6 +6,8 @@ description: Collect, annotate, validate, and share HiveBoard learning episodes 
 
 [DataHive](https://github.com/hiveboard-bench/DataHive) is a toolkit for collecting HiveBoard manipulation episodes with robot states, control commands, camera recordings, and task annotations. It provides a local browser interface, a Python recording API, validation tools, and upload to a configured Hugging Face dataset repository.
 
+As of October 2026, the recorded HiveBoard datasets contain **447 real-robot episodes (2.5 hours)** and **1,950 simulation episodes (25.9 hours)**. Durations are summed from episode frame counts and recording rates; these are local dataset totals, not upload counts.
+
 **We encourage labs to collect learning data while running a benchmark evaluation.** Recording the same trials can provide both performance measurements and trajectories for subsequent research. Dataset collection is optional: a benchmark submission still requires all 13 conditions with five trials each, while the [learning-dataset call](/contribute/evaluations) has no fixed episode count or requirement to cover every condition.
 
 ## Choose the workflow

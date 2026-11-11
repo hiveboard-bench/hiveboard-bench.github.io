@@ -1039,6 +1039,70 @@ button:hover {
   position: relative;
 }
 
+.datahive-stats {
+  display: grid;
+  grid-template-columns: minmax(150px, 0.8fr) repeat(2, minmax(0, 1fr));
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding: 1rem 0;
+  border-top: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.datahive-stats-heading {
+  color: #0f172a;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.datahive-stats-heading small {
+  display: block;
+  color: #94a3b8;
+  font-size: 0.75rem;
+  font-weight: 400;
+}
+
+.datahive-stat {
+  padding-left: 1.5rem;
+  border-left: 1px solid #e2e8f0;
+}
+
+.datahive-stat-label {
+  display: block;
+  color: #64748b;
+  font-size: 0.8rem;
+}
+
+.datahive-stat-value {
+  display: block;
+  color: #0f172a;
+  font-size: clamp(2rem, 3.5vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+}
+
+.datahive-stat-value small {
+  color: #b77900;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.datahive-stat-episodes {
+  display: block;
+  margin-top: 0.2rem;
+  color: #64748b;
+  font-size: 0.8rem;
+}
+
+@media (max-width: 600px) {
+  .datahive-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 0.75rem; }
+  .datahive-stats-heading { grid-column: 1 / -1; }
+  .datahive-stats-heading small { display: inline; margin-left: 0.35rem; }
+  .datahive-stat { padding-left: 0; border-left: 0; }
+}
+
 .video-gallery.is-collapsed .video-gallery-extra {
   display: none;
 }
@@ -1166,7 +1230,7 @@ button:hover {
   position: relative;
   left: auto;
   bottom: auto;
-  display: inline-flex;
+  display: flex;
   margin: 1.25rem auto 0;
   transform: none;
 }

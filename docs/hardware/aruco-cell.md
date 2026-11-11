@@ -11,7 +11,7 @@ Cells with **marker IDs 0 and 1** are available with the same mounting geometry.
 The cell is an optional accessory. Benchmark evaluations still contain **13 conditions with five trials each**.
 
 <figure class="doc-image">
-  <img src="/images/aruco-cell-assembly.png" alt="CAD view of the ArUco cell, with a white hexagonal base and black marker insert" width="530">
+  <img src="/images/aruco-cell-assembly.png" alt="CAD view of the ArUco cell, with a white hexagonal base and black marker insert" style="max-width: 520px; margin-inline: auto; border: none;">
   <figcaption>ID 0 assembly model. The white base and black insert are printed separately and fitted together.</figcaption>
 </figure>
 
