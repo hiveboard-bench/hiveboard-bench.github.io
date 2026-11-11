@@ -1,0 +1,27 @@
+format: xrdf
+format_version: 2.0
+
+modifiers:
+  - set_base_frame: "base_link"
+
+default_joint_positions:
+  macao_x: 0.0
+  macao_y: 0.0
+  macao_z: 0.0
+  macao_roll: 0.0
+  macao_pitch: 0.0
+  macao_yaw: 0.0
+
+cspace:
+  joint_names:
+    - "macao_x"
+    - "macao_y"
+    - "macao_z"
+    - "macao_roll"
+    - "macao_pitch"
+    - "macao_yaw"
+  acceleration_limits: [5.0, 5.0, 5.0, 15.0, 15.0, 15.0]
+  jerk_limits: [500.0, 500.0, 500.0, 1000.0, 1000.0, 1000.0]
+
+tool_frames:
+  - "tcp"
