@@ -110,22 +110,7 @@ The repository includes a live visual editor to adjust waypoints directly in 3D:
   ```
 *(This compiles MuJoCo scenes, solves IK, and runs acceptance tests across all attachments).*
 
-### Validate published simulation assets
-
-```bash
-npm test
-.venv/bin/python tools/check-published-sim.py
-```
-
-These checks cover viewer meshes, gzip/source consistency, the five-platform
-catalogue, scene loading with the shipped WebAssembly engine, and saved-pose
-compatibility with native MuJoCo. They do not certify task success or replace
-visual testing of the trajectory editor.
-
-### NVIDIA cuMotion
-
-Planner resources and the joint-planning integration test cover FR3, Spot,
-SO-101, ANYmal and Macao.
+### NVIDIA cuMotion for FR3 and Spot
 
 The FR3 and Spot trajectory builders use NVIDIA's standalone cuMotion package.
 It requires a supported NVIDIA GPU and a matching CUDA release. On Ubuntu 24.04

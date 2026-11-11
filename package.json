@@ -27,8 +27,5 @@
     "jsdom": "^30.0.1",
     "three": "^0.185.1",
     "vue": "^3.5.42"
-  },
-  "allowScripts": {
-    "esbuild@0.21.5": true
   }
 }

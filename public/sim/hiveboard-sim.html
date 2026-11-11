@@ -435,10 +435,6 @@
     let restGrip = 0;
     let devHold = false;
     let devPose = null;
-    let previewCapturePending = null;
-    let previewPose = null;      // last pose the editor asked the preview to show
-    let holdPose = null;         // qpos the editor is holding the robot at
-    let holdDofs = [];           // dofs to pin while held (everything but the module)
 
     let pathLine = null;
     let pathMarker = null;
@@ -525,12 +521,7 @@
     let previewDemo = null;
     let previewToken = 0;
     let previewAdjust = { offset: [0, 0, 0], spin: 0, scale: 1 };
-    // What the built scene already carries for this module; the panel's numbers
-    // are absolute, so the live delta is adjust - baseline.
-    let previewBaseline = { offset: [0, 0, 0], spin: 0, scale: 1 };
     let committedPlacement = {};
-    let modulePlacement = {};   // module key -> rest pose of its board-side bodies
-    let compression = [];       // squashed bodies: {b, at, axis, base, reach, length}
     let savedViews = {};
     const PLACE_EDIT = new URLSearchParams(location.search).has('edit');
     const PLACE_API = new URLSearchParams(location.search).get('api')
@@ -588,10 +579,10 @@
         throw new Error('this browser cannot decompress the simulation assets');
       }
       const url = `${path}.gz` + (CACHE_TAG ? `?v=${CACHE_TAG}` : '');
-      // Model archives are generated together. Revalidate each archive so a
+      // Model archives are generated together.  Revalidate each archive so a
       // browser cannot combine a cached XML file with an older/partial mesh
       // archive after a rebuild (which MuJoCo reports as "at least 4
-      // vertices required"). Production builds still receive content-hash
+      // vertices required").  Production builds still receive content-hash
       // query strings from tools/stamp-cache.py.
       const resp = await fetch(url, { cache: 'no-store' });
       if (!resp.ok) throw new Error(`${path}.gz → HTTP ${resp.status}`);
@@ -622,7 +613,7 @@
 
       if (isGzip) {
         if (typeof DecompressionStream === 'undefined') {
-          throw new Error('This browser does not support DecompressionStream');
+          throw new Error('Este navegador não suporta DecompressionStream');
         }
 
         const stream = new Blob([buffer])
@@ -639,13 +630,13 @@
       try {
         return JSON.parse(text);
       } catch (error) {
-        console.error('Received content is not JSON:', {
+        console.error('Conteúdo recebido não é JSON:', {
           path,
           preview: text.slice(0, 200)
         });
 
         throw new Error(
-          `Invalid JSON in ${path}. First characters: ${text.slice(0, 80)}`
+          `JSON inválido em ${path}. Primeiros caracteres: ${text.slice(0, 80)}`
         );
       }
     }
@@ -750,7 +741,6 @@
       }
 
       demoCollisionState = null;
-      modulePlacement = {};
 
       bodyNames = [];
       for (let b = 0; b < mjModel.nbody; b++) {
@@ -880,25 +870,14 @@
     }
 
     function getGripperGroups() {
-      const candidates = {
-        // FR3 canonical names first; Spot uses different arm link names.
-        // Extend with per-robot gripper/body names for the trajectory editor
-        // preview.
-        hand:         ['hand',         'arm_link_wr1', 'moving_jaw_so101_v1', 'robotiq_base_link', 'macao_hand'],
-        left_finger:  ['left_finger',  'arm_link_fngr', 'gripper', 'moving_jaw_so101_v1', 'left_outer_knuckle', 'macao_thumb_body', 'macao_finger_body_0'],
-        // SO-101 has only a single moving jaw; reuse it for right_finger to avoid noisy warnings.
-        right_finger: ['right_finger', 'right_outer_knuckle', 'moving_jaw_so101_v1', 'macao_finger_body_1'],
-      };
+      const names = ['hand', 'left_finger', 'right_finger'];
 
       return Object.fromEntries(
-        Object.entries(candidates).map(([role, names]) => {
-          let id;
-          for (const name of names) {
-            id = Array.from({ length: mjModel.nbody }, (_, i) => i)
-              .find((i) => mjModel.body(i).name === name);
-            if (id !== undefined) break;
-          }
-          return [role, id !== undefined ? bodies[id] : null];
+        names.map((name) => {
+          const id = Array.from({ length: mjModel.nbody }, (_, i) => i)
+            .find((i) => mjModel.body(i).name === name);
+
+          return [name, id !== undefined ? bodies[id] : null];
         })
       );
     }
@@ -920,9 +899,6 @@
       gripperPreview.name = 'editor_gripper_preview';
       scene.add(gripperPreview);
 
-      // Note: this editor preview uses exactly 3 visual slots
-      // (hand/left_finger/right_finger). For robots with more gripper parts
-      // (e.g. Macao), we map representative bodies into these slots.
       for (const name of ['hand', 'left_finger', 'right_finger']) {
         const source = groups[name];
 
@@ -964,9 +940,9 @@
       return gripperPreview;
     }
 
-    function hideGripperPreview(value = true) {
+    function hideGripperPreview() {
       if (gripperPreview) {
-        gripperPreview.visible = !value;
+        gripperPreview.visible = false;
       }
     }
 
@@ -975,9 +951,6 @@
 
       const groups = getGripperGroups();
 
-      // Note: this editor preview uses exactly 3 visual slots
-      // (hand/left_finger/right_finger). For robots with more gripper parts
-      // (e.g. Macao), we map representative bodies into these slots.
       for (const name of ['hand', 'left_finger', 'right_finger']) {
         const source = groups[name];
         const clone = gripperPreview.getObjectByName(`preview_${name}`);
@@ -994,20 +967,11 @@
 
       gripperPreview.updateMatrixWorld(true);
 
-      // Offsets are measured from the pose BEFORE the pending edit, so the
-      // per-body baselines are derived below by undoing any delta the gripper
-      // has already been solved into.  That makes re-capturing idempotent and
-      // keeps the reference derived from the gripper's own finger/approach.
-      const poses = {};
+      // Store the original transformation of each clone.
+      gripperPreview.originalGripperPose = {};
 
-      // Note: this editor preview uses exactly 3 visual slots
-      // (hand/left_finger/right_finger). For robots with more gripper parts
-      // (e.g. Macao), we map representative bodies into these slots.
       for (const name of ['hand', 'left_finger', 'right_finger']) {
         const clone = gripperPreview.getObjectByName(`preview_${name}`);
-
-        // SO-101 and some grippers don't have a full left/right pair.
-        // That's fine — missing bodies simply won't render in that slot.
 
         if (!clone) continue;
 
@@ -1017,80 +981,10 @@
 
         clone.matrixWorld.decompose(position, quaternion, scale);
 
-        poses[name] = {
+        gripperPreview.originalGripperPose[name] = {
           position: position.clone(),
           quaternion: quaternion.clone(),
           scale: scale.clone(),
-        };
-      }
-      
-      // Read the TCP world position directly from the MuJoCo site named "tcp".
-      // We always refresh the TCP pivot because it’s used as the rotation
-      // pivot during applyGripperPreviewPose().
-      //
-      // Workaround for solve/play: captureGripperPreviewPose() may be called
-      // after solving; refreshing tcpPosition is safe, but we keep any
-      // existing per-body baseline orientations/positions unless we are
-      // initializing for the first time.
-      const MJ_OBJ_SITE = 6; // mjtObj.mjOBJ_SITE
-      const tcpSiteId = mujoco.mj_name2id(
-        mjModel, MJ_OBJ_SITE, 'tcp'
-      );
-      let tcpWorldPosition = null;
-      if (tcpSiteId >= 0) {
-        const xpos = mjData.site_xpos;
-        tcpWorldPosition = new THREE.Vector3(
-          xpos[tcpSiteId * 3 + 0],
-          xpos[tcpSiteId * 3 + 2],   // MuJoCo Z → Three.js Y
-          -xpos[tcpSiteId * 3 + 1],  // MuJoCo Y → Three.js -Z
-        );
-      } else {
-        console.warn('[Gripper Preview] tcp site not found in model.');
-      }
-
-      // Undo the pending edit so the stored baseline is the pose the offsets are
-      // measured FROM.  Without this, a capture taken after a solve bakes the
-      // rotation (and translation) into the reference and the preview applies it
-      // a second time -- the "preview is rotated" symptom.
-      const capturedDelta = previewPose && previewPose.deltaQuaternion
-        ? previewPose.deltaQuaternion.clone()
-        : null;
-      const unrotate = capturedDelta ? capturedDelta.clone().invert() : null;
-      const applied = previewPose
-        && Array.isArray(previewPose.position)
-        && Array.isArray(previewPose.originalPosition)
-        ? new THREE.Vector3(
-            previewPose.position[0] - previewPose.originalPosition[0],
-            previewPose.position[2] - previewPose.originalPosition[2],
-            -(previewPose.position[1] - previewPose.originalPosition[1]))
-        : null;
-
-      // The pivot the edit reached, minus the translation it already applied, is
-      // the pristine TCP the baseline geometry is measured about.
-      const pristinePivot = tcpWorldPosition && applied
-        ? tcpWorldPosition.clone().sub(applied)
-        : tcpWorldPosition;
-
-      gripperPreview.originalGripperPose = { tcpPosition: pristinePivot };
-
-      for (const name of ['hand', 'left_finger', 'right_finger']) {
-        const raw = poses[name];
-        if (!raw) continue;
-
-        const position = raw.position.clone();
-        let quaternion = raw.quaternion.clone();
-
-        if (applied) position.sub(applied);
-        if (unrotate && pristinePivot) {
-          const rel = position.clone().sub(pristinePivot).applyQuaternion(unrotate);
-          position.copy(pristinePivot).add(rel);
-          quaternion = unrotate.clone().multiply(quaternion);
-        }
-
-        gripperPreview.originalGripperPose[name] = {
-          position,
-          quaternion,
-          scale: raw.scale.clone(),
         };
       }
 
@@ -1099,51 +993,19 @@
       if (handPose) {
         gripperPreview.originalHandPosition = handPose.position.clone();
         gripperPreview.originalHandQuaternion = handPose.quaternion.clone();
-      }
-    }
 
-    // Deferred gripper-preview capture -----------------------------------
-    //
-    // teleportSample() drops the robot at the key's pose, but the arm is still
-    // under the physics loop.  Capturing the baseline on the same tick froze
-    // the preview where the robot WAS, while the arm went on to settle
-    // somewhere else.  So a capture is requested here and taken by
-    // settleGripperPreviewCapture() once the arm stops moving.
-    function requestGripperPreviewCapture() {
-      previewCapturePending = { frames: 0, last: null };
-    }
+        const tcpLocalPosition = new THREE.Vector3(
+          0,
+          0.1034,
+          0
+        );
 
-    function cancelGripperPreviewCapture() {
-      previewCapturePending = null;
-    }
+        const tcpWorldPosition = tcpLocalPosition
+          .applyQuaternion(handPose.quaternion)
+          .add(handPose.position);
 
-    function settleGripperPreviewCapture() {
-      if (!previewCapturePending || !mjModel || !task) return;
-
-      const n = robot.arm;
-      const last = previewCapturePending.last;
-      let delta = Infinity;
-      if (last) {
-        delta = 0;
-        for (let i = 0; i < n; i++) {
-          delta = Math.max(delta, Math.abs(mjData.qpos[i] - last[i]));
-        }
-      }
-
-      const now = new Array(n);
-      for (let i = 0; i < n; i++) now[i] = mjData.qpos[i];
-      previewCapturePending.last = now;
-      previewCapturePending.frames++;
-
-      // Snapshot the first frame the arm holds still, or after ~half a second
-      // in case it never quite does.
-      if ((previewCapturePending.frames > 2 && delta < 1e-4)
-          || previewCapturePending.frames > 30) {
-        previewCapturePending = null;
-        captureGripperPreviewPose();
-        // The capture rebases the clones onto the robot's pose and freezes them
-        // (matrixAutoUpdate = false); put back the offset the editor is showing.
-        if (previewPose) applyGripperPreviewPose(previewPose);
+        gripperPreview.originalGripperPose.tcpPosition =
+          tcpWorldPosition ? tcpWorldPosition.clone() : null;
       }
     }
 
@@ -1159,11 +1021,6 @@
 
     function applyGripperPreviewPose(pose) {
       if (!gripperPreview || !pose) return;
-
-      // Remember it so the deferred capture can re-apply it: capturing rebases
-      // the clones onto the robot's pose, which would otherwise drop whatever
-      // slider offset the editor had just applied.
-      previewPose = pose;
 
       const originalGripperPose =
         gripperPreview.originalGripperPose;
@@ -1377,7 +1234,6 @@
         root.add(bodies[b]);
       }
       syncBodies();
-      compressPivots();
 
       boardCentre = new THREE.Vector3();
       let panels = 0;
@@ -1457,43 +1313,6 @@
         if (!(b in bodies)) continue;
         getPosition(mjData.xpos, b, bodies[b].position);
         getQuaternion(mjData.xquat, b, bodies[b].quaternion);
-      }
-      applyCompression();
-    }
-
-    // A module listed in the catalogue's "compress" squashes one of its bodies
-    // along the joint axis, pinned at the end the robot is *not* touching, so
-    // the spring shortens by exactly the joint displacement.  The pivot is
-    // measured off the rest geometry rather than assumed to be the body
-    // origin: what a build bakes into the compiled model is not always what
-    // the XML says.
-    function compressPivots() {
-      compression = [];
-      const specs = robot && robot.compress;
-      if (!specs || !mjModel) return;
-      for (const spec of specs) {
-        const b = bodyNames.indexOf(spec.body);
-        const jid = jointNames.indexOf(spec.joint);
-        if (b < 0 || jid < 0 || !bodies[b] || !spec.length) continue;
-        const ax = [mjData.xaxis[jid * 3], mjData.xaxis[jid * 3 + 1],
-                    mjData.xaxis[jid * 3 + 2]];
-        const axis = new THREE.Vector3(ax[0], ax[2], -ax[1]).normalize();
-        // The build says where the coil's fixed end sits along the joint axis,
-        // measured from the body's own origin.  Deriving it from the rendered
-        // vertices needed up-to-date world matrices and proved unreliable.
-        compression.push({ b, jid, at: mjModel.jnt_qposadr[jid], axis,
-                           reach: spec.reach || 0, length: spec.length });
-      }
-    }
-
-    function applyCompression() {
-      for (const spec of compression) {
-        const node = bodies[spec.b];
-        if (!node) continue;
-        const q = spec.at >= 0 ? mjData.qpos[spec.at] : 0;
-        const s = Math.max(0.05, (spec.length - q) / spec.length);
-        node.scale.set(s, 1, 1);
-        node.position.addScaledVector(spec.axis, (1 - s) * spec.reach);
       }
     }
 
@@ -1611,27 +1430,13 @@
     function teleportSample() {
       if (!mjModel || !task) return;
       const saved = task.stateQpos?.[sampleIndex];
-      // stateQpos carries the module dofs at this sample (drawer travel, valve
-      // angle, ...).  The arm dofs in it are the settled result of the solve and
-      // disagree with the key the editor edits, so they are overwritten below.
       if (saved && saved.length === mjModel.nq) {
         mjData.qpos.set(saved);
+      } else {
+
+        for (let i = 0; i < robot.arm; i++) mjData.qpos[i] = task.qpos[sampleIndex][i];
       }
-      // Pin the arm — and the ctrl that servos it — to the key's own pose.
-      // Left as stateQpos the live PD controller pulls the arm to task.qpos over
-      // the next frames, which is the motion that stranded the preview.
-      const pose = task.qpos[sampleIndex];
-      for (let i = 0; i < robot.arm; i++) {
-        mjData.qpos[i] = pose[i];
-        mjData.ctrl[i] = pose[i];
-      }
-      if (gripQposIndex >= 0) mjData.qpos[gripQposIndex] = task.grip[sampleIndex];
-      if (spinIndex >= 0) mjData.qpos[spinIndex] = task.spin || 0;
-      if (gripCtrl >= 0) mjData.ctrl[gripCtrl] = task.grip[sampleIndex];
       mjData.qvel.fill(0);
-      // Remember the pose the editor is holding so animate() can pin the robot
-      // back to it after each physics step.
-      holdPose = Float64Array.from(mjData.qpos);
       mujoco.mj_forward(mjModel, mjData);
       syncBodies();
     }
@@ -1639,14 +1444,10 @@
     function modulePrefix() {
       if (!task) return null;
 
-      // Resolve the prefix the way setModuleVisibility, moduleCollisions and
-      // moduleRootBodies already do, instead of stripping a fixed list of joint
-      // name suffixes.  That list missed thread-m30: its translating joint is the
-      // custom "RiseJoint" that tools/build-sim-assets.py adds, so its watch reads
-      // "thread-m30_RiseJoint", the stripped value matched no module prefix, and
-      // every M30 body was hidden -- the mesh vanished from every scene.
-      const watch = task.watch || '';
-      return MODULE_PREFIXES.find((p) => watch.startsWith(`${p}_`)) || null;
+      return task.watch.replace(
+        /_(RevoluteJoint|PrismaticJoint|SlideJoint|HingeJoint|BallJoint|RiseJoint)$/,
+        ''
+      );
     }
 
     function taskKey() {
@@ -1669,32 +1470,16 @@
           demoStateQposAddrs.push(mjModel.jnt_qposadr[jid]);
         }
       }
-      // Everything that is not the module is held still while the editor owns
-      // the pose.  The arm alone is not enough: FR3's jaw is two joints tied by
-      // an equality, and the second one keeps drifting under the step loop.
-      const moduleDofs = new Set(demoStateQposAddrs);
-      holdDofs = [];
-      for (let a = 0; a < mjModel.nq; a++) {
-        if (!moduleDofs.has(a)) holdDofs.push(a);
-      }
-      holdPose = null;
       previewItem = null;
       clearModulePreview();
       const catItem = TASK_CATALOGUE.find((t) => t.traj === key);
       const select = document.getElementById('task-select');
       if (select && catItem) select.value = catItem.key;
-      // In edit mode the placement panel follows the task's own module, so
-      // offsets are dialled in against the real bodies while it plays.
-      if (PLACE_EDIT && catItem && moduleRootBodies(catItem.module || catItem.key).length) {
-        previewItem = catItem;
-        previewAdjust = loadPreviewAdjust(catItem.key);
-        placeModulePreview();
-      }
 
       resetScene();
       setModuleVisibility(modulePrefix());
       setDemoCollisions(!!task.demo);
-      refreshPlacePanel();
+      refreshViewPanel();
       drawPath();
       if (dolly) frameTask();
       updateReadout();
@@ -1842,88 +1627,10 @@
       return { normal, right, up };
     }
 
-    function moduleRootBodies(key) {
-      const out = [];
-      if (!mjModel) return out;
-      const board = bodyNames.indexOf('hiveboard');
-      if (board < 0) return out;
-      for (let b = 1; b < mjModel.nbody; b++) {
-        if (mjModel.body_parentid[b] !== board) continue;
-        if ((bodyNames[b] || '').startsWith(`${key}_`)) out.push(b);
-      }
-      return out;
-    }
-
-    function moduleRest(key) {
-      if (modulePlacement[key]) return modulePlacement[key];
-      const roots = moduleRootBodies(key);
-      if (!roots.length) return null;
-      const pose = { board: bodyNames.indexOf('hiveboard'), roots: [] };
-      for (const b of roots) {
-        pose.roots.push({
-          id: b,
-          pos: [mjModel.body_pos[b * 3], mjModel.body_pos[b * 3 + 1],
-                mjModel.body_pos[b * 3 + 2]],
-          quat: [mjModel.body_quat[b * 4], mjModel.body_quat[b * 4 + 1],
-                 mjModel.body_quat[b * 4 + 2], mjModel.body_quat[b * 4 + 3]],
-        });
-      }
-      modulePlacement[key] = pose;
-      return pose;
-    }
-
-    // A module that is already in the compiled scene is moved for real, so the
-    // panel shows exactly what the build will bake into the scene.
-    function moveModuleInScene(key, adj) {
-      const pose = moduleRest(key);
-      if (!pose) return false;
-      // Panel offsets are [right, up, out] metres in MuJoCo axes, the same
-      // frame build-sim-assets.board_axes() uses; the bodies themselves live in
-      // the board's own frame, so bring the world delta back through it.
-      const normal = new THREE.Vector3(...(robot.boardNormal || [0, 0, 1])).normalize();
-      const seed = Math.abs(normal.y) > 0.9
-        ? new THREE.Vector3(0, 0, 1) : new THREE.Vector3(0, 1, 0);
-      const right = new THREE.Vector3().crossVectors(seed, normal).normalize();
-      const up = new THREE.Vector3().crossVectors(normal, right);
-      const off = adj.offset || [0, 0, 0];
-      const world = new THREE.Vector3()
-        .addScaledVector(right, off[0])
-        .addScaledVector(up, off[1])
-        .addScaledVector(normal, off[2]);
-      const m = mjData.xmat;
-      const i = pose.board * 9;
-      const toBoard = new THREE.Matrix3()
-        .set(m[i], m[i + 1], m[i + 2], m[i + 3], m[i + 4], m[i + 5],
-             m[i + 6], m[i + 7], m[i + 8]).transpose();
-      const local = world.applyMatrix3(toBoard);
-      const spin = new THREE.Quaternion().setFromAxisAngle(
-        new THREE.Vector3(1, 0, 0), adj.spin || 0);
-      for (const root of pose.roots) {
-        mjModel.body_pos[root.id * 3] = root.pos[0] + local.x;
-        mjModel.body_pos[root.id * 3 + 1] = root.pos[1] + local.y;
-        mjModel.body_pos[root.id * 3 + 2] = root.pos[2] + local.z;
-        const q = new THREE.Quaternion(root.quat[1], root.quat[2], root.quat[3],
-                                       root.quat[0]);
-        q.premultiply(spin);
-        mjModel.body_quat[root.id * 4] = q.w;
-        mjModel.body_quat[root.id * 4 + 1] = q.x;
-        mjModel.body_quat[root.id * 4 + 2] = q.y;
-        mjModel.body_quat[root.id * 4 + 3] = q.z;
-      }
-      mujoco.mj_forward(mjModel, mjData);
-      return true;
-    }
-
     function placeModulePreview() {
-      const adj = previewAdjust;
-      const key = previewItem ? (previewItem.module || previewItem.key) : null;
-      if (key && moveModuleInScene(key, placeDelta(adj, previewBaseline))) {
-        if (previewMesh) previewMesh.visible = false;
-        return;
-      }
-      if (previewMesh) previewMesh.visible = true;
       if (!previewMesh) return;
       const group = previewMesh;
+      const adj = previewAdjust;
       const { normal, right, up } = boardFrame();
       const anchor = boardAnchor();
 
@@ -2027,30 +1734,10 @@
 
       const src = (committedPlacement[robot?.name] || {})[key]
         || MODULE_PLACEMENT[key] || MODULE_PLACEMENT_DEFAULT;
-      // Freeze where the scene already sits: the saved entry is baked into the
-      // module, so dialling the panel again must not re-apply it on top.
-      previewBaseline = {
+      return {
         offset: [...(src.offset || [0, 0, 0])],
         spin: src.spin || 0,
         scale: src.scale || 1,
-      };
-      return {
-        offset: [...previewBaseline.offset],
-        spin: previewBaseline.spin,
-        scale: previewBaseline.scale,
-      };
-    }
-
-    // The live module already carries the baseline, so only the difference
-    // between the panel and it should be applied.
-    function placeDelta(adj, base) {
-
-      return {
-        offset: [adj.offset[0] - base.offset[0],
-                 adj.offset[1] - base.offset[1],
-                 adj.offset[2] - base.offset[2]],
-        spin: (adj.spin || 0) - (base.spin || 0),
-        scale: (adj.scale || 1) / (base.scale || 1),
       };
     }
 
@@ -2162,13 +1849,7 @@
 
       el.querySelector('#place-save').addEventListener('click', savePlacementForever);
       el.querySelector('#place-reset').addEventListener('click', () => {
-        // Back to where the scene already sits, not to zeros -- the built
-        // module is not necessarily at the default pose.
-        previewAdjust = {
-          offset: [...previewBaseline.offset],
-          spin: previewBaseline.spin,
-          scale: previewBaseline.scale,
-        };
+        previewAdjust = { offset: [0, 0, 0], spin: 0, scale: 1 };
         placeModulePreview();
         refreshPlacePanel();
       });
@@ -2179,9 +1860,7 @@
       refreshViewPanel();
       if (!placePanel) return;
 
-      // A solved module can be tuned too: the panel then moves the real bodies,
-      // so the task keeps playing while the offset is dialled in.
-      const show = PLACE_EDIT && !!previewItem;
+      const show = PLACE_EDIT && !!previewItem && (!task || task.armOnly);
       placePanel.el.hidden = !show;
       if (!show) return;
       placePanel.el.querySelector('.panel-title').textContent =
@@ -2237,11 +1916,7 @@
           case ']':          a.spin += Math.PI / 36; break;
           case '-': case '_': a.scale *= 0.98; break;
           case '=': case '+': a.scale *= 1.02; break;
-          case '0': previewAdjust = {
-            offset: [...previewBaseline.offset],
-            spin: previewBaseline.spin,
-            scale: previewBaseline.scale,
-          }; break;
+          case '0': previewAdjust = { offset: [0, 0, 0], spin: 0, scale: 1 }; break;
           default: handled = false;
         }
         if (!handled) return;
@@ -2388,12 +2063,6 @@
         devHold = false;
         devPose = null;
         devObjectPose = null;
-        cancelGripperPreviewCapture();
-        previewPose = null;
-        hideGripperPreview();
-      }
-      else {
-        hideGripperPreview(false);
       }
       playing = !!value && !!task;
       playEl.textContent = playing ? 'Pause' : 'Play';
@@ -2453,33 +2122,9 @@
 
       if (applyDemoSample()) mujoco.mj_forward(mjModel, mjData);
 
-      // While the editor holds a key (paused + devHold) pin the robot to the
-      // pose being edited.  Otherwise the live PD controller — commanded to
-      // task.qpos, which is not the teleported pose — visibly servos the arm
-      // away from the snapshot, and the equality-coupled jaw keeps creeping.
-      if (!playing && devHold && task && holdPose) {
-        for (let i = 0; i < holdDofs.length; i++) {
-          const a = holdDofs[i];
-          mjData.qpos[a] = holdPose[a];
-          mjData.qvel[a] = 0;
-        }
-        if (devPose) {
-          for (let i = 0; i < robot.arm; i++) {
-            mjData.qpos[i] = devPose.qpos[i];
-            mjData.qvel[i] = 0;
-          }
-        }
-        mujoco.mj_forward(mjModel, mjData);
-      }
-
       syncBodies();
-      settleGripperPreviewCapture();
       if (task) {
-        // In edit mode with devHold active the XYZ sliders position the marker
-        // directly (via setKeyframeMarkerPos); don't clobber it here.
-        if (!devHold) {
-          pathMarker.position.copy(toThree(task.tcp[sampleIndex]));
-        }
+        pathMarker.position.copy(toThree(task.tcp[sampleIndex]));
       }
       if (++uiSkip >= 6) { uiSkip = 0; updateReadout(); syncControls(); }
       previewDemoStep(time);
@@ -2565,10 +2210,7 @@
               sampleIndex = Math.max(0, Math.min(i, task.qpos.length - 1));
               subStep = 0;
               teleportSample();
-              // Arm for a deferred capture; settleGripperPreviewCapture() takes
-              // the snapshot once the arm stops moving.  Capturing inline froze
-              // the preview at the teleport pose while the arm was still settling.
-              if (!afterSolve) requestGripperPreviewCapture();
+              if(!afterSolve) captureGripperPreviewPose();
             },
             setEditorPose(qpos, grip) {
               if (!task || !Array.isArray(qpos)) return;
@@ -2577,19 +2219,11 @@
               devPose = { qpos, grip };
               devObjectPose = null;
               for (let i = 0; i < robot.arm; i++) mjData.qpos[i] = qpos[i];
-              if (gripQposIndex >= 0 && Number.isFinite(grip)) {
-                mjData.qpos[gripQposIndex] = grip;
-              }
-              if (spinIndex >= 0) mjData.qpos[spinIndex] = task.spin || 0;
               mjData.qvel.fill(0);
-              holdPose = Float64Array.from(mjData.qpos);
               mujoco.mj_forward(mjModel, mjData);
               syncBodies();
               if(captureGripperPreviewPose) captureGripperPreviewPose();
 
-            },
-            setDevHold(value) {
-              devHold = !!value;
             },
             setEditorObjectPose(qpos) {
               if (!task || !Array.isArray(qpos)) return;
@@ -2610,13 +2244,6 @@
               syncBodies();
               if(captureGripperPreviewPose) captureGripperPreviewPose();
             },
-            // Move the TCP keyframe circle to a given MuJoCo-space position.
-            // Called by the XYZ offset sliders in edit.js so the marker tracks
-            // the edited key position before a solve completes.
-            setKeyframeMarkerPos(mjPos) {
-              if (!pathMarker || !Array.isArray(mjPos)) return;
-              pathMarker.position.copy(toThree(mjPos));
-            },
             setDraftTrajectory(key, traj) {
               if (!traj) return;
               traj.watch = traj.watch || '';
@@ -2630,7 +2257,6 @@
               updateReadout();
             },
             get robot() { return robot; },
-            get isPlaying() { return playing; },
             get task() { return task; },
             get previewItem() { return previewItem; },
             get trajectories() { return trajectories; },
