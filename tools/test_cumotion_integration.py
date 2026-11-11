@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Exercise the standalone cuMotion planner against both supported robots."""
+"""Exercise the standalone cuMotion planner against every configured robot."""
 
 from __future__ import annotations
 
@@ -34,7 +34,7 @@ def check_robot(robot_name: str) -> None:
 
 
 def main() -> None:
-    for robot_name in ("fr3", "spot"):
+    for robot_name in ROBOT_RESOURCES:
         check_robot(robot_name)
 
 
