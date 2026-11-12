@@ -35,7 +35,7 @@ A complete submission contains 65 trials: five for each of the 13 conditions. In
 
 ```text
 result-package/
-├── trials.csv
+├── trials_<submission_id>.csv
 ├── setup.jpg
 ├── platform.md
 ├── manifest.json
@@ -55,7 +55,7 @@ The runner creates **`recording-instructions.md` inside your results ZIP**. Its 
 1. Complete the required setup details and all 65 trial records.
 2. Open **Review** in the Evaluation Runner and select **Download results (.zip)**.
 3. Extract the ZIP and open the folder named with your submission ID.
-4. Open `recording-instructions.md`, beside `trials.csv` and `platform.md`. Any text editor can read this Markdown file.
+4. Open `recording-instructions.md`, beside `trials_<submission_id>.csv` and `platform.md`. Any text editor can read this Markdown file.
 5. Use its trial-by-trial filename table to rename your recordings and place them in the `videos/` folder.
 
 Record each trial during the evaluation. For physical trials, start an external camera before the countdown and keep the board, robot, end-effector, and final task state visible throughout. For simulated trials, record the complete trial on screen. Keep one MP4 per trial and track which trial it belongs to. Rename the files after downloading the results ZIP.
@@ -63,14 +63,14 @@ Record each trial during the evaluation. For physical trials, start an external 
 | Runner download | Contents | Includes `recording-instructions.md`? |
 |---|---|---|
 | **Download results (.zip)** | Trial records, platform description, manifest, session backup, and recording and submission instructions | Yes, inside the extracted submission folder |
-| **Download trials.csv** | Trial log only | No |
+| **Download trial log (.csv)** | Trial log only | No |
 | **Export session** | JSON backup for resuming the evaluation | No |
 
 “Trial records complete” refers to the log and setup fields. It does not confirm that all supporting files are present or that an organizer has reviewed the outcomes. The manifest lists the expected recordings and whether the setup photograph was included when the ZIP was generated.
 
 ### Learning data collected during evaluation
 
-If you recorded the trials with [DataHive](/guides/datahive), keep an index linking the benchmark trial IDs to the learning episodes and submit the dataset through the [dataset call](/contribute/evaluations#send-the-data-for-review). DataHive's extended annotation CSV does not replace the benchmark `trials.csv` in this package. Enter the scored results in the website Evaluation Runner to generate the submission ZIP; see the [combined workflow](/guides/datahive#collect-during-a-benchmark-evaluation).
+If you recorded the trials with [DataHive](/guides/datahive), keep an index linking the benchmark trial IDs to the learning episodes and submit the dataset through the [dataset call](/contribute/evaluations#send-the-data-for-review). DataHive's extended annotation CSV does not replace the benchmark `trials_<submission_id>.csv` in this package. Enter the scored results in the website Evaluation Runner to generate the submission ZIP; see the [combined workflow](/guides/datahive#collect-during-a-benchmark-evaluation).
 
 ## Submit for organizer review
 

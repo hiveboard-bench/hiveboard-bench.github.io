@@ -571,7 +571,7 @@ Submission ID: \`${ensureSubmissionId()}\`
 1. ${session.evaluation_mode === 'simulation' ? 'Start a screen recording of the simulation before starting the runner countdown.' : 'Start the external camera before starting the runner countdown.'}
 2. Record the complete trial without cuts, including the initial approach and grasp. Begin the approach when the runner countdown reaches zero.
 3. Keep the HiveBoard, robot and end-effector, and final task state visible.
-4. Save one MP4 file for each row in \`trials.csv\`.
+4. Save one MP4 file for each row in \`${trialsFilename()}\`.
 5. Rename each file exactly as listed below and place it in the package's \`videos/\` directory before submission.
 
 For Thread (M8) and Thread (M30), show the nut completely removed from the screw before the trial begins. The runner's reference image shows the assembled mechanism. For Drawer, show the drawer completely removed from its housing before the trial begins.
@@ -605,7 +605,7 @@ function manifestPayload() {
       required_trials_per_condition: REQUIRED_TRIALS
     },
     files: {
-      trials: 'trials.csv',
+      trials: trialsFilename(),
       platform_description: 'platform.md',
       session_backup: 'session.json',
       recording_instructions: 'recording-instructions.md',
@@ -625,8 +625,12 @@ function manifestPayload() {
   }
 }
 
+function trialsFilename() {
+  return `trials_${ensureSubmissionId()}.csv`
+}
+
 function downloadCsv() {
-  downloadFile('trials.csv', buildCsv(), 'text/csv;charset=utf-8')
+  downloadFile(trialsFilename(), buildCsv(), 'text/csv;charset=utf-8')
 }
 
 function downloadPlatform() {
@@ -766,7 +770,7 @@ async function downloadPackage() {
     const submissionId = ensureSubmissionId()
     const zip = new JSZip()
     const root = zip.folder(submissionId)
-    root.file('trials.csv', buildCsv())
+    root.file(trialsFilename(), buildCsv())
     root.file('platform.md', buildPlatformMarkdown())
     root.file('manifest.json', JSON.stringify(manifestPayload(), null, 2) + '\n')
     root.file('session.json', JSON.stringify(sessionPayload(), null, 2) + '\n')
@@ -1164,7 +1168,7 @@ onUnmounted(() => {
           <div class="download-actions">
             <button class="secondary" type="button" @click="downloadSession">Export session</button>
             <button class="secondary" type="button" @click="downloadPlatform">Download platform.md</button>
-            <button class="secondary" type="button" @click="downloadCsv">Download trials.csv</button>
+            <button class="secondary" type="button" @click="downloadCsv">Download trial log (.csv)</button>
           </div>
         </div>
 
