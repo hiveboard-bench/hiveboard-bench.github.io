@@ -20,8 +20,8 @@ If you use HiveBoard in research or a publication, cite the project paper. The c
              de Lange, Rudy De-Xin and
              Elanjimattathil Vijayan, Aravind and
              Ramírez Sánchez, Amy M. and
+             Duan, Shifei and
              Baptista, Rafael R. and
-             van Berge, Meiko A. and
              Chowdhary, Girish and
              Bezerra, Ranulfo and
              Lahr, Gustavo J. G. and
