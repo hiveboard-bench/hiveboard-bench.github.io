@@ -249,8 +249,8 @@ If you find HiveBoard useful in your research, please cite:
              de Lange, Rudy De-Xin and
              Vijayan, Aravind Elanjimattathil and
              Ramírez Sánchez, Amy M. and
+             Duan, Shifei and
              Baptista, Rafael R. and
-             van Berge, Meiko A. and
              Chowdhary, Girish and
              Bezerra, Ranulfo and
              Lahr, Gustavo J. G. and
