@@ -14,6 +14,8 @@ We seek learning data with the robot and sensor streams described below. A forma
 
 We recommend [DataHive](/guides/datahive) to collect, annotate, validate, and upload episodes. Labs already running a benchmark evaluation are encouraged to record the corresponding states, commands, and camera streams for a dataset contribution.
 
+If your episodes were recorded with another tool, [convert them to the HiveBoard format](/guides/dataset-conversion) instead of re-recording. The converter reads LeRobot v3.x datasets, resamples proprioception to the required 100 Hz, and writes a samples root that `datahive validate` accepts.
+
 ## Before starting
 
 Read the [evaluation protocol](/benchmark/protocol) and [task definitions](/hardware/modules). If you need to print the board, start with the [printing](/hardware/printing) and [assembly](/hardware/assembly) guides.

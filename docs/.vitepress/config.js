@@ -54,7 +54,8 @@ export default defineConfig({
       {
         text: 'Data Collection',
         items: [
-          { text: 'DataHive', link: '/guides/datahive' }
+          { text: 'DataHive', link: '/guides/datahive' },
+          { text: 'Dataset Conversion', link: '/guides/dataset-conversion' }
         ]
       },
       {

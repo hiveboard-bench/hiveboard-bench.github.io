@@ -1,0 +1,19 @@
+# Dataset conversion (third-party datasets -> datahive_episode_v1)
+#
+# Install with the repo venv:
+#   .venv/Scripts/python.exe -m pip install -r tools/requirements-dataset-conversion.txt
+#
+# datahive-tools provides the EpisodeWriter / annotate_episode / validate API.
+# The [video] extra brings opencv-python-headless, which the validator uses to
+# probe camera streams.
+datahive-tools[video]==0.1.8
+
+# LeRobot v3.0 metadata and frame tables are Parquet. We read them directly
+# with pyarrow instead of installing lerobot, which pulls in torch.
+pyarrow>=15
+
+numpy>=1.26
+
+# Ships a bundled ffmpeg binary, so no system ffmpeg is required for slicing
+# and re-encoding the source camera shards.
+imageio-ffmpeg>=0.5.1
