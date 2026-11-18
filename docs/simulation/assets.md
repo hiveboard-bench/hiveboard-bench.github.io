@@ -54,7 +54,7 @@ Place the mesh relative to the board using the measured transform. Check alignme
 
 ## Optional 360° valve model
 
-The [360° ball-valve variant](/hardware/ball-valve-360) is provided as OBJ/MTL and USDZ under `CAD/Valves/Lever Valve/Ball Valve 360/`. Its USDZ contains geometry and materials, with no physics joints or rigid-body configuration. Integrating it requires defining and validating joint motion, collision geometry, mass, and friction. The existing articulated valve assets and Isaac Lab environments remain separate from this export.
+The [360° ball-valve variant](/hardware/ball-valve-360) is provided as OBJ/MTL and USDZ under `CAD/Valves/Ball Valve/Ball Valve 360/`. Its USDZ contains geometry and materials, with no physics joints or rigid-body configuration. Integrating it requires defining and validating joint motion, collision geometry, mass, and friction. The existing articulated valve assets and Isaac Lab environments remain separate from this export.
 
 ## Physical parameters
 
