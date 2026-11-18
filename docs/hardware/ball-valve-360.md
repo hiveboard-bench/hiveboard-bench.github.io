@@ -10,22 +10,24 @@ The **standard Ball valve task remains a 90° rotation from closed to open**. Th
 
 ## Files
 
-Download the models from [`CAD/Valves/Lever Valve/Ball Valve 360/`](https://github.com/hiveboard-bench/HiveBoard/tree/main/CAD/Valves/Lever%20Valve/Ball%20Valve%20360).
+Download the [STL assembly](https://github.com/hiveboard-bench/HiveBoard/blob/main/STL/Valves/Ball%20Valve/Ball%20Valve%20360/ball_valve_360_assembly.stl) for slicing. Download the other models from [`CAD/Valves/Ball Valve/Ball Valve 360/`](https://github.com/hiveboard-bench/HiveBoard/tree/main/CAD/Valves/Ball%20Valve/Ball%20Valve%20360).
 
 | File | Purpose |
 |---|---|
+| `ball_valve_360_assembly.stl` | Assembly mesh for slicing; split into base and lever before printing |
 | `ball_valve_360_base.obj` | Separate base body |
 | `ball_valve_360_lever.obj` | Separate lever body |
 | `ball_valve_360_assembly.obj` | Reference assembly |
 | `ball_valve_360_assembly.mtl` | Shared OBJ display materials |
 | `ball_valve_360_assembly.usdz` | Packaged assembly with original USD materials |
 
-The base and lever were extracted from the supplied assembly without changing their geometry. Keep the shared MTL beside all three OBJ files. These are mesh exports. STEP and STL files are not included for this variant.
+The base and lever were extracted from the supplied assembly without changing their geometry. Keep the shared MTL beside all three OBJ files. The STL contains both parts in their assembled positions. Split it into separate objects in the slicer and orient each part on the print bed. STEP files are not included for this variant.
 
 ## Scale and assembly
 
 | Format or dimension | Setting |
 |---|---|
+| STL coordinates | Millimetres; import at 100% scale and verify dimensions, since STL has no unit metadata |
 | OBJ coordinates | Centimetres |
 | OBJ imported into millimetre-based software | Multiply coordinates by 10 |
 | OBJ imported into a metre-based simulator | Multiply coordinates by 0.01 |
@@ -33,7 +35,7 @@ The base and lever were extracted from the supplied assembly without changing th
 | Mounting-base width | 88.1 mm |
 | Assembly bounding box in the exported pose | Approximately 162.3 × 76.3 × 66.1 mm |
 
-1. Import the base and lever separately and check the dimensions.
+1. Import the STL assembly and split it into separate base and lever objects, or import the separate OBJ meshes with the scale conversion above. Check the dimensions and orient each part on the print bed.
 2. Print them using the [recommended PLA settings](/hardware/printing) as a starting point.
 3. Remove support material and stringing from mating surfaces.
 4. Assemble the parts in the orientation shown by the reference model.
